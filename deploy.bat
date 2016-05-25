@@ -1,18 +1,21 @@
-if "%1"=="-i" then goto init
+if "%1"=="-i"  goto init
+if "%1"=="" goto end
 goto deploy
 
 :init
 mkdir output
-git clone -b gh-pages git@github.com:tracholar/wiki.git
+cd output
+git clone -b gh-pages git@github.com:tracholar/wiki.git ./
+cd ..
 goto end
 
 :deploy
-@cd output
+cd output
 git add .
 git commit -m %1
 git pull origin gh-pages
 git push origin gh-pages
-@cd ..
+cd ..
 goto end
 
 :end
