@@ -1,7 +1,8 @@
-if %1=="-i" then goto init
+if "%1"=="-i" then goto init
 goto deploy
 
 :init
+mkdir output
 git clone -b gh-pages git@github.com:tracholar/wiki.git
 goto end
 
