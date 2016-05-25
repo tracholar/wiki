@@ -49,7 +49,7 @@ blockquote {
     color: #666;
     margin: .5em 0;
 	padding: 1.5em 0;
-    padding-left: 3em;
+    padding-left: 2em;
     border-left: 0.4em #eee solid;
 }
 
@@ -265,6 +265,6 @@ table.hlcodetable {
 
 @media screen and (max-width:500px) {
 	.toc {
-		display: none;
+		float: none;
 	}
 }
