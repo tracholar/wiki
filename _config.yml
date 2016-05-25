@@ -7,8 +7,10 @@ keywords:
 description: 
 author: 
 
+root: /wiki
+
 deploy:
-    - type:git
+    - type: git
       remote: origin
       branch: gh-pages
       
