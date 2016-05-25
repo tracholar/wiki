@@ -47,9 +47,14 @@ h6 { font-size: 0.8em; }
 
 blockquote {
     color: #666;
-    margin: 0;
+    margin: .5em 0;
+	padding: 1.5em 0;
     padding-left: 3em;
     border-left: 0.4em #eee solid;
+}
+
+blockquote p {
+	margin: 0;
 }
 
 hr {
@@ -68,7 +73,7 @@ ul, ol {
 
 ul li { list-style-type: square; }
 
-ul li p { margin: 0; }
+ul li p { margin: 0.5em 0; }
 
 img {
     border: 0;
