@@ -10,6 +10,12 @@ cd ..
 goto end
 
 :deploy
+git add .
+git commit -m %1
+git pull origin master
+git push origin master
+
+simiki g
 cd output
 git add .
 git commit -m %1

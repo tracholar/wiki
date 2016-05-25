@@ -63,6 +63,9 @@ deploy init-version
 ```
 然后就可以在你的项目页面中看到wiki了，对我来说是 tracholar.github.io/wiki。
 
+> Tips: 注意文件夹和文件命名统一用小写，否则你会后悔，因为windows不区分大小写
+> 而linux是区分的。
+
 ## linux中的部署
 还没试过，等试过之后再写，你可以参考[官方指南](http://simiki.org/docs/deploy.html)
 使用`ghp-import`部署，更方便，只是不支持windows。

@@ -1,8 +1,8 @@
 /*  
-Theme Name: Simple
-Author: Tanky Woo<me@tankywoo.com>
-Author URI: http://www.wutianqi.com/
-Description: Default theme for simiki.
+Theme Name: Simple-修改版
+Author: tracholar<zuoyuanlxz@gmail.com>， 原作者Tanky Woo<me@tankywoo.com>
+Author URI: https://tracholar.github.io/  http://www.wutianqi.com/
+Description: Default theme for simiki. tracholar修改版
 Version: 0.1
 License: The MIT License (MIT)
 Tags: simple, single-columns, code, codehighlight, white, markdown
@@ -132,7 +132,7 @@ pre code {
 /* Custom Configuration */
 #container {
     background: white;
-    width: 50em;
+    max-width: 50em;
     line-height: 1.5em;
     margin: 1.5em auto 3em auto;
     padding: 1.5em 2em;
@@ -261,4 +261,10 @@ table.hlcodetable {
 .hlcodetable .hlcode pre {
     margin: 0;
     border: none;
+}
+
+@media screen and (max-width:500px) {
+	.toc {
+		display: none;
+	}
 }
