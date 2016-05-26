@@ -11,7 +11,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width" />
         
-        <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
 
     <body>
@@ -479,7 +484,7 @@
 <li>
 <p>现金流量表与会计恒等式的关系</p>
 <ul>
-<li>$\Delta$现金 = $\Delta$负债 + $\Delta$股东权益 - $\Delta$非现金类资产</li>
+<li>$(\Delta)$现金 = $(\Delta)$负债 + $(\Delta)$股东权益 - $(\Delta)$非现金类资产</li>
 <li>直接发是列报现金的所有变动（左边），而间接法列报变动的原因（右边）</li>
 </ul>
 </li>
