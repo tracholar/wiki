@@ -73,7 +73,11 @@ ul, ol {
 
 ul li { list-style-type: square; }
 
-ul li p { margin: 0.5em 0; }
+li p { margin: 0.5em 0; }
+
+li ul { 
+	margin-top: 0; 
+}
 
 img {
     border: 0;
