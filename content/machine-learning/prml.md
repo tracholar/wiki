@@ -1,5 +1,5 @@
 ---
-title: "pattern recognition and machine learning notes"
+title: "Pattern Recognition and Machine Learning - Bishop"
 layout: page
 date: 2016-05-30
 ---
@@ -30,7 +30,7 @@ $$
 如果我们对参数的具有一定先验知识，可以进一步采用最大后验概率估计，
 得到更好的结果。作为一个特例，如果认为
 $$
-p(\mathbf{w}|\alpha) = \mathcal{N}(\mathbf{w} | 0, \alpha^{-1} \mathbf{I})
+p(\mathbf{w}|\alpha) = \mathcal{N}(\mathbf{w} | 0, \alpha^{-1} \mathbf{I})   \\\\
 					= (\frac{\alpha}{2\pi})^{(M+1)/2} \exp(-\frac{\alpha}{2} \mathbf{w}^T \mathbf{w}).
 $$
 那么此时的最大后验概率估计为带$(L_2)$正则项的估计，
