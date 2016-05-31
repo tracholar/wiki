@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>Pattern Recognition and Machine Learning - Bishop - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+        
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+        
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;Pattern Recognition and Machine Learning - Bishop</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">Pattern Recognition and Machine Learning - Bishop</div>
+  <div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">引言</a><ul>
+<li><a href="#_3">曲线拟合</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h1 id="_1">关于</h1>
+<p>Bishop写得PRML无疑是机器学习领域的权威著作，是加强机器学习理论知识必看的书籍之一。
+这里是我在阅读这本书时记录的笔记和自己的一些初步思考。</p>
+<h1 id="_2">引言</h1>
+<h2 id="_3">曲线拟合</h2>
+<p>设曲线拟合的目标变量为$(t)$，$(N)$个训练集为
+$( \mathbf{x} = (x_1, ..., x_N)^T )$，对应的目标值为
+$( \mathbf{t} = (t_1, ..., t_N)^T )$。假设估计误差服从
+高斯分布
+$$
+p(t|x, \mathbf{w}, \beta) = \mathcal{N} (t| y(x, \mathbf{w}), \beta^{-1}) 
+$$
+这里的$(\mathbf{w})$是待估计的参数，$(\beta^{-1})$对应于
+估计误差的方差。此时，按照最大似然准则估计的参数就是最小二乘
+法的结果，也就是最小化均方误差。而$(\beta^{-1})$的最大似然估计为
+模型预测值与实际值的均方差。
+$$
+\frac{1}{\beta} = \frac{1}{N} \sum_{n=1}^N [y(x_n,\mathbf{w}_{ML}) - t_n]^2.
+$$</p>
+<p>如果我们对参数的具有一定先验知识，可以进一步采用最大后验概率估计，
+得到更好的结果。作为一个特例，如果认为
+$$
+p(\mathbf{w}|\alpha) = \mathcal{N}(\mathbf{w} | 0, \alpha^{-1} \mathbf{I})   \\
+                    = (\frac{\alpha}{2\pi})^{(M+1)/2} \exp(-\frac{\alpha}{2} \mathbf{w}^T \mathbf{w}).
+$$
+那么此时的最大后验概率估计为带$(L_2)$正则项的估计，
+它最小化
+$$
+\frac{\beta}{2} \sum_{n=1}^N [y(x_n, \mathbf{w}) -t_n]^2 + \frac{\alpha}{2} \mathbf{w}^T \mathbf{w}
+$$
+也就是说正则项是对模型参数的一种先验知识，$(L_2)$正则项代表高斯先验。
+那$(L_1)$代表laplace先验(待求证)？</p>
+</div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2016 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+    </body>
+</html>
