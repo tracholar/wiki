@@ -53,9 +53,20 @@
 </pre></div>
 
 
-<p>将tag推送到远程服务器，参见<a href="http://stackoverflow.com/a/5195913/4349983">http://stackoverflow.com/a/5195913/4349983</a>
-和<a href="https://git-scm.com/book/zh/v1/Git-%E5%9F%BA%E7%A1%80-%E6%89%93%E6%A0%87%E7%AD%BE">https://git-scm.com/book/zh/v1/Git-%E5%9F%BA%E7%A1%80-%E6%89%93%E6%A0%87%E7%AD%BE</a>。
-推送所有的tags</p>
+<p>列出标签</p>
+<div class="hlcode"><pre><span class="nv">$ </span>git tag
+v0.1
+v1.3
+
+<span class="nv">$ </span>git tag -l <span class="s1">&#39;v1.4.2.*&#39;</span>
+v1.4.2.1
+v1.4.2.2
+v1.4.2.3
+v1.4.2.4
+</pre></div>
+
+
+<p>将tag推送到远程服务器，参见[1-2]，推送所有的tags</p>
 <div class="hlcode"><pre>git push --tags
 </pre></div>
 
@@ -63,6 +74,12 @@
 <p>只推送单个tag</p>
 <div class="hlcode"><pre>git push origin &lt;tagname&gt;
 </pre></div>
+
+
+<ol>
+<li><a href="http://stackoverflow.com/a/5195913/4349983">http://stackoverflow.com/a/5195913/4349983</a></li>
+<li><a href="https://git-scm.com/book/zh/v1/Git-%E5%9F%BA%E7%A1%80-%E6%89%93%E6%A0%87%E7%AD%BE">https://git-scm.com/book/zh/v1/Git-%E5%9F%BA%E7%A1%80-%E6%89%93%E6%A0%87%E7%AD%BE</a></li>
+</ol>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-05-31 20:51 </span></div>
 
