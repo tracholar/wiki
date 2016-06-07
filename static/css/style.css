@@ -271,6 +271,14 @@ table.hlcodetable {
     border: none;
 }
 
+#content-footer{
+    margin-top: 3em;
+    padding: 1em 0;
+    text-align: right;
+    color: #aaa;
+}
+
+
 @media screen and (max-width:500px) {
 	.toc {
 		float: none;

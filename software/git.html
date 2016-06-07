@@ -5,7 +5,7 @@
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>关于这个WIKI - tracholar's personal knowledge wiki</title>
+        <title>Git常用命令汇总 - tracholar's personal knowledge wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -35,18 +35,53 @@
         <div id="container">
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#intro">intro</a>&nbsp;»&nbsp;关于这个WIKI</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#software">software</a>&nbsp;»&nbsp;Git常用命令汇总</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">关于这个WIKI</div>
-  <div id="content">
-  <h1 id="_1">关于</h1>
-<p>这是我的个人知识WIKI，采用<a href="https://github.com/tankywoo/simiki">@simiki</a>
-制作而成，用于保存自己在学习和工作中的琐碎知识，如果希望阅读我的观点和
-深入分析，请移步到<a href="/">我的个人博客</a>。</p>
-<p>如果想和我一样使用simiki制作一个自己的wiki，除了可以参考官方文档外，也
-可以参考<a href="/wiki/web/simiki.html">在github pages中使用simiki指南</a>。</p>
+<div id="title">Git常用命令汇总</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#tag">打tag</a></li>
+</ul>
 </div>
+<h2 id="_1">关于</h2>
+<p>这里汇集了git常用命令和用法，便于速查，不定期更新。</p>
+<h2 id="tag">打tag</h2>
+<p>将当前版本添加tag<code>&lt;tagname&gt;</code></p>
+<div class="hlcode"><pre>git tag &lt;tagname&gt;
+</pre></div>
+
+
+<p>列出标签</p>
+<div class="hlcode"><pre><span class="nv">$ </span>git tag
+v0.1
+v1.3
+
+<span class="nv">$ </span>git tag -l <span class="s1">&#39;v1.4.2.*&#39;</span>
+v1.4.2.1
+v1.4.2.2
+v1.4.2.3
+v1.4.2.4
+</pre></div>
+
+
+<p>将tag推送到远程服务器，参见[1-2]，推送所有的tags</p>
+<div class="hlcode"><pre>git push --tags
+</pre></div>
+
+
+<p>只推送单个tag</p>
+<div class="hlcode"><pre>git push origin &lt;tagname&gt;
+</pre></div>
+
+
+<ol>
+<li><a href="http://stackoverflow.com/a/5195913/4349983">http://stackoverflow.com/a/5195913/4349983</a></li>
+<li><a href="https://git-scm.com/book/zh/v1/Git-%E5%9F%BA%E7%A1%80-%E6%89%93%E6%A0%87%E7%AD%BE">https://git-scm.com/book/zh/v1/Git-%E5%9F%BA%E7%A1%80-%E6%89%93%E6%A0%87%E7%AD%BE</a></li>
+</ol>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2016-05-31 20:51 </span></div>
 
         </div>
         <div id="footer">
