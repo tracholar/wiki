@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>wordpress开发指南 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+        
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+        
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#web">web</a>&nbsp;»&nbsp;wordpress开发指南</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">wordpress开发指南</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">分类目录</a><ul>
+<li><a href="#_2">为分类目录添加元数据</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="_1">分类目录</h2>
+<h3 id="_2">为分类目录添加元数据</h3>
+<p>钩子</p>
+<div class="hlcode"><pre><span class="x">//新建分类目录</span>
+<span class="x">add_action(&#39;category_add_form_fields&#39;, &#39;cat_add_form_fields_cb&#39;);</span>
+<span class="x">//编辑分类目录</span>
+<span class="x">add_action( &#39;category_edit_form_fields&#39;, &#39;cat_edit_form_fields_cb&#39;);</span>
+
+<span class="x">// 保存</span>
+<span class="x">add_action( &#39;edited_category&#39;, &#39;cat_form_save_fields_cb&#39;);</span>
+<span class="x">add_action( &#39;create_category&#39;, &#39;cat_form_save_fields_cb&#39;);</span>
+</pre></div>
+
+
+<p>创建和更新元数据函数</p>
+<div class="hlcode"><pre><span class="x">get_term_meta( $term_id, $meta_key, $single);</span>
+<span class="x">add_term_meta($term_id, $meta_key, $meta_value);</span>
+<span class="x">update_term_meta($term_id, $meta_key, $meta_value);</span>
+</pre></div>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2016-06-08 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2016 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+    </body>
+</html>
