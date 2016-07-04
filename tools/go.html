@@ -1,0 +1,243 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>go语言 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+        
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+        
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tools">tools</a>&nbsp;»&nbsp;go语言</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">go语言</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">安装环境</a></li>
+<li><a href="#_2">基础</a><ul>
+<li><a href="#_3">基础语法</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="_1">安装环境</h2>
+<p>只试过MAC OS环境，所以就说这个，不同环境应该差不多。
+安装GO运行环境，然后配置两个环境变量｀GOPATH｀和｀GOBIN｀</p>
+<h2 id="_2">基础</h2>
+<h3 id="_3">基础语法</h3>
+<ul>
+<li>程序入口包是｀main｀</li>
+<li>导出名的首字母必须为大写！</li>
+<li>批量import方式</li>
+</ul>
+<div class="hlcode"><pre><span class="kn">import</span> <span class="p">(</span>
+    <span class="s">&quot;fmt&quot;</span>
+    <span class="s">&quot;math&quot;</span>
+<span class="p">)</span> 
+</pre></div>
+
+
+<ul>
+<li>函数签名方式，可以将相同类型的形参类型申明合并</li>
+</ul>
+<div class="hlcode"><pre><span class="kd">func</span> <span class="nx">add</span><span class="p">(</span><span class="nx">x</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="err">#</span><span class="nx">TODO</span>
+    <span class="k">return</span> <span class="nx">x</span><span class="o">+</span><span class="nx">y</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>函数可以返回多值。</li>
+</ul>
+<div class="hlcode"><pre><span class="kd">func</span> <span class="nx">swap</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="kt">string</span><span class="p">,</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">x</span>
+<span class="p">}</span>
+<span class="o">-</span> <span class="err">赋值语法</span><span class="s">`a := &quot;hello world.&quot;`</span>
+<span class="o">-</span> <span class="err">命名返回值：</span><span class="nx">Go</span> <span class="err">的返回值可以被命名，并且就像在函数体开头声明的变量那样使用。</span>
+  <span class="err">返回值的名称应当具有一定的意义，可以作为文档使用。</span>
+  <span class="err">没有参数的</span> <span class="k">return</span> <span class="err">语句返回各个返回变量的当前值。这种用法被称作“裸”返回。</span>
+  <span class="err">直接返回语句仅应当用在像下面这样的短函数中。在长的函数中它们会影响代码的可读性。</span>
+<span class="s">``</span><span class="err">`</span><span class="k">go</span>
+<span class="kd">func</span> <span class="nx">getsum</span><span class="p">(</span><span class="nx">sum</span> <span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">int</span><span class="p">){</span>
+    <span class="nx">sum</span> <span class="p">=</span> <span class="nx">x</span><span class="o">+</span><span class="nx">y</span>
+    <span class="k">return</span>
+<span class="p">}</span> 
+</pre></div>
+
+
+<ul>
+<li>变量声明关键字<code>var</code>，类型放在最后。<code>=</code>用于初始化变量，初始化使用
+  表达式可以省略类型。</li>
+</ul>
+<div class="hlcode"><pre><span class="kd">var</span> <span class="nx">c</span><span class="p">,</span> <span class="nx">python</span><span class="p">,</span> <span class="nx">java</span> <span class="kt">bool</span>
+<span class="kd">var</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">j</span> <span class="kt">int</span> <span class="p">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
+<span class="kd">var</span> <span class="nx">ruby</span><span class="p">,</span> <span class="nx">Go</span><span class="p">,</span> <span class="nx">haskell</span> <span class="p">=</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="s">&quot;helloword&quot;</span>
+</pre></div>
+
+
+<ul>
+<li>短声明变量，在函数中， <code>:=</code> 简洁赋值语句在明确类型的地方，可以用于替代 var 定义。</li>
+<li>基本数据类型</li>
+</ul>
+<div class="hlcode"><pre><span class="kt">bool</span>
+
+<span class="kt">string</span>
+
+<span class="kt">int</span>  <span class="kt">int8</span>  <span class="kt">int16</span>  <span class="kt">int32</span>  <span class="kt">int64</span>
+<span class="kt">uint</span> <span class="kt">uint8</span> <span class="kt">uint16</span> <span class="kt">uint32</span> <span class="kt">uint64</span> <span class="kt">uintptr</span>
+
+<span class="kt">byte</span> <span class="c1">// uint8 的别名</span>
+
+<span class="kt">rune</span> <span class="c1">// int32 的别名</span>
+     <span class="c1">// 代表一个Unicode码</span>
+
+<span class="kt">float32</span> <span class="kt">float64</span>
+
+<span class="kt">complex64</span> <span class="kt">complex128</span>
+</pre></div>
+
+
+<ul>
+<li>零值
+变量在定义时没有明确的初始化时会赋值为 零值 。
+零值是：<ul>
+<li>数值类型为 0 ，</li>
+<li>布尔类型为 false ，</li>
+<li>字符串为 "" （空字符串）。</li>
+</ul>
+</li>
+<li>表达式 T(v) 将值 v 转换为类型 T 。
+  与 C 不同的是 Go 的在不同类型之间的项目赋值时需要显式转换.</li>
+<li>GO类型推导，变量的类型由右值推导得出。</li>
+</ul>
+<div class="hlcode"><pre><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">v</span> <span class="o">:=</span> <span class="s">&quot;HaHa&quot;</span> <span class="c1">// change me!</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;v is of type %T\n&quot;</span><span class="p">,</span> <span class="nx">v</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>常量的定义<code>const Pi = 3.14</code>，常量不能使用 := 语法定义。<code>=</code>表示定义，而<code>:=</code>表示赋值？</li>
+<li>Go 只有一种循环结构—— for 循环。循环初始化语句和后置语句都是可选的。</li>
+</ul>
+<div class="hlcode"><pre><span class="nx">sum</span> <span class="o">:=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+    <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">i</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>for 是 Go 的 “while”</li>
+</ul>
+<div class="hlcode"><pre><span class="k">for</span> <span class="nx">sum</span> <span class="p">&lt;</span> <span class="mi">1000</span> <span class="p">{</span>
+    <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">sum</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>死循环</li>
+</ul>
+<div class="hlcode"><pre><span class="k">for</span> <span class="p">{</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>if 条件判断</li>
+</ul>
+<div class="hlcode"><pre><span class="k">if</span> <span class="nx">x</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">sqrt</span><span class="p">(</span><span class="o">-</span><span class="nx">x</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;i&quot;</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="nx">x</span> <span class="p">&gt;</span><span class="mi">10</span> <span class="p">{</span>
+    <span class="o">...</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<blockquote>
+<p>GO 的循环条件和判断条件都不需要用小括号括起来，但是括起来也是可以的。
+亲测通过，另外for和if条件表达式中定义的变量的作用域仅在该语句块中有效。</p>
+</blockquote>
+<ul>
+<li>switch分支语句, switch 的条件从上到下的执行，当匹配成功的时候停止。不像C需要break语句</li>
+<li>没有条件的 switch
+  没有条件的 switch 同 switch true 一样。
+  这一构造使得可以用更清晰的形式来编写长的 if-then-else 链。</li>
+</ul>
+<div class="hlcode"><pre>    <span class="k">switch</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nx">t</span><span class="p">.</span><span class="nx">Hour</span><span class="p">()</span> <span class="p">&lt;</span> <span class="mi">12</span><span class="p">:</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Good morning!&quot;</span><span class="p">)</span>
+    <span class="k">case</span> <span class="nx">t</span><span class="p">.</span><span class="nx">Hour</span><span class="p">()</span> <span class="p">&lt;</span> <span class="mi">17</span><span class="p">:</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Good afternoon.&quot;</span><span class="p">)</span>
+    <span class="k">default</span><span class="p">:</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Good evening.&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>defer 语句会延迟函数的执行直到上层函数返回。
+  延迟调用的参数会立刻生成，但是在上层函数返回前函数都不会被调用。</li>
+<li>defer栈：延迟的函数调用被压入一个栈中。当函数返回时， 会按照后进先出的顺序调用被延迟的函数调用。</li>
+<li>Go 具有指针。 指针保存了变量的内存地址。
+  类型 <code>*T</code> 是指向类型 <code>T</code> 的值的指针。其零值是 <code>nil</code> 。
+  Go指针和C指针的区别在于Go没有指针运算。</li>
+<li>结构体，和C差不多，利用关键字<code>type</code>定义声明。</li>
+</ul>
+<div class="hlcode"><pre><span class="kd">type</span> <span class="nx">Vertex</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">X</span> <span class="kt">int</span>
+    <span class="nx">Y</span> <span class="kt">int</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>结构体也可以通过指针访问，还是用符号<code>.</code>访问成员</p>
+<p>[1] Go学习网页<a href="https://tour.go-zh.org/">https://tour.go-zh.org/</a></p>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2016-06-29 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2016 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+    </body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>Theano - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+        
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+        
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;Theano</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">Theano</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#theanobroadcast">theano中的broadcast</a></li>
+<li><a href="#theano">theano两层神经网络代码例子</a></li>
+</ul>
+</div>
+<h2 id="theanobroadcast">theano中的broadcast</h2>
+<p>theano和numpy中的broadcast不同，
+theano中需要对能够broadcast的变量进行编译前申明，
+默认情况下，theano中的<code>matrix/tensor</code>和所有的<code>shared variable</code>都不不可以
+broadcast的，<code>vector</code>和<code>matrix</code>进行计算时是可以进行broadcast的。
+<code>shared variable</code>可以在创建的时候声明可以broadcast。</p>
+<div class="hlcode"><pre><span class="n">bval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">]])</span>
+<span class="n">bshared</span> <span class="o">=</span> <span class="n">theano</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span><span class="n">bval</span><span class="p">,</span> <span class="n">broadcastable</span><span class="o">=</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">))</span>
+</pre></div>
+
+
+<h2 id="theano">theano两层神经网络代码例子</h2>
+<div class="hlcode"><pre><span class="k">def</span> <span class="nf">nn_cost_func</span><span class="p">():</span>
+    <span class="kn">import</span> <span class="nn">theano</span>
+    <span class="kn">from</span> <span class="nn">theano</span> <span class="kn">import</span> <span class="n">tensor</span> <span class="k">as</span> <span class="n">T</span>
+    <span class="n">w1</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">dmatrix</span><span class="p">(</span><span class="s">&#39;w1&#39;</span><span class="p">)</span>
+    <span class="n">b1</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">dvector</span><span class="p">(</span><span class="s">&#39;b1&#39;</span><span class="p">)</span>
+    <span class="n">w2</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">dmatrix</span><span class="p">(</span><span class="s">&#39;w2&#39;</span><span class="p">)</span>
+    <span class="n">b2</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">dvector</span><span class="p">(</span><span class="s">&#39;b2&#39;</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">dmatrix</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">dmatrix</span><span class="p">(</span><span class="s">&#39;y&#39;</span><span class="p">)</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">nnet</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">w1</span><span class="p">)</span><span class="o">+</span><span class="n">b1</span><span class="p">)</span>
+    <span class="n">yp</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">nnet</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w2</span><span class="p">)</span><span class="o">+</span><span class="n">b2</span><span class="p">)</span>
+    <span class="n">J</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">y</span> <span class="o">*</span> <span class="n">T</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">yp</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">dJ</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">J</span><span class="p">,[</span><span class="n">w1</span><span class="p">,</span><span class="n">b1</span><span class="p">,</span><span class="n">w2</span><span class="p">,</span><span class="n">b2</span><span class="p">])</span>
+    <span class="n">fJ</span> <span class="o">=</span> <span class="n">theano</span><span class="o">.</span><span class="n">function</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">w1</span><span class="p">,</span><span class="n">b1</span><span class="p">,</span><span class="n">w2</span><span class="p">,</span><span class="n">b2</span><span class="p">],</span> <span class="n">J</span><span class="p">)</span>
+    <span class="n">fdJ</span> <span class="o">=</span> <span class="n">theano</span><span class="o">.</span><span class="n">function</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">w1</span><span class="p">,</span><span class="n">b1</span><span class="p">,</span><span class="n">w2</span><span class="p">,</span><span class="n">b2</span><span class="p">],</span> <span class="n">dJ</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fJ</span><span class="p">,</span> <span class="n">fdJ</span>
+</pre></div>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2016-07-04 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2016 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+    </body>
+</html>
