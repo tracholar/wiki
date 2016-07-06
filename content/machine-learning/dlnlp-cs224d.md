@@ -32,7 +32,7 @@ $$
 $$
 p(o|c) = \frac{\exp(u_o^T v_c)}{\sum_{w=1}^W \exp(u_w^T v_c)}
 $$
-- 每一个单词有两个向量$(u, v)$.
+- 每一个单词有两个向量$(u, v)$. 最终的词向量是 $(u+v)$?
 - 词向量的线性关系
 	- $( X_{apple} - X_{apples} \approxy X_{car} - X_{cars} \approxy X_{family} - X_{families})$
 
@@ -60,15 +60,115 @@ $$
 J = F(w_c, \hat{v})
 $$
 
+
 ## 问题
 - 为什么每一次SGD后需要对参数向量进行标准化？
+- 一般的交叉熵能够理解为最大似然估计么？
 
 
 ## Multitask learning
 共享网络前几层的权值，只针对不同任务改变最后一层的权值。
+总的代价函数是各代价函数（如交叉熵）之和。
+
+## 神经网络TIPS
+- 对词向量的监督训练的重新调整，对任务也有提升。 C&W 2011
+- 非线性函数
+	- sigmoid
+	- tanh ： 对很多任务，比sigmoid好，初始值接近0，更快的收敛，与sigmoid一样容易求导
+	- hard tanh : -1, if < -1; x, if -1 <= x <= 1; 1, if x > 1.
+	- softsign(z) = z/(1 + |z|)
+	- rect(z) = max(0, z)
+ref: Glorot and	Bengio,	AISTATS 2011
+
+- MaxOut network (Goodfellow et al. 2013)
+- 梯度下降优化建议，大数据集采用SGD和mini-batch SGD，小数据集采用L-BFGS或者CG。
+  大数据集L-BFGS Le	et	al.	ICML	2011。
+- SGD的提升，动量
+$$
+v = \mu v - \alpha \nabla_{\theta} J_t(\theta)   \\
+\theta^{new} = \theta^{old} + v
+$$
+- 学习率：adagrad， adam
+- 防止过拟合：
+	- 减少模型大小，隐藏节点数目等
+	- L1 or L2正则化
+	- 提前停止，选择在验证集合上最好的结果
+	- 隐藏节点的稀疏约束，参考UFLDL教程
+$$
+KL(1/N \sum_{n=1}^N a_i^{(n)|0.001})
+$$
+	- dropout，输入以一定概率随机置0
+	- denoise
+- 超参数的搜索：随即搜索。
+Y.	Bengio	(2012),	“Practical	Recommendations	for	GradientBased
+Training	of	Deep	Architectures”		
+
+## Language Models
+所谓语言模型就是建立单词的联合概率模型$(P(w_1,...,w_T))$.
+
+### 神经网络语言模型 Bengio 2003
+一个直接连接部分和一个非线性变换部分。输入为前n个词的词向量
+$$
+y = b + Wx + U tanh(d + Hx) .  \\
+P(w_t|w_{t-1},...,w_{t-n+1}) = \frac{e^{y_{w_t}}}{\sum_i e^{y_i}}.
+$$
+缺点是窗口是固定的。记忆能力有限？
+
+### 递归神经网络
+基于之前见到的所有单词（理论上有无限长的时间窗）
+> Condition	the	neural	network	on	all	previous
+> words	and	tie	the	weights	at	each	time	step
+
+设词向量列表为 $(x_1, x_2, ..., x_t, ..., x_T)$。L矩阵中的列向量。
+$$
+h_t = \sigma(W^{(hh) h_{t-1}} + W^{hx} x_{t}). \\
+\hat{y}\_t = softmax(W^{(S)} h_t). \\
+P(x_{t+1}=v_j|x_t, ..., x_1) = \hat{y}\_{t, j}.
+$$
+所有时刻的权值都是相同的。损失函数为交叉熵
+$$
+J^{(t)}(\theta) = -\sum_{j=1}^{|V|} y_{t,j} \log \hat{y}\_{t,j}. \\
+J = - \frac{1}{T} \sum_t J^{(t)}
+$$
+Perplexity ???
+
+- 训练困难，梯度容易衰减或者很大。Bengio et	al	1994
+- 初始化策略
+	- $(W^{(hh)})$ 初始化为单位阵
+	- 非线性函数用rect函数替换
+> Parsing	with	Compositional
+> Vector	Grammars,	Socher	et	al.	2013
+>
+> A	Simple	Way	to	Initialize	Recurrent	Networks	of	Rectified	Linear
+> Units,	Le	et	al.	2015
+>
+> On	the	difficulty	 of	training	Recurrent	Neural	Networks,	Pascanu et	al.	2013
+>
+
+- 梯度消减 Mikolov，如果梯度的范数超过阈值，就将梯度归一化到范数等于该阈值的向量或矩阵。
+
+## Deep-learning package zoom
+- Torch
+- Caffe
+- Theano(Keras, Lasagne)
+- CuDNN
+- Tensorflow
+- Mxnet
+
 
 ## Project
 - 利用deeplearning去解决kaggle上的NLP问题。
+
+
+## NLP benchmark tasks
+### tasks
+- Part-Of-Speech tagging
+- chunking
+- Named Entity Recognition (NER)
+- Semantic Role Labeling (SRL)
+
+### models
+- CRF conditional random field
 
 ## Reference
 1. <http://cs224d.stanford.edu/syllabus.html>

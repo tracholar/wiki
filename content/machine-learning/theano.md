@@ -35,3 +35,9 @@ def nn_cost_func():
     fdJ = theano.function([x,y,w1,b1,w2,b2], dJ)
     return fJ, fdJ
 ```
+
+## tips
+- 梯度函数输出一个列表，如果只有一个梯度的时候，需要这样写
+```python
+grad, = fdJ(weights, features, ground_truth, N, regularization)
+```

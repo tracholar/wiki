@@ -1,2 +1,3 @@
 *.py[cd]
 output
+.DS_Store
