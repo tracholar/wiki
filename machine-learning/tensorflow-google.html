@@ -43,16 +43,85 @@
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#tensorflow">TensorFlow</a></li>
 <li><a href="#_1">核心图数据结构</a></li>
+<li><a href="#_2">基本数据类型</a></li>
+<li><a href="#tips">TIPS</a></li>
 <li><a href="#adam">ADAM 随机梯度下降算法</a></li>
 </ul>
 </div>
 <h2 id="tensorflow">TensorFlow</h2>
 <h2 id="_1">核心图数据结构</h2>
 <p>class tf.Graph</p>
-<h2></h2>
+<h2 id="_2">基本数据类型</h2>
+<ul>
+<li>constant</li>
+</ul>
+<div class="hlcode"><pre><span class="n">a</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mf">5.0</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mf">6.0</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">c</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>      <span class="c"># just syntactic sugar for sess.run(c) in the currently active session!</span>
+</pre></div>
+
+
+<ul>
+<li>Session<ul>
+<li><code>tf.InteractiveSession()</code></li>
+<li>default session</li>
+</ul>
+</li>
+<li>Variables，用来表示模型参数。<blockquote>
+<p>“When you train a model you use variables to hold and
+update parameters. Variables are in-memory buffers
+containing tensors” - TensorFlow Docs.</p>
+</blockquote>
+</li>
+</ul>
+<div class="hlcode"><pre><span class="n">W1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">W2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)),</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;weights&quot;</span><span class="p">)</span>
+<span class="n">R</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)),</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;random_weights&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>使用函数<code>tf.initialize_all_variables()</code>参数初始化，初始值在定义的时候给出。</p>
+<p>变量的更新，使用方法<code>tf.add</code>, <code>tf.assign</code>等方法</p>
+<div class="hlcode"><pre><span class="n">state</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;counter&quot;</span><span class="p">)</span>
+<span class="n">new_value</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">update</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">new_value</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+    <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">initialize_all_variables</span><span class="p">())</span>
+    <span class="k">print</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">update</span><span class="p">)</span>
+        <span class="k">print</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+<span class="mi">0</span>
+<span class="mi">1</span>
+<span class="mi">2</span>
+<span class="mi">3</span>
+</pre></div>
+
+
+<p>利用<code>tf.convert_to_tensor</code>方法可以将数值变量转换为张量。</p>
+<ul>
+<li>placeholder用来输入数据，通过<code>feed_dict</code>字典将输入数据映射到placeholder.</li>
+</ul>
+<div class="hlcode"><pre><span class="n">input1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">input2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">input1</span><span class="p">,</span> <span class="n">input2</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">output</span><span class="p">],</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">input1</span><span class="p">:[</span><span class="mf">7.</span><span class="p">],</span> <span class="n">input2</span><span class="p">:[</span><span class="mf">2.</span><span class="p">]})</span>
+</pre></div>
+
+
+<ul>
+<li>变量作用域，<code>variable_scope</code>, <code>get_variable_scope</code>, <code>get_variable</code></li>
+</ul>
+<h2 id="tips">TIPS</h2>
 <p><code>data.reshape(-1, 10)</code>将数据重新划分为10列的元素，第一维自适应</p>
 <h2 id="adam">ADAM 随机梯度下降算法</h2>
-<p>[1] <a href="https://www.tensorflow.org/">https://www.tensorflow.org/</a></p>
+<p>[1] <a href="https://www.tensorflow.org/">https://www.tensorflow.org/</a>
+[2] <a href="http://cs224d.stanford.edu/lectures/CS224d-Lecture7.pdf">http://cs224d.stanford.edu/lectures/CS224d-Lecture7.pdf</a></p>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-07-01 </span></div>
 

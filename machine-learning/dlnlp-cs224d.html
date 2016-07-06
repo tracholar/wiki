@@ -51,7 +51,19 @@
 </li>
 <li><a href="#_4">问题</a></li>
 <li><a href="#multitask-learning">Multitask learning</a></li>
+<li><a href="#tips">神经网络TIPS</a></li>
+<li><a href="#language-models">Language Models</a><ul>
+<li><a href="#bengio-2003">神经网络语言模型 Bengio 2003</a></li>
+<li><a href="#_5">递归神经网络</a></li>
+</ul>
+</li>
+<li><a href="#deep-learning-package-zoom">Deep-learning package zoom</a></li>
 <li><a href="#project">Project</a></li>
+<li><a href="#nlp-benchmark-tasks">NLP benchmark tasks</a><ul>
+<li><a href="#tasks">tasks</a></li>
+<li><a href="#models">models</a></li>
+</ul>
+</li>
 <li><a href="#reference">Reference</a></li>
 </ul>
 </li>
@@ -85,7 +97,7 @@ $$
 $$
 p(o|c) = \frac{\exp(u_o^T v_c)}{\sum_{w=1}^W \exp(u_w^T v_c)}
 $$</li>
-<li>每一个单词有两个向量$(u, v)$.</li>
+<li>每一个单词有两个向量$(u, v)$. 最终的词向量是 $(u+v)$?</li>
 <li>词向量的线性关系<ul>
 <li>$( X_{apple} - X_{apples} \approxy X_{car} - X_{cars} \approxy X_{family} - X_{families})$</li>
 </ul>
@@ -115,12 +127,124 @@ $$</p>
 <h2 id="_4">问题</h2>
 <ul>
 <li>为什么每一次SGD后需要对参数向量进行标准化？</li>
+<li>一般的交叉熵能够理解为最大似然估计么？</li>
 </ul>
 <h2 id="multitask-learning">Multitask learning</h2>
-<p>共享网络前几层的权值，只针对不同任务改变最后一层的权值。</p>
+<p>共享网络前几层的权值，只针对不同任务改变最后一层的权值。
+总的代价函数是各代价函数（如交叉熵）之和。</p>
+<h2 id="tips">神经网络TIPS</h2>
+<ul>
+<li>对词向量的监督训练的重新调整，对任务也有提升。 C&amp;W 2011</li>
+<li>
+<p>非线性函数</p>
+<ul>
+<li>sigmoid</li>
+<li>tanh ： 对很多任务，比sigmoid好，初始值接近0，更快的收敛，与sigmoid一样容易求导</li>
+<li>hard tanh : -1, if &lt; -1; x, if -1 &lt;= x &lt;= 1; 1, if x &gt; 1.</li>
+<li>softsign(z) = z/(1 + |z|)</li>
+<li>rect(z) = max(0, z)
+ref: Glorot and Bengio, AISTATS 2011</li>
+</ul>
+</li>
+<li>
+<p>MaxOut network (Goodfellow et al. 2013)</p>
+</li>
+<li>梯度下降优化建议，大数据集采用SGD和mini-batch SGD，小数据集采用L-BFGS或者CG。
+  大数据集L-BFGS Le et  al. ICML    2011。</li>
+<li>SGD的提升，动量
+$$
+v = \mu v - \alpha \nabla_{\theta} J_t(\theta)   \
+\theta^{new} = \theta^{old} + v
+$$</li>
+<li>学习率：adagrad， adam</li>
+<li>防止过拟合：<ul>
+<li>减少模型大小，隐藏节点数目等</li>
+<li>L1 or L2正则化</li>
+<li>提前停止，选择在验证集合上最好的结果</li>
+<li>隐藏节点的稀疏约束，参考UFLDL教程
+$$
+KL(1/N \sum_{n=1}^N a_i^{(n)|0.001})
+$$</li>
+<li>dropout，输入以一定概率随机置0</li>
+<li>denoise</li>
+</ul>
+</li>
+<li>超参数的搜索：随即搜索。
+Y.  Bengio  (2012), “Practical  Recommendations for GradientBased
+Training    of  Deep    Architectures”      </li>
+</ul>
+<h2 id="language-models">Language Models</h2>
+<p>所谓语言模型就是建立单词的联合概率模型$(P(w_1,...,w_T))$.</p>
+<h3 id="bengio-2003">神经网络语言模型 Bengio 2003</h3>
+<p>一个直接连接部分和一个非线性变换部分。输入为前n个词的词向量
+$$
+y = b + Wx + U tanh(d + Hx) .  \
+P(w_t|w_{t-1},...,w_{t-n+1}) = \frac{e^{y_{w_t}}}{\sum_i e^{y_i}}.
+$$
+缺点是窗口是固定的。记忆能力有限？</p>
+<h3 id="_5">递归神经网络</h3>
+<p>基于之前见到的所有单词（理论上有无限长的时间窗）</p>
+<blockquote>
+<p>Condition the neural  network on  all previous
+words and tie the weights at  each    time    step</p>
+</blockquote>
+<p>设词向量列表为 $(x_1, x_2, ..., x_t, ..., x_T)$。L矩阵中的列向量。
+$$
+h_t = \sigma(W^{(hh) h_{t-1}} + W^{hx} x_{t}). \
+\hat{y}_t = softmax(W^{(S)} h_t). \
+P(x_{t+1}=v_j|x_t, ..., x_1) = \hat{y}_{t, j}.
+$$
+所有时刻的权值都是相同的。损失函数为交叉熵
+$$
+J^{(t)}(\theta) = -\sum_{j=1}^{|V|} y_{t,j} \log \hat{y}_{t,j}. \
+J = - \frac{1}{T} \sum_t J^{(t)}
+$$
+Perplexity ???</p>
+<ul>
+<li>训练困难，梯度容易衰减或者很大。Bengio et al  1994</li>
+<li>
+<p>初始化策略</p>
+<ul>
+<li>$(W^{(hh)})$ 初始化为单位阵</li>
+<li>非线性函数用rect函数替换<blockquote>
+<p>Parsing   with    Compositional
+Vector    Grammars,   Socher  et  al. 2013</p>
+<p>A Simple  Way to  Initialize  Recurrent   Networks    of  Rectified   Linear
+Units,    Le  et  al. 2015</p>
+<p>On    the difficulty   of training    Recurrent   Neural  Networks,   Pascanu et  al. 2013
+</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>
+<p>梯度消减 Mikolov，如果梯度的范数超过阈值，就将梯度归一化到范数等于该阈值的向量或矩阵。</p>
+</li>
+</ul>
+<h2 id="deep-learning-package-zoom">Deep-learning package zoom</h2>
+<ul>
+<li>Torch</li>
+<li>Caffe</li>
+<li>Theano(Keras, Lasagne)</li>
+<li>CuDNN</li>
+<li>Tensorflow</li>
+<li>Mxnet</li>
+</ul>
 <h2 id="project">Project</h2>
 <ul>
 <li>利用deeplearning去解决kaggle上的NLP问题。</li>
+</ul>
+<h2 id="nlp-benchmark-tasks">NLP benchmark tasks</h2>
+<h3 id="tasks">tasks</h3>
+<ul>
+<li>Part-Of-Speech tagging</li>
+<li>chunking</li>
+<li>Named Entity Recognition (NER)</li>
+<li>Semantic Role Labeling (SRL)</li>
+</ul>
+<h3 id="models">models</h3>
+<ul>
+<li>CRF conditional random field</li>
 </ul>
 <h2 id="reference">Reference</h2>
 <ol>
