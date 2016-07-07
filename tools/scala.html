@@ -41,17 +41,29 @@
 <div id="title">scala语言</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">基础语法与数据结构</a></li>
+<li><a href="#_1">基础语法</a></li>
+<li><a href="#_2">基本数据结构</a><ul>
+<li><a href="#functional-combinators">函数组合子 Functional Combinators</a></li>
+<li><a href="#_3">函数组合</a></li>
+<li><a href="#_4">偏函数</a></li>
+</ul>
+</li>
+<li><a href="#_5">类型</a></li>
 <li><a href="#sbt">构建工具 SBT</a></li>
-<li><a href="#-int">- Int</a></li>
 </ul>
 </div>
-<h2 id="_1">基础语法与数据结构</h2>
+<h2 id="_1">基础语法</h2>
 <ul>
 <li>不变量<code>val</code>，变量<code>var</code></li>
-<li>基础类型：<h2 id="-int">- Int</h2>
+<li>
+<p>基础类型：</p>
+<ul>
+<li>Int</li>
+</ul>
 </li>
-<li><code>def</code>创建函数，类型标签</li>
+<li>
+<p><code>def</code>创建函数，类型标签</p>
+</li>
 </ul>
 <div class="hlcode"><pre><span class="k">def</span> <span class="n">addOne</span><span class="o">(</span><span class="n">m</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span>
 </pre></div>
@@ -197,7 +209,222 @@
 
 
 <ul>
-<li>包</li>
+<li>包，和Java的一样</li>
+<li>模式匹配
+匹配值</li>
+</ul>
+<div class="hlcode"><pre><span class="k">val</span> <span class="n">times</span> <span class="k">=</span> <span class="mi">1</span>
+
+<span class="n">times</span> <span class="k">match</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="mi">1</span> <span class="k">=&gt;</span> <span class="s">&quot;one&quot;</span>
+    <span class="k">case</span> <span class="mi">2</span> <span class="k">=&gt;</span> <span class="s">&quot;two&quot;</span>
+    <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="s">&quot;some others&quot;</span>
+<span class="o">}</span>
+
+<span class="n">times</span> <span class="k">match</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">=&gt;</span> <span class="s">&quot;one&quot;</span>
+    <span class="k">case</span> <span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">=&gt;</span> <span class="s">&quot;two&quot;</span>
+    <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="s">&quot;some others&quot;</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>匹配类型</p>
+<div class="hlcode"><pre><span class="k">def</span> <span class="n">bigger</span><span class="o">(</span><span class="n">o</span><span class="k">:</span> <span class="kt">Any</span><span class="o">)</span><span class="k">:</span> <span class="kt">Any</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="n">o</span> <span class="k">match</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="n">i</span><span class="k">:</span> <span class="kt">Int</span> <span class="kt">if</span> <span class="kt">i</span> <span class="kt">&lt;</span> <span class="err">0</span> <span class="o">=&gt;</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">case</span> <span class="n">i</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=&gt;</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">case</span> <span class="n">d</span><span class="k">:</span> <span class="kt">Double</span> <span class="kt">if</span> <span class="kt">d</span> <span class="kt">&lt;</span> <span class="err">0</span><span class="kt">.</span><span class="err">0</span> <span class="o">=&gt;</span> <span class="n">d</span> <span class="o">-</span> <span class="mf">0.1</span>
+    <span class="k">case</span> <span class="n">d</span><span class="k">:</span> <span class="kt">Double</span> <span class="o">=&gt;</span> <span class="n">d</span> <span class="o">+</span> <span class="mf">0.1</span>
+    <span class="k">case</span> <span class="n">text</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="n">text</span> <span class="o">+</span> <span class="s">&quot;s&quot;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>匹配类成员</p>
+<div class="hlcode"><pre><span class="k">def</span> <span class="n">calcType</span><span class="o">(</span><span class="n">calc</span><span class="k">:</span> <span class="kt">Calculator</span><span class="o">)</span> <span class="k">=</span> <span class="n">calc</span> <span class="k">match</span> <span class="o">{</span>
+  <span class="k">case</span> <span class="k">_</span> <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">brand</span> <span class="o">==</span> <span class="s">&quot;hp&quot;</span> <span class="o">&amp;&amp;</span> <span class="n">calc</span><span class="o">.</span><span class="n">model</span> <span class="o">==</span> <span class="s">&quot;20B&quot;</span> <span class="k">=&gt;</span> <span class="s">&quot;financial&quot;</span>
+  <span class="k">case</span> <span class="k">_</span> <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">brand</span> <span class="o">==</span> <span class="s">&quot;hp&quot;</span> <span class="o">&amp;&amp;</span> <span class="n">calc</span><span class="o">.</span><span class="n">model</span> <span class="o">==</span> <span class="s">&quot;48G&quot;</span> <span class="k">=&gt;</span> <span class="s">&quot;scientific&quot;</span>
+  <span class="k">case</span> <span class="k">_</span> <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">brand</span> <span class="o">==</span> <span class="s">&quot;hp&quot;</span> <span class="o">&amp;&amp;</span> <span class="n">calc</span><span class="o">.</span><span class="n">model</span> <span class="o">==</span> <span class="s">&quot;30B&quot;</span> <span class="k">=&gt;</span> <span class="s">&quot;business&quot;</span>
+  <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="s">&quot;unknown&quot;</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<ul>
+<li>样本类 case class</li>
+</ul>
+<div class="hlcode"><pre><span class="k">case</span> <span class="k">class</span> <span class="nc">Calculator</span><span class="o">(</span><span class="n">brand</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">model</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
+</pre></div>
+
+
+<p>case classes are designed to be used with pattern matching. Let’s simplify our calculator classifier example from earlier.
+样本类就是被设计用在模式匹配中的。让我们简化之前的计算器分类器的例子。</p>
+<div class="hlcode"><pre><span class="k">def</span> <span class="n">calcType</span><span class="o">(</span><span class="n">calc</span><span class="k">:</span> <span class="kt">Calculator</span><span class="o">)</span> <span class="k">=</span> <span class="n">calc</span> <span class="k">match</span> <span class="o">{</span>
+  <span class="k">case</span> <span class="nc">Calculator</span><span class="o">(</span><span class="s">&quot;hp&quot;</span><span class="o">,</span> <span class="s">&quot;20B&quot;</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="s">&quot;financial&quot;</span>
+  <span class="k">case</span> <span class="nc">Calculator</span><span class="o">(</span><span class="s">&quot;hp&quot;</span><span class="o">,</span> <span class="s">&quot;48G&quot;</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="s">&quot;scientific&quot;</span>
+  <span class="k">case</span> <span class="nc">Calculator</span><span class="o">(</span><span class="s">&quot;hp&quot;</span><span class="o">,</span> <span class="s">&quot;30B&quot;</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="s">&quot;business&quot;</span>
+  <span class="k">case</span> <span class="nc">Calculator</span><span class="o">(</span><span class="n">ourBrand</span><span class="o">,</span> <span class="n">ourModel</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="s">&quot;Calculator: %s %s is of unknown type&quot;</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="n">ourBrand</span><span class="o">,</span> <span class="n">ourModel</span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>我们也可以将匹配的值重新命名。</p>
+<div class="hlcode"><pre>  <span class="k">case</span> <span class="n">c</span><span class="nd">@Calculator</span><span class="o">(</span><span class="k">_</span><span class="o">,</span> <span class="k">_</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="s">&quot;Calculator: %s of unknown type&quot;</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="n">c</span><span class="o">)</span>
+</pre></div>
+
+
+<ul>
+<li>异常， try ... catch ... finally</li>
+</ul>
+<h2 id="_2">基本数据结构</h2>
+<ul>
+<li>List 列表</li>
+</ul>
+<div class="hlcode"><pre><span class="k">val</span> <span class="n">numbers</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">,</span><span class="mi">4</span><span class="o">)</span>
+</pre></div>
+
+
+<ul>
+<li>Set 集</li>
+</ul>
+<div class="hlcode"><pre><span class="n">scala</span><span class="o">&gt;</span> <span class="nc">Set</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">1</span><span class="o">)</span>
+<span class="n">res0</span><span class="k">:</span> <span class="kt">scala.collection.immutable.Set</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Set</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">)</span>
+</pre></div>
+
+
+<ul>
+<li>Tuple 元组</li>
+</ul>
+<div class="hlcode"><pre><span class="k">val</span> <span class="n">hostPort</span> <span class="k">=</span> <span class="o">(</span><span class="s">&quot;localhost&quot;</span><span class="o">,</span> <span class="mi">80</span><span class="o">)</span>
+<span class="n">hostPort</span><span class="o">.</span><span class="n">_1</span>  <span class="c1">// localhost</span>
+<span class="n">hostPort</span><span class="o">.</span><span class="n">_2</span>  <span class="c1">// 80</span>
+</pre></div>
+
+
+<p>与样本类不同，元组不能通过名称获取字段，而是使用位置下标来读取对象；而且这个下标基于1，而不是基于0。
+在创建两个元素的元组时，可以使用特殊语法：<code>1 -&gt; 2</code>，见映射
+- Map 映射，类似于python的字典，c的hash_map</p>
+<div class="hlcode"><pre><span class="nc">Map</span><span class="o">(</span><span class="mi">1</span> <span class="o">-&gt;</span> <span class="mi">2</span><span class="o">)</span>  <span class="c1">// 值映射</span>
+<span class="nc">Map</span><span class="o">(</span><span class="s">&quot;foo&quot;</span> <span class="o">-&gt;</span> <span class="s">&quot;bar&quot;</span><span class="o">)</span>  <span class="c1">// 字符串映射</span>
+<span class="nc">Map</span><span class="o">(</span><span class="mi">1</span> <span class="o">-&gt;</span> <span class="nc">Map</span><span class="o">(</span><span class="s">&quot;foo&quot;</span> <span class="o">-&gt;</span> <span class="s">&quot;bar&quot;</span><span class="o">))</span>  <span class="c1">// 映射到映射</span>
+<span class="nc">Map</span><span class="o">(</span><span class="s">&quot;timesTwo&quot;</span> <span class="o">-&gt;</span> <span class="o">{</span><span class="n">timesTwo</span><span class="o">(</span><span class="k">_</span><span class="o">)})</span>   <span class="c1">// 映射到函数</span>
+</pre></div>
+
+
+<p><code>Map</code>中要获取键对应的值，需要使用<code>Map.get</code>方法。
+- 选项 Option
+Option 是一个表示有可能包含值的容器。
+Option 本身是泛型的，有两个子类 <code>Some[T]</code> 或 <code>None</code>。
+在模式匹配中会用到。</p>
+<div class="hlcode"><pre><span class="k">val</span> <span class="n">result</span> <span class="k">=</span> <span class="n">res1</span> <span class="k">match</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">n</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">n</span><span class="o">*</span><span class="mi">2</span>
+    <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="mi">0</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Option基本的接口是这样的：</p>
+<div class="hlcode"><pre><span class="k">trait</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">isDefined</span><span class="k">:</span> <span class="kt">Boolean</span>
+  <span class="k">def</span> <span class="n">get</span><span class="k">:</span> <span class="kt">T</span>
+  <span class="k">def</span> <span class="n">getOrElse</span><span class="o">(</span><span class="n">t</span><span class="k">:</span> <span class="kt">T</span><span class="o">)</span><span class="k">:</span> <span class="kt">T</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Option本身是泛型的，并且有两个子类： Some[T] 或 None。
+<code>Map.get</code>使用<code>Option</code>作为其返回值，表示这个方法也许不会
+返回你请求的值。
+类似于Haskell的<code>Maybe</code>？</p>
+<h3 id="functional-combinators">函数组合子 Functional Combinators</h3>
+<ul>
+<li>map 组合子
+例子：<code>List(1,2,3,4) map {i:Int =&gt; i*i}</code>，
+或者这样调用</li>
+</ul>
+<div class="hlcode"><pre><span class="n">numbers</span><span class="o">.</span><span class="n">map</span><span class="o">((</span><span class="n">i</span><span class="k">:</span><span class="kt">Int</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">2</span><span class="o">)</span>
+</pre></div>
+
+
+<ul>
+<li>foreach， 很像map，但是没有返回值。仅用于有副作用的函数？</li>
+</ul>
+<div class="hlcode"><pre><span class="n">numbers</span><span class="o">.</span><span class="n">foreach</span><span class="o">((</span><span class="n">i</span><span class="k">:</span><span class="kt">Int</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">2</span><span class="o">)</span>
+</pre></div>
+
+
+<ul>
+<li>filter，一处任何传入函数计算结果为<code>false</code>的元素。</li>
+<li>zip，将两个列表的内容聚合到一个对偶列表中。</li>
+</ul>
+<div class="hlcode"><pre><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">).</span><span class="n">zip</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">&quot;a&quot;</span><span class="o">,</span><span class="s">&quot;b&quot;</span><span class="o">,</span><span class="s">&quot;c&quot;</span><span class="o">))</span>  <span class="c1">//[(1,a),(2,b),(3,c)]</span>
+</pre></div>
+
+
+<ul>
+<li><code>partition</code>, 使用给定的谓词函数（返回true和false的函数）分割列表，返回tuple</li>
+<li><code>find</code>，返回集合中第一个匹配谓词函数的元素</li>
+<li><code>drop</code> 和 <code>dropWile</code>，<code>drop</code>删除前i个元素，<code>dropWhile</code>将删除
+  元素直到不满足条件为止。</li>
+<li>foldLeft， 左折叠。需要传入一个初始值和一个二元函数</li>
+<li>foldRight，右折叠</li>
+<li>flatten，展平。</li>
+<li>flatMap，等价于 flatten . map</li>
+</ul>
+<h3 id="_3">函数组合</h3>
+<ul>
+<li><code>compose</code>组合其它函数形成新的函数<code>f(g(x))</code>。</li>
+</ul>
+<div class="hlcode"><pre><span class="k">val</span> <span class="n">fg</span> <span class="k">=</span> <span class="n">f</span> <span class="k">_</span> <span class="n">compose</span> <span class="n">g</span> <span class="k">_</span>
+</pre></div>
+
+
+<p><code>println</code>是啥？为甚不能组合。
+- <code>andThen</code>，与<code>compose</code>很像，只是执行顺序相反，先执行第一个。</p>
+<h3 id="_4">偏函数</h3>
+<p>不是部分应用函数，篇函数是指只能接受该类型的某些特定的值。
+<code>isDefinedAt</code>用来确定该函数能否接受一个给定的参数。</p>
+<div class="hlcode"><pre><span class="k">val</span> <span class="n">one</span><span class="k">:</span> <span class="kt">PartialFunction</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span> <span class="k">case</span> <span class="mi">1</span> <span class="k">=&gt;</span> <span class="s">&quot;one&quot;</span> <span class="o">}</span>
+<span class="n">one</span><span class="o">.</span><span class="n">isDefinedAt</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>   <span class="c1">// true</span>
+<span class="n">one</span><span class="o">.</span><span class="n">isDefinedAt</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>   <span class="c1">// false</span>
+</pre></div>
+
+
+<p>PartialFunctions可以使用orElse组成新的函数，得到的PartialFunction反映了是否对给定参数进行了定义。</p>
+<div class="hlcode"><pre><span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">two</span><span class="k">:</span> <span class="kt">PartialFunction</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span> <span class="k">case</span> <span class="mi">2</span> <span class="k">=&gt;</span> <span class="s">&quot;two&quot;</span> <span class="o">}</span>
+<span class="n">two</span><span class="k">:</span> <span class="kt">PartialFunction</span><span class="o">[</span><span class="kt">Int</span>,<span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">&lt;</span><span class="n">function1</span><span class="o">&gt;</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">three</span><span class="k">:</span> <span class="kt">PartialFunction</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span> <span class="k">case</span> <span class="mi">3</span> <span class="k">=&gt;</span> <span class="s">&quot;three&quot;</span> <span class="o">}</span>
+<span class="n">three</span><span class="k">:</span> <span class="kt">PartialFunction</span><span class="o">[</span><span class="kt">Int</span>,<span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">&lt;</span><span class="n">function1</span><span class="o">&gt;</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">wildcard</span><span class="k">:</span> <span class="kt">PartialFunction</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span> <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="s">&quot;something else&quot;</span> <span class="o">}</span>
+<span class="n">wildcard</span><span class="k">:</span> <span class="kt">PartialFunction</span><span class="o">[</span><span class="kt">Int</span>,<span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">&lt;</span><span class="n">function1</span><span class="o">&gt;</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">partial</span> <span class="k">=</span> <span class="n">one</span> <span class="n">orElse</span> <span class="n">two</span> <span class="n">orElse</span> <span class="n">three</span> <span class="n">orElse</span> <span class="n">wildcard</span>
+<span class="n">partial</span><span class="k">:</span> <span class="kt">PartialFunction</span><span class="o">[</span><span class="kt">Int</span>,<span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">&lt;</span><span class="n">function1</span><span class="o">&gt;</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="n">partial</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
+<span class="n">res24</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="n">something</span> <span class="k">else</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="n">partial</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+<span class="n">res25</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="n">three</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="n">partial</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+<span class="n">res26</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="n">two</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="n">partial</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+<span class="n">res27</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="n">one</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="n">partial</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
+<span class="n">res28</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="n">something</span> <span class="k">else</span>
+</pre></div>
+
+
+<h2 id="_5">类型</h2>
+<ul>
+<li>参数化多态</li>
 </ul>
 <h2 id="sbt">构建工具 SBT</h2>
 <ul>
