@@ -63,6 +63,7 @@ output = tf.mul(input1, input2)
 with tf.Session() as sess:
     print sess.run([output], feed_dict={input1:[7.], input2:[2.]})
 ```
+注意，这里有个大坑，这个字典的键是一个`op`，而不是一个字符串！！
 
 - 变量作用域，`variable_scope`, `get_variable_scope`, `get_variable`
 

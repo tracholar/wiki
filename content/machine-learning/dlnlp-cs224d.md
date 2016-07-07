@@ -34,7 +34,7 @@ p(o|c) = \frac{\exp(u_o^T v_c)}{\sum_{w=1}^W \exp(u_w^T v_c)}
 $$
 - 每一个单词有两个向量$(u, v)$. 最终的词向量是 $(u+v)$?
 - 词向量的线性关系
-	- $( X_{apple} - X_{apples} \approxy X_{car} - X_{cars} \approxy X_{family} - X_{families})$
+	- $( X_{apple} - X_{apples} \approx X_{car} - X_{cars} \approx X_{family} - X_{families})$
 
 ### 负采样近似
 单个输入词向量与单个输出词向量的损失函数
