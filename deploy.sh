@@ -1,10 +1,12 @@
-if [ "$1" = "-i" ] ; then
+if [ "$1" = "-i" ]
+then
     mkdir output
     cd output
     git clone -b gh-pages git@github.com:tracholar/wiki.git ./
     cd ..
     exit 0
-elif [ "$1" = "" ] ; then
+elif [ "$1" = "" ]
+then
     exit 0
 else
     git add . --all
