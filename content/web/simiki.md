@@ -66,9 +66,14 @@ deploy init-version
 > Tips: 注意文件夹和文件命名统一用小写，否则你会后悔，因为windows不区分大小写
 > 而linux是区分的。
 
-## linux中的部署
+## linux/MAC 中的部署
 还没试过，等试过之后再写，你可以参考[官方指南](http://simiki.org/docs/deploy.html)
 使用`ghp-import`部署，更方便，只是不支持windows。
+
+公司发了mac，我又写了个bash脚本[deploy.sh](https://github.com/tracholar/wiki/blob/master/deploy.sh)。
+使用方法跟windows上的一样，不过要`chmod +x deploy.sh`给脚本增加执行权限。
+当然，你也需要把git仓库的地址改成你自己的地址。
+
 
 # 我的效果
 请访问[https://tracholar.github.io/wiki](https://tracholar.github.io/wiki)观看。
