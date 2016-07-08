@@ -5,7 +5,7 @@
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>Git常用命令汇总 - tracholar's personal knowledge wiki</title>
+        <title>Hive - tracholar's personal knowledge wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -35,53 +35,33 @@
         <div id="container">
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#software">software</a>&nbsp;»&nbsp;Git常用命令汇总</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tools">tools</a>&nbsp;»&nbsp;Hive</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">Git常用命令汇总</div>
+<div id="title">Hive</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">关于</a></li>
-<li><a href="#tag">打tag</a></li>
+<li><a href="#hive-sql">Hive SQL</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
-<p>这里汇集了git常用命令和用法，便于速查，不定期更新。</p>
-<h2 id="tag">打tag</h2>
-<p>将当前版本添加tag<code>&lt;tagname&gt;</code></p>
-<div class="hlcode"><pre>git tag &lt;tagname&gt;
+<p>学习Hive时的笔记</p>
+<h2 id="hive-sql">Hive SQL</h2>
+<ul>
+<li><code>row_number()</code> 函数用法，<code>partition</code>用来将数据分区编号，<code>order by</code>描述编号顺序</li>
+</ul>
+<div class="hlcode"><pre><span class="k">select</span> <span class="n">uid</span><span class="p">,</span> <span class="n">row_number</span><span class="p">()</span> <span class="n">over</span> <span class="p">(</span><span class="n">partition</span> <span class="k">by</span> <span class="n">uid</span> <span class="k">order</span> <span class="k">by</span> <span class="n">uid</span><span class="p">)</span>
+<span class="k">from</span>
 </pre></div>
 
 
-<p>列出标签</p>
-<div class="hlcode"><pre><span class="nv">$ </span>git tag
-v0.1
-v1.3
-
-<span class="nv">$ </span>git tag -l <span class="s1">&#39;v1.4.2.*&#39;</span>
-v1.4.2.1
-v1.4.2.2
-v1.4.2.3
-v1.4.2.4
-</pre></div>
-
-
-<p>将tag推送到远程服务器，参见[1-2]，推送所有的tags</p>
-<div class="hlcode"><pre>git push --tags
-</pre></div>
-
-
-<p>只推送单个tag</p>
-<div class="hlcode"><pre>git push origin &lt;tagname&gt;
-</pre></div>
-
-
-<ol>
-<li><a href="http://stackoverflow.com/a/5195913/4349983">http://stackoverflow.com/a/5195913/4349983</a></li>
-<li><a href="https://git-scm.com/book/zh/v1/Git-%E5%9F%BA%E7%A1%80-%E6%89%93%E6%A0%87%E7%AD%BE">https://git-scm.com/book/zh/v1/Git-%E5%9F%BA%E7%A1%80-%E6%89%93%E6%A0%87%E7%AD%BE</a></li>
-</ol>
+<ul>
+<li><code>datediff(d1, d2)</code>， 其中时间字符串要是这种格式<code>yyyy-MM-dd</code>，如果不是，需要先转换</li>
+<li><code>from_unixtime(t, 'yyyyMMdd')</code>, <code>unix_timestamp(str, 'yyyy-MM-dd')</code>这两个函数可以实现时间字符串格式转换</li>
+</ul>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2016-05-31 20:51 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2016-07-08 </span></div>
 
         </div>
         <div id="footer">
