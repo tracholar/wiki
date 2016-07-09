@@ -1,0 +1,206 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>Pandas 中的坑 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#python">python</a>&nbsp;»&nbsp;Pandas 中的坑</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">Pandas 中的坑</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#dataframe-index">DataFrame 的index操作</a></li>
+<li><a href="#_1">遍历操作</a><ul>
+<li><a href="#apply">函数式编程方式，apply方式（个人比较推荐这种方式）</a></li>
+<li><a href="#iteration">iteration 迭代</a></li>
+<li><a href="#string">向量化string操作</a></li>
+</ul>
+</li>
+<li><a href="#dataframe">DataFrame的修改</a></li>
+<li><a href="#plot">可视化plot</a></li>
+<li><a href="#tips">TIPS</a></li>
+</ul>
+</div>
+<h2 id="dataframe-index">DataFrame 的<code>index</code>操作</h2>
+<p>索引操作多而杂，现总结如下。
+参考 <a href="http://pandas.pydata.org/pandas-docs/stable/indexing.html">Indexing and Selecting Data</a>。
+- <code>.loc</code>基于label(如果只有一个索引则为行的index，行有限)的索引。
+    - 单个标签，如<code>a</code>，多个标签列表<code>['a', 'b', 'c']</code>。注意，如果提供两个索引，即行索引加列索引，在python中处理为一个tuple。</p>
+<div class="hlcode"><pre><span class="err">```</span><span class="n">python</span>
+<span class="n">df1</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+                    <span class="n">index</span><span class="o">=</span><span class="n">list</span><span class="p">(</span><span class="err">&#39;</span><span class="n">abcdef</span><span class="err">&#39;</span><span class="p">),</span>
+                    <span class="n">columns</span><span class="o">=</span><span class="n">list</span><span class="p">(</span><span class="err">&#39;</span><span class="n">ABCD</span><span class="err">&#39;</span><span class="p">))</span>
+
+    <span class="n">A</span>   <span class="n">B</span>   <span class="n">C</span>   <span class="n">D</span>
+<span class="n">a</span>   <span class="mf">0.333368</span>    <span class="mf">0.953575</span>    <span class="mf">0.189191</span>    <span class="mf">0.186499</span>
+<span class="n">b</span>   <span class="mf">0.344776</span>    <span class="mf">0.940556</span>    <span class="mf">0.624198</span>    <span class="mf">0.278640</span>
+<span class="n">c</span>   <span class="mf">0.269827</span>    <span class="mf">0.449311</span>    <span class="mf">0.679678</span>    <span class="mf">0.769818</span>
+<span class="n">d</span>   <span class="mf">0.910729</span>    <span class="mf">0.024516</span>    <span class="mf">0.745065</span>    <span class="mf">0.399805</span>
+<span class="n">e</span>   <span class="mf">0.868005</span>    <span class="mf">0.822731</span>    <span class="mf">0.908870</span>    <span class="mf">0.376258</span>
+<span class="n">f</span>   <span class="mf">0.141232</span>    <span class="mf">0.983130</span>    <span class="mf">0.730339</span>    <span class="mf">0.782900</span>
+
+<span class="n">df</span><span class="p">.</span><span class="n">loc</span><span class="p">[</span><span class="sc">&#39;a&#39;</span><span class="p">]</span>
+<span class="n">df</span><span class="p">.</span><span class="n">loc</span><span class="p">[</span><span class="sc">&#39;a&#39;</span><span class="p">,</span> <span class="sc">&#39;B&#39;</span><span class="p">]</span>
+<span class="n">df</span><span class="p">.</span><span class="n">loc</span><span class="p">[[</span><span class="sc">&#39;a&#39;</span><span class="p">,</span><span class="sc">&#39;b&#39;</span><span class="p">]]</span>
+<span class="n">df</span><span class="p">.</span><span class="n">loc</span><span class="p">[[</span><span class="sc">&#39;a&#39;</span><span class="p">,</span><span class="sc">&#39;b&#39;</span><span class="p">],</span> <span class="p">[</span><span class="sc">&#39;B&#39;</span><span class="p">,</span><span class="sc">&#39;C&#39;</span><span class="p">]]</span>
+<span class="err">```</span>
+
+<span class="o">-</span> <span class="n">slice</span> <span class="n">object</span> <span class="n">with</span> <span class="n">label</span><span class="err">，`</span> <span class="sc">&#39;a&#39;</span> <span class="o">:</span> <span class="sc">&#39;f&#39;</span>  <span class="err">`</span><span class="p">.</span> <span class="err">这种形式的索引叫做`</span><span class="n">slice</span> <span class="n">object</span><span class="err">`。例如</span> <span class="err">`</span><span class="n">df</span><span class="p">.</span><span class="n">loc</span><span class="p">[</span><span class="sc">&#39;a&#39;</span><span class="o">:</span><span class="sc">&#39;d&#39;</span><span class="p">]</span><span class="err">`</span>
+<span class="o">-</span> <span class="err">一个</span><span class="n">boolean</span><span class="err">数组</span><span class="p">.</span> <span class="err">`</span><span class="n">df</span><span class="p">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">.</span><span class="n">A</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">]</span><span class="err">`</span>
+<span class="o">-</span> <span class="err">一个返回上述索引的单参数（该参数是`</span><span class="n">df</span><span class="err">`本身）函数</span><span class="p">.</span> <span class="err">`</span><span class="n">df</span><span class="p">.</span><span class="n">loc</span><span class="p">[</span><span class="n">lambda</span> <span class="n">x</span><span class="o">:</span> <span class="n">x</span><span class="p">.</span><span class="n">A</span> <span class="o">&gt;</span> <span class="mf">0.5</span> <span class="p">]</span><span class="err">`</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p><code>.iloc</code> 则是基于序号的索引(还是行优先)，从0到<code>length - 1</code>。</p>
+<ul>
+<li>一个整数，<code>df.iloc[5]</code>, <code>df.iloc[5,3]</code></li>
+<li>整数列表，<code>df.iloc[[2,5,3]]</code>, <code>df.iloc[[2,5,3], [3,2]]</code></li>
+<li>slice object with int， <code>df.iloc[1:3]</code>, <code>df.iloc[1:3, :2]</code></li>
+<li>一个boolean数组， <code>df.iloc[list(df.A&gt;0.5)]</code>，注意这里如果写成<code>df.iloc[df.A &gt; 0.5]</code>是有问题的。不清楚为啥，可能与<code>df.A &gt; 0.5</code>是一个<code>Series</code>有关，而<code>Series</code>在迭代的时候更像<code>dict</code>。</li>
+<li>一个返回上述索引的单参数函数。与<code>.loc</code>类似。</li>
+</ul>
+</li>
+<li>
+<p><code>.ix</code> 则相当于上述两个之和，两种index都能处理。</p>
+</li>
+<li><code>[]</code>或者<code>__getitem__()</code>和上面的行优先相反，他是列优先，而且不能实现多维索引。此外，还可以传入slice object（label和int都可以）和 boolean数组来筛选特定的行<ul>
+<li>列名label，<code>df['A']</code></li>
+<li>列名列表，<code>df[['A','B']]</code></li>
+<li>slice object，<code>df[:3]</code>，<code>df['a':'c']</code></li>
+<li>boolean array，<code>df[df.A&gt;0.5]</code></li>
+</ul>
+</li>
+<li><code>.head</code>和<code>.tail</code>函数访问前（后）几行</li>
+<li>以属性方式访问，对DataFrame是列名，对Series是键。例如<code>df.A</code>, <code>df.A.a</code></li>
+<li><code>.at</code>,<code>.iat</code>和<code>.get_value</code>，获取单个值，注意两者的区别。<code>df.at['a','A'],  df.get_value('a','A')</code>。他们等价于<code>df.loc['a','A']</code>。这个比采用<code>[]</code>速度要快，遍历的时候推荐用这个。</li>
+</ul>
+<h2 id="_1">遍历操作</h2>
+<h3 id="apply">函数式编程方式，apply方式（个人比较推荐这种方式）</h3>
+<ul>
+<li>tablewise 函数 <code>.pipe()</code>，<code>.pipe(f, args ...)</code>将DataFrame作为函数<code>f</code>的第一个参数传过去，其他参数也原样传递。</li>
+</ul>
+<div class="hlcode"><pre><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c"># 等价于 f(df, 3)</span>
+</pre></div>
+
+
+<ul>
+<li>一行一列方式应用函数 <code>.apply()</code>，用参数<code>axis</code>指定行(取值0)或列(取值1)</li>
+</ul>
+<div class="hlcode"><pre><span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>   <span class="c"># 对每一列求均值</span>
+<span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c"># 对每一行求均值</span>
+</pre></div>
+
+
+<ul>
+<li>elementwise <code>.applymap()</code>，求每一个元素的ID，<code>df.applymap(id)</code></li>
+</ul>
+<h3 id="iteration">iteration 迭代</h3>
+<ul>
+<li>
+<p><code>for i in obj</code> 方式，对不同数据结构不同</p>
+<ul>
+<li><code>Series</code> : 代表值</li>
+<li><code>DataFrame</code> : 代表列label，即列名</li>
+<li><code>Panel</code> : item label</li>
+</ul>
+</li>
+<li>
+<p><code>.iteriems()</code>，对DataFrame相当于对列迭代。</p>
+<ul>
+<li><code>Series</code>: (index, value)</li>
+<li><code>DataFrame</code> : (column, Series)</li>
+<li><code>Panel</code> : (item, DataFrame)</li>
+</ul>
+</li>
+<li>
+<p><code>df.iterrow()</code>，对DataFrame的每一行进行迭代，返回一个Tuple <code>(index, Series)</code></p>
+</li>
+<li><code>df.itertuples()</code>，也是一行一行地迭代，返回的是一个namedtuple，通常比<code>iterrow</code>快，因为不需要做转换</li>
+</ul>
+<div class="hlcode"><pre><span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="k">print</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span>
+
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">itertuples</span><span class="p">():</span>
+    <span class="k">print</span> <span class="n">row</span>
+
+<span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+    <span class="k">print</span> <span class="n">c</span><span class="p">,</span> <span class="n">col</span>
+</pre></div>
+
+
+<ul>
+<li><code>.dt</code>， 对Datetime类型的Series可以通过这个对象访问<code>hour, second, day</code>等值。
+  还可以通过<code>strftime</code>格式化时间</li>
+</ul>
+<div class="hlcode"><pre><span class="n">s</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s">&#39;20130101 09:10:12&#39;</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">s</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">hour</span>
+</pre></div>
+
+
+<ul>
+<li>迭代方式通常性能较差，可以通过几种方式进行优化。<ul>
+<li>将运算编程向量化操作</li>
+<li>采用<code>.apply</code>等函数式编程方式</li>
+<li>将操作的内循环等耗费时间的操作用cython编写</li>
+</ul>
+</li>
+</ul>
+<h3 id="string">向量化string操作</h3>
+<p>通过访问Series的<code>.str</code>属性，例如<code>s.str.lower()</code>可以将每一个元素变成小写。可以在<code>.str</code>属性上使用
+所有的字符串函数，就相当于每一个元素使用那样。</p>
+<h2 id="dataframe">DataFrame的修改</h2>
+<h2 id="plot">可视化plot</h2>
+<h2 id="tips">TIPS</h2>
+<ul>
+<li><code>df.loc['a','A'] = 5</code>是有效的，但是<code>df.loc['a']['A'] = 5</code>对<code>df</code>是没有影响的。</li>
+</ul>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2015-10-22 20:00 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2016 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+    </body>
+</html>
