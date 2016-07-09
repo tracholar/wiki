@@ -55,12 +55,16 @@
 </div>
 <h2 id="dataframe-index">DataFrame 的<code>index</code>操作</h2>
 <p>索引操作多而杂，现总结如下。
-参考 <a href="http://pandas.pydata.org/pandas-docs/stable/indexing.html">Indexing and Selecting Data</a>。
-- <code>.loc</code>基于label(如果只有一个索引则为行的index，行有限)的索引。
-    - 单个标签，如<code>a</code>，多个标签列表<code>['a', 'b', 'c']</code>。注意，如果提供两个索引，即行索引加列索引，在python中处理为一个tuple。
-    - slice object with label，<code>'a' : 'f'</code>. 这种形式的索引叫做<code>slice object</code>。例如 <code>df.loc['a':'d']</code>
-    - 一个boolean数组. <code>df.loc[df.A &gt; 0.5]</code>
-    - 一个返回上述索引的单参数（该参数是<code>df</code>本身）函数. <code>df.loc[lambda x: x.A &gt; 0.5 ]</code></p>
+参考 <a href="http://pandas.pydata.org/pandas-docs/stable/indexing.html">Indexing and Selecting Data</a>。</p>
+<ul>
+<li><code>.loc</code>基于label(如果只有一个索引则为行的index，行有限)的索引。<ul>
+<li>单个标签，如<code>a</code>，多个标签列表<code>['a', 'b', 'c']</code>。注意，如果提供两个索引，即行索引加列索引，在python中处理为一个tuple。</li>
+<li>slice object with label，<code>'a' : 'f'</code>. 这种形式的索引叫做<code>slice object</code>。例如 <code>df.loc['a':'d']</code></li>
+<li>一个boolean数组. <code>df.loc[df.A &gt; 0.5]</code></li>
+<li>一个返回上述索引的单参数（该参数是<code>df</code>本身）函数. <code>df.loc[lambda x: x.A &gt; 0.5 ]</code></li>
+</ul>
+</li>
+</ul>
 <div class="hlcode"><pre><span class="n">df1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
                     <span class="n">index</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="s">&#39;abcdef&#39;</span><span class="p">),</span>
                     <span class="n">columns</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="s">&#39;ABCD&#39;</span><span class="p">))</span>
