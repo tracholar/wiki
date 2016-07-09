@@ -10,29 +10,30 @@ date: 2015-10-22 20:00
 参考 [Indexing and Selecting Data](http://pandas.pydata.org/pandas-docs/stable/indexing.html)。
 - `.loc`基于label(如果只有一个索引则为行的index，行有限)的索引。
     - 单个标签，如`a`，多个标签列表`['a', 'b', 'c']`。注意，如果提供两个索引，即行索引加列索引，在python中处理为一个tuple。
-
-    ```python
-    df1 = pd.DataFrame(np.random.randn(6, 4),
-                        index=list('abcdef'),
-                        columns=list('ABCD'))
-
-        A	B	C	D
-    a	0.333368	0.953575	0.189191	0.186499
-    b	0.344776	0.940556	0.624198	0.278640
-    c	0.269827	0.449311	0.679678	0.769818
-    d	0.910729	0.024516	0.745065	0.399805
-    e	0.868005	0.822731	0.908870	0.376258
-    f	0.141232	0.983130	0.730339	0.782900
-
-    df.loc['a']
-    df.loc['a', 'B']
-    df.loc[['a','b']]
-    df.loc[['a','b'], ['B','C']]
-    ```
-
     - slice object with label，` 'a' : 'f'  `. 这种形式的索引叫做`slice object`。例如 `df.loc['a':'d']`
     - 一个boolean数组. `df.loc[df.A > 0.5]`
     - 一个返回上述索引的单参数（该参数是`df`本身）函数. `df.loc[lambda x: x.A > 0.5 ]`
+
+```python
+df1 = pd.DataFrame(np.random.randn(6, 4),
+                    index=list('abcdef'),
+                    columns=list('ABCD'))
+
+    A	B	C	D
+a	0.333368	0.953575	0.189191	0.186499
+b	0.344776	0.940556	0.624198	0.278640
+c	0.269827	0.449311	0.679678	0.769818
+d	0.910729	0.024516	0.745065	0.399805
+e	0.868005	0.822731	0.908870	0.376258
+f	0.141232	0.983130	0.730339	0.782900
+
+df.loc['a']
+df.loc['a', 'B']
+df.loc[['a','b']]
+df.loc[['a','b'], ['B','C']]
+```
+
+
 
 - `.iloc` 则是基于序号的索引(还是行优先)，从0到`length - 1`。
     - 一个整数，`df.iloc[5]`, `df.iloc[5,3]`
