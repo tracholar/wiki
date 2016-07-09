@@ -57,11 +57,13 @@
 <p>索引操作多而杂，现总结如下。
 参考 <a href="http://pandas.pydata.org/pandas-docs/stable/indexing.html">Indexing and Selecting Data</a>。
 - <code>.loc</code>基于label(如果只有一个索引则为行的index，行有限)的索引。
-    - 单个标签，如<code>a</code>，多个标签列表<code>['a', 'b', 'c']</code>。注意，如果提供两个索引，即行索引加列索引，在python中处理为一个tuple。</p>
-<div class="hlcode"><pre><span class="err">```</span><span class="n">python</span>
-<span class="n">df1</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
-                    <span class="n">index</span><span class="o">=</span><span class="n">list</span><span class="p">(</span><span class="err">&#39;</span><span class="n">abcdef</span><span class="err">&#39;</span><span class="p">),</span>
-                    <span class="n">columns</span><span class="o">=</span><span class="n">list</span><span class="p">(</span><span class="err">&#39;</span><span class="n">ABCD</span><span class="err">&#39;</span><span class="p">))</span>
+    - 单个标签，如<code>a</code>，多个标签列表<code>['a', 'b', 'c']</code>。注意，如果提供两个索引，即行索引加列索引，在python中处理为一个tuple。
+    - slice object with label，<code>'a' : 'f'</code>. 这种形式的索引叫做<code>slice object</code>。例如 <code>df.loc['a':'d']</code>
+    - 一个boolean数组. <code>df.loc[df.A &gt; 0.5]</code>
+    - 一个返回上述索引的单参数（该参数是<code>df</code>本身）函数. <code>df.loc[lambda x: x.A &gt; 0.5 ]</code></p>
+<div class="hlcode"><pre><span class="n">df1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+                    <span class="n">index</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="s">&#39;abcdef&#39;</span><span class="p">),</span>
+                    <span class="n">columns</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="s">&#39;ABCD&#39;</span><span class="p">))</span>
 
     <span class="n">A</span>   <span class="n">B</span>   <span class="n">C</span>   <span class="n">D</span>
 <span class="n">a</span>   <span class="mf">0.333368</span>    <span class="mf">0.953575</span>    <span class="mf">0.189191</span>    <span class="mf">0.186499</span>
@@ -71,15 +73,10 @@
 <span class="n">e</span>   <span class="mf">0.868005</span>    <span class="mf">0.822731</span>    <span class="mf">0.908870</span>    <span class="mf">0.376258</span>
 <span class="n">f</span>   <span class="mf">0.141232</span>    <span class="mf">0.983130</span>    <span class="mf">0.730339</span>    <span class="mf">0.782900</span>
 
-<span class="n">df</span><span class="p">.</span><span class="n">loc</span><span class="p">[</span><span class="sc">&#39;a&#39;</span><span class="p">]</span>
-<span class="n">df</span><span class="p">.</span><span class="n">loc</span><span class="p">[</span><span class="sc">&#39;a&#39;</span><span class="p">,</span> <span class="sc">&#39;B&#39;</span><span class="p">]</span>
-<span class="n">df</span><span class="p">.</span><span class="n">loc</span><span class="p">[[</span><span class="sc">&#39;a&#39;</span><span class="p">,</span><span class="sc">&#39;b&#39;</span><span class="p">]]</span>
-<span class="n">df</span><span class="p">.</span><span class="n">loc</span><span class="p">[[</span><span class="sc">&#39;a&#39;</span><span class="p">,</span><span class="sc">&#39;b&#39;</span><span class="p">],</span> <span class="p">[</span><span class="sc">&#39;B&#39;</span><span class="p">,</span><span class="sc">&#39;C&#39;</span><span class="p">]]</span>
-<span class="err">```</span>
-
-<span class="o">-</span> <span class="n">slice</span> <span class="n">object</span> <span class="n">with</span> <span class="n">label</span><span class="err">，`</span> <span class="sc">&#39;a&#39;</span> <span class="o">:</span> <span class="sc">&#39;f&#39;</span>  <span class="err">`</span><span class="p">.</span> <span class="err">这种形式的索引叫做`</span><span class="n">slice</span> <span class="n">object</span><span class="err">`。例如</span> <span class="err">`</span><span class="n">df</span><span class="p">.</span><span class="n">loc</span><span class="p">[</span><span class="sc">&#39;a&#39;</span><span class="o">:</span><span class="sc">&#39;d&#39;</span><span class="p">]</span><span class="err">`</span>
-<span class="o">-</span> <span class="err">一个</span><span class="n">boolean</span><span class="err">数组</span><span class="p">.</span> <span class="err">`</span><span class="n">df</span><span class="p">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">.</span><span class="n">A</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">]</span><span class="err">`</span>
-<span class="o">-</span> <span class="err">一个返回上述索引的单参数（该参数是`</span><span class="n">df</span><span class="err">`本身）函数</span><span class="p">.</span> <span class="err">`</span><span class="n">df</span><span class="p">.</span><span class="n">loc</span><span class="p">[</span><span class="n">lambda</span> <span class="n">x</span><span class="o">:</span> <span class="n">x</span><span class="p">.</span><span class="n">A</span> <span class="o">&gt;</span> <span class="mf">0.5</span> <span class="p">]</span><span class="err">`</span>
+<span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span>
+<span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">]</span>
+<span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="s">&#39;a&#39;</span><span class="p">,</span><span class="s">&#39;b&#39;</span><span class="p">]]</span>
+<span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="s">&#39;a&#39;</span><span class="p">,</span><span class="s">&#39;b&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;B&#39;</span><span class="p">,</span><span class="s">&#39;C&#39;</span><span class="p">]]</span>
 </pre></div>
 
 
