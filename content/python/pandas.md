@@ -8,6 +8,7 @@ date: 2015-10-22 20:00
 ## DataFrame 的`index`操作
 索引操作多而杂，现总结如下。
 参考 [Indexing and Selecting Data](http://pandas.pydata.org/pandas-docs/stable/indexing.html)。
+
 - `.loc`基于label(如果只有一个索引则为行的index，行有限)的索引。
     - 单个标签，如`a`，多个标签列表`['a', 'b', 'c']`。注意，如果提供两个索引，即行索引加列索引，在python中处理为一个tuple。
     - slice object with label，` 'a' : 'f'  `. 这种形式的索引叫做`slice object`。例如 `df.loc['a':'d']`
