@@ -44,6 +44,7 @@
 <li><a href="#tensorflow">TensorFlow</a></li>
 <li><a href="#_1">核心图数据结构</a></li>
 <li><a href="#_2">基本数据类型</a></li>
+<li><a href="#_3">优化</a></li>
 <li><a href="#tips">TIPS</a></li>
 <li><a href="#adam">ADAM 随机梯度下降算法</a></li>
 </ul>
@@ -83,7 +84,15 @@ containing tensors” - TensorFlow Docs.</p>
 </pre></div>
 
 
-<p>使用函数<code>tf.initialize_all_variables()</code>参数初始化，初始值在定义的时候给出。</p>
+<p>使用函数<code>tf.initialize_all_variables()</code>参数初始化，初始值在定义的时候给出。
+如果要对变量作用域里面的所有变量用同一个初始化方法，可以在定义作用域的时候指定。
+参考<a href="https://www.tensorflow.org/versions/r0.7/how_tos/variable_scope/index.html#initializers-in-variable-scope">https://www.tensorflow.org/versions/r0.7/how_tos/variable_scope/index.html#initializers-in-variable-scope</a></p>
+<div class="hlcode"><pre><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">variable_scope</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span> <span class="n">initializer</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">constant_initializer</span><span class="p">(</span><span class="mf">0.4</span><span class="p">)):</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s">&quot;v&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">assert</span> <span class="n">v</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span> <span class="o">==</span> <span class="mf">0.4</span>  <span class="c"># Default initializer as set above.</span>
+</pre></div>
+
+
 <p>变量的更新，使用方法<code>tf.add</code>, <code>tf.assign</code>等方法</p>
 <div class="hlcode"><pre><span class="n">state</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;counter&quot;</span><span class="p">)</span>
 <span class="n">new_value</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
@@ -111,15 +120,36 @@ containing tensors” - TensorFlow Docs.</p>
 <span class="n">output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">input1</span><span class="p">,</span> <span class="n">input2</span><span class="p">)</span>
 <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
     <span class="k">print</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">output</span><span class="p">],</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">input1</span><span class="p">:[</span><span class="mf">7.</span><span class="p">],</span> <span class="n">input2</span><span class="p">:[</span><span class="mf">2.</span><span class="p">]})</span>
+
+<span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
 </pre></div>
 
 
 <p>注意，这里有个大坑，这个字典的键是一个<code>op</code>，而不是一个字符串！！</p>
 <ul>
-<li>变量作用域，<code>variable_scope</code>, <code>get_variable_scope</code>, <code>get_variable</code></li>
+<li>
+<p>变量作用域，<code>variable_scope</code>, <code>get_variable_scope</code>, <code>get_variable</code></p>
+</li>
+<li>
+<p>word embedding</p>
+</li>
+</ul>
+<h2 id="_3">优化</h2>
+<p>当得到损失函数之后，可以通过<code>tf.train.Optimizer</code>优化工具来进行优化，实际优化的时候使用的是他的子类，
+如<code>GradientDescentOptimizer</code>, <code>AdagradOptimizer</code>, or <code>MomentumOptimizer</code>。
+优化obj通常有以下几个重要方法可以使用。</p>
+<ul>
+<li><code>train_op = minimize(loss)</code>，直接最小化损失函数</li>
+<li><code>compute_gradients(loss)</code>，计算梯度</li>
+<li><code>train_op = apply_gradients(grad)</code>，应用梯度更新权值</li>
 </ul>
 <h2 id="tips">TIPS</h2>
-<p><code>data.reshape(-1, 10)</code>将数据重新划分为10列的元素，第一维自适应</p>
+<ul>
+<li><code>tf.reshape(some_tensor, (-1, 10))</code>将数据重新划分为10列的元素，第一维自适应</li>
+<li><code>tf.device</code> 指定CPU或者GPU</li>
+<li><code>tf.add_to_collection(name, value)</code>将value保存为名字为name的共享集合中，供后面使用.
+  <code>tf.get_collection(name)</code>，获取存储的值</li>
+</ul>
 <h2 id="adam">ADAM 随机梯度下降算法</h2>
 <p>[1] <a href="https://www.tensorflow.org/">https://www.tensorflow.org/</a>
 [2] <a href="http://cs224d.stanford.edu/lectures/CS224d-Lecture7.pdf">http://cs224d.stanford.edu/lectures/CS224d-Lecture7.pdf</a></p>
