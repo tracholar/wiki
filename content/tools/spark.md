@@ -49,6 +49,9 @@ val sc = new SparkContext(sparkConf)
 ## RDD
 - RDD，全称为Resilient Distributed Datasets，是一个容错的、并行的数据结构，可以让用户显式地将数据存储到磁盘和内存中，并能控制数据的分区。
 - in-memory cache. `cache()`
+- RDD 常用操作
+    - `count()`
+    - `foreach`, `map`, `flatMap`, `filter`,
 
 ## Spark SQLContext
 Spark SQL支持的语法

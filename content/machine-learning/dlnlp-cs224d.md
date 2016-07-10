@@ -60,6 +60,10 @@ $$
 J = F(w_c, \hat{v})
 $$
 
+> WHY？
+>
+> 一般而言，这种方式上的区别使得CBOW模型更适合应用在小规模的数据集上，能够对很多的分布式信息进行平滑处理；而Skip-Gram模型则比较适合用于大规模的数据集上。
+>
 
 ## 问题
 - 为什么每一次SGD后需要对参数向量进行标准化？
@@ -169,6 +173,8 @@ Perplexity ???
 
 ### models
 - CRF conditional random field
+
+- 词语分布式假说：词的上下文相似，那么这两个词也相似
 
 ## Reference
 1. <http://cs224d.stanford.edu/syllabus.html>
