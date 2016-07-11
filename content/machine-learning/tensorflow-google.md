@@ -89,13 +89,15 @@ tf.placeholder(dtype, shape=None, name=None)
 - `compute_gradients(loss)`，计算梯度
 - `train_op = apply_gradients(grad)`，应用梯度更新权值
 
+## CPU vs GPU
+- Q: 自己代码在实现上有什么区别呢？
+
 ## TIPS
 - `tf.reshape(some_tensor, (-1, 10))`将数据重新划分为10列的元素，第一维自适应
 - `tf.device` 指定CPU或者GPU
 - `tf.add_to_collection(name, value)`将value保存为名字为name的共享集合中，供后面使用.
   `tf.get_collection(name)`，获取存储的值
 
-## ADAM 随机梯度下降算法
 
 
 [1] <https://www.tensorflow.org/>

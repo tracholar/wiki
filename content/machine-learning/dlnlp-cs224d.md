@@ -65,6 +65,8 @@ $$
 > 一般而言，这种方式上的区别使得CBOW模型更适合应用在小规模的数据集上，能够对很多的分布式信息进行平滑处理；而Skip-Gram模型则比较适合用于大规模的数据集上。
 >
 
+
+
 ## 问题
 - 为什么每一次SGD后需要对参数向量进行标准化？
 - 一般的交叉熵能够理解为最大似然估计么？
@@ -106,6 +108,7 @@ $$
 - 超参数的搜索：随即搜索。
 Y.	Bengio	(2012),	“Practical	Recommendations	for	GradientBased
 Training	of	Deep	Architectures”		
+- Xavier initialization 初始化策略
 
 ## Language Models
 所谓语言模型就是建立单词的联合概率模型$(P(w_1,...,w_T))$.
@@ -150,6 +153,10 @@ Perplexity ???
 >
 
 - 梯度消减 Mikolov，如果梯度的范数超过阈值，就将梯度归一化到范数等于该阈值的向量或矩阵。
+
+### 实现细节
+- dropout正则化，在TensorFlow里面，可以使用`tf.nn.dropout`来实现。
+
 
 ## Deep-learning package zoom
 - Torch

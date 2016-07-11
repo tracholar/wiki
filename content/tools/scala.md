@@ -300,8 +300,67 @@ scala> partial(0)
 res28: String = something else
 ```
 
-## 类型
-- 参数化多态
+## 类型，静态类型
+- 参数化多态，秩1多态性rank-one。下面是一个错误的例子，将会报编译错误。
+
+```scala
+def foo[A, B](f: A->List[A], b: B) = f(b)
+def foo[A](f: A->List[A], b: Int) = f(i)
+```
+
+- 类型推断
+Hindley Milner算法。 Scala编译器为我们做类型推断，
+使得可以不明确指定返回类型。
+
+```scala
+def id[T](x : T) = x
+val x = id("hey")
+```
+
+- 变性 Variance，如果T'是T的子类，那么Container[T']和Container[T]的关系呢？
+    - 协变， C[T']也是C[T]的子类， [+T]
+    - 逆变， C[T']是C[T]的父类， [-T]
+    - 不变， 没有关系， [T]
+
+逆变的例子，函数特质。参数用父类，调用用子类，表明以父类为类型参数的函数
+是以子类为类型参数的函数的子类。有点绕，理解一下。
+
+- 边界，指定泛型的大类型？`T <: SomeType` 指定T是SomeType的子类。
+
+```scala
+scala> def cacophony[T](things: Seq[T]) = things map (_.sound)
+<console>:7: error: value sound is not a member of type parameter T
+       def cacophony[T](things: Seq[T]) = things map (_.sound)
+                                                        ^
+
+scala> def biophony[T <: Animal](things: Seq[T]) = things map (_.sound)
+biophony: [T <: Animal](things: Seq[T])Seq[java.lang.String]
+
+scala> biophony(Seq(new Chicken, new Bird))
+res5: Seq[java.lang.String] = List(cluck, call)
+```
+
+`T :> SomeType` 指定T是SomeType的超类。
+List 同样 定义了`::[B >: T](x: B)` 来返回一个List[B]，例如下面这个例子中，
+flock是Bird类型，Bird是Animal的子类。`::`操作后返回的是超类Animal的列表。
+
+```scala
+scala> new Animal :: flock
+res59: List[Animal] = List(Animal@11f8d3a8, Bird@7e1ec70e, Bird@169ea8d2)
+```
+
+- 量化 Quantification。
+有时候，不关心类型变量时，可以用通配符取而代之，注意区分变量和类型变量。
+个人理解：下面这个例子与类型无关，只与List的接口有关，所以不影响类型推导系统。
+
+可以为通配符指定边界。
+
+```scala
+def count[A](l: List[A]) = l.size
+def count(l: List[_]) = l.size
+
+def hashcodes(l: Seq[_ <: AnyRef]) = l map (_.hashCode)
+```
 
 
 

@@ -20,7 +20,7 @@ date: 2016-07-05
 
 启动worker的脚本是
 ```bash
-./bin/spark-class org.apache.spark.deploy.worker.Worker spark://IP:PORT
+./bin/spark-class org.apache.spark.deploy.worker.Worker spark://IsP:PORT
 ```
 其中IP和PORT可以在监控页面看到。
 
