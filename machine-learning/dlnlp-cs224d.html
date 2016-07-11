@@ -55,6 +55,7 @@
 <li><a href="#language-models">Language Models</a><ul>
 <li><a href="#bengio-2003">神经网络语言模型 Bengio 2003</a></li>
 <li><a href="#_5">递归神经网络</a></li>
+<li><a href="#_6">实现细节</a></li>
 </ul>
 </li>
 <li><a href="#deep-learning-package-zoom">Deep-learning package zoom</a></li>
@@ -177,6 +178,7 @@ $$</li>
 <li>超参数的搜索：随即搜索。
 Y.  Bengio  (2012), “Practical  Recommendations for GradientBased
 Training    of  Deep    Architectures”      </li>
+<li>Xavier initialization 初始化策略</li>
 </ul>
 <h2 id="language-models">Language Models</h2>
 <p>所谓语言模型就是建立单词的联合概率模型$(P(w_1,...,w_T))$.</p>
@@ -225,6 +227,10 @@ Units,    Le  et  al. 2015</p>
 <li>
 <p>梯度消减 Mikolov，如果梯度的范数超过阈值，就将梯度归一化到范数等于该阈值的向量或矩阵。</p>
 </li>
+</ul>
+<h3 id="_6">实现细节</h3>
+<ul>
+<li>dropout正则化，在TensorFlow里面，可以使用<code>tf.nn.dropout</code>来实现。</li>
 </ul>
 <h2 id="deep-learning-package-zoom">Deep-learning package zoom</h2>
 <ul>

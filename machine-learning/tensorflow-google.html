@@ -45,8 +45,8 @@
 <li><a href="#_1">核心图数据结构</a></li>
 <li><a href="#_2">基本数据类型</a></li>
 <li><a href="#_3">优化</a></li>
+<li><a href="#cpu-vs-gpu">CPU vs GPU</a></li>
 <li><a href="#tips">TIPS</a></li>
-<li><a href="#adam">ADAM 随机梯度下降算法</a></li>
 </ul>
 </div>
 <h2 id="tensorflow">TensorFlow</h2>
@@ -143,6 +143,10 @@ containing tensors” - TensorFlow Docs.</p>
 <li><code>compute_gradients(loss)</code>，计算梯度</li>
 <li><code>train_op = apply_gradients(grad)</code>，应用梯度更新权值</li>
 </ul>
+<h2 id="cpu-vs-gpu">CPU vs GPU</h2>
+<ul>
+<li>Q: 自己代码在实现上有什么区别呢？</li>
+</ul>
 <h2 id="tips">TIPS</h2>
 <ul>
 <li><code>tf.reshape(some_tensor, (-1, 10))</code>将数据重新划分为10列的元素，第一维自适应</li>
@@ -150,7 +154,6 @@ containing tensors” - TensorFlow Docs.</p>
 <li><code>tf.add_to_collection(name, value)</code>将value保存为名字为name的共享集合中，供后面使用.
   <code>tf.get_collection(name)</code>，获取存储的值</li>
 </ul>
-<h2 id="adam">ADAM 随机梯度下降算法</h2>
 <p>[1] <a href="https://www.tensorflow.org/">https://www.tensorflow.org/</a>
 [2] <a href="http://cs224d.stanford.edu/lectures/CS224d-Lecture7.pdf">http://cs224d.stanford.edu/lectures/CS224d-Lecture7.pdf</a></p>
 </div>
