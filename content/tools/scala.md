@@ -362,6 +362,18 @@ def count(l: List[_]) = l.size
 def hashcodes(l: Seq[_ <: AnyRef]) = l map (_.hashCode)
 ```
 
+-  View bounds（type classes）， `<%`.
+在隐式函数可以帮助满足类型推断时，它们允许按需的函数应用。
+
+```scala
+class Container[A <% Int] { def addIt(x: A) = 123 + x }
+```
+- 更多类型限制，我已经晕了，不要问我，自己看教程！
+
+- 关于类型，还有一些内容，看教程 <https://twitter.github.io/scala_school/zh_cn/advanced-types.html>
+
+
+
 
 
 
@@ -379,3 +391,168 @@ def hashcodes(l: Seq[_ <: AnyRef]) = l map (_.hashCode)
         - src/test – 就像src/main，不过是对测试
         - lib_managed – 你的项目依赖的jar文件。由sbt update时填充
         - target – 生成物的目标路径（如自动生成的thrift代码，类文件，jar包）
+
+## 集合 - 核心数据结构
+### List
+- 创建集合
+
+```scala
+List(1,2,3,4)
+1 :: 2 :: 3 :: Nil
+
+val L = 1 to 1000 toList
+```
+`::`是将前面的数据prepend到后面的列表中，等同于`+:`。
+
+
+
+- 连接集合， `L1 ++ L2`， 可以连接元素类型不同的集合，最终生成的集合类型是这两个
+  集合元素类型的超集。和`:::`一样
+
+- `z /: L` 相当于 `foldLeft z L`, `(0 /: L)((a,b)=>a+b)`求和
+- `z :\ L` 右折叠
+- `:+` append操作， `L :+ 6`
+
+- 索引操作：`.apply(n:Int)` 取下标n的元素，可以通过`()`进行访问，如`L(0)`
+- 内置的数学函数，`.max`, `.min`, `.sum`, `.product`
+- 内置的基本属性，`.length`, `.size`, `.head`, `.last`
+- `filter`, `flatMap`, `map`, `withFilter`, `zip`, `zipWithIndex`（相当于python的enumerater）。
+  其中`flatMap = flatten . map`，因此穿进去的函数需要返回一个`GenTraversableOnce`，比如返回一个列表。
+
+### Set
+- `+` 增加一个元素，返回新的集合
+- `-` 减少一个元素
+- `&` 交集 `|` 并集（`++`） `&~` 差集 (`--`)
+- 与list一样的折叠、map、reduce等集合相关操作
+- 索引`apply(e:A)`，`(e:A)`一样
+
+
+### Seq
+貌似与list没啥区别，需要再仔细看看。
+
+```scala
+scala> Seq(1, 1, 2)
+res3: Seq[Int] = List(1, 1, 2)
+```
+
+请注意返回的是一个列表。因为Seq是一个特质；而列表是序列的很好实现。
+
+
+### Map
+- 创建MAP
+```
+Map('a' -> 1, 'b' -> 2)
+```
+
+## 层次结构
+- traverable, `foreach` 实现遍历
+    - 基本操作
+        - `def head : A` 返回第一个元素
+        - `def tail : Traversable[A]` 除去第一个元素剩下的集合
+    - 函数组合子
+        - `def map [B] (f: (A) => B) : CC[B]` 返回每个元素都被 f 转化的集合
+        - `def foreach[U](f: Elem => U): Unit` 在集合中的每个元素上执行 f 。
+        - `def find (p: (A) => Boolean) : Option[A]` 返回匹配谓词函数的第一个元素
+        - `def filter (p: (A) => Boolean) : Traversable[A]` 返回所有匹配谓词函数的元素集合
+
+    - 划分：
+        - `def partition (p: (A) => Boolean) : (Traversable[A], Traversable[A])` 按照谓词函数把一个集合分割成两部分
+        - `def groupBy [K] (f: (A) => K) : Map[K, Traversable[A]]` 按照Key函数将一个集合分为多个. `S.groupBy(x=>x%3)`
+    - 转换：
+        - `def toArray : Array[A]`
+        - `def toArray [B >: A] (implicit arg0: ClassManifest[B]) : Array[B]`
+        - `def toBuffer [B >: A] : Buffer[B]`
+        - `def toIndexedSeq [B >: A] : IndexedSeq[B]`
+        - `def toIterable : Iterable[A]`
+        - `def toIterator : Iterator[A]`
+        - `def toList : List[A]`
+        - `def toMap [T, U] (implicit ev: <:<[A, (T, U)]) : Map[T, U]` 例如转换命令行参数，`List("A=3","B=5").map(l => l.split("=")).toMap`
+        - `def toSeq : Seq[A]`
+        - `def toSet [B >: A] : Set[B]`
+        - `def toStream : Stream[A]`
+        - `def toString () : String`
+        - `def toTraversable : Traversable[A]`
+- iterable, `iterator()` 返回一个迭代器，通常不会用，一般会用函数组合子和`for`
+
+```scala
+def hasNext(): Boolean
+def next(): A
+```
+
+- Seq 序列，有顺序的对象序列
+- Set 没有重复的对象集合
+
+```scala
+def contains(key: A): Boolean
+def +(elem: A): Set[A]
+def -(elem: A): Set[A]
+```
+- Map 键值对
+
+### 常用子类
+- HashSet, HashMap
+- TreeMap 是SortedMap子类
+- Vector 快速随机访问
+- Range 等间隔的Int有序序列。
+
+```scala
+val r0 = 0 until 10
+val r1 = 0 until 10 by 2
+new Range(start: Int, end: Int, step: Int)
+```
+
+
+### 一些描述特性的特质
+- IndexedSeq 快速随机访问元素和一个快速的长度操作
+- LinearSeq 通过head快速访问第一个元素，也有一个快速的tail操作。
+
+### 可变 vs 不可变
+不可变
+
+优点
+
+在多线程中不会改变
+缺点
+
+一点也不能改变
+Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的可变性。这和var vs. val非常相似。我们总是先从val开始并在必要时回退为var。
+
+我们赞成使用不可改变的版本的集合，但如果性能使然，也可以切换到可变的。使用不可变集合意味着你在多线程不会意外地改变事物。
+
+### 可变集合
+- ListBuffer和ArrayBuffer
+- LinkedList and DoubleLinkedList
+- PriorityQueue
+- Stack 和 ArrayStack
+- StringBuilder 有趣的是，StringBuilder的是一个集合
+
+### 与Java转换
+您可以通过JavaConverters package轻松地在Java和Scala的集合类型之间转换。它用asScala 装饰常用的Java集合以和用asJava 方法装饰Scala集合。
+
+```scala
+   import scala.collection.JavaConverters._
+   val sl = new scala.collection.mutable.ListBuffer[Int]
+   val jl : java.util.List[Int] = sl.asJava
+   val sl2 : scala.collection.mutable.Buffer[Int] = jl.asScala
+   assert(sl eq sl2)
+```
+双向转换：
+
+```scala
+scala.collection.Iterable <=> java.lang.Iterable
+scala.collection.Iterable <=> java.util.Collection
+scala.collection.Iterator <=> java.util.{ Iterator, Enumeration }
+scala.collection.mutable.Buffer <=> java.util.List
+scala.collection.mutable.Set <=> java.util.Set
+scala.collection.mutable.Map <=> java.util.{ Map, Dictionary }
+scala.collection.mutable.ConcurrentMap <=> java.util.concurrent.ConcurrentMap
+```
+
+此外，也提供了以下单向转换
+
+```scala
+scala.collection.Seq => java.util.List
+scala.collection.mutable.Seq => java.util.List
+scala.collection.Set => java.util.Set
+scala.collection.Map => java.util.Map
+```

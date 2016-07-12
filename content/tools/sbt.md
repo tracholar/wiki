@@ -93,7 +93,46 @@ src/
 - 构建定义文件
 包含根目录的`build.sbt`，其他构建文件放在project目录下。
 
+
 - 构建输出文件目录是`target/`，在`.gitignore`中应该排除该目录
+
+## 构建定义
+
+一个构建定义是一个Project，拥有一个类型为 Setting[T] 的列表，Setting[T] 是会影响到 sbt 保存键值对的 map 的一种转换，T 是每一个 value 的类型。
+参考前面的构建定义示例代码。
+
+每一项 Setting 都定义为一个 Scala 表达式。在 settings 中的表达式是相互独立的，而且它们仅仅是表达式，不是完整的 Scala 语句。????WHAT
+这些表达式可以用 val，lazy val，def 声明。 build.sbt 不允许使用顶层的 object 和 class。它们必须写到 project/ 目录下作为完整的 Scala 源文件。
+
+### 键
+有三种类型的 key：
+
+- SettingKey[T]：一个 key 对应一个只计算一次的 value（这个值在加载项目的时候计算，然后一直保存着）。
+- TaskKey[T]：一个 key 对应一个称之为 task 的 value，每次都会重新计算，可能存在潜在的副作用。
+- InputKey[T]：一个 key 对应一个可以接收命令行参数的 task。
+
+键的类型
+
+- 内置键， build.sbt 会隐式包含 import sbt.Keys._ ，所以可以通过 name 取到 sbt.Keys.name。
+- 自定义键，创建方法：settingKey，taskKey 和 inputKey 创建自定义 keys.
+
+```scala
+lazy val hello = taskKey[Unit]("一个 task 示例")
+```
+
+## Tasks 任务
+一个简单的hello任务如下，在build.sbt文件中加入下列代码
+
+```scala
+lazy val hello = taskKey[Unit]("Prints 'Hello World'")
+
+hello := println("hello world!")
+```
+然后执行 `sbt hello` 就可以看到结果了。
+
+一个任务首先需要定义一个`taskKey[T]`，在这个例子中返回空类型，每一个任务是一个scala函数，可以
+返回一个结果。可以在其他任务中通过`.value`属性访问另一个task的结果。
+
 
 ## 两种构建模式
 - 交互式模式，输入`sbt`命令后面不跟参数，然后进入交互式环境，然后运行命令构建。
@@ -110,3 +149,6 @@ package	将 src/main/resources 下的文件和 src/main/scala 以及 src/main/ja
 help <命令>	显示指定的命令的详细帮助信息。如果没有指定命令，会显示所有命令的简介。
 reload	重新加载构建定义（build.sbt， project/*.scala， project/*.sbt 这些文件中定义的内容)。在修改了构建定义文件之后需要重新加载。
 ```
+
+
+## Task

@@ -41,10 +41,16 @@ sc是spark的入口，通过`SparkConf`来创建它。
 val sparkConf = new SparkConf().setAppName("FromPostgreSql")
   .setMaster("local[4]")
   .set("spark.executor.memory", "2g")
-val sc = new SparkContext(sparkConf)
+val sc = new SparkCsontext(sparkConf)
 ```
+对了，目前spark只支持的scala版本是2.10.x，所以用2.11.x版本可能会出错。
 
-使用`sc.stop()`方法停止SparkContext。
+使用`sc.stop()`方法停止SparkContext。貌似不执行stop，本地用`sbt run`运行时会出现错误信息，
+但是提交jar方式运行没问题。
+参考<https://stackoverflow.com/questions/28362341/error-utils-uncaught-exception-in-thread-sparklistenerbus>.
+
+- issue
+    - 使用`sbt run`方式运行任务，如果涉及到`saveAsTextFile`操作时，会出错，原因未知。
 
 ## RDD
 - RDD，全称为Resilient Distributed Datasets，是一个容错的、并行的数据结构，可以让用户显式地将数据存储到磁盘和内存中，并能控制数据的分区。
