@@ -48,7 +48,13 @@
 <li><a href="#_4">目录结构</a></li>
 </ul>
 </li>
-<li><a href="#_5">两种构建模式</a></li>
+<li><a href="#_5">构建定义</a><ul>
+<li><a href="#_6">键</a></li>
+</ul>
+</li>
+<li><a href="#tasks">Tasks 任务</a></li>
+<li><a href="#_7">两种构建模式</a></li>
+<li><a href="#task">Task</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -140,7 +146,39 @@ sbt的源码目录结构与maven一样。</li>
 <p>构建输出文件目录是<code>target/</code>，在<code>.gitignore</code>中应该排除该目录</p>
 </li>
 </ul>
-<h2 id="_5">两种构建模式</h2>
+<h2 id="_5">构建定义</h2>
+<p>一个构建定义是一个Project，拥有一个类型为 Setting[T] 的列表，Setting[T] 是会影响到 sbt 保存键值对的 map 的一种转换，T 是每一个 value 的类型。
+参考前面的构建定义示例代码。</p>
+<p>每一项 Setting 都定义为一个 Scala 表达式。在 settings 中的表达式是相互独立的，而且它们仅仅是表达式，不是完整的 Scala 语句。????WHAT
+这些表达式可以用 val，lazy val，def 声明。 build.sbt 不允许使用顶层的 object 和 class。它们必须写到 project/ 目录下作为完整的 Scala 源文件。</p>
+<h3 id="_6">键</h3>
+<p>有三种类型的 key：</p>
+<ul>
+<li>SettingKey[T]：一个 key 对应一个只计算一次的 value（这个值在加载项目的时候计算，然后一直保存着）。</li>
+<li>TaskKey[T]：一个 key 对应一个称之为 task 的 value，每次都会重新计算，可能存在潜在的副作用。</li>
+<li>InputKey[T]：一个 key 对应一个可以接收命令行参数的 task。</li>
+</ul>
+<p>键的类型</p>
+<ul>
+<li>内置键， build.sbt 会隐式包含 import sbt.Keys._ ，所以可以通过 name 取到 sbt.Keys.name。</li>
+<li>自定义键，创建方法：settingKey，taskKey 和 inputKey 创建自定义 keys.</li>
+</ul>
+<div class="hlcode"><pre><span class="k">lazy</span> <span class="k">val</span> <span class="n">hello</span> <span class="k">=</span> <span class="n">taskKey</span><span class="o">[</span><span class="kt">Unit</span><span class="o">](</span><span class="s">&quot;一个 task 示例&quot;</span><span class="o">)</span>
+</pre></div>
+
+
+<h2 id="tasks">Tasks 任务</h2>
+<p>一个简单的hello任务如下，在build.sbt文件中加入下列代码</p>
+<div class="hlcode"><pre><span class="k">lazy</span> <span class="k">val</span> <span class="n">hello</span> <span class="k">=</span> <span class="n">taskKey</span><span class="o">[</span><span class="kt">Unit</span><span class="o">](</span><span class="s">&quot;Prints &#39;Hello World&#39;&quot;</span><span class="o">)</span>
+
+<span class="n">hello</span> <span class="o">:=</span> <span class="n">println</span><span class="o">(</span><span class="s">&quot;hello world!&quot;</span><span class="o">)</span>
+</pre></div>
+
+
+<p>然后执行 <code>sbt hello</code> 就可以看到结果了。</p>
+<p>一个任务首先需要定义一个<code>taskKey[T]</code>，在这个例子中返回空类型，每一个任务是一个scala函数，可以
+返回一个结果。可以在其他任务中通过<code>.value</code>属性访问另一个task的结果。</p>
+<h2 id="_7">两种构建模式</h2>
 <ul>
 <li>交互式模式，输入<code>sbt</code>命令后面不跟参数，然后进入交互式环境，然后运行命令构建。</li>
 <li>批处理模式，跟参数罗。<code>sbt clean compile "testOnly TestA TestB"</code></li>
@@ -155,6 +193,9 @@ sbt的源码目录结构与maven一样。</li>
 <span class="n">help</span> <span class="o">&lt;</span><span class="err">命令</span><span class="o">&gt;</span>   <span class="err">显示指定的命令的详细帮助信息。如果没有指定命令，会显示所有命令的简介。</span>
 <span class="n">reload</span>  <span class="err">重新加载构建定义（</span><span class="n">build</span><span class="p">.</span><span class="n">sbt</span><span class="err">，</span> <span class="n">project</span><span class="o">/*</span><span class="p">.</span><span class="n">scala</span><span class="err">，</span> <span class="n">project</span><span class="o">/*</span><span class="p">.</span><span class="n">sbt</span> <span class="err">这些文件中定义的内容</span><span class="p">)</span><span class="err">。在修改了构建定义文件之后需要重新加载。</span>
 </pre></div>
+
+
+<h2 id="task">Task</h2>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-07-11 </span></div>
 

@@ -82,11 +82,20 @@
 <div class="hlcode"><pre><span class="k">val</span> <span class="n">sparkConf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkConf</span><span class="o">().</span><span class="n">setAppName</span><span class="o">(</span><span class="s">&quot;FromPostgreSql&quot;</span><span class="o">)</span>
   <span class="o">.</span><span class="n">setMaster</span><span class="o">(</span><span class="s">&quot;local[4]&quot;</span><span class="o">)</span>
   <span class="o">.</span><span class="n">set</span><span class="o">(</span><span class="s">&quot;spark.executor.memory&quot;</span><span class="o">,</span> <span class="s">&quot;2g&quot;</span><span class="o">)</span>
-<span class="k">val</span> <span class="n">sc</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkContext</span><span class="o">(</span><span class="n">sparkConf</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">sc</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkCsontext</span><span class="o">(</span><span class="n">sparkConf</span><span class="o">)</span>
 </pre></div>
 
 
-<p>使用<code>sc.stop()</code>方法停止SparkContext。</p>
+<p>对了，目前spark只支持的scala版本是2.10.x，所以用2.11.x版本可能会出错。</p>
+<p>使用<code>sc.stop()</code>方法停止SparkContext。貌似不执行stop，本地用<code>sbt run</code>运行时会出现错误信息，
+但是提交jar方式运行没问题。
+参考<a href="https://stackoverflow.com/questions/28362341/error-utils-uncaught-exception-in-thread-sparklistenerbus">https://stackoverflow.com/questions/28362341/error-utils-uncaught-exception-in-thread-sparklistenerbus</a>.</p>
+<ul>
+<li>issue<ul>
+<li>使用<code>sbt run</code>方式运行任务，如果涉及到<code>saveAsTextFile</code>操作时，会出错，原因未知。</li>
+</ul>
+</li>
+</ul>
 <h2 id="rdd">RDD</h2>
 <ul>
 <li>RDD，全称为Resilient Distributed Datasets，是一个容错的、并行的数据结构，可以让用户显式地将数据存储到磁盘和内存中，并能控制数据的分区。</li>

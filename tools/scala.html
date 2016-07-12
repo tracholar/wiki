@@ -50,6 +50,21 @@
 </li>
 <li><a href="#_5">类型，静态类型</a></li>
 <li><a href="#sbt">构建工具 SBT</a></li>
+<li><a href="#-">集合 - 核心数据结构</a><ul>
+<li><a href="#list">List</a></li>
+<li><a href="#set">Set</a></li>
+<li><a href="#seq">Seq</a></li>
+<li><a href="#map">Map</a></li>
+</ul>
+</li>
+<li><a href="#_6">层次结构</a><ul>
+<li><a href="#_7">常用子类</a></li>
+<li><a href="#_8">一些描述特性的特质</a></li>
+<li><a href="#vs">可变 vs 不可变</a></li>
+<li><a href="#_9">可变集合</a></li>
+<li><a href="#java">与Java转换</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <h2 id="_1">基础语法</h2>
@@ -488,6 +503,22 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 </pre></div>
 
 
+<ul>
+<li>View bounds（type classes）， <code>&lt;%</code>.
+在隐式函数可以帮助满足类型推断时，它们允许按需的函数应用。</li>
+</ul>
+<div class="hlcode"><pre><span class="k">class</span> <span class="nc">Container</span><span class="o">[</span><span class="kt">A</span> <span class="k">&lt;%</span> <span class="kt">Int</span><span class="o">]</span> <span class="o">{</span> <span class="k">def</span> <span class="n">addIt</span><span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span> <span class="k">=</span> <span class="mi">123</span> <span class="o">+</span> <span class="n">x</span> <span class="o">}</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>更多类型限制，我已经晕了，不要问我，自己看教程！</p>
+</li>
+<li>
+<p>关于类型，还有一些内容，看教程 <a href="https://twitter.github.io/scala_school/zh_cn/advanced-types.html">https://twitter.github.io/scala_school/zh_cn/advanced-types.html</a></p>
+</li>
+</ul>
 <h2 id="sbt">构建工具 SBT</h2>
 <ul>
 <li>安装命令<code>brew install sbt</code></li>
@@ -505,6 +536,188 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 </ul>
 </li>
 </ul>
+<h2 id="-">集合 - 核心数据结构</h2>
+<h3 id="list">List</h3>
+<ul>
+<li>创建集合</li>
+</ul>
+<div class="hlcode"><pre><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">,</span><span class="mi">4</span><span class="o">)</span>
+<span class="mi">1</span> <span class="o">::</span> <span class="mi">2</span> <span class="o">::</span> <span class="mi">3</span> <span class="o">::</span> <span class="nc">Nil</span>
+
+<span class="k">val</span> <span class="n">L</span> <span class="k">=</span> <span class="mi">1</span> <span class="n">to</span> <span class="mi">1000</span> <span class="n">toList</span>
+</pre></div>
+
+
+<p><code>::</code>是将前面的数据prepend到后面的列表中，等同于<code>+:</code>。</p>
+<ul>
+<li>
+<p>连接集合， <code>L1 ++ L2</code>， 可以连接元素类型不同的集合，最终生成的集合类型是这两个
+  集合元素类型的超集。和<code>:::</code>一样</p>
+</li>
+<li>
+<p><code>z /: L</code> 相当于 <code>foldLeft z L</code>, <code>(0 /: L)((a,b)=&gt;a+b)</code>求和</p>
+</li>
+<li><code>z :\ L</code> 右折叠</li>
+<li>
+<p><code>:+</code> append操作， <code>L :+ 6</code></p>
+</li>
+<li>
+<p>索引操作：<code>.apply(n:Int)</code> 取下标n的元素，可以通过<code>()</code>进行访问，如<code>L(0)</code></p>
+</li>
+<li>内置的数学函数，<code>.max</code>, <code>.min</code>, <code>.sum</code>, <code>.product</code></li>
+<li>内置的基本属性，<code>.length</code>, <code>.size</code>, <code>.head</code>, <code>.last</code></li>
+<li><code>filter</code>, <code>flatMap</code>, <code>map</code>, <code>withFilter</code>, <code>zip</code>, <code>zipWithIndex</code>（相当于python的enumerater）。
+  其中<code>flatMap = flatten . map</code>，因此穿进去的函数需要返回一个<code>GenTraversableOnce</code>，比如返回一个列表。</li>
+</ul>
+<h3 id="set">Set</h3>
+<ul>
+<li><code>+</code> 增加一个元素，返回新的集合</li>
+<li><code>-</code> 减少一个元素</li>
+<li><code>&amp;</code> 交集 <code>|</code> 并集（<code>++</code>） <code>&amp;~</code> 差集 (<code>--</code>)</li>
+<li>与list一样的折叠、map、reduce等集合相关操作</li>
+<li>索引<code>apply(e:A)</code>，<code>(e:A)</code>一样</li>
+</ul>
+<h3 id="seq">Seq</h3>
+<p>貌似与list没啥区别，需要再仔细看看。</p>
+<div class="hlcode"><pre><span class="n">scala</span><span class="o">&gt;</span> <span class="nc">Seq</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">)</span>
+<span class="n">res3</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">)</span>
+</pre></div>
+
+
+<p>请注意返回的是一个列表。因为Seq是一个特质；而列表是序列的很好实现。</p>
+<h3 id="map">Map</h3>
+<ul>
+<li>创建MAP</li>
+</ul>
+<div class="hlcode"><pre><span class="n">Map</span><span class="p">(</span><span class="sc">&#39;a&#39;</span> <span class="o">-&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="sc">&#39;b&#39;</span> <span class="o">-&gt;</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+
+<h2 id="_6">层次结构</h2>
+<ul>
+<li>
+<p>traverable, <code>foreach</code> 实现遍历</p>
+<ul>
+<li>基本操作<ul>
+<li><code>def head : A</code> 返回第一个元素</li>
+<li><code>def tail : Traversable[A]</code> 除去第一个元素剩下的集合</li>
+</ul>
+</li>
+<li>
+<p>函数组合子</p>
+<ul>
+<li><code>def map [B] (f: (A) =&gt; B) : CC[B]</code> 返回每个元素都被 f 转化的集合</li>
+<li><code>def foreach[U](f: Elem =&gt; U): Unit</code> 在集合中的每个元素上执行 f 。</li>
+<li><code>def find (p: (A) =&gt; Boolean) : Option[A]</code> 返回匹配谓词函数的第一个元素</li>
+<li><code>def filter (p: (A) =&gt; Boolean) : Traversable[A]</code> 返回所有匹配谓词函数的元素集合</li>
+</ul>
+</li>
+<li>
+<p>划分：</p>
+<ul>
+<li><code>def partition (p: (A) =&gt; Boolean) : (Traversable[A], Traversable[A])</code> 按照谓词函数把一个集合分割成两部分</li>
+<li><code>def groupBy [K] (f: (A) =&gt; K) : Map[K, Traversable[A]]</code> 按照Key函数将一个集合分为多个. <code>S.groupBy(x=&gt;x%3)</code></li>
+</ul>
+</li>
+<li>转换：<ul>
+<li><code>def toArray : Array[A]</code></li>
+<li><code>def toArray [B &gt;: A] (implicit arg0: ClassManifest[B]) : Array[B]</code></li>
+<li><code>def toBuffer [B &gt;: A] : Buffer[B]</code></li>
+<li><code>def toIndexedSeq [B &gt;: A] : IndexedSeq[B]</code></li>
+<li><code>def toIterable : Iterable[A]</code></li>
+<li><code>def toIterator : Iterator[A]</code></li>
+<li><code>def toList : List[A]</code></li>
+<li><code>def toMap [T, U] (implicit ev: &lt;:&lt;[A, (T, U)]) : Map[T, U]</code> 例如转换命令行参数，<code>List("A=3","B=5").map(l =&gt; l.split("=")).toMap</code></li>
+<li><code>def toSeq : Seq[A]</code></li>
+<li><code>def toSet [B &gt;: A] : Set[B]</code></li>
+<li><code>def toStream : Stream[A]</code></li>
+<li><code>def toString () : String</code></li>
+<li><code>def toTraversable : Traversable[A]</code></li>
+</ul>
+</li>
+<li>iterable, <code>iterator()</code> 返回一个迭代器，通常不会用，一般会用函数组合子和<code>for</code></li>
+</ul>
+</li>
+</ul>
+<div class="hlcode"><pre><span class="k">def</span> <span class="n">hasNext</span><span class="o">()</span><span class="k">:</span> <span class="kt">Boolean</span>
+<span class="k">def</span> <span class="n">next</span><span class="o">()</span><span class="k">:</span> <span class="kt">A</span>
+</pre></div>
+
+
+<ul>
+<li>Seq 序列，有顺序的对象序列</li>
+<li>Set 没有重复的对象集合</li>
+</ul>
+<div class="hlcode"><pre><span class="k">def</span> <span class="n">contains</span><span class="o">(</span><span class="n">key</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span><span class="k">:</span> <span class="kt">Boolean</span>
+<span class="k">def</span> <span class="o">+(</span><span class="n">elem</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span><span class="k">:</span> <span class="kt">Set</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span>
+<span class="k">def</span> <span class="o">-(</span><span class="n">elem</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span><span class="k">:</span> <span class="kt">Set</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span>
+</pre></div>
+
+
+<ul>
+<li>Map 键值对</li>
+</ul>
+<h3 id="_7">常用子类</h3>
+<ul>
+<li>HashSet, HashMap</li>
+<li>TreeMap 是SortedMap子类</li>
+<li>Vector 快速随机访问</li>
+<li>Range 等间隔的Int有序序列。</li>
+</ul>
+<div class="hlcode"><pre><span class="k">val</span> <span class="n">r0</span> <span class="k">=</span> <span class="mi">0</span> <span class="n">until</span> <span class="mi">10</span>
+<span class="k">val</span> <span class="n">r1</span> <span class="k">=</span> <span class="mi">0</span> <span class="n">until</span> <span class="mi">10</span> <span class="n">by</span> <span class="mi">2</span>
+<span class="k">new</span> <span class="nc">Range</span><span class="o">(</span><span class="n">start</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">end</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">step</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span>
+</pre></div>
+
+
+<h3 id="_8">一些描述特性的特质</h3>
+<ul>
+<li>IndexedSeq 快速随机访问元素和一个快速的长度操作</li>
+<li>LinearSeq 通过head快速访问第一个元素，也有一个快速的tail操作。</li>
+</ul>
+<h3 id="vs">可变 vs 不可变</h3>
+<p>不可变</p>
+<p>优点</p>
+<p>在多线程中不会改变
+缺点</p>
+<p>一点也不能改变
+Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的可变性。这和var vs. val非常相似。我们总是先从val开始并在必要时回退为var。</p>
+<p>我们赞成使用不可改变的版本的集合，但如果性能使然，也可以切换到可变的。使用不可变集合意味着你在多线程不会意外地改变事物。</p>
+<h3 id="_9">可变集合</h3>
+<ul>
+<li>ListBuffer和ArrayBuffer</li>
+<li>LinkedList and DoubleLinkedList</li>
+<li>PriorityQueue</li>
+<li>Stack 和 ArrayStack</li>
+<li>StringBuilder 有趣的是，StringBuilder的是一个集合</li>
+</ul>
+<h3 id="java">与Java转换</h3>
+<p>您可以通过JavaConverters package轻松地在Java和Scala的集合类型之间转换。它用asScala 装饰常用的Java集合以和用asJava 方法装饰Scala集合。</p>
+<div class="hlcode"><pre>   <span class="k">import</span> <span class="nn">scala.collection.JavaConverters._</span>
+   <span class="k">val</span> <span class="n">sl</span> <span class="k">=</span> <span class="k">new</span> <span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">mutable</span><span class="o">.</span><span class="nc">ListBuffer</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span>
+   <span class="k">val</span> <span class="n">jl</span> <span class="k">:</span> <span class="kt">java.util.List</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="n">sl</span><span class="o">.</span><span class="n">asJava</span>
+   <span class="k">val</span> <span class="n">sl2</span> <span class="k">:</span> <span class="kt">scala.collection.mutable.Buffer</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="n">jl</span><span class="o">.</span><span class="n">asScala</span>
+   <span class="n">assert</span><span class="o">(</span><span class="n">sl</span> <span class="n">eq</span> <span class="n">sl2</span><span class="o">)</span>
+</pre></div>
+
+
+<p>双向转换：</p>
+<div class="hlcode"><pre><span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="nc">Iterable</span> <span class="o">&lt;=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="nc">Iterable</span>
+<span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="nc">Iterable</span> <span class="o">&lt;=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="nc">Collection</span>
+<span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="nc">Iterator</span> <span class="o">&lt;=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.{</span> <span class="nc">Iterator</span><span class="o">,</span> <span class="nc">Enumeration</span> <span class="o">}</span>
+<span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">mutable</span><span class="o">.</span><span class="nc">Buffer</span> <span class="o">&lt;=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="nc">List</span>
+<span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">mutable</span><span class="o">.</span><span class="nc">Set</span> <span class="o">&lt;=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="nc">Set</span>
+<span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">mutable</span><span class="o">.</span><span class="nc">Map</span> <span class="o">&lt;=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.{</span> <span class="nc">Map</span><span class="o">,</span> <span class="nc">Dictionary</span> <span class="o">}</span>
+<span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">mutable</span><span class="o">.</span><span class="nc">ConcurrentMap</span> <span class="o">&lt;=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">concurrent</span><span class="o">.</span><span class="nc">ConcurrentMap</span>
+</pre></div>
+
+
+<p>此外，也提供了以下单向转换</p>
+<div class="hlcode"><pre><span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="nc">Seq</span> <span class="k">=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="nc">List</span>
+<span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">mutable</span><span class="o">.</span><span class="nc">Seq</span> <span class="k">=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="nc">List</span>
+<span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="nc">Set</span> <span class="k">=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="nc">Set</span>
+<span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="nc">Map</span> <span class="k">=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="nc">Map</span>
+</pre></div>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-07-05 </span></div>
 
