@@ -4,6 +4,7 @@ layout: page
 date: 2016-07-05
 ---
 [TOC]
+
 ## 关于
 学习scala后，发现scala就是灵活版的java，他通过引入函数式编程的一些概念来达到这个目的，
 并且由于基于JVM，能够复用所有的java库！！如果你嫌java臃肿，不妨试试scala。
