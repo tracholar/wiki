@@ -227,53 +227,64 @@ class BMW extends Car with Shiny {
 
 
 <ul>
-<li>
-<p>函数即对象.
-函数是一些特质的集合。具体来说，具有一个参数的函数是Function1特质的一个实例。这个特征定义了apply()语法糖，让你调用一个对象时就像你在调用一个函数。</p>
-<p><code>scala
-object addOne extends Function1[Int, Int] {
-    def apply(m: Int): Int = m + 1
-}
-class AddOne extends (Int =&gt; Int) {
-  def apply(m: Int): Int = m + 1
-}</code>
-- 包，和Java的一样
-- 模式匹配
-匹配值</p>
-<p>```scala
-val times = 1</p>
-<p>times match {
-    case 1 =&gt; "one"
-    case 2 =&gt; "two"
-    case _ =&gt; "some others"
-}</p>
-<p>times match {
-    case i if i == 1 =&gt; "one"
-    case i if i == 2 =&gt; "two"
-    case _ =&gt; "some others"
-}
-```
-匹配类型</p>
-<p><code>scala
-def bigger(o: Any): Any = {
-  o match {
-    case i: Int if i &lt; 0 =&gt; i - 1
-    case i: Int =&gt; i + 1
-    case d: Double if d &lt; 0.0 =&gt; d - 0.1
-    case d: Double =&gt; d + 0.1
-    case text: String =&gt; text + "s"
-  }
-}</code>
-匹配类成员</p>
-<p><code>scala
-def calcType(calc: Calculator) = calc match {
-  case _ if calc.brand == "hp" &amp;&amp; calc.model == "20B" =&gt; "financial"
-  case _ if calc.brand == "hp" &amp;&amp; calc.model == "48G" =&gt; "scientific"
-  case _ if calc.brand == "hp" &amp;&amp; calc.model == "30B" =&gt; "business"
-  case _ =&gt; "unknown"
-}</code>
-- 样本类 case class</p>
-</li>
+<li>函数即对象.
+函数是一些特质的集合。具体来说，具有一个参数的函数是Function1特质的一个实例。这个特征定义了apply()语法糖，让你调用一个对象时就像你在调用一个函数。</li>
+</ul>
+<div class="hlcode"><pre><span class="k">object</span> <span class="nc">addOne</span> <span class="k">extends</span> <span class="nc">Function1</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">Int</span><span class="o">]</span> <span class="o">{</span>
+    <span class="k">def</span> <span class="n">apply</span><span class="o">(</span><span class="n">m</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="o">}</span>
+<span class="k">class</span> <span class="nc">AddOne</span> <span class="k">extends</span> <span class="o">(</span><span class="nc">Int</span> <span class="k">=&gt;</span> <span class="nc">Int</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">apply</span><span class="o">(</span><span class="n">m</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<ul>
+<li>包，和Java的一样</li>
+<li>模式匹配
+匹配值</li>
+</ul>
+<div class="hlcode"><pre><span class="k">val</span> <span class="n">times</span> <span class="k">=</span> <span class="mi">1</span>
+
+<span class="n">times</span> <span class="k">match</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="mi">1</span> <span class="k">=&gt;</span> <span class="s">&quot;one&quot;</span>
+    <span class="k">case</span> <span class="mi">2</span> <span class="k">=&gt;</span> <span class="s">&quot;two&quot;</span>
+    <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="s">&quot;some others&quot;</span>
+<span class="o">}</span>
+
+<span class="n">times</span> <span class="k">match</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">=&gt;</span> <span class="s">&quot;one&quot;</span>
+    <span class="k">case</span> <span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">=&gt;</span> <span class="s">&quot;two&quot;</span>
+    <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="s">&quot;some others&quot;</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>匹配类型</p>
+<div class="hlcode"><pre><span class="k">def</span> <span class="n">bigger</span><span class="o">(</span><span class="n">o</span><span class="k">:</span> <span class="kt">Any</span><span class="o">)</span><span class="k">:</span> <span class="kt">Any</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="n">o</span> <span class="k">match</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="n">i</span><span class="k">:</span> <span class="kt">Int</span> <span class="kt">if</span> <span class="kt">i</span> <span class="kt">&lt;</span> <span class="err">0</span> <span class="o">=&gt;</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">case</span> <span class="n">i</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=&gt;</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">case</span> <span class="n">d</span><span class="k">:</span> <span class="kt">Double</span> <span class="kt">if</span> <span class="kt">d</span> <span class="kt">&lt;</span> <span class="err">0</span><span class="kt">.</span><span class="err">0</span> <span class="o">=&gt;</span> <span class="n">d</span> <span class="o">-</span> <span class="mf">0.1</span>
+    <span class="k">case</span> <span class="n">d</span><span class="k">:</span> <span class="kt">Double</span> <span class="o">=&gt;</span> <span class="n">d</span> <span class="o">+</span> <span class="mf">0.1</span>
+    <span class="k">case</span> <span class="n">text</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="n">text</span> <span class="o">+</span> <span class="s">&quot;s&quot;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>匹配类成员</p>
+<div class="hlcode"><pre><span class="k">def</span> <span class="n">calcType</span><span class="o">(</span><span class="n">calc</span><span class="k">:</span> <span class="kt">Calculator</span><span class="o">)</span> <span class="k">=</span> <span class="n">calc</span> <span class="k">match</span> <span class="o">{</span>
+  <span class="k">case</span> <span class="k">_</span> <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">brand</span> <span class="o">==</span> <span class="s">&quot;hp&quot;</span> <span class="o">&amp;&amp;</span> <span class="n">calc</span><span class="o">.</span><span class="n">model</span> <span class="o">==</span> <span class="s">&quot;20B&quot;</span> <span class="k">=&gt;</span> <span class="s">&quot;financial&quot;</span>
+  <span class="k">case</span> <span class="k">_</span> <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">brand</span> <span class="o">==</span> <span class="s">&quot;hp&quot;</span> <span class="o">&amp;&amp;</span> <span class="n">calc</span><span class="o">.</span><span class="n">model</span> <span class="o">==</span> <span class="s">&quot;48G&quot;</span> <span class="k">=&gt;</span> <span class="s">&quot;scientific&quot;</span>
+  <span class="k">case</span> <span class="k">_</span> <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">brand</span> <span class="o">==</span> <span class="s">&quot;hp&quot;</span> <span class="o">&amp;&amp;</span> <span class="n">calc</span><span class="o">.</span><span class="n">model</span> <span class="o">==</span> <span class="s">&quot;30B&quot;</span> <span class="k">=&gt;</span> <span class="s">&quot;business&quot;</span>
+  <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="s">&quot;unknown&quot;</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<ul>
+<li>样本类 case class</li>
 </ul>
 <div class="hlcode"><pre><span class="k">case</span> <span class="k">class</span> <span class="nc">Calculator</span><span class="o">(</span><span class="n">brand</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">model</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
 </pre></div>
