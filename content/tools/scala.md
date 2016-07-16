@@ -126,56 +126,56 @@ Timer.currentCount()
 - 函数即对象.
 函数是一些特质的集合。具体来说，具有一个参数的函数是Function1特质的一个实例。这个特征定义了apply()语法糖，让你调用一个对象时就像你在调用一个函数。
 
-    ```scala
-    object addOne extends Function1[Int, Int] {
-        def apply(m: Int): Int = m + 1
-    }
-    class AddOne extends (Int => Int) {
-      def apply(m: Int): Int = m + 1
-    }
-    ```
+```scala
+object addOne extends Function1[Int, Int] {
+    def apply(m: Int): Int = m + 1
+}
+class AddOne extends (Int => Int) {
+  def apply(m: Int): Int = m + 1
+}
+```
 - 包，和Java的一样
 - 模式匹配
 匹配值
 
-    ```scala
-    val times = 1
+```scala
+val times = 1
 
-    times match {
-        case 1 => "one"
-        case 2 => "two"
-        case _ => "some others"
-    }
+times match {
+    case 1 => "one"
+    case 2 => "two"
+    case _ => "some others"
+}
 
-    times match {
-        case i if i == 1 => "one"
-        case i if i == 2 => "two"
-        case _ => "some others"
-    }
-    ```
+times match {
+    case i if i == 1 => "one"
+    case i if i == 2 => "two"
+    case _ => "some others"
+}
+```
 匹配类型
 
-    ```scala
-    def bigger(o: Any): Any = {
-      o match {
-        case i: Int if i < 0 => i - 1
-        case i: Int => i + 1
-        case d: Double if d < 0.0 => d - 0.1
-        case d: Double => d + 0.1
-        case text: String => text + "s"
-      }
-    }
-    ```
+```scala
+def bigger(o: Any): Any = {
+  o match {
+    case i: Int if i < 0 => i - 1
+    case i: Int => i + 1
+    case d: Double if d < 0.0 => d - 0.1
+    case d: Double => d + 0.1
+    case text: String => text + "s"
+  }
+}
+```
 匹配类成员
 
-    ```scala
-    def calcType(calc: Calculator) = calc match {
-      case _ if calc.brand == "hp" && calc.model == "20B" => "financial"
-      case _ if calc.brand == "hp" && calc.model == "48G" => "scientific"
-      case _ if calc.brand == "hp" && calc.model == "30B" => "business"
-      case _ => "unknown"
-    }
-    ```
+```scala
+def calcType(calc: Calculator) = calc match {
+  case _ if calc.brand == "hp" && calc.model == "20B" => "financial"
+  case _ if calc.brand == "hp" && calc.model == "48G" => "scientific"
+  case _ if calc.brand == "hp" && calc.model == "30B" => "business"
+  case _ => "unknown"
+}
+```
 - 样本类 case class
 ```scala
 case class Calculator(brand: String, model: String)
