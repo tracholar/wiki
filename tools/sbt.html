@@ -1,0 +1,350 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>SBT - scala构建工具 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tools">tools</a>&nbsp;»&nbsp;SBT - scala构建工具</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">SBT - scala构建工具</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">构建项目</a><ul>
+<li><a href="#_3">从单个文件构建</a></li>
+<li><a href="#buildsbt">构建文件build.sbt</a></li>
+<li><a href="#_4">目录结构</a></li>
+</ul>
+</li>
+<li><a href="#_5">构建定义</a><ul>
+<li><a href="#_6">键</a></li>
+</ul>
+</li>
+<li><a href="#tasks">Tasks 任务</a></li>
+<li><a href="#_7">两种构建模式</a></li>
+<li><a href="#dependencies">dependencies 依赖管理</a><ul>
+<li><a href="#_8">手动管理</a></li>
+<li><a href="#_9">自动管理</a><ul>
+<li><a href="#resolvers">resolvers</a></li>
+<li><a href="#configuration">configuration</a></li>
+</ul>
+</li>
+<li><a href="#pom-xml">使用pom xml文件添加依赖</a></li>
+<li><a href="#_10">路径</a><ul>
+<li><a href="#_11">创建文件和路径</a></li>
+<li><a href="#finder">路径finder</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>sbt是scala的交互式构建工具，类似于java的maven。</p>
+<h2 id="_2">构建项目</h2>
+<h3 id="_3">从单个文件构建</h3>
+<p>最简单的方式是从只包含一个scala源文件的目录构建项目。
+例如在目录<code>helloword</code>创建一个<code>HW.scala</code>文件</p>
+<div class="hlcode"><pre><span class="k">object</span> <span class="nc">Hi</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">main</span><span class="o">(</span><span class="n">args</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="k">=</span> <span class="n">println</span><span class="o">(</span><span class="s">&quot;Hi!&quot;</span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>然后运行<code>sbt</code>，和<code>run</code>，或者直接运行<code>sbt run</code>命令。</p>
+<p>sbt自动寻找下列目录</p>
+<ul>
+<li>Sources in the base directory</li>
+<li>Sources in src/main/scala or src/main/java</li>
+<li>Tests in src/test/scala or src/test/java</li>
+<li>Data files in src/main/resources or src/test/resources</li>
+<li>jars in lib</li>
+</ul>
+<h3 id="buildsbt">构建文件<code>build.sbt</code></h3>
+<p>位于项目根目录，一个简单的构建文件如下</p>
+<div class="hlcode"><pre><span class="k">lazy</span> <span class="k">val</span> <span class="n">root</span> <span class="k">=</span> <span class="o">(</span><span class="n">project</span> <span class="n">in</span> <span class="n">file</span><span class="o">(</span><span class="s">&quot;.&quot;</span><span class="o">)).</span>
+  <span class="n">settings</span><span class="o">(</span>
+    <span class="n">name</span> <span class="o">:=</span> <span class="s">&quot;hello&quot;</span><span class="o">,</span>
+    <span class="n">version</span> <span class="o">:=</span> <span class="s">&quot;1.0&quot;</span><span class="o">,</span>
+    <span class="n">scalaVersion</span> <span class="o">:=</span> <span class="s">&quot;2.11.7&quot;</span>
+  <span class="o">)</span>
+</pre></div>
+
+
+<p>如果是要打包到jar文件，name和version是必须的。</p>
+<p>添加依赖</p>
+<div class="hlcode"><pre><span class="k">val</span> <span class="n">derby</span> <span class="k">=</span> <span class="s">&quot;org.apache.derby&quot;</span> <span class="o">%</span> <span class="s">&quot;derby&quot;</span> <span class="o">%</span> <span class="s">&quot;10.4.1.3&quot;</span>
+
+<span class="k">lazy</span> <span class="k">val</span> <span class="n">commonSettings</span> <span class="k">=</span> <span class="nc">Seq</span><span class="o">(</span>
+  <span class="n">organization</span> <span class="o">:=</span> <span class="s">&quot;com.example&quot;</span><span class="o">,</span>
+  <span class="n">version</span> <span class="o">:=</span> <span class="s">&quot;0.1.0&quot;</span><span class="o">,</span>
+  <span class="n">scalaVersion</span> <span class="o">:=</span> <span class="s">&quot;2.11.7&quot;</span>
+<span class="o">)</span>
+
+<span class="k">lazy</span> <span class="k">val</span> <span class="n">root</span> <span class="k">=</span> <span class="o">(</span><span class="n">project</span> <span class="n">in</span> <span class="n">file</span><span class="o">(</span><span class="s">&quot;.&quot;</span><span class="o">)).</span>
+  <span class="n">settings</span><span class="o">(</span><span class="n">commonSettings</span><span class="k">:</span> <span class="k">_</span><span class="kt">*</span><span class="o">).</span>
+  <span class="n">settings</span><span class="o">(</span>
+    <span class="n">name</span> <span class="o">:=</span> <span class="s">&quot;hello&quot;</span><span class="o">,</span>
+    <span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="n">derby</span>
+  <span class="o">)</span>
+</pre></div>
+
+
+<p>依赖库的写法是：</p>
+<div class="hlcode"><pre><span class="n">groupID</span> <span class="o">%</span> <span class="n">artifactID</span> <span class="o">%</span> <span class="n">revision</span>
+</pre></div>
+
+
+<p>如果将依赖的库放在lib目录下，就不需要添加该依赖。</p>
+<h3 id="_4">目录结构</h3>
+<ul>
+<li>源码
+sbt的源码目录结构与maven一样。</li>
+</ul>
+<div class="hlcode"><pre><span class="n">src</span><span class="o">/</span>
+  <span class="n">main</span><span class="o">/</span>
+    <span class="n">resources</span><span class="o">/</span>
+       <span class="o">&lt;</span><span class="n">files</span> <span class="n">to</span> <span class="n">include</span> <span class="n">in</span> <span class="n">main</span> <span class="n">jar</span> <span class="n">here</span><span class="o">&gt;</span>
+    <span class="n">scala</span><span class="o">/</span>
+       <span class="o">&lt;</span><span class="n">main</span> <span class="n">Scala</span> <span class="n">sources</span><span class="o">&gt;</span>
+    <span class="n">java</span><span class="o">/</span>
+       <span class="o">&lt;</span><span class="n">main</span> <span class="n">Java</span> <span class="n">sources</span><span class="o">&gt;</span>
+  <span class="n">test</span><span class="o">/</span>
+    <span class="n">resources</span>
+       <span class="o">&lt;</span><span class="n">files</span> <span class="n">to</span> <span class="n">include</span> <span class="n">in</span> <span class="n">test</span> <span class="n">jar</span> <span class="n">here</span><span class="o">&gt;</span>
+    <span class="n">scala</span><span class="o">/</span>
+       <span class="o">&lt;</span><span class="n">test</span> <span class="n">Scala</span> <span class="n">sources</span><span class="o">&gt;</span>
+    <span class="n">java</span><span class="o">/</span>
+       <span class="o">&lt;</span><span class="n">test</span> <span class="n">Java</span> <span class="n">sources</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>构建定义文件
+包含根目录的<code>build.sbt</code>，其他构建文件放在project目录下。</p>
+</li>
+<li>
+<p>构建输出文件目录是<code>target/</code>，在<code>.gitignore</code>中应该排除该目录</p>
+</li>
+</ul>
+<h2 id="_5">构建定义</h2>
+<p>一个构建定义是一个Project，拥有一个类型为 Setting[T] 的列表，Setting[T] 是会影响到 sbt 保存键值对的 map 的一种转换，T 是每一个 value 的类型。
+参考前面的构建定义示例代码。</p>
+<p>每一项 Setting 都定义为一个 Scala 表达式。在 settings 中的表达式是相互独立的，而且它们仅仅是表达式，不是完整的 Scala 语句。????WHAT
+这些表达式可以用 val，lazy val，def 声明。 build.sbt 不允许使用顶层的 object 和 class。它们必须写到 project/ 目录下作为完整的 Scala 源文件。</p>
+<h3 id="_6">键</h3>
+<p>有三种类型的 key：</p>
+<ul>
+<li>SettingKey[T]：一个 key 对应一个只计算一次的 value（这个值在加载项目的时候计算，然后一直保存着）。</li>
+<li>TaskKey[T]：一个 key 对应一个称之为 task 的 value，每次都会重新计算，可能存在潜在的副作用。</li>
+<li>InputKey[T]：一个 key 对应一个可以接收命令行参数的 task。</li>
+</ul>
+<p>键的类型</p>
+<ul>
+<li>内置键， build.sbt 会隐式包含 import sbt.Keys._ ，所以可以通过 name 取到 sbt.Keys.name。</li>
+<li>自定义键，创建方法：settingKey，taskKey 和 inputKey 创建自定义 keys.</li>
+</ul>
+<div class="hlcode"><pre><span class="k">lazy</span> <span class="k">val</span> <span class="n">hello</span> <span class="k">=</span> <span class="n">taskKey</span><span class="o">[</span><span class="kt">Unit</span><span class="o">](</span><span class="s">&quot;一个 task 示例&quot;</span><span class="o">)</span>
+</pre></div>
+
+
+<h2 id="tasks">Tasks 任务</h2>
+<p>一个简单的hello任务如下，在build.sbt文件中加入下列代码</p>
+<div class="hlcode"><pre><span class="k">lazy</span> <span class="k">val</span> <span class="n">hello</span> <span class="k">=</span> <span class="n">taskKey</span><span class="o">[</span><span class="kt">Unit</span><span class="o">](</span><span class="s">&quot;Prints &#39;Hello World&#39;&quot;</span><span class="o">)</span>
+
+<span class="n">hello</span> <span class="o">:=</span> <span class="n">println</span><span class="o">(</span><span class="s">&quot;hello world!&quot;</span><span class="o">)</span>
+</pre></div>
+
+
+<p>然后执行 <code>sbt hello</code> 就可以看到结果了。</p>
+<p>一个任务首先需要定义一个<code>taskKey[T]</code>，在这个例子中返回空类型，每一个任务是一个scala函数，可以
+返回一个结果。可以在其他任务中通过<code>.value</code>属性访问另一个task的结果。</p>
+<h2 id="_7">两种构建模式</h2>
+<ul>
+<li>交互式模式，输入<code>sbt</code>命令后面不跟参数，然后进入交互式环境，然后运行命令构建。</li>
+<li>批处理模式，跟参数罗。<code>sbt clean compile "testOnly TestA TestB"</code></li>
+<li>常见命令，更多参考</li>
+</ul>
+<div class="hlcode"><pre><span class="n">clean</span>   <span class="err">删除所有生成的文件</span> <span class="err">（在</span> <span class="n">target</span> <span class="err">目录下）。</span>
+<span class="n">compile</span> <span class="err">编译源文件（在</span> <span class="n">src</span><span class="o">/</span><span class="n">main</span><span class="o">/</span><span class="n">scala</span> <span class="err">和</span> <span class="n">src</span><span class="o">/</span><span class="n">main</span><span class="o">/</span><span class="n">java</span> <span class="err">目录下）。</span>
+<span class="n">test</span>    <span class="err">编译和运行所有测试。</span>
+<span class="n">console</span> <span class="err">进入到一个包含所有编译的文件和所有依赖的</span> <span class="n">classpath</span> <span class="err">的</span> <span class="n">Scala</span> <span class="err">解析器。输入</span> <span class="o">:</span><span class="n">quit</span><span class="err">，</span> <span class="n">Ctrl</span><span class="o">+</span><span class="n">D</span> <span class="err">（</span><span class="n">Unix</span><span class="err">），或者</span> <span class="n">Ctrl</span><span class="o">+</span><span class="n">Z</span> <span class="err">（</span><span class="n">Windows</span><span class="err">）</span> <span class="err">返回到</span> <span class="n">sbt</span><span class="err">。</span>
+<span class="n">run</span> <span class="o">&lt;</span><span class="err">参数</span><span class="o">&gt;*</span>   <span class="err">在和</span> <span class="n">sbt</span> <span class="err">所处的同一个虚拟机上执行项目的</span> <span class="n">main</span> <span class="n">class</span><span class="err">。</span>
+<span class="n">package</span> <span class="err">将</span> <span class="n">src</span><span class="o">/</span><span class="n">main</span><span class="o">/</span><span class="n">resources</span> <span class="err">下的文件和</span> <span class="n">src</span><span class="o">/</span><span class="n">main</span><span class="o">/</span><span class="n">scala</span> <span class="err">以及</span> <span class="n">src</span><span class="o">/</span><span class="n">main</span><span class="o">/</span><span class="n">java</span> <span class="err">中编译出来的</span> <span class="n">class</span> <span class="err">文件打包成一个</span> <span class="n">jar</span> <span class="err">文件。</span>
+<span class="n">help</span> <span class="o">&lt;</span><span class="err">命令</span><span class="o">&gt;</span>   <span class="err">显示指定的命令的详细帮助信息。如果没有指定命令，会显示所有命令的简介。</span>
+<span class="n">reload</span>  <span class="err">重新加载构建定义（</span><span class="n">build</span><span class="p">.</span><span class="n">sbt</span><span class="err">，</span> <span class="n">project</span><span class="o">/*</span><span class="p">.</span><span class="n">scala</span><span class="err">，</span> <span class="n">project</span><span class="o">/*</span><span class="p">.</span><span class="n">sbt</span> <span class="err">这些文件中定义的内容</span><span class="p">)</span><span class="err">。在修改了构建定义文件之后需要重新加载。</span>
+</pre></div>
+
+
+<h2 id="dependencies">dependencies 依赖管理</h2>
+<h3 id="_8">手动管理</h3>
+<p>手动将库的jar包复制到lib目录下就可以了。如果要更改默认路径，需要修改<code>unmanagedBase</code>，
+例如修改到<code>custom_lib/</code>目录可以用下述命令</p>
+<div class="hlcode"><pre><span class="n">unmanagedBase</span> <span class="o">:=</span> <span class="n">baseDirectory</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="s">&quot;custom_lib&quot;</span>
+</pre></div>
+
+
+<p>更多的控制可以通过重载unmanagedJars这个task，默认的实现是</p>
+<div class="hlcode"><pre><span class="n">unmanagedJars</span> <span class="n">in</span> <span class="nc">Compile</span> <span class="o">:=</span> <span class="o">(</span><span class="n">baseDirectory</span><span class="o">.</span><span class="n">value</span> <span class="o">**</span> <span class="s">&quot;*.jar&quot;</span><span class="o">).</span><span class="n">classpath</span>
+</pre></div>
+
+
+<p>如果要添加多个路径到默认路径，可以这样写</p>
+<div class="hlcode"><pre><span class="n">unmanagedJars</span> <span class="n">in</span> <span class="nc">Compile</span> <span class="o">++=</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="n">base</span> <span class="k">=</span> <span class="n">baseDirectory</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">val</span> <span class="n">baseDirectories</span> <span class="k">=</span> <span class="o">(</span><span class="n">base</span> <span class="o">/</span> <span class="s">&quot;libA&quot;</span><span class="o">)</span> <span class="o">+++</span> <span class="o">(</span><span class="n">base</span> <span class="o">/</span> <span class="s">&quot;b&quot;</span> <span class="o">/</span> <span class="s">&quot;lib&quot;</span><span class="o">)</span> <span class="o">+++</span> <span class="o">(</span><span class="n">base</span> <span class="o">/</span> <span class="s">&quot;libC&quot;</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">customJars</span> <span class="k">=</span> <span class="o">(</span><span class="n">baseDirectories</span> <span class="o">**</span> <span class="s">&quot;*.jar&quot;</span><span class="o">)</span> <span class="o">+++</span> <span class="o">(</span><span class="n">base</span> <span class="o">/</span> <span class="s">&quot;d&quot;</span> <span class="o">/</span> <span class="s">&quot;my.jar&quot;</span><span class="o">)</span>
+    <span class="n">customJars</span><span class="o">.</span><span class="n">classpath</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>这里对路径的语法，参考后面的路径</p>
+<h3 id="_9">自动管理</h3>
+<p>sbt支持三种自动管理方式，都是通过Apache ivy来实现的。</p>
+<ul>
+<li>Declarations in your project definition</li>
+<li>Maven POM files (dependency definitions only: no repositories)</li>
+<li>Ivy configuration and settings files</li>
+</ul>
+<p>可以通过下述语句声明依赖，其中configuration是可选的。
+多个依赖可以通过<code>Seq</code>将每一个依赖作为一个元素进行添加，注意链接操作符号的区别，
+libraryDependencies是一个 Seq ?</p>
+<div class="hlcode"><pre><span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="n">groupID</span> <span class="o">%</span> <span class="n">artifactID</span> <span class="o">%</span> <span class="n">revision</span> <span class="o">%</span> <span class="n">configuration</span>
+<span class="n">libraryDependencies</span> <span class="o">++=</span> <span class="nc">Seq</span><span class="o">(</span>
+  <span class="n">groupID</span> <span class="o">%%</span> <span class="n">artifactID</span> <span class="o">%</span> <span class="n">revision</span><span class="o">,</span>
+  <span class="n">groupID</span> <span class="o">%%</span> <span class="n">otherID</span> <span class="o">%</span> <span class="n">otherRevision</span>
+<span class="o">)</span>
+</pre></div>
+
+
+<blockquote>
+<p>If you are using a dependency that was built with sbt, double the first % to be %%</p>
+<p>sbt uses the standard Maven2 repository by default.</p>
+</blockquote>
+<p>revision除了可以使用常规的完整版本号外，还可以使用 "latest.integration", "2.9.+", or "[1.0,)"这种形式。</p>
+<h4 id="resolvers">resolvers</h4>
+<p>可以通过设置resolvers来添加依赖库获取的位置，格式是
+<code>resolvers += name at location</code>，location可以是合法的URI，例如</p>
+<div class="hlcode"><pre><span class="n">resolvers</span> <span class="o">+=</span> <span class="s">&quot;Sonatype OSS Snapshots&quot;</span> <span class="n">at</span> <span class="s">&quot;https://oss.sonatype.org/content/repositories/snapshots&quot;</span>
+<span class="n">resolvers</span> <span class="o">+=</span> <span class="s">&quot;Local Maven Repository&quot;</span> <span class="n">at</span> <span class="s">&quot;file://&quot;</span><span class="o">+</span><span class="nc">Path</span><span class="o">.</span><span class="n">userHome</span><span class="o">.</span><span class="n">absolutePath</span><span class="o">+</span><span class="s">&quot;/.m2/repository&quot;</span>
+<span class="n">externalResolvers</span> <span class="o">:=</span> <span class="nc">Resolver</span><span class="o">.</span><span class="n">withDefaultResolvers</span><span class="o">(</span><span class="n">resolvers</span><span class="o">.</span><span class="n">value</span><span class="o">,</span> <span class="n">mavenCentral</span> <span class="k">=</span> <span class="kc">false</span><span class="o">)</span>
+</pre></div>
+
+
+<h4 id="configuration">configuration</h4>
+<ul>
+<li>指定URL</li>
+</ul>
+<div class="hlcode"><pre><span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s">&quot;slinky&quot;</span> <span class="o">%</span> <span class="s">&quot;slinky&quot;</span> <span class="o">%</span> <span class="s">&quot;2.1&quot;</span> <span class="n">from</span> <span class="s">&quot;https://slinky2.googlecode.com/svn/artifacts/2.1/slinky.jar&quot;</span>
+<span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s">&quot;org.apache.felix&quot;</span> <span class="o">%</span> <span class="s">&quot;org.apache.felix.framework&quot;</span> <span class="o">%</span> <span class="s">&quot;1.8.0&quot;</span> <span class="n">intransitive</span><span class="o">()</span>
+<span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s">&quot;org.testng&quot;</span> <span class="o">%</span> <span class="s">&quot;testng&quot;</span> <span class="o">%</span> <span class="s">&quot;5.7&quot;</span> <span class="n">classifier</span> <span class="s">&quot;jdk15&quot;</span>
+<span class="n">libraryDependencies</span> <span class="o">+=</span>
+  <span class="s">&quot;org.lwjgl.lwjgl&quot;</span> <span class="o">%</span> <span class="s">&quot;lwjgl-platform&quot;</span> <span class="o">%</span> <span class="n">lwjglVersion</span> <span class="n">classifier</span> <span class="s">&quot;natives-windows&quot;</span> <span class="n">classifier</span> <span class="s">&quot;natives-linux&quot;</span> <span class="n">classifier</span> <span class="s">&quot;natives-osx&quot;</span>
+<span class="n">libraryDependencies</span> <span class="o">+=</span>
+    <span class="s">&quot;log4j&quot;</span> <span class="o">%</span> <span class="s">&quot;log4j&quot;</span> <span class="o">%</span> <span class="s">&quot;1.2.15&quot;</span> <span class="n">exclude</span><span class="o">(</span><span class="s">&quot;javax.jms&quot;</span><span class="o">,</span> <span class="s">&quot;jms&quot;</span><span class="o">)</span>
+<span class="n">libraryDependencies</span> <span class="o">+=</span>
+      <span class="s">&quot;org.apache.felix&quot;</span> <span class="o">%</span> <span class="s">&quot;org.apache.felix.framework&quot;</span> <span class="o">%</span> <span class="s">&quot;1.8.0&quot;</span> <span class="n">withSources</span><span class="o">()</span> <span class="n">withJavadoc</span><span class="o">()</span>
+</pre></div>
+
+
+<p>-</p>
+<h3 id="pom-xml">使用pom xml文件添加依赖</h3>
+<div class="hlcode"><pre><span class="n">externalPom</span><span class="p">()</span>
+<span class="n">externalPom</span><span class="p">(</span><span class="n">Def</span><span class="p">.</span><span class="n">setting</span><span class="p">(</span><span class="n">baseDirectory</span><span class="p">.</span><span class="n">value</span> <span class="o">/</span> <span class="s">&quot;custom-name.xml&quot;</span><span class="p">))</span>
+</pre></div>
+
+
+<h3 id="_10">路径</h3>
+<h4 id="_11">创建文件和路径</h4>
+<p>sbt 0.10+ 使用<code>java.io.File</code> 文件类型。
+创建文件方法</p>
+<div class="hlcode"><pre><span class="k">val</span> <span class="n">source</span><span class="k">:</span> <span class="kt">File</span> <span class="o">=</span> <span class="n">file</span><span class="o">(</span><span class="s">&quot;/home/user/code/A.scala&quot;</span><span class="o">)</span>
+<span class="k">def</span> <span class="n">readme</span><span class="o">(</span><span class="n">base</span><span class="k">:</span> <span class="kt">File</span><span class="o">)</span><span class="k">:</span> <span class="kt">File</span> <span class="o">=</span> <span class="n">base</span> <span class="o">/</span> <span class="s">&quot;README&quot;</span>
+</pre></div>
+
+
+<p>sbt 添加了<code>/</code>方法，对应于两参数构造函数。</p>
+<p><code>baseDirectory</code> task 返回bese目录绝对路径。</p>
+<h4 id="finder">路径finder</h4>
+<p>一个路径finder返回一个<code>Seq[File]</code>。例如</p>
+<div class="hlcode"><pre><span class="k">def</span> <span class="n">scalaSources</span><span class="o">(</span><span class="n">base</span><span class="k">:</span> <span class="kt">File</span><span class="o">)</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">File</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+  <span class="k">val</span> <span class="n">finder</span><span class="k">:</span> <span class="kt">PathFinder</span> <span class="o">=</span> <span class="o">(</span><span class="n">base</span> <span class="o">/</span> <span class="s">&quot;src&quot;</span><span class="o">)</span> <span class="o">**</span> <span class="s">&quot;*.scala&quot;</span>
+  <span class="n">finder</span><span class="o">.</span><span class="n">get</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>The <code>**</code> method accepts a <code>java.io.FileFilter</code> ，筛选目录及子目录下所有文件。
+如果只访问该目录可以使用 <code>*</code> 函数。
+惰性求值使得需要调用<code>.get</code>才能计算结果。</p>
+<p>name filter 使用 <code>*</code>表示0个或多个字符。用<code>||</code>表示多个filter的或，用<code>--</code>表示排除。</p>
+<div class="hlcode"><pre><span class="k">val</span> <span class="n">base</span> <span class="k">=</span> <span class="n">baseDirectory</span><span class="o">.</span><span class="n">value</span>
+<span class="o">(</span><span class="n">base</span> <span class="o">/</span> <span class="s">&quot;src&quot;</span><span class="o">)</span> <span class="o">*</span> <span class="s">&quot;*Test*.scala&quot;</span>
+<span class="o">(</span><span class="n">base</span> <span class="o">/</span> <span class="s">&quot;src&quot;</span><span class="o">)</span> <span class="o">**</span> <span class="o">(</span><span class="s">&quot;*.scala&quot;</span> <span class="o">||</span> <span class="s">&quot;*.java&quot;</span><span class="o">)</span>
+<span class="o">(</span><span class="n">base</span><span class="o">/</span><span class="s">&quot;src&quot;</span><span class="o">/</span><span class="s">&quot;main&quot;</span><span class="o">/</span><span class="s">&quot;resources&quot;</span><span class="o">)</span> <span class="o">*</span> <span class="o">(</span><span class="s">&quot;*.png&quot;</span> <span class="o">--</span> <span class="s">&quot;logo.png&quot;</span><span class="o">)</span>
+</pre></div>
+
+
+<p>组合多个finder <code>+++</code>, 排除结果可以用 <code>---</code>。
+finder有一个filter方法，用于进一步筛选</p>
+<p><code>scala
+(base / "lib" +++ base / "target") * "*.jar"
+( (base / "src") ** "*.scala") --- ( (base / "src") ** ".svn" ** "*.scala")
+( (base / "src") ** "*") filter { _.isDirectory }
+base filter ClasspathUtilities.isArchive</code></p>
+<ul>
+<li>to string 转换<ul>
+<li>toString</li>
+<li>absString ，</li>
+<li>getPaths ， 返回Seq[String]</li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2016-07-11 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2016 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+    </body>
+</html>

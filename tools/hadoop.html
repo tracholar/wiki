@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>Hadoop - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tools">tools</a>&nbsp;»&nbsp;Hadoop</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">Hadoop</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#hadoop-shell">Hadoop shell</a></li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>作为大数据工作者，怎能不懂hadoop。</p>
+<h2 id="hadoop-shell">Hadoop shell</h2>
+<p>利用hadoop shell 访问HDFS文件系统，官方文档见<a href="https://hadoop.apache.org/docs/r1.0.4/cn/hdfs_shell.html">https://hadoop.apache.org/docs/r1.0.4/cn/hdfs_shell.html</a>。
+这里记录一些常用命令和技巧。</p>
+<p>调用文件系统(FS)Shell命令应使用 <code>bin/hadoop fs &lt;args&gt;</code>的形式。 所有的的FS shell命令使用URI路径作为参数。URI格式是scheme://authority/path。对HDFS文件系统，scheme是hdfs，对本地文件系统，scheme是file。其中scheme和authority参数都是可选的，如果未加指定，就会使用配置中指定的默认scheme。一个HDFS文件或目录比如/parent/child可以表示成hdfs://namenode:namenodeport/parent/child，或者更简单的/parent/child（假设你配置文件中的默认值是namenode:namenodeport）。大多数FS Shell命令的行为和对应的Unix Shell命令类似，不同之处会在下面介绍各命令使用详情时指出。出错信息会输出到stderr，其他信息输出到stdout。</p>
+<ul>
+<li><args> 需要添加<code>-</code>号，例如<code>cat</code>命令调用形式为<code>hadoop fs -cat some-path</code></li>
+<li>与bash相同的命令有，<code>cat</code>, <code>chmod</code>, <code>chown</code>, <code>du</code>(显示文件大小), <code>ls</code>, <code>lsr</code>(ls -R), <code>mkdir</code> (mkdir -p 创建所有不存在的父目录),
+  <code>mv</code>, <code>rm</code>, <code>rmr</code> (rm -R), <code>stat</code>, <code>tail</code>, <code>test -[ezd]</code>，</li>
+<li>特有的命令<ul>
+<li><code>dus</code>， 显示文件大小</li>
+<li><code>touchz</code>，创建一个0字节的空文件</li>
+<li><code>text</code>， 将源文件输出为文本格式。允许的格式是zip和TextRecordInputStream。</li>
+</ul>
+</li>
+<li>与本地文件系统交互的命令<ul>
+<li><code>copyFromLocal</code></li>
+<li><code>copyToLocal</code></li>
+<li><code>put</code>，可以用<code>-</code>代表标准输入，例如<code>hadoop fs -put - hdfs://host:port/hadoop/hadoopfile</code></li>
+<li><code>get</code>， 例子 <code>hadoop fs -get /user/hadoop/file localfile</code></li>
+<li><code>getmerge</code>, 获取分布式文件目录中所有的文件并合并到一个本地文件中，使用方法：<code>hadoop fs -getmerge &lt;src&gt; &lt;localdst&gt; [addnl]</code>，addnl是可选的，用于指定在每个文件结尾添加一个换行符。</li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2016-07-12 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2016 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+    </body>
+</html>

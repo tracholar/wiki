@@ -1,0 +1,215 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>python 拾遗 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#python">python</a>&nbsp;»&nbsp;python 拾遗</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">python 拾遗</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">迭代器相关函数</a></li>
+<li><a href="#_2">各种坑</a></li>
+<li><a href="#_3">工具函数</a></li>
+</ul>
+</div>
+<h2 id="_1">迭代器相关函数</h2>
+<ul>
+<li><code>enumerate(iter)</code> 返回<code>(idx, value)</code>的迭代器，可以应用在需要使用index的时候。</li>
+<li><code>(x for x ... )</code> 圆括号生成迭代器的一个语法糖。</li>
+</ul>
+<h2 id="_2">各种坑</h2>
+<ul>
+<li>不要用可变对象作为函数默认值。字典,集合,列表等等对象是不适合作为函数默认值的.
+  因为这个默认值是在函数建立的时候就生成了, 每次调用都是用了这个对象的”缓存”.</li>
+</ul>
+<div class="hlcode"><pre><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="k">def</span> <span class="nf">append_to_list</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">def_list</span><span class="o">=</span><span class="p">[]):</span>
+   <span class="o">...</span><span class="p">:</span>         <span class="n">def_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+   <span class="o">...</span><span class="p">:</span>         <span class="k">return</span> <span class="n">def_list</span>
+   <span class="o">...</span><span class="p">:</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">my_list</span> <span class="o">=</span> <span class="n">append_to_list</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">my_list</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">my_other_list</span> <span class="o">=</span> <span class="n">append_to_list</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">my_other_list</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="c"># 看到了吧，其实我们本来只想生成[2] 但是却把第一次运行的效果页带了进来</span>
+</pre></div>
+
+
+<ul>
+<li>生成器不保留迭代过后的结果</li>
+</ul>
+<div class="hlcode"><pre><span class="n">In</span> <span class="p">[</span><span class="mi">12</span><span class="p">]:</span> <span class="n">gen</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">13</span><span class="p">]:</span> <span class="mi">2</span> <span class="ow">in</span> <span class="n">gen</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">13</span><span class="p">]:</span> <span class="bp">True</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">14</span><span class="p">]:</span> <span class="mi">3</span> <span class="ow">in</span> <span class="n">gen</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">14</span><span class="p">]:</span> <span class="bp">True</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">gen</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="bp">False</span> <span class="c"># 1为什么不在gen里面了? 因为调用1-&gt;2,这个时候1已经不在迭代器里面了,被按需生成过了</span>
+</pre></div>
+
+
+<ul>
+<li>在循环中修改列表项，例如在循环中删除某个元素导致index紊乱</li>
+</ul>
+<div class="hlcode"><pre><span class="n">In</span> <span class="p">[</span><span class="mi">44</span><span class="p">]:</span> <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">45</span><span class="p">]:</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
+   <span class="o">....</span><span class="p">:</span>     <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span>
+   <span class="o">....</span><span class="p">:</span>         <span class="n">a</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+   <span class="o">....</span><span class="p">:</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">46</span><span class="p">]:</span> <span class="n">a</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">46</span><span class="p">]:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="c"># 没有问题</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">50</span><span class="p">]:</span> <span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">51</span><span class="p">]:</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">b</span><span class="p">:</span>
+   <span class="o">....</span><span class="p">:</span>      <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span>
+   <span class="o">....</span><span class="p">:</span>          <span class="n">b</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+   <span class="o">....</span><span class="p">:</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">52</span><span class="p">]:</span> <span class="n">b</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">52</span><span class="p">]:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="c"># 本来我想要的结果应该是去除偶数的列表</span>
+</pre></div>
+
+
+<ul>
+<li>IndexError，</li>
+</ul>
+<div class="hlcode"><pre><span class="n">In</span> <span class="p">[</span><span class="mi">55</span><span class="p">]:</span> <span class="n">my_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">56</span><span class="p">]:</span> <span class="n">my_list</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="c"># 根本没有这个元素</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">57</span><span class="p">]:</span> <span class="n">my_list</span><span class="p">[</span><span class="mi">5</span><span class="p">:]</span> <span class="c"># 这个是可以的</span>
+</pre></div>
+
+
+<ul>
+<li>全局变量和局部变量重名问题</li>
+</ul>
+<div class="hlcode"><pre><span class="n">In</span> <span class="p">[</span><span class="mi">58</span><span class="p">]:</span> <span class="k">def</span> <span class="nf">my_func</span><span class="p">():</span>
+   <span class="o">....</span><span class="p">:</span>         <span class="k">print</span><span class="p">(</span><span class="n">var</span><span class="p">)</span> <span class="c"># 我可以先调用一个未定义的变量</span>
+   <span class="o">....</span><span class="p">:</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">59</span><span class="p">]:</span> <span class="n">var</span> <span class="o">=</span> <span class="s">&#39;global&#39;</span> <span class="c"># 后赋值</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">60</span><span class="p">]:</span> <span class="n">my_func</span><span class="p">()</span> <span class="c"># 反正只要调用函数时候变量被定义了就可以了</span>
+<span class="k">global</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">61</span><span class="p">]:</span> <span class="k">def</span> <span class="nf">my_func</span><span class="p">():</span>
+   <span class="o">....</span><span class="p">:</span>     <span class="n">var</span> <span class="o">=</span> <span class="s">&#39;locally changed&#39;</span>
+   <span class="o">....</span><span class="p">:</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">62</span><span class="p">]:</span> <span class="n">var</span> <span class="o">=</span> <span class="s">&#39;global&#39;</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">63</span><span class="p">]:</span> <span class="n">my_func</span><span class="p">()</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">64</span><span class="p">]:</span> <span class="k">print</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+
+<span class="k">global</span> <span class="c"># 局部变量没有影响到全局变量</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">65</span><span class="p">]:</span> <span class="k">def</span> <span class="nf">my_func</span><span class="p">():</span>
+   <span class="o">....</span><span class="p">:</span>         <span class="k">print</span><span class="p">(</span><span class="n">var</span><span class="p">)</span> <span class="c"># 虽然你全局设置这个变量, 但是局部变量有同名的, python以为你忘了定义本地变量了</span>
+   <span class="o">....</span><span class="p">:</span>         <span class="n">var</span> <span class="o">=</span> <span class="s">&#39;locally changed&#39;</span>
+   <span class="o">....</span><span class="p">:</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">66</span><span class="p">]:</span> <span class="n">var</span> <span class="o">=</span> <span class="s">&#39;global&#39;</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">67</span><span class="p">]:</span> <span class="n">my_func</span><span class="p">()</span>
+<span class="o">---------------------------------------------------------------------------</span>
+<span class="ne">UnboundLocalError</span>                         <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">67</span><span class="o">-</span><span class="n">d82eda95de40</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="o">----&gt;</span> <span class="mi">1</span> <span class="n">my_func</span><span class="p">()</span>
+
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">65</span><span class="o">-</span><span class="mi">0</span><span class="n">ad11d690936</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="n">my_func</span><span class="p">()</span>
+      <span class="mi">1</span> <span class="k">def</span> <span class="nf">my_func</span><span class="p">():</span>
+<span class="o">----&gt;</span> <span class="mi">2</span>         <span class="k">print</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+      <span class="mi">3</span>         <span class="n">var</span> <span class="o">=</span> <span class="s">&#39;locally changed&#39;</span>
+      <span class="mi">4</span>
+
+<span class="ne">UnboundLocalError</span><span class="p">:</span> <span class="n">local</span> <span class="n">variable</span> <span class="s">&#39;var&#39;</span> <span class="n">referenced</span> <span class="n">before</span> <span class="n">assignment</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">68</span><span class="p">]:</span> <span class="k">def</span> <span class="nf">my_func</span><span class="p">():</span>
+   <span class="o">....</span><span class="p">:</span>         <span class="k">global</span> <span class="n">var</span> <span class="c"># 这个时候得加全局了</span>
+   <span class="o">....</span><span class="p">:</span>         <span class="k">print</span><span class="p">(</span><span class="n">var</span><span class="p">)</span> <span class="c"># 这样就能正常使用</span>
+   <span class="o">....</span><span class="p">:</span>         <span class="n">var</span> <span class="o">=</span> <span class="s">&#39;locally changed&#39;</span>
+   <span class="o">....</span><span class="p">:</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">69</span><span class="p">]:</span> <span class="n">var</span> <span class="o">=</span> <span class="s">&#39;global&#39;</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">70</span><span class="p">]:</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">70</span><span class="p">]:</span> <span class="n">my_func</span><span class="p">()</span>
+<span class="k">global</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">71</span><span class="p">]:</span> <span class="k">print</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+<span class="n">locally</span> <span class="n">changed</span> <span class="c"># 但是使用了global就改变了全局变量</span>
+</pre></div>
+
+
+<ul>
+<li><code>is</code> 和 <code>==</code> 前者比较是否是同一个对象，后者比较值是否相等</li>
+</ul>
+<h2 id="_3">工具函数</h2>
+<ul>
+<li>获取对象成员，<code>getmembers</code>, <code>dir</code>等函数</li>
+</ul>
+<div class="hlcode"><pre><span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">getmembers</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="p">(</span><span class="n">getmembers</span><span class="p">(</span><span class="nb">object</span><span class="p">)):</span>
+    <span class="k">print</span> <span class="n">k</span><span class="p">,</span><span class="s">&#39;:&#39;</span><span class="p">,</span> <span class="n">v</span>
+</pre></div>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2016-07-10 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2016 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+    </body>
+</html>

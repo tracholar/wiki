@@ -1,0 +1,423 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>go语言 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tools">tools</a>&nbsp;»&nbsp;go语言</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">go语言</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">安装环境</a></li>
+<li><a href="#_2">基础</a><ul>
+<li><a href="#_3">基础语法</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="_1">安装环境</h2>
+<p>只试过MAC OS环境，所以就说这个，不同环境应该差不多。
+安装GO运行环境，然后配置两个环境变量｀GOPATH｀和｀GOBIN｀</p>
+<h2 id="_2">基础</h2>
+<h3 id="_3">基础语法</h3>
+<ul>
+<li>程序入口包是<code>main</code></li>
+<li>导出名的首字母必须为大写！</li>
+<li>批量import方式</li>
+</ul>
+<div class="hlcode"><pre><span class="kn">import</span> <span class="p">(</span>
+    <span class="s">&quot;fmt&quot;</span>
+    <span class="s">&quot;math&quot;</span>
+<span class="p">)</span>
+</pre></div>
+
+
+<ul>
+<li>函数签名方式，可以将相同类型的形参类型申明合并</li>
+</ul>
+<div class="hlcode"><pre><span class="kd">func</span> <span class="nx">add</span><span class="p">(</span><span class="nx">x</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="err">#</span><span class="nx">TODO</span>
+    <span class="k">return</span> <span class="nx">x</span><span class="o">+</span><span class="nx">y</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>函数可以返回多值。</li>
+</ul>
+<div class="hlcode"><pre><span class="kd">func</span> <span class="nx">swap</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="kt">string</span><span class="p">,</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">x</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>赋值语法<code>a := "hello world."</code></li>
+<li>命名返回值：Go 的返回值可以被命名，并且就像在函数体开头声明的变量那样使用。
+  返回值的名称应当具有一定的意义，可以作为文档使用。
+  没有参数的 return 语句返回各个返回变量的当前值。这种用法被称作“裸”返回。
+  直接返回语句仅应当用在像下面这样的短函数中。在长的函数中它们会影响代码的可读性。</li>
+</ul>
+<div class="hlcode"><pre><span class="kd">func</span> <span class="nx">getsum</span><span class="p">(</span><span class="nx">sum</span> <span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">int</span><span class="p">){</span>
+    <span class="nx">sum</span> <span class="p">=</span> <span class="nx">x</span><span class="o">+</span><span class="nx">y</span>
+    <span class="k">return</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>变量声明关键字<code>var</code>，类型放在最后。<code>=</code>用于初始化变量，初始化使用
+  表达式可以省略类型。</li>
+</ul>
+<div class="hlcode"><pre><span class="kd">var</span> <span class="nx">c</span><span class="p">,</span> <span class="nx">python</span><span class="p">,</span> <span class="nx">java</span> <span class="kt">bool</span>
+<span class="kd">var</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">j</span> <span class="kt">int</span> <span class="p">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
+<span class="kd">var</span> <span class="nx">ruby</span><span class="p">,</span> <span class="nx">Go</span><span class="p">,</span> <span class="nx">haskell</span> <span class="p">=</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="s">&quot;helloword&quot;</span>
+</pre></div>
+
+
+<ul>
+<li>短声明变量，在函数中， <code>:=</code> 简洁赋值语句在明确类型的地方，可以用于替代 var 定义。</li>
+<li>基本数据类型</li>
+</ul>
+<div class="hlcode"><pre><span class="kt">bool</span>
+
+<span class="kt">string</span>
+
+<span class="kt">int</span>  <span class="kt">int8</span>  <span class="kt">int16</span>  <span class="kt">int32</span>  <span class="kt">int64</span>
+<span class="kt">uint</span> <span class="kt">uint8</span> <span class="kt">uint16</span> <span class="kt">uint32</span> <span class="kt">uint64</span> <span class="kt">uintptr</span>
+
+<span class="kt">byte</span> <span class="c1">// uint8 的别名</span>
+
+<span class="kt">rune</span> <span class="c1">// int32 的别名</span>
+     <span class="c1">// 代表一个Unicode码</span>
+
+<span class="kt">float32</span> <span class="kt">float64</span>
+
+<span class="kt">complex64</span> <span class="kt">complex128</span>
+</pre></div>
+
+
+<ul>
+<li>零值
+变量在定义时没有明确的初始化时会赋值为 零值 。
+零值是：<ul>
+<li>数值类型为 0 ，</li>
+<li>布尔类型为 false ，</li>
+<li>字符串为 "" （空字符串）。</li>
+</ul>
+</li>
+<li>表达式 T(v) 将值 v 转换为类型 T 。
+  与 C 不同的是 Go 的在不同类型之间的项目赋值时需要显式转换.</li>
+<li>GO类型推导，变量的类型由右值推导得出。</li>
+</ul>
+<div class="hlcode"><pre><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">v</span> <span class="o">:=</span> <span class="s">&quot;HaHa&quot;</span> <span class="c1">// change me!</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;v is of type %T\n&quot;</span><span class="p">,</span> <span class="nx">v</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>常量的定义<code>const Pi = 3.14</code>，常量不能使用 := 语法定义。<code>=</code>表示定义，而<code>:=</code>表示赋值？</li>
+<li>Go 只有一种循环结构—— for 循环。循环初始化语句和后置语句都是可选的。</li>
+</ul>
+<div class="hlcode"><pre><span class="nx">sum</span> <span class="o">:=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+    <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">i</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>for 是 Go 的 “while”</li>
+</ul>
+<div class="hlcode"><pre><span class="k">for</span> <span class="nx">sum</span> <span class="p">&lt;</span> <span class="mi">1000</span> <span class="p">{</span>
+    <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">sum</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>死循环</li>
+</ul>
+<div class="hlcode"><pre><span class="k">for</span> <span class="p">{</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>if 条件判断</li>
+</ul>
+<div class="hlcode"><pre><span class="k">if</span> <span class="nx">x</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">sqrt</span><span class="p">(</span><span class="o">-</span><span class="nx">x</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;i&quot;</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="nx">x</span> <span class="p">&gt;</span><span class="mi">10</span> <span class="p">{</span>
+    <span class="o">...</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<blockquote>
+<p>GO 的循环条件和判断条件都不需要用小括号括起来，但是括起来也是可以的。
+亲测通过，另外for和if条件表达式中定义的变量的作用域仅在该语句块中有效。</p>
+</blockquote>
+<ul>
+<li>switch分支语句, switch 的条件从上到下的执行，当匹配成功的时候停止。不像C需要break语句</li>
+<li>没有条件的 switch
+  没有条件的 switch 同 switch true 一样。
+  这一构造使得可以用更清晰的形式来编写长的 if-then-else 链。</li>
+</ul>
+<div class="hlcode"><pre>    <span class="k">switch</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nx">t</span><span class="p">.</span><span class="nx">Hour</span><span class="p">()</span> <span class="p">&lt;</span> <span class="mi">12</span><span class="p">:</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Good morning!&quot;</span><span class="p">)</span>
+    <span class="k">case</span> <span class="nx">t</span><span class="p">.</span><span class="nx">Hour</span><span class="p">()</span> <span class="p">&lt;</span> <span class="mi">17</span><span class="p">:</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Good afternoon.&quot;</span><span class="p">)</span>
+    <span class="k">default</span><span class="p">:</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Good evening.&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>defer 语句会延迟函数的执行直到上层函数返回。
+  延迟调用的参数会立刻生成，但是在上层函数返回前函数都不会被调用。</li>
+<li>defer栈：延迟的函数调用被压入一个栈中。当函数返回时， 会按照后进先出的顺序调用被延迟的函数调用。</li>
+<li>Go 具有指针。 指针保存了变量的内存地址。
+  类型 <code>*T</code> 是指向类型 <code>T</code> 的值的指针。其零值是 <code>nil</code> 。
+  Go指针和C指针的区别在于Go没有指针运算。</li>
+<li>结构体，和C差不多，利用关键字<code>type</code>定义声明。</li>
+</ul>
+<div class="hlcode"><pre><span class="kd">type</span> <span class="nx">Vertex</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">X</span> <span class="kt">int</span>
+    <span class="nx">Y</span> <span class="kt">int</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>结构体也可以通过指针访问，还是用符号<code>.</code>访问成员</p>
+<ul>
+<li>结构体文法。 结构体文法表示通过结构体字段的值作为列表来新分配一个结构体。
+  使用 Name: 语法可以仅列出部分字段。（字段名的顺序无关。）
+  特殊的前缀 &amp; 返回一个指向结构体的指针。</li>
+</ul>
+<div class="hlcode"><pre><span class="kd">var</span> <span class="p">(</span>
+    <span class="nx">v1</span> <span class="p">=</span> <span class="nx">Vertex</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">}</span>  <span class="c1">// 类型为 Vertex</span>
+    <span class="nx">v2</span> <span class="p">=</span> <span class="nx">Vertex</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>  <span class="c1">// Y:0 被省略</span>
+    <span class="nx">v3</span> <span class="p">=</span> <span class="nx">Vertex</span><span class="p">{}</span>      <span class="c1">// X:0 和 Y:0</span>
+    <span class="nx">p</span>  <span class="p">=</span> <span class="o">&amp;</span><span class="nx">Vertex</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">}</span> <span class="c1">// 类型为 *Vertex</span>
+<span class="p">)</span>
+</pre></div>
+
+
+<ul>
+<li>数组，类型 [n]T 是一个有 n 个类型为 T 的值的数组。</li>
+</ul>
+<div class="hlcode"><pre><span class="kd">var</span> <span class="nx">a</span> <span class="p">[</span><span class="mi">10</span><span class="p">]</span><span class="kt">int</span>
+</pre></div>
+
+
+<ul>
+<li>slice，一个slice会指向一个序列的值，并且包含长度信息，<code>len(s)</code>返回序列<code>s</code>的长度。</li>
+<li>slice的slice，类似于二维数组，初始化代码</li>
+</ul>
+<div class="hlcode"><pre><span class="nx">game</span> <span class="o">:=</span> <span class="p">[][]</span><span class="kt">string</span><span class="p">{</span>
+        <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&quot;_&quot;</span><span class="p">,</span> <span class="s">&quot;_&quot;</span><span class="p">,</span> <span class="s">&quot;_&quot;</span><span class="p">},</span>
+        <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&quot;_&quot;</span><span class="p">,</span> <span class="s">&quot;_&quot;</span><span class="p">,</span> <span class="s">&quot;_&quot;</span><span class="p">},</span>
+        <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&quot;_&quot;</span><span class="p">,</span> <span class="s">&quot;_&quot;</span><span class="p">,</span> <span class="s">&quot;_&quot;</span><span class="p">},</span>
+    <span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>slice切片操作，类似于python代码</li>
+</ul>
+<div class="hlcode"><pre><span class="nx">s</span><span class="p">[</span><span class="nx">lo</span><span class="p">:</span><span class="nx">hi</span><span class="p">]</span>
+<span class="nx">s</span><span class="p">[:</span><span class="nx">hi</span><span class="p">]</span>
+<span class="nx">s</span><span class="p">[</span><span class="nx">lo</span><span class="p">:]</span>
+</pre></div>
+
+
+<ul>
+<li>make函数构造slice, <code>make(type, value [, capacity])</code>. 函数<code>cap()</code>获取slice的容量。</li>
+</ul>
+<div class="hlcode"><pre><span class="nx">a</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+
+<ul>
+<li>slice的零值是<code>nil</code>。</li>
+<li>
+<p>slice添加元素，<code>append(slice, value1, ..., valueN)</code>方法，添加元素的时候，slice的容量会自动增加。</p>
+</li>
+<li>
+<p>slice用法：<a href="https://blog.go-zh.org/go-slices-usage-and-internals">https://blog.go-zh.org/go-slices-usage-and-internals</a></p>
+</li>
+<li><code>range</code> 迭代，第一个为下标，第二个为值的拷贝。可以用<code>_</code>来忽略下标</li>
+</ul>
+<div class="hlcode"><pre><span class="kd">var</span> <span class="nx">pow</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">128</span><span class="p">}</span>
+<span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">v</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">pow</span> <span class="p">{</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;2**%d = %d\n&quot;</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">v</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">v</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">pow</span> <span class="p">{</span>
+<span class="p">}</span>
+<span class="k">for</span> <span class="nx">idx</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">pow</span> <span class="p">{</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>map 映射键到值。 类似于python的字典
+map 在使用之前必须用 make 来创建；值为 nil 的 map 是空的，并且不能对其赋值。</li>
+</ul>
+<div class="hlcode"><pre><span class="nx">m</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span>
+<span class="nx">m</span><span class="p">[</span><span class="s">&quot;Bell Labs&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="mi">8</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>map 的操作
+在 map m 中插入或修改一个元素：
+<code>m[key] = elem</code>
+获得元素：
+<code>elem = m[key]</code>
+删除元素：
+<code>delete(m, key)</code>
+通过双赋值检测某个键存在：
+<code>elem, ok = m[key]</code>
+如果 key 在 m 中， ok 为 true。否则， ok 为 false，并且 elem 是 map 的元素类型的零值。
+同样的，当从 map 中读取某个不存在的键时，结果是 map 的元素类型的零值。</p>
+</li>
+<li>
+<p>函数可以作为值传递</p>
+</li>
+<li>函数闭包</li>
+</ul>
+<div class="hlcode"><pre><span class="c1">// fibonacci 函数会返回一个返回 int 的函数。</span>
+<span class="kd">func</span> <span class="nx">fibonacci</span><span class="p">()</span> <span class="kd">func</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">a0</span><span class="p">,</span> <span class="nx">a1</span> <span class="p">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="kd">func</span><span class="p">()</span> <span class="kt">int</span><span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">tmp</span> <span class="p">=</span> <span class="nx">a0</span> <span class="o">+</span> <span class="nx">a1</span>
+        <span class="nx">a0</span> <span class="p">=</span> <span class="nx">a1</span>
+        <span class="nx">a1</span> <span class="p">=</span> <span class="nx">tmp</span>
+        <span class="k">return</span> <span class="nx">a0</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>go没有类！！！然而，仍然可以在结构体类型上定义方法。
+方法接收者 出现在 func 关键字和方法名之间的参数中。</li>
+</ul>
+<div class="hlcode"><pre><span class="kd">func</span> <span class="p">(</span><span class="nx">v</span> <span class="o">*</span><span class="nx">Vertex</span><span class="p">)</span> <span class="nx">Abs</span><span class="p">()</span> <span class="kt">float64</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">math</span><span class="p">.</span><span class="nx">Sqrt</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">X</span><span class="o">*</span><span class="nx">v</span><span class="p">.</span><span class="nx">X</span> <span class="o">+</span> <span class="nx">v</span><span class="p">.</span><span class="nx">Y</span><span class="o">*</span><span class="nx">v</span><span class="p">.</span><span class="nx">Y</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nx">v</span><span class="p">.</span><span class="nx">Abs</span><span class="p">()</span>
+</pre></div>
+
+
+<ul>
+<li>你可以对包中的 任意 类型定义任意方法，而不仅仅是针对结构体。
+但是，不能对来自其他包的类型或基础类型定义方法。</li>
+</ul>
+<div class="hlcode"><pre><span class="kd">type</span> <span class="nx">MyFloat</span> <span class="kt">float64</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <span class="nx">MyFloat</span><span class="p">)</span> <span class="nx">Abs</span><span class="p">()</span> <span class="kt">float64</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="nx">f</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nb">float64</span><span class="p">(</span><span class="o">-</span><span class="nx">f</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nb">float64</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">f</span> <span class="o">:=</span> <span class="nx">MyFloat</span><span class="p">(</span><span class="o">-</span><span class="nx">math</span><span class="p">.</span><span class="nx">Sqrt2</span><span class="p">)</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">f</span><span class="p">.</span><span class="nx">Abs</span><span class="p">())</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>指针作为函数接收者，有两个原因需要使用指针接收者。首先避免在每个方法调用中拷贝值（如果值类型是大的结构体的话会更有效率）。
+  其次，方法可以修改接收者指向的值。</li>
+<li>接口是由一组方法定义的集合。接口区分类型本身的方法和类型指针绑定的方法。</li>
+</ul>
+<div class="hlcode"><pre><span class="kd">type</span> <span class="nx">Abser</span> <span class="kd">interface</span> <span class="p">{</span>
+    <span class="nx">Abs</span><span class="p">()</span> <span class="kt">float64</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>隐式接口？什么鬼东西</li>
+<li>Stringers
+一个普遍存在的接口是 fmt 包中定义的 Stringer。</li>
+</ul>
+<div class="hlcode"><pre><span class="kd">type</span> <span class="nx">Stringer</span> <span class="kd">interface</span> <span class="p">{</span>
+    <span class="nx">String</span><span class="p">()</span> <span class="kt">string</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Stringer 是一个可以用字符串描述自己的类型。<code>fmt</code>包 （还有许多其他包）使用这个来进行输出。
+- 错误接口</p>
+<div class="hlcode"><pre><span class="kd">type</span> <span class="kt">error</span> <span class="kd">interface</span> <span class="p">{</span>
+    <span class="nx">Error</span><span class="p">()</span> <span class="kt">string</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>Reader接口</li>
+</ul>
+<p>[1] Go学习网页<a href="https://tour.go-zh.org/">https://tour.go-zh.org/</a></p>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2016-06-29 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2016 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+    </body>
+</html>
