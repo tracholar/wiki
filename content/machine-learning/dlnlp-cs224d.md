@@ -91,7 +91,7 @@ ref: Glorot and	Bengio,	AISTATS 2011
   大数据集L-BFGS Le	et	al.	ICML	2011。
 - SGD的提升，动量
 $$
-v = \mu v - \alpha \nabla_{\theta} J_t(\theta)   \\
+v = \mu v - \alpha \nabla_{\theta} J_t(\theta)   \\\\
 \theta^{new} = \theta^{old} + v
 $$
 - 学习率：adagrad， adam
@@ -116,7 +116,7 @@ Training	of	Deep	Architectures”
 ### 神经网络语言模型 Bengio 2003
 一个直接连接部分和一个非线性变换部分。输入为前n个词的词向量
 $$
-y = b + Wx + U tanh(d + Hx) .  \\
+y = b + Wx + U tanh(d + Hx) .  \\\\
 P(w_t|w_{t-1},...,w_{t-n+1}) = \frac{e^{y_{w_t}}}{\sum_i e^{y_i}}.
 $$
 缺点是窗口是固定的。记忆能力有限？
@@ -128,13 +128,13 @@ $$
 
 设词向量列表为 $(x_1, x_2, ..., x_t, ..., x_T)$。L矩阵中的列向量。
 $$
-h_t = \sigma(W^{(hh) h_{t-1}} + W^{hx} x_{t}). \\
-\hat{y}\_t = softmax(W^{(S)} h_t). \\
+h_t = \sigma(W^{(hh) h_{t-1}} + W^{hx} x_{t}). \\\\
+\hat{y}\_t = softmax(W^{(S)} h_t). \\\\
 P(x_{t+1}=v_j|x_t, ..., x_1) = \hat{y}\_{t, j}.
 $$
 所有时刻的权值都是相同的。损失函数为交叉熵
 $$
-J^{(t)}(\theta) = -\sum_{j=1}^{|V|} y_{t,j} \log \hat{y}\_{t,j}. \\
+J^{(t)}(\theta) = -\sum_{j=1}^{|V|} y_{t,j} \log \hat{y}\_{t,j}. \\\\
 J = - \frac{1}{T} \sum_t J^{(t)}
 $$
 Perplexity ???

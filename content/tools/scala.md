@@ -4,11 +4,21 @@ layout: page
 date: 2016-07-05
 ---
 [TOC]
+## 关于
+学习scala后，发现scala就是灵活版的java，他通过引入函数式编程的一些概念来达到这个目的，
+并且由于基于JVM，能够复用所有的java库！！如果你嫌java臃肿，不妨试试scala。
 
 ## 基础语法
 - 不变量`val`，变量`var`
 - 基础类型：
     - Int
+- 流程控制，直接看例子
+
+```scala
+for(i <- 0 to 100){
+    println(i)
+}
+```
 
 - `def`创建函数，类型标签
 ```scala
@@ -66,19 +76,20 @@ abstract class Shape {
 ```
 - Traits 特质
 很像接口，通过`with`关键字，一个类可以扩展多个特质。
-```scala
-trait Car {
-  val brand: String
-}
 
-trait Shiny {
-  val shineRefraction: Int
-}
-class BMW extends Car with Shiny {
-  val brand = "BMW"
-  val shineRefraction = 12
-}
-```
+    ```scala
+    trait Car {
+      val brand: String
+    }
+
+    trait Shiny {
+      val shineRefraction: Int
+    }
+    class BMW extends Car with Shiny {
+      val brand = "BMW"
+      val shineRefraction = 12
+    }
+    ```
 - 泛型，方法和trait都可以引入类型参数
 ```scala
 trait Cache[K, V] {
@@ -113,53 +124,57 @@ Timer.currentCount()
 ```
 - 函数即对象.
 函数是一些特质的集合。具体来说，具有一个参数的函数是Function1特质的一个实例。这个特征定义了apply()语法糖，让你调用一个对象时就像你在调用一个函数。
-```scala
-object addOne extends Function1[Int, Int] {
-    def apply(m: Int): Int = m + 1
-}
-class AddOne extends (Int => Int) {
-  def apply(m: Int): Int = m + 1
-}
-```
+
+    ```scala
+    object addOne extends Function1[Int, Int] {
+        def apply(m: Int): Int = m + 1
+    }
+    class AddOne extends (Int => Int) {
+      def apply(m: Int): Int = m + 1
+    }
+    ```
 - 包，和Java的一样
 - 模式匹配
 匹配值
-```scala
-val times = 1
 
-times match {
-    case 1 => "one"
-    case 2 => "two"
-    case _ => "some others"
-}
+    ```scala
+    val times = 1
 
-times match {
-    case i if i == 1 => "one"
-    case i if i == 2 => "two"
-    case _ => "some others"
-}
-```
+    times match {
+        case 1 => "one"
+        case 2 => "two"
+        case _ => "some others"
+    }
+
+    times match {
+        case i if i == 1 => "one"
+        case i if i == 2 => "two"
+        case _ => "some others"
+    }
+    ```
 匹配类型
-```scala
-def bigger(o: Any): Any = {
-  o match {
-    case i: Int if i < 0 => i - 1
-    case i: Int => i + 1
-    case d: Double if d < 0.0 => d - 0.1
-    case d: Double => d + 0.1
-    case text: String => text + "s"
-  }
-}
-```
+
+    ```scala
+    def bigger(o: Any): Any = {
+      o match {
+        case i: Int if i < 0 => i - 1
+        case i: Int => i + 1
+        case d: Double if d < 0.0 => d - 0.1
+        case d: Double => d + 0.1
+        case text: String => text + "s"
+      }
+    }
+    ```
 匹配类成员
-```scala
-def calcType(calc: Calculator) = calc match {
-  case _ if calc.brand == "hp" && calc.model == "20B" => "financial"
-  case _ if calc.brand == "hp" && calc.model == "48G" => "scientific"
-  case _ if calc.brand == "hp" && calc.model == "30B" => "business"
-  case _ => "unknown"
-}
-```
+
+    ```scala
+    def calcType(calc: Calculator) = calc match {
+      case _ if calc.brand == "hp" && calc.model == "20B" => "financial"
+      case _ if calc.brand == "hp" && calc.model == "48G" => "scientific"
+      case _ if calc.brand == "hp" && calc.model == "30B" => "business"
+      case _ => "unknown"
+    }
+    ```
 - 样本类 case class
 ```scala
 case class Calculator(brand: String, model: String)
@@ -490,10 +505,14 @@ def -(elem: A): Set[A]
 - Map 键值对
 
 ### 常用子类
-- HashSet, HashMap
+- HashSet: implements immutable sets using a ** hash trie **
+- HashMap: implements immutable maps using a hash trie
 - TreeMap 是SortedMap子类
 - Vector 快速随机访问
+    继承 `Seq`, `IndexedSeq`, `Iterable`, `Traversable`
 - Range 等间隔的Int有序序列。
+    继承 `traverable`, `Iterable`, `Seq`.
+
 
 ```scala
 val r0 = 0 until 10
@@ -503,8 +522,8 @@ new Range(start: Int, end: Int, step: Int)
 
 
 ### 一些描述特性的特质
-- IndexedSeq 快速随机访问元素和一个快速的长度操作
-- LinearSeq 通过head快速访问第一个元素，也有一个快速的tail操作。
+- `IndexedSeq` 快速随机访问元素和一个快速的长度操作
+- `LinearSeq` 通过head快速访问第一个元素，也有一个快速的tail操作。
 
 ### 可变 vs 不可变
 不可变
@@ -556,3 +575,100 @@ scala.collection.mutable.Seq => java.util.List
 scala.collection.Set => java.util.Set
 scala.collection.Map => java.util.Map
 ```
+
+
+## 使用specs进行测试
+貌似现在包为specs2，导入单元测试规范`org.specs2.mutable.Specification`
+
+```scala
+org.specs2.mutable._
+
+object ArithmeticSpec extends Specification {
+  "Arithmetic" should {
+    "add two numbers" in {
+      1 + 1 mustEqual 2
+    }
+    "add three numbers" in {
+      1 + 1 + 1 mustEqual 3
+    }
+  }
+}
+```
+
+## 并发编程*
+- Runnable/Callable定义如下，区别在于Runnable没有返回值，而Callable有。
+
+```scala
+trait Runnable {
+  def run(): Unit
+}
+
+trait Callable[V] {
+  def call(): V
+}
+```
+
+- 线程，Scala并发是建立在Java并发模型基础上的。在Sun JVM上，对IO密集的任务，我们可以在一台机器运行成千上万个线程。
+  一个线程需要一个`Runnable`。你必须调用线程的 `start` 方法来运行Runnable。
+
+```scala
+val hello = new Thread(new Runnable {
+  def run() {
+    println("hello world")
+  }
+})
+
+hello.start()
+```
+
+创建一个自己的线程步骤，首先创建一个实现Runnable接口的类，然后将该类的实例作为参数传给`new Thread()`即可，
+然后再调用创建的线程的`.start()`方法就可以运行了。
+
+也可以利用java的线程的执行服务构建一个线程池。`java.util.concurrent.{Executors, ExecutorService}`
+
+```scala
+val pool: ExecutorService = Executors.newFixedThreadPool(poolSize)
+pool.execute(new MyRunableClass())
+```
+
+- Futures. Future 代表异步计算。你可以把你的计算包装在Future中，当你需要计算结果的时候，你只需调用一个阻塞的 get() 方法就可以了。一个 Executor 返回一个 Future 。
+
+### 线程安全的三种工具。
+- mutex 互斥锁。
+- volatile
+- AtomicReference
+
+```scala
+// synchronized
+class Person(var name: String) {
+  def set(changedName: String) {
+    this.synchronized {
+      name = changedName
+    }
+  }
+}
+
+// volatile
+class Person(@volatile var name: String) {
+  def set(changedName: String) {
+    name = changedName
+  }
+}
+
+// AtomicReference
+import java.util.concurrent.atomic.AtomicReference
+
+class Person(val name: AtomicReference[String]) {
+  def set(changedName: String) {
+    name.set(changedName)
+  }
+}
+```
+
+略
+
+
+## Java跨平台交互：在Java中使用Scala
+
+
+### 扩展规格

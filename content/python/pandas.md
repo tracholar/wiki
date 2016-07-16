@@ -115,6 +115,24 @@ s.dt.hour
 
 ## DataFrame的修改
 
+- 删除列或行操作`DataFrame.drop(labels, axis=0, level=None, inplace=False, errors='raise')`，举例
+
+```python
+## 删除一列，返回删除后的DataFrame，对原DataFrame没有影响
+df.drop('colname', axis=1)
+
+## 在原DataFrame上删除一列
+df.drop('colname', axis=1, inplace=True)
+```
+
+## category 类型数据处理
+- 转换为category, `Series.astype('category')`
+- `Series.cat` 是category类型的cat对象，可以通过 `cat.rename_categories([obj])`重命名类型，也可以直接
+  赋值`cat.categories`改变他们的名字。
+
+## IO操作
+
+
 ## 可视化plot
 
 

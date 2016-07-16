@@ -75,7 +75,9 @@ tf.placeholder(dtype, shape=None, name=None)
 ```
 注意，这里有个大坑，这个字典的键是一个`op`，而不是一个字符串！！
 
-- 变量作用域，`variable_scope`, `get_variable_scope`, `get_variable`
+- 变量作用域，`variable_scope`, `get_variable_scope`, `get_variable`.
+  `scope.reuse_variables()` 可以使得该作用域的变量重复使用，在RNN实现中很有用。
+  声明重复利用的时候，`get_variable`的时候不是创建一个变量，而是查询保存的那个变量。
 
 
 - word embedding

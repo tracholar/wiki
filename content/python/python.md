@@ -140,3 +140,14 @@ global
 In [71]: print(var)
 locally changed # 但是使用了global就改变了全局变量
 ```
+
+- `is` 和 `==` 前者比较是否是同一个对象，后者比较值是否相等
+
+## 工具函数
+- 获取对象成员，`getmembers`, `dir`等函数
+
+```python
+from inspect import getmembers
+for k,v in (getmembers(object)):
+    print k,':', v
+```

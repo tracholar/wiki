@@ -134,6 +134,7 @@ hello := println("hello world!")
 返回一个结果。可以在其他任务中通过`.value`属性访问另一个task的结果。
 
 
+
 ## 两种构建模式
 - 交互式模式，输入`sbt`命令后面不跟参数，然后进入交互式环境，然后运行命令构建。
 - 批处理模式，跟参数罗。`sbt clean compile "testOnly TestA TestB"`
@@ -151,4 +152,137 @@ reload	重新加载构建定义（build.sbt， project/*.scala， project/*.sbt 
 ```
 
 
-## Task
+## dependencies 依赖管理
+### 手动管理
+手动将库的jar包复制到lib目录下就可以了。如果要更改默认路径，需要修改`unmanagedBase`，
+例如修改到`custom_lib/`目录可以用下述命令
+
+```scala
+unmanagedBase := baseDirectory.value / "custom_lib"
+```
+更多的控制可以通过重载unmanagedJars这个task，默认的实现是
+
+```scala
+unmanagedJars in Compile := (baseDirectory.value ** "*.jar").classpath
+```
+如果要添加多个路径到默认路径，可以这样写
+
+```scala
+unmanagedJars in Compile ++= {
+    val base = baseDirectory.value
+    val baseDirectories = (base / "libA") +++ (base / "b" / "lib") +++ (base / "libC")
+    val customJars = (baseDirectories ** "*.jar") +++ (base / "d" / "my.jar")
+    customJars.classpath
+}
+```
+这里对路径的语法，参考后面的路径
+
+
+
+### 自动管理
+sbt支持三种自动管理方式，都是通过Apache ivy来实现的。
+
+- Declarations in your project definition
+- Maven POM files (dependency definitions only: no repositories)
+- Ivy configuration and settings files
+
+可以通过下述语句声明依赖，其中configuration是可选的。
+多个依赖可以通过`Seq`将每一个依赖作为一个元素进行添加，注意链接操作符号的区别，
+libraryDependencies是一个 Seq ?
+
+```scala
+libraryDependencies += groupID % artifactID % revision % configuration
+libraryDependencies ++= Seq(
+  groupID %% artifactID % revision,
+  groupID %% otherID % otherRevision
+)
+```
+
+> If you are using a dependency that was built with sbt, double the first % to be %%
+>
+> sbt uses the standard Maven2 repository by default.
+
+revision除了可以使用常规的完整版本号外，还可以使用 "latest.integration", "2.9.+", or "[1.0,)"这种形式。
+
+#### resolvers
+可以通过设置resolvers来添加依赖库获取的位置，格式是
+`resolvers += name at location`，location可以是合法的URI，例如
+
+```scala
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+resolvers += "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository"
+externalResolvers := Resolver.withDefaultResolvers(resolvers.value, mavenCentral = false)
+```
+
+#### configuration
+- 指定URL
+
+```scala
+libraryDependencies += "slinky" % "slinky" % "2.1" from "https://slinky2.googlecode.com/svn/artifacts/2.1/slinky.jar"
+libraryDependencies += "org.apache.felix" % "org.apache.felix.framework" % "1.8.0" intransitive()
+libraryDependencies += "org.testng" % "testng" % "5.7" classifier "jdk15"
+libraryDependencies +=
+  "org.lwjgl.lwjgl" % "lwjgl-platform" % lwjglVersion classifier "natives-windows" classifier "natives-linux" classifier "natives-osx"
+libraryDependencies +=
+    "log4j" % "log4j" % "1.2.15" exclude("javax.jms", "jms")
+libraryDependencies +=
+      "org.apache.felix" % "org.apache.felix.framework" % "1.8.0" withSources() withJavadoc()
+```
+
+-
+
+### 使用pom xml文件添加依赖
+```
+externalPom()
+externalPom(Def.setting(baseDirectory.value / "custom-name.xml"))
+```
+
+### 路径
+#### 创建文件和路径
+sbt 0.10+ 使用`java.io.File` 文件类型。
+创建文件方法
+
+```scala
+val source: File = file("/home/user/code/A.scala")
+def readme(base: File): File = base / "README"
+```
+sbt 添加了`/`方法，对应于两参数构造函数。
+
+`baseDirectory` task 返回bese目录绝对路径。
+
+#### 路径finder
+一个路径finder返回一个`Seq[File]`。例如
+
+```scala
+def scalaSources(base: File): Seq[File] = {
+  val finder: PathFinder = (base / "src") ** "*.scala"
+  finder.get
+}
+```
+The `**` method accepts a `java.io.FileFilter` ，筛选目录及子目录下所有文件。
+如果只访问该目录可以使用 `*` 函数。
+惰性求值使得需要调用`.get`才能计算结果。
+
+name filter 使用 `*`表示0个或多个字符。用`||`表示多个filter的或，用`--`表示排除。
+
+```scala
+val base = baseDirectory.value
+(base / "src") * "*Test*.scala"
+(base / "src") ** ("*.scala" || "*.java")
+(base/"src"/"main"/"resources") * ("*.png" -- "logo.png")
+```
+
+组合多个finder `+++`, 排除结果可以用 `---`。
+finder有一个filter方法，用于进一步筛选
+
+```scala
+(base / "lib" +++ base / "target") * "*.jar"
+( (base / "src") ** "*.scala") --- ( (base / "src") ** ".svn" ** "*.scala")
+( (base / "src") ** "*") filter { _.isDirectory }
+base filter ClasspathUtilities.isArchive
+ ```
+
+ - to string 转换
+    - toString
+    - absString ，
+    - getPaths ， 返回Seq[String]
