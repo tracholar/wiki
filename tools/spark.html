@@ -47,9 +47,28 @@
 </ul>
 </li>
 <li><a href="#sparkcontext">SparkContext</a></li>
-<li><a href="#rdd">RDD</a></li>
-<li><a href="#spark-sqlcontext">Spark SQLContext</a><ul>
+<li><a href="#rdd">RDD</a><ul>
+<li><a href="#rdd_1">RDD 操作</a></li>
+<li><a href="#rdd_2">RDD持久化</a></li>
+<li><a href="#_2">理解闭包</a></li>
+<li><a href="#kv">KV值操作</a></li>
+<li><a href="#_3">通用的变换</a></li>
+<li><a href="#action">Action</a></li>
+</ul>
+</li>
+<li><a href="#_4">共享变量</a></li>
+<li><a href="#spark">提交spark任务</a></li>
+<li><a href="#spark-streaming">Spark Streaming</a></li>
+<li><a href="#spark-sqlcontext">Spark SQLContext，</a><ul>
 <li><a href="#dataframe">DataFrame</a></li>
+</ul>
+</li>
+<li><a href="#mllib">MLlib</a><ul>
+<li><a href="#sparkmllib">spark.mLlib</a></li>
+</ul>
+</li>
+<li><a href="#tips">TIPS</a><ul>
+<li><a href="#log4j">使用log4j</a></li>
 </ul>
 </li>
 </ul>
@@ -105,9 +124,196 @@
 <li><code>foreach</code>, <code>map</code>, <code>flatMap</code>, <code>filter</code>,</li>
 </ul>
 </li>
+<li>并行化容器，可以通过<code>SparkContext.parallelize</code> 方法创建分布式便于并行计算的数据结构。</li>
 </ul>
-<h2 id="spark-sqlcontext">Spark SQLContext</h2>
-<p>Spark SQL支持的语法</p>
+<div class="hlcode"><pre><span class="k">val</span> <span class="n">data</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">4</span><span class="o">,</span><span class="mi">5</span><span class="o">,</span><span class="mi">6</span><span class="o">,</span><span class="mi">7</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">distData</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">data</span><span class="o">)</span>
+</pre></div>
+
+
+<ul>
+<li>从外部数据库创建，支持本地文件系统，HDFS，Cassandra， HBase， Amazon S3， 等。
+  支持的文件格式包括文本文件， SequenceFiles，其他Hadoop输入格式。
+  其中文本格式可以通过<code>SparkContext.textFile(URI [, partition_number])</code>方法创建RDD。<ul>
+<li>支持本地文件和网络文件的URI，"/home/user/path-to-file", "hdfs://path-to-file"</li>
+<li>支持文件夹，压缩文件，通配符等方式。例如"/path-to-file/*.gz", "/path-to-file/directory"</li>
+<li>指定分区数目，每一个分区是64MB，默认创建一个分区。</li>
+<li>也可以通过 <code>SparkContext.wholeTextFiles</code> 读取一个目录下的所有文本文件，返回的是 (filename, content)，
+  而<code>textFile</code> 则返回所有的行</li>
+<li>其他Hadoop输入格式可以使用 <code>SparkContext.hadoopRDD</code> 方法。</li>
+<li>其他基于 <code>org.apache.hadoop.mapreduce</code> API 的输入格式可以通过  <code>SparkContext.newAPIHadoopRDD</code> 方法创建</li>
+<li><code>RDD.saveAsObjectFile</code> 和 <code>SparkContext.objectFile</code> 支持保存RDD为简单的序列化java对象。</li>
+</ul>
+</li>
+</ul>
+<h3 id="rdd_1">RDD 操作</h3>
+<ul>
+<li>支持两种操作 map， reduce</li>
+<li>变换：从一个已经存在的数据创建新的数据，如 <code>map</code>, <code>reduce</code>, <code>reduceByKey</code>。所有的变换操作都是惰性求值，而且不保存
+  中间结果。如果重新计算，中间结果也会重新计算。如果需要保存中间结果可以通过<code>RDD.persist()</code>方法指明保存该RDD。</li>
+<li>传递函数给spark，不同的语言不同<ul>
+<li>scala中可以通过以下几种方式<ul>
+<li>匿名函数</li>
+<li>单例模式对象的一个静态方法</li>
+<li>一个类的实例对象的一个成员方法，这种情况需要传递整个对象过去。同样，如果函数应用了外部的对象的一个域，那么也需要传递整个对象。
+  为了避免这个问题，可以创建该域的一个本地拷贝。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="hlcode"><pre><span class="k">class</span> <span class="nc">MyClass</span> <span class="o">{</span>
+  <span class="k">val</span> <span class="n">field</span> <span class="k">=</span> <span class="s">&quot;Hello&quot;</span>
+  <span class="k">def</span> <span class="n">doStuff</span><span class="o">(</span><span class="n">rdd</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span> <span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">field</span> <span class="o">+</span> <span class="n">x</span><span class="o">)</span> <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// 修改后的doStuff 函数</span>
+<span class="k">def</span> <span class="n">doStuff</span><span class="o">(</span><span class="n">rdd</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+  <span class="k">val</span> <span class="n">field_</span> <span class="k">=</span> <span class="k">this</span><span class="o">.</span><span class="n">field</span>
+  <span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">field_</span> <span class="o">+</span> <span class="n">x</span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<div class="hlcode"><pre><span class="o">-</span> <span class="nx">java</span><span class="p">,</span>  <span class="err">`</span><span class="nx">org</span><span class="p">.</span><span class="nx">apache</span><span class="p">.</span><span class="nx">spark</span><span class="p">.</span><span class="nx">api</span><span class="p">.</span><span class="nx">java</span><span class="p">.</span><span class="kd">function</span><span class="err">`</span> <span class="err">对象，或者</span><span class="nx">java</span> <span class="mi">8</span> <span class="err">的</span><span class="nx">lambda</span><span class="err">表达式</span>
+<span class="o">-</span> <span class="nx">python</span><span class="err">，</span> <span class="nx">lambda</span><span class="err">表达式，本地函数，模块的顶级函数，对象的方法</span>
+</pre></div>
+
+
+<h3 id="rdd_2">RDD持久化</h3>
+<p>持久化的两个方法 <code>.cache()</code>和<code>.persist(LEVEL)</code>，存储级别有：</p>
+<ul>
+<li>MEMORY_ONLY ： 默认级别，以 deserialized Java objects 保存在内存（JVM），内存放不下的部分每次也是重新计算</li>
+<li>MEMORY_AND_DISK ： 保存在内存，放不下的放在磁盘</li>
+<li>MEMORY_ONLY_SER ： 序列化后再保存在内存，放不下重新计算</li>
+<li>MEMORY_AND_DISK_SER ：与上一个术语差异在于放不下的放磁盘</li>
+<li>DISK_ONLY ： 只放磁盘</li>
+<li>MEMORY_ONLY_2, MEMORY_AND_DISK_2, etc. ： 多保存一个备份</li>
+<li>OFF_HEAP (experimental) ： Store RDD in serialized format in Tachyon</li>
+</ul>
+<p>在python中都是用pickle序列化，只有这一种。
+手动移除cache的方法是 <code>RDD.unpersist()</code>，如果不手动移除，Spark 也会自动处理cache的。</p>
+<h3 id="_2">理解闭包</h3>
+<ul>
+<li>在RDD的foreach中，对外部变量的引用实际上是复制了该对象到executor中，然后引用executor中的那个对像，所以不会改变本想引用的那个对象。
+  可以使用<code>Accumulator</code>来实现改变主对象。</li>
+<li>输出RDD到stdout，同样存在一个问题，在foreach和map中的prinln是输出到executor的stdout。可以通过<code>RDD.collect().foreach(println)</code>方法实现，
+  如果该只是打印一部分，可以通过<code>RDD.take(100).foreach(println)</code> 来实现。</li>
+</ul>
+<h3 id="kv">KV值操作</h3>
+<ul>
+<li>由于KV类型可以是很多不同类型，通用的操作不多，最常用的是 <code>shuffle</code> 操作，例如 grouping 和 aggregating by key。</li>
+<li>在spark中通过创建Tuple2对象实现K-V，例如在下述代码中</li>
+</ul>
+<div class="hlcode"><pre><span class="k">val</span> <span class="n">lines</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;data.txt&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">pairs</span> <span class="k">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">s</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">s</span><span class="o">,</span> <span class="mi">1</span><span class="o">))</span>
+<span class="k">val</span> <span class="n">counts</span> <span class="k">=</span> <span class="n">pairs</span><span class="o">.</span><span class="n">reduceByKey</span><span class="o">((</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">)</span>
+</pre></div>
+
+
+<p>注意，在使用自定义的对象作为key的时候，需要确保<code>.equals()</code>方法与<code>hashCode()</code>方法兼容。</p>
+<h3 id="_3">通用的变换</h3>
+<ul>
+<li>map(func)</li>
+<li>filter(func)</li>
+<li>flatMap(func), 相当于先做map，然后做flat操作</li>
+<li>mapPartitions(func)，map到每一个分区</li>
+<li>mapPartitionsWithIndex(func)， 带有index的版本</li>
+<li>sample， 采样</li>
+<li>union，并集</li>
+<li>intersection，交集</li>
+<li>distinc, 去重</li>
+<li>groupByKey，输入(K,V)，输出(K, Iter<V>)</li>
+<li>reduceByKey(func)，输入(K,V)</li>
+<li>aggregateByKey</li>
+<li>sortByKey</li>
+<li>join</li>
+<li>cogroup</li>
+<li>cartesian 笛卡尔积？</li>
+<li>pipe</li>
+<li>coalesce</li>
+<li>repartition
+略</li>
+</ul>
+<h3 id="action">Action</h3>
+<ul>
+<li>reduce</li>
+<li>collect</li>
+<li>count</li>
+<li>first</li>
+<li>take(n)</li>
+<li>takeSample</li>
+<li>takeOrdered</li>
+<li>saveAsTextFile(path)</li>
+<li>saveAsSequenceFile(path), java and scala</li>
+<li>countByKey，对每一个key单独计数</li>
+<li>foreach(func)</li>
+</ul>
+<h2 id="_4">共享变量</h2>
+<ul>
+<li>broadcast变量，不同的executor共享</li>
+</ul>
+<div class="hlcode"><pre><span class="k">val</span> <span class="n">broadcastVar</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">broadcast</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">))</span>
+<span class="n">broadcastVar</span><span class="o">.</span><span class="n">value</span>
+</pre></div>
+
+
+<ul>
+<li>Accumulator,</li>
+</ul>
+<div class="hlcode"><pre><span class="k">val</span> <span class="n">accum</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="s">&quot;My Accumulator&quot;</span><span class="o">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">4</span><span class="o">)).</span><span class="n">foreach</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">accum</span> <span class="o">+=</span> <span class="n">x</span><span class="o">)</span>
+<span class="n">accum</span><span class="o">.</span><span class="n">value</span>
+</pre></div>
+
+
+<p>一般需要实现自己的AccumulatorParam子类，</p>
+<div class="hlcode"><pre><span class="k">object</span> <span class="nc">VectorAccumulatorParam</span> <span class="k">extends</span> <span class="nc">AccumulatorParam</span><span class="o">[</span><span class="kt">Vector</span><span class="o">]</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">zero</span><span class="o">(</span><span class="n">initialValue</span><span class="k">:</span> <span class="kt">Vector</span><span class="o">)</span><span class="k">:</span> <span class="kt">Vector</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="nc">Vector</span><span class="o">.</span><span class="n">zeros</span><span class="o">(</span><span class="n">initialValue</span><span class="o">.</span><span class="n">size</span><span class="o">)</span>
+  <span class="o">}</span>
+  <span class="k">def</span> <span class="n">addInPlace</span><span class="o">(</span><span class="n">v1</span><span class="k">:</span> <span class="kt">Vector</span><span class="o">,</span> <span class="n">v2</span><span class="k">:</span> <span class="kt">Vector</span><span class="o">)</span><span class="k">:</span> <span class="kt">Vector</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="n">v1</span> <span class="o">+=</span> <span class="n">v2</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// Then, create an Accumulator of this type:</span>
+<span class="k">val</span> <span class="n">vecAccum</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="o">(</span><span class="k">new</span> <span class="nc">Vector</span><span class="o">(...))(</span><span class="nc">VectorAccumulatorParam</span><span class="o">)</span>
+</pre></div>
+
+
+<h2 id="spark">提交spark任务</h2>
+<p>使用 bin/spark-submit 脚本提交，语法</p>
+<div class="hlcode"><pre>./bin/spark-submit <span class="se">\</span>
+  --class &lt;main-class&gt; <span class="se">\</span>
+  --master &lt;master-url&gt; <span class="se">\</span>
+  --deploy-mode &lt;deploy-mode&gt; <span class="se">\</span>
+  --conf &lt;key&gt;<span class="o">=</span>&lt;value&gt; <span class="se">\</span>
+  ... <span class="c"># other options</span>
+  &lt;application-jar&gt; <span class="se">\</span>
+  <span class="o">[</span>application-arguments<span class="o">]</span>
+</pre></div>
+
+
+<blockquote>
+<p>For Python applications, simply pass a .py file in the place of <application-jar> instead of a JAR, and add Python .zip, .egg or .py files to the search path with --py-files.</p>
+</blockquote>
+<h2 id="spark-streaming">Spark Streaming</h2>
+<p>简单地说，就是用来从其他地方拉数据的。
+输入数据流 =&gt; Spark streaming =&gt; batches of input data =&gt; Spark engine =&gt; batches of processed data</p>
+<h2 id="spark-sqlcontext">Spark SQLContext，</h2>
+<ul>
+<li>从SparkContext创建</li>
+</ul>
+<div class="hlcode"><pre><span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="nc">SQLContext</span>
+<span class="k">val</span> <span class="n">sc</span><span class="k">:</span> <span class="kt">SparkContext</span> <span class="c1">// An existing SparkContext.</span>
+<span class="k">val</span> <span class="n">sqlContext</span> <span class="k">=</span> <span class="k">new</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="nc">SQLContext</span><span class="o">(</span><span class="n">sc</span><span class="o">)</span>
+</pre></div>
+
+
+<ul>
+<li>使用<code>.sql</code>函数进行SQL查询，Spark SQL支持的语法</li>
+</ul>
 <div class="hlcode"><pre><span class="k">SELECT</span> <span class="p">[</span><span class="k">DISTINCT</span><span class="p">]</span> <span class="p">[</span><span class="k">column</span> <span class="k">names</span><span class="p">]</span><span class="o">|</span><span class="p">[</span><span class="n">wildcard</span><span class="p">]</span>
 <span class="k">FROM</span> <span class="p">[</span><span class="n">kesypace</span> <span class="n">name</span><span class="p">.]</span><span class="k">table</span> <span class="n">name</span>
 <span class="p">[</span><span class="k">JOIN</span> <span class="n">clause</span> <span class="k">table</span> <span class="n">name</span> <span class="k">ON</span> <span class="k">join</span> <span class="n">condition</span><span class="p">]</span>
@@ -126,6 +332,7 @@
 </pre></div>
 
 
+<p>-</p>
 <h3 id="dataframe">DataFrame</h3>
 <p>Spark DataFrame的设计灵感正是基于R与Pandas。
 我们通过外部Json文件创建一个DataFrame：</p>
@@ -134,8 +341,108 @@
 </pre></div>
 
 
+<blockquote>
+<p>With a SQLContext, applications can create DataFrames from an existing RDD, from a Hive table, or from data sources.</p>
+</blockquote>
+<div class="hlcode"><pre><span class="c1">// Create the DataFrame</span>
+<span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">json</span><span class="o">(</span><span class="s">&quot;examples/src/main/resources/people.json&quot;</span><span class="o">)</span>
+
+<span class="c1">// Show the content of the DataFrame</span>
+<span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="o">()</span>
+<span class="c1">// age  name</span>
+<span class="c1">// null Michael</span>
+<span class="c1">// 30   Andy</span>
+<span class="c1">// 19   Justin</span>
+
+<span class="c1">// Print the schema in a tree format</span>
+<span class="n">df</span><span class="o">.</span><span class="n">printSchema</span><span class="o">()</span>
+<span class="c1">// root</span>
+<span class="c1">// |-- age: long (nullable = true)</span>
+<span class="c1">// |-- name: string (nullable = true)</span>
+
+<span class="c1">// Select only the &quot;name&quot; column</span>
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">).</span><span class="n">show</span><span class="o">()</span>
+<span class="c1">// name</span>
+<span class="c1">// Michael</span>
+<span class="c1">// Andy</span>
+<span class="c1">// Justin</span>
+
+<span class="c1">// Select everybody, but increment the age by 1</span>
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="n">df</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">),</span> <span class="n">df</span><span class="o">(</span><span class="s">&quot;age&quot;</span><span class="o">)</span> <span class="o">+</span> <span class="mi">1</span><span class="o">).</span><span class="n">show</span><span class="o">()</span>
+<span class="c1">// name    (age + 1)</span>
+<span class="c1">// Michael null</span>
+<span class="c1">// Andy    31</span>
+<span class="c1">// Justin  20</span>
+
+<span class="c1">// Select people older than 21</span>
+<span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">df</span><span class="o">(</span><span class="s">&quot;age&quot;</span><span class="o">)</span> <span class="o">&gt;</span> <span class="mi">21</span><span class="o">).</span><span class="n">show</span><span class="o">()</span>
+<span class="c1">// age name</span>
+<span class="c1">// 30  Andy</span>
+
+<span class="c1">// Count people by age</span>
+<span class="n">df</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="s">&quot;age&quot;</span><span class="o">).</span><span class="n">count</span><span class="o">().</span><span class="n">show</span><span class="o">()</span>
+<span class="c1">// age  count</span>
+<span class="c1">// null 1</span>
+<span class="c1">// 19   1</span>
+<span class="c1">// 30   1</span>
+</pre></div>
+
+
+<ul>
+<li>直接在文件上运行SQL！</li>
+</ul>
+<div class="hlcode"><pre><span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="o">(</span><span class="s">&quot;SELECT * FROM parquet.`examples/src/main/resources/users.parquet`&quot;</span><span class="o">)</span>
+</pre></div>
+
+
+<ul>
+<li>注册UDF</li>
+</ul>
+<div class="hlcode"><pre><span class="n">sqlContext</span><span class="o">.</span><span class="n">udf</span><span class="o">.</span><span class="n">register</span><span class="o">(</span><span class="s">&quot;strLen&quot;</span><span class="o">,</span> <span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">length</span><span class="o">())</span>
+</pre></div>
+
+
+<h2 id="mllib">MLlib</h2>
+<ul>
+<li>不同的包的特点，推荐<code>spark.ml</code><ul>
+<li><code>spark.mllib</code> contains the original API built on top of RDDs.</li>
+<li><code>spark.ml</code> provides higher-level API built on top of <code>DataFrames</code> for constructing ML pipelines.</li>
+</ul>
+</li>
+</ul>
+<h3 id="sparkmllib">spark.mLlib</h3>
+<h2 id="tips">TIPS</h2>
+<h3 id="log4j">使用log4j</h3>
+<div class="hlcode"><pre><span class="k">package</span> <span class="nn">org.apache.log4j</span><span class="o">;</span>
+
+  <span class="n">public</span> <span class="k">class</span> <span class="nc">Logger</span> <span class="o">{</span>
+
+    <span class="c1">// Creation &amp; retrieval methods:</span>
+    <span class="n">public</span> <span class="n">static</span> <span class="nc">Logger</span> <span class="n">getRootLogger</span><span class="o">();</span>
+    <span class="n">public</span> <span class="n">static</span> <span class="nc">Logger</span> <span class="n">getLogger</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">);</span>
+
+    <span class="c1">// printing methods:</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">trace</span><span class="o">(</span><span class="nc">Object</span> <span class="n">message</span><span class="o">);</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">debug</span><span class="o">(</span><span class="nc">Object</span> <span class="n">message</span><span class="o">);</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">info</span><span class="o">(</span><span class="nc">Object</span> <span class="n">message</span><span class="o">);</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">warn</span><span class="o">(</span><span class="nc">Object</span> <span class="n">message</span><span class="o">);</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">error</span><span class="o">(</span><span class="nc">Object</span> <span class="n">message</span><span class="o">);</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">fatal</span><span class="o">(</span><span class="nc">Object</span> <span class="n">message</span><span class="o">);</span>
+
+    <span class="c1">// generic printing method:</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">log</span><span class="o">(</span><span class="nc">Level</span> <span class="n">l</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">message</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="c1">// 例子</span>
+<span class="k">import</span> <span class="nn">org.apache.log4j.Logger</span>
+<span class="k">val</span> <span class="n">log</span> <span class="k">=</span> <span class="nc">Logger</span><span class="o">.</span><span class="n">getLogger</span><span class="o">(</span><span class="n">getClass</span><span class="o">.</span><span class="n">getName</span><span class="o">)</span>
+<span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="o">(</span><span class="s">&quot;info&quot;</span><span class="o">)</span>
+</pre></div>
+
+
 <ol>
 <li>Spark in Action [BOOK] <a href="https://zhangyi.gitbooks.io/spark-in-action">https://zhangyi.gitbooks.io/spark-in-action</a></li>
+<li>Spark Programming Guide <a href="https://spark.apache.org/docs/latest/programming-guide.html">https://spark.apache.org/docs/latest/programming-guide.html</a></li>
 </ol>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-07-05 </span></div>
