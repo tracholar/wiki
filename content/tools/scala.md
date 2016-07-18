@@ -197,6 +197,7 @@ def calcType(calc: Calculator) = calc match {
 - 异常， try ... catch ... finally
 
 ## 基本数据结构
+- String 实际上就是java.lang.String
 - List 列表
 ```scala
 val numbers = List(1,2,3,4)
