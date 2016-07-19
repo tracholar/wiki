@@ -103,7 +103,7 @@ def doStuff(rdd: RDD[String]): RDD[String] = {
     - python， lambda表达式，本地函数，模块的顶级函数，对象的方法
 
 ### RDD持久化
-持久化的两个方法 `.cache()`和`.persist(LEVEL)`，存储级别有：
+持久化的两个方法 `.cache()`和`.persist(StorageLevel.SOME_LEVEL)`，存储级别有：
 
 - MEMORY_ONLY ： 默认级别，以 deserialized Java objects 保存在内存（JVM），内存放不下的部分每次也是重新计算
 - MEMORY_AND_DISK ： 保存在内存，放不下的放在磁盘
@@ -148,7 +148,7 @@ val counts = pairs.reduceByKey((a, b) => a + b)
 - reduceByKey(func)，输入(K,V)
 - aggregateByKey
 - sortByKey
-- join
+- `join(otherDataset [, numTasks])`,  (K,V), (K,W) -> (K, (V,W))  
 - cogroup
 - cartesian 笛卡尔积？
 - pipe
