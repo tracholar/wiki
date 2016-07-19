@@ -181,7 +181,7 @@
 
 
 <h3 id="rdd_2">RDD持久化</h3>
-<p>持久化的两个方法 <code>.cache()</code>和<code>.persist(LEVEL)</code>，存储级别有：</p>
+<p>持久化的两个方法 <code>.cache()</code>和<code>.persist(StorageLevel.SOME_LEVEL)</code>，存储级别有：</p>
 <ul>
 <li>MEMORY_ONLY ： 默认级别，以 deserialized Java objects 保存在内存（JVM），内存放不下的部分每次也是重新计算</li>
 <li>MEMORY_AND_DISK ： 保存在内存，放不下的放在磁盘</li>
@@ -227,7 +227,7 @@
 <li>reduceByKey(func)，输入(K,V)</li>
 <li>aggregateByKey</li>
 <li>sortByKey</li>
-<li>join</li>
+<li><code>join(otherDataset [, numTasks])</code>,  (K,V), (K,W) -&gt; (K, (V,W))  </li>
 <li>cogroup</li>
 <li>cartesian 笛卡尔积？</li>
 <li>pipe</li>
