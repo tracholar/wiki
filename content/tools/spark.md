@@ -313,13 +313,139 @@ sqlContext.udf.register("strLen", (s: String) => s.length())
 
 
 ## MLlib
-
 - 不同的包的特点，推荐`spark.ml`
     - `spark.mllib` contains the original API built on top of RDDs.
     - `spark.ml` provides higher-level API built on top of `DataFrames` for constructing ML pipelines.
 
-### spark.mLlib
+### spark.ml 包
 
+#### 基础类
+- 基于DataFrame，借助于抽象，将模型抽象为三个基本类，estimators（实现fit方法）, transformers（实现transform方法）, pipelines
+- 一个正常的模型应该同时实现 `fit` 和 `transform` 两个方法
+- `transform` 将生成一个新的DataFrame，包含了预测的结果
+- `fit` 的DataFrame需要包含两列 featuresCol 和 labelCol 默认名字为 label
+- `transform` 之前的DataFrame需要包含一列 featuresCol，默认名字为features，输出三列（依赖于参数），三列有默认名字，都可以通过setter函数进行设置。
+    - predictedCol 预测的标签，默认名字为 `prediction`
+    - rawPredictedCol 预测的裸数据？向量？逻辑回归是`wx`貌似，默认名字为 `rawPrediction`
+    - probabilityCol 预测的概率，默认名字为 `probability`
+
+- 模型参数封装类 `Param`，他的一个常用子类是 `ParamMap`，实现了Map接口，可以通过 `get, put`进行操作
+
+```scala
+val paramMap = ParamMap(lr.maxIter -> 20)
+  .put(lr.maxIter, 30) // Specify 1 Param.  This overwrites the original maxIter.
+  .put(lr.regParam -> 0.1, lr.threshold -> 0.55) // Specify multiple Params.
+```
+
+```python
+paramMap = {lr.maxIter: 20}
+paramMap[lr.maxIter] = 30 # Specify 1 Param, overwriting the original maxIter.
+paramMap.update({lr.regParam: 0.1, lr.threshold: 0.55}) # Specify multiple Params.
+```
+
+- `pipeline` 将不同模型（transform）堆叠起来，类似于sklearn里面的pipeline。
+pipeline保存了一个Array[PipelineStage]，可以通过`.setStage(Array[_ <: PipelineStage])`函数进行设置。
+pipeline实现了estimator的fit接口和transformer的transform接口。
+
+- `PipelineStage`抽象类，啥也没干？？？？？？？？！！！！！`transformer`还是它的子类！！
+- `UnaryTransformer` 单列转换对象，是transformer的子抽象类，也实现了pipelinestage接口。
+  有两个变量`inputCol`和`outputCol`代表输入输出列的名字。
+  有几个常用的实例，例如Tokenizer，HashingTF等。
+
+- 模型的保存和加载，利用类的静态方法`.load`加载(MLReader的实现)，而用实例的`.save`方法（MLWriter的实现）保存模型到文件。
+
+- 模型评估 `Evaluator`(实现`evaluate(dataFrame)`方法)， `RegressionEvaluator`回归， `BinaryClassificationEvaluator`二元分类，
+  `MulticlassClassificationEvaluator` 多元分类。
+    -  `BinaryClassificationEvaluator` 除了`evaluate`方法之外，还有几个重要的属性和属性setter。标签列名`labelCol`，度量名称 `metricName` 默认为areaUnderROC，即AUC。`rawPredictionCol` 预测结果列名。以及相应的setter和getter。
+    - `MulticlassClassificationEvaluator`，三个属性 `labelCol`，`metricName` （supports "f1" (default), "precision", "recall", "weightedPrecision", "weightedRecall"），`predictionCol`
+    - `RegressionEvaluator`，三个属性  `labelCol`，`metricName` （"rmse" (default): root mean squared error， "mse": mean squared error， "r2": R2 metric， "mae": mean absolute error），`predictionCol`
+
+- 交叉验证选择模型超参数。交叉验证 `CrossValidator` 类，有4个基本方法
+    - `.setEstimator`
+    - `.setEvaluator`
+    - `.setEstimatorParamMaps(paramGrid)` 参数网络
+    - `.setNumFolds(k)` k-fold交叉验证的参数k
+同是他也是一个estimator，调用它的`fit`方法训练模型，返回训练好的模型CrossValidatorModel或模型序列。
+他也是一个transformer，调用`transform`方法直接执行多个transform。
+
+- 训练集和测试集的分割 `TrainValidationSplit`与交叉验证类类似，取代`.setNumFolds`的是函数`.setTrainRatio(ratio)`。
+
+- 参数网格可以通过 `ParamGridBuilder`对象创建，他有三个方法，`addGrid(param, values:Array)`添加一个参数网格，
+  `baseOn(paramPair)`设置指定参数为固定值，`build()`方法返回一个`Array[ParamMap]`数组
+
+
+#### DataFrame
+DataFrame相当于 RDD[Row]，而Row相当于一个可以包含各种不同数据的Seq。
+DataFrame通过collect函数之后就是Array[Row]
+
+通过工厂方法`SQLContext.createDataFrame`创建DataFrame，可以从一下几个数据源创建
+
+- 从`List(label, FeatureVector)`序列创建
+- 从 `JavaRDD`创建
+- 从 `RDD` 创建
+- 从 `List[Row]` 创建
+- 从 `RDD[Row]` 创建
+
+```scala
+val training = sqlContext.createDataFrame(Seq(
+  (1.0, Vectors.dense(0.0, 1.1, 0.1)),
+  (0.0, Vectors.dense(2.0, 1.0, -1.0)),
+  (0.0, Vectors.dense(2.0, 1.3, 1.0)),
+  (1.0, Vectors.dense(0.0, 1.2, -0.5))
+)).toDF("label", "features")
+```
+
+spark的DataFrame每一列可以存储向量！甚至图像！任意值都行！！
+
+- SQL操作
+    - select(col1, col2, ...) 选取部分列
+    - sample 采样
+    - sort 排序
+    - unionAll 融合其他表
+    - orderBy
+    - limit
+    - join 内连接
+    - groupyBy
+    - filter(sql表达式)
+
+- lazy val rdd 对象，可以通过RDD接口操作
+
+
+#### 模型评估
+
+
+### spark.mLlib
+- LogisticRegressionWithLBFGS
+- LogisticRegressionModel， 要`model.clearThreshold` predict才会输出概率，否则输出的是判决后的值
+
+### 基本数据结构
+- Vector, 可以通过工厂对象`Vectors`创建，普通向量`Vectors.dense`，稀疏向量`Vectors.sparse`
+- LabeledPoint, 二元组 `(label:Double, features: Vector)`
+- Matrix， 可以通过工厂对象`Matrices`创建，普通矩阵 `Matrices.dense`，稀疏矩阵`Matrices.sparse`
+- RowMatrix，前面的向量和矩阵都是存在单机中，这种和下面的矩阵是分布式存储的。
+- IndexedRowMatrix，indexedrow是(long, vector)的包装使得index是有意义的
+- CoordinateMatrix，
+- BlockMatrix
+
+
+```scala
+val rows: RDD[Vector] = ... // an RDD of local vectors
+// Create a RowMatrix from an RDD[Vector].
+val mat: RowMatrix = new RowMatrix(rows)
+
+
+val rows: RDD[IndexedRow] = ... // an RDD of indexed rows
+// Create an IndexedRowMatrix from an RDD[IndexedRow].
+val mat: IndexedRowMatrix = new IndexedRowMatrix(rows)
+
+
+```
+
+### 模型评估
+包名`org.apache.spark.mllib.evaluation`
+
+- 两分类 BinaryClassificationMetrics
+- 多分类 MulticlassMetrics
 
 
 ## TIPS

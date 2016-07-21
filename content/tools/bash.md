@@ -27,3 +27,36 @@ then
 fi
 ```
 其中condition可以是一个命令，也可以是一个条件表达式，其中条件判断有很多细节。
+
+- for 循环。
+
+```bash
+## use list
+for i in 1 2 3 5 6
+do
+    echo $i
+done
+
+for i in {1,3,6,7}
+do
+    echo $i
+done
+
+## use seq command
+for i in $(seq 1 2 20)
+do
+    echo $i
+done
+
+## C-style
+for ((c=1; c<=5; c++))
+do
+    echo $i
+done
+
+## use file
+for f in /etc/*
+do
+    echo f
+done
+```

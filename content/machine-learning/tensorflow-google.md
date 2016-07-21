@@ -91,6 +91,14 @@ tf.placeholder(dtype, shape=None, name=None)
 - `compute_gradients(loss)`，计算梯度
 - `train_op = apply_gradients(grad)`，应用梯度更新权值
 
+## `tf.distrib.learn` 框架
+一个高级机器学习框架
+
+- 模型基本接口，与sklearn很像
+    - __init__() 初始化
+    - `fit` 拟合
+    - `evaluate` 评估
+    - `predict` 预测
 ## CPU vs GPU
 - Q: 自己代码在实现上有什么区别呢？
 
