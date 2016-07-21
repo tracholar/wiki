@@ -41,17 +41,24 @@
 <div id="title">python 拾遗</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">迭代器相关函数</a></li>
-<li><a href="#_2">各种坑</a></li>
-<li><a href="#_3">工具函数</a></li>
+<li><a href="#_1">类方法</a></li>
+<li><a href="#_2">迭代器相关函数</a></li>
+<li><a href="#_3">各种坑</a></li>
+<li><a href="#_4">工具函数</a></li>
 </ul>
 </div>
-<h2 id="_1">迭代器相关函数</h2>
+<h2 id="_1">类方法</h2>
+<ul>
+<li>@classmethod 装饰器，第一个参数代表类，类方法，既可以通过类调用，也可以通过类的实例调用</li>
+<li>@staticmethod ，只能通过类调用</li>
+<li>无装饰器， 只能通过实例调用</li>
+</ul>
+<h2 id="_2">迭代器相关函数</h2>
 <ul>
 <li><code>enumerate(iter)</code> 返回<code>(idx, value)</code>的迭代器，可以应用在需要使用index的时候。</li>
 <li><code>(x for x ... )</code> 圆括号生成迭代器的一个语法糖。</li>
 </ul>
-<h2 id="_2">各种坑</h2>
+<h2 id="_3">各种坑</h2>
 <ul>
 <li>不要用可变对象作为函数默认值。字典,集合,列表等等对象是不适合作为函数默认值的.
   因为这个默认值是在函数建立的时候就生成了, 每次调用都是用了这个对象的”缓存”.</li>
@@ -191,7 +198,7 @@
 <ul>
 <li><code>is</code> 和 <code>==</code> 前者比较是否是同一个对象，后者比较值是否相等</li>
 </ul>
-<h2 id="_3">工具函数</h2>
+<h2 id="_4">工具函数</h2>
 <ul>
 <li>获取对象成员，<code>getmembers</code>, <code>dir</code>等函数</li>
 </ul>

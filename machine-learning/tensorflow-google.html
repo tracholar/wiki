@@ -45,6 +45,7 @@
 <li><a href="#_1">核心图数据结构</a></li>
 <li><a href="#_2">基本数据类型</a></li>
 <li><a href="#_3">优化</a></li>
+<li><a href="#tfdistriblearn">tf.distrib.learn 框架</a></li>
 <li><a href="#cpu-vs-gpu">CPU vs GPU</a></li>
 <li><a href="#tips">TIPS</a></li>
 </ul>
@@ -144,6 +145,17 @@ containing tensors” - TensorFlow Docs.</p>
 <li><code>train_op = minimize(loss)</code>，直接最小化损失函数</li>
 <li><code>compute_gradients(loss)</code>，计算梯度</li>
 <li><code>train_op = apply_gradients(grad)</code>，应用梯度更新权值</li>
+</ul>
+<h2 id="tfdistriblearn"><code>tf.distrib.learn</code> 框架</h2>
+<p>一个高级机器学习框架</p>
+<ul>
+<li>模型基本接口，与sklearn很像<ul>
+<li><strong>init</strong>() 初始化</li>
+<li><code>fit</code> 拟合</li>
+<li><code>evaluate</code> 评估</li>
+<li><code>predict</code> 预测</li>
+</ul>
+</li>
 </ul>
 <h2 id="cpu-vs-gpu">CPU vs GPU</h2>
 <ul>
