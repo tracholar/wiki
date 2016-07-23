@@ -80,19 +80,22 @@ cache-aware and sparsity-aware learning
 
 回归树的数学表示如下，q是一个将特征向量x映射到树的叶子节点，T是叶子结点个数。
 每一个叶子结点对应一个连续值$(w_i)$，输出的是q映射的那个叶子结点的值。
+
 $$
 F = \{f(x) = w_{q(x)} \} (q : R^m → {1,2,...,T}, w ∈ R^T)
 $$
 
 树ensemble之后的输出是融合每一棵树的结果后的输出(直接求和！！？？)
+
 $$
 \hat{y} = \phi(x_i) = \sum_{k=1}^K f_k(x_i), f_k \in F
 $$
 
 添加正则项后的目标函数为
+
 $$
 L(\phi) = \sum_i l(y_i; \hat{y}_i) + \sum_k \Omega(f_k)  \\\\
-where Omega(f) = \gamma T + \frac{1}{2} \lambda ||w||^2
+where \Omega(f) = \gamma T + \frac{1}{2} \lambda ||w||^2
 $$
 
 这个损失函数也在Regularized greedy forest (RGF)  model 出现过，参看这篇文章
@@ -105,19 +108,25 @@ Pattern Analysis and Machine Intelligence, 36(5), 2014.
 传统的GBM模型没有正则项！
 
 - Gradient Tree Boosting，目标函数通过顺序加树进行优化，在第t额颗树，
+
 $$
 L^t = \sum_{i=1}^ l(y_i, \hat{y}_i + f_t(x_i)) + \Omega(f_t)
 $$
+
 将损失函数展开到二阶项，丢掉常数项后
+
 $$
 \hat{L}^t = \sum_{i=1}^ [g_i f_t(x_i) + \frac{1}{2} h_i f_i^2(x_i)] + \Omega(f_t)
 $$
 
 例如，损失函数取为
+
 $$
 l(y_i, \hat{y}_i) = (y_i - \hat{y}_i)^2
 $$
+
 那么，对应的梯度和二阶导为
+
 $$
 g_i = -2(y_i - \hat{y}_i) = -2 e_i  \\\\
 h_i = 2
@@ -125,21 +134,25 @@ $$
 
 定义样本集合$(I_j = \{ i | q(x_i) = j \})$，即到达第j个叶子结点的样本集合。
 那么损失函数可以改写为对第t颗树的叶子结点求和，下面的权值w也是指第t颗树的
+
 $$
 \hat{L}^t = \sum_{j=1}^T [(\sum_{i \in I_j} g_i) w_j + \frac{1}{2} (\sum_{i \in I_j} h_i + \lambda) w_j^2] + \gamma T
 $$
 
 从上式可以求得在给定的q函数下，最佳的权值为
+
 $$
 w_j^* = - \frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}
 $$
 对应的最优目标函数为
+
 $$
 \hat{L}^t(q) = - \frac{1}{2} \sum_{j=1}^T \frac{(\sum_{i \in I_j} g_i)^2 }{\sum_{i \in I_j} h_i + \lambda} + \gamma T
 $$
 这个值可以作为q函数的score来评估树的结构，作用和CART的不纯度gini系数一样。
 理论上来说需要遍历所有可能的树，实际上用启发式的方法，从单叶子节点的树开始，然后添加分支。
 设分裂前的样本集为I，分裂后左右子树的样本集分别为$(I_L, I_R)$，那么分裂带来的损失函数减少量为
+
 $$
 L_{split} = \frac{1}{2} ( \frac{(\sum_{i \in I_L} g_i)^2 }{\sum_{i \in I_L} h_i + \lambda}  +  \frac{(\sum_{i \in I_R} g_i)^2 }{\sum_{i \in I_R} h_i + \lambda} - \frac{(\sum_{i \in I} g_i)^2 }{\sum_{i \in I} h_i + \lambda}) - \gamma
 $$
@@ -152,7 +165,7 @@ shrinkage：
 J. Friedman. Stochastic gradient boosting. Computational
 Statistics & Data Analysis, 38(4):367–378, 2002.
 
-shrink 将新加入的权值乘上一个系数$(\yita)$，为后面的树提供一定的学习空间。
+shrink 将新加入的权值乘上一个系数$(\eta)$，为后面的树提供一定的学习空间。
 
 列采样来自随机森林：
 L. Breiman. Random forests. Maching Learning,
@@ -187,15 +200,18 @@ L. Breiman. Random forests. Maching Learning,
 
 - Weighted Quantile Sketch 算法
 对第k个特征，构造数据集
+
 $$
 D_k= \{(x_{1k}, h_1) , (x_{2k},h_2) , ...,(x_{nk},h_n) \}
 $$
 其中$(h_i)$是该数据点对应的损失函数的二阶梯度。二阶梯度在这里相当于样本的权值，目标函数可以看做一个带权的均方误差(通过近似，将所有凸函数形式的目标函数都变成了和最小均方误差一样了)。
 重新改写目标函数为
+
 $$
 \sum_{i=1}^n \frac{1}{2} h_i(f_t(x_i) - g_i / h_i)^2 + \Omega(f_t) + constant
 $$
 定义序函数为带权的序函数
+
 $$
 r_k(z) = \frac{1}{\sum_{(x,h) \in D_k } h} \sum_{(x,h) \in D_k, x<z} h
 $$
