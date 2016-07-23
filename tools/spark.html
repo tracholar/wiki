@@ -67,12 +67,11 @@
 <li><a href="#sparkml">spark.ml 包</a><ul>
 <li><a href="#_5">基础类</a></li>
 <li><a href="#dataframe_1">DataFrame</a></li>
-<li><a href="#_6">模型评估</a></li>
 </ul>
 </li>
 <li><a href="#sparkmllib">spark.mLlib</a></li>
-<li><a href="#_7">基本数据结构</a></li>
-<li><a href="#_8">模型评估</a></li>
+<li><a href="#_6">基本数据结构</a></li>
+<li><a href="#_7">模型评估</a></li>
 </ul>
 </li>
 <li><a href="#tips">TIPS</a><ul>
@@ -132,7 +131,7 @@
 <li><code>foreach</code>, <code>map</code>, <code>flatMap</code>, <code>filter</code>,</li>
 </ul>
 </li>
-<li>并行化容器，可以通过<code>SparkContext.parallelize</code> 方法创建分布式便于并行计算的数据结构。</li>
+<li>并行化容器，可以通过<code>SparkContext.parallelize</code> 方法创建分布式便于并行计算的数据结构。也可以用来将scala的容器转换为RDD结构的tips</li>
 </ul>
 <div class="hlcode"><pre><span class="k">val</span> <span class="n">data</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">4</span><span class="o">,</span><span class="mi">5</span><span class="o">,</span><span class="mi">6</span><span class="o">,</span><span class="mi">7</span><span class="o">)</span>
 <span class="k">val</span> <span class="n">distData</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">data</span><span class="o">)</span>
@@ -188,6 +187,10 @@
 </pre></div>
 
 
+<ul>
+<li>重新分区，<code>repartition</code>会重新分配所有数据，如果是降低分区数目，可以用<code>coalesce</code>，它会避免移动所有数据，
+  而只是移动丢弃的分区的数据，参考<a href="https://stackoverflow.com/questions/31610971/spark-repartition-vs-coalesce">stackoverflow的讨论</a>。</li>
+</ul>
 <h3 id="rdd_2">RDD持久化</h3>
 <p>持久化的两个方法 <code>.cache()</code>和<code>.persist(StorageLevel.SOME_LEVEL)</code>，存储级别有：</p>
 <ul>
@@ -533,16 +536,25 @@ DataFrame通过collect函数之后就是Array[Row]</p>
 <li>
 <p>lazy val rdd 对象，可以通过RDD接口操作</p>
 </li>
+<li>
+<p>df.sqlContext 可以访问创建该DataFrame 的SQLContext对象，rdd.sparkContext 可以访问创建RDD的SparkContext对象。</p>
+</li>
+<li>
+<p>保存到磁盘</p>
+</li>
 </ul>
-<h4 id="_6">模型评估</h4>
+<div class="hlcode"><pre><span class="n">df</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span> <span class="o">{</span> <span class="n">转换操作</span> <span class="o">}</span> <span class="o">.</span><span class="n">saveAsTextFile</span><span class="o">(</span><span class="n">filepath</span><span class="o">)</span>
+</pre></div>
+
+
 <h3 id="sparkmllib">spark.mLlib</h3>
 <ul>
 <li>LogisticRegressionWithLBFGS</li>
 <li>LogisticRegressionModel， 要<code>model.clearThreshold</code> predict才会输出概率，否则输出的是判决后的值</li>
 </ul>
-<h3 id="_7">基本数据结构</h3>
+<h3 id="_6">基本数据结构</h3>
 <ul>
-<li>Vector, 可以通过工厂对象<code>Vectors</code>创建，普通向量<code>Vectors.dense</code>，稀疏向量<code>Vectors.sparse</code></li>
+<li>Vector, 可以通过工厂对象<code>Vectors</code>创建，普通向量<code>Vectors.dense</code>，稀疏向量<code>Vectors.sparse</code>，通过<code>.toArray</code>方法转换为<code>Array[Double]</code></li>
 <li>LabeledPoint, 二元组 <code>(label:Double, features: Vector)</code></li>
 <li>Matrix， 可以通过工厂对象<code>Matrices</code>创建，普通矩阵 <code>Matrices.dense</code>，稀疏矩阵<code>Matrices.sparse</code></li>
 <li>RowMatrix，前面的向量和矩阵都是存在单机中，这种和下面的矩阵是分布式存储的。</li>
@@ -561,7 +573,7 @@ DataFrame通过collect函数之后就是Array[Row]</p>
 </pre></div>
 
 
-<h3 id="_8">模型评估</h3>
+<h3 id="_7">模型评估</h3>
 <p>包名<code>org.apache.spark.mllib.evaluation</code></p>
 <ul>
 <li>两分类 BinaryClassificationMetrics</li>

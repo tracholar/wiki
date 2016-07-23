@@ -42,15 +42,12 @@
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">关于</a></li>
-<li><a href="#_2">基础类</a><ul>
-<li><a href="#baseestimator">BaseEstimator</a></li>
+<li><a href="#basepy">基础类 base.py</a></li>
+<li><a href="#_2">线性模型</a><ul>
+<li><a href="#_3">逻辑回归</a></li>
 </ul>
 </li>
-<li><a href="#_3">线性模型</a><ul>
-<li><a href="#_4">逻辑回归</a></li>
-</ul>
-</li>
-<li><a href="#_5">参考</a></li>
+<li><a href="#_4">参考</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -58,14 +55,23 @@
 对模型的抽象很不错。另一方面，在学习理论的同时，自己写代码是一个加深理解的好方式，而阅读源码也是
 一种很好的方式，而且还能学习别人的实现和优化技巧。</p>
 <p>这个源码阅读计划可能持续较长，内容会总结在wiki中，最后形成文章在我的博客中出现。</p>
-<h2 id="_2">基础类</h2>
+<h2 id="basepy">基础类 base.py</h2>
 <p>sklearn使用5个基础类，对模型的功能进行抽象。用户可以基于这些类实现自己的模型，使得可以像操作sklearn
 里面的其他模型那样调用。基础类放在包<code>sklearn.base</code>中</p>
-<h3 id="baseestimator">BaseEstimator</h3>
-<p>要求构造方法能够设置模型参数，并且实现 <code>get_params</code> 和 <code>set_params</code> 两个方法。</p>
-<h2 id="_3">线性模型</h2>
-<h3 id="_4">逻辑回归</h3>
-<h2 id="_5">参考</h2>
+<ul>
+<li>BaseEstimator，要求构造方法能够设置模型参数，并且实现 <code>get_params</code> 和 <code>set_params</code> 两个方法。</li>
+<li>ClassifierMixin，实现<code>score</code>方法，返回 accuracy_score，所有的分类器的Mixin类</li>
+<li>RegressorMixin，实现<code>score</code>方法，返回 r2_score，所有回归器的Mixin类</li>
+<li>ClusterMixin，实现<code>fit_predict</code>方法，返回 聚类标签，所有聚类器的Mixin类</li>
+<li>BiclusterMixin，两聚类Mixin类</li>
+<li>TransformerMixin，实现<code>fit_transform</code>方法，转换器Mixin类</li>
+<li>MetaEstimatorMixin，MetaEstimator Mixin类</li>
+</ul>
+<p>estimator有个属性<code>_estimator_type</code>，用来表示他是分类器还是回归器。这是通过两个Mixin类来实现的。</p>
+<p>在<code>base</code>模块中，还提供一个<code>clone</code>函数，用于克隆一个现有的estimator。</p>
+<h2 id="_2">线性模型</h2>
+<h3 id="_3">逻辑回归</h3>
+<h2 id="_4">参考</h2>
 <ol>
 <li><a href="http://scikit-learn.org/stable/modules/classes.html">官方文档</a></li>
 <li><a href="https://github.com/scikit-learn/scikit-learn">github源码</a></li>

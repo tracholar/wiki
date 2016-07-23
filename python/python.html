@@ -41,24 +41,36 @@
 <div id="title">python 拾遗</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">类方法</a></li>
-<li><a href="#_2">迭代器相关函数</a></li>
-<li><a href="#_3">各种坑</a></li>
-<li><a href="#_4">工具函数</a></li>
+<li><a href="#_1">基本语法相关</a></li>
+<li><a href="#_2">类方法</a></li>
+<li><a href="#_3">迭代器相关函数</a></li>
+<li><a href="#_4">各种坑</a></li>
+<li><a href="#_5">工具函数</a></li>
 </ul>
 </div>
-<h2 id="_1">类方法</h2>
+<h2 id="_1">基本语法相关</h2>
+<ul>
+<li><code>*args</code>，将列表<code>args</code>展开为参数列表，<code>**kwargs</code>，将字典<code>kwargs</code>展开成kv形式的参数列表。</li>
+</ul>
+<p>参考 <a href="https://stackoverflow.com/questions/2921847/what-does-the-star-operator-mean-in-python">https://stackoverflow.com/questions/2921847/what-does-the-star-operator-mean-in-python</a>
+和 <a href="https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists">https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists</a></p>
+<ul>
+<li>整数除法，在python2.x中<code>/</code>代表整数除法（除非左右操作数有一个是浮点数），而在python3.x中，代表浮点数除法，python3.x用<code>//</code>代表整数除法。</li>
+<li>反射函数，<code>type()</code>，<code>isinstance()</code>，<code>hasattr()</code>，<code>setattr()</code> 以及属性<code>__class__</code></li>
+<li>Mixin：python通过多重继承实现组合模式。sklearn中很多基础类使用这种模式实现的。<a href="https://github.com/scikit-learn/scikit-learn/blob/51a765a/sklearn/base.py#L281">https://github.com/scikit-learn/scikit-learn/blob/51a765a/sklearn/base.py#L281</a></li>
+</ul>
+<h2 id="_2">类方法</h2>
 <ul>
 <li>@classmethod 装饰器，第一个参数代表类，类方法，既可以通过类调用，也可以通过类的实例调用</li>
 <li>@staticmethod ，只能通过类调用</li>
 <li>无装饰器， 只能通过实例调用</li>
 </ul>
-<h2 id="_2">迭代器相关函数</h2>
+<h2 id="_3">迭代器相关函数</h2>
 <ul>
 <li><code>enumerate(iter)</code> 返回<code>(idx, value)</code>的迭代器，可以应用在需要使用index的时候。</li>
 <li><code>(x for x ... )</code> 圆括号生成迭代器的一个语法糖。</li>
 </ul>
-<h2 id="_3">各种坑</h2>
+<h2 id="_4">各种坑</h2>
 <ul>
 <li>不要用可变对象作为函数默认值。字典,集合,列表等等对象是不适合作为函数默认值的.
   因为这个默认值是在函数建立的时候就生成了, 每次调用都是用了这个对象的”缓存”.</li>
@@ -198,7 +210,7 @@
 <ul>
 <li><code>is</code> 和 <code>==</code> 前者比较是否是同一个对象，后者比较值是否相等</li>
 </ul>
-<h2 id="_4">工具函数</h2>
+<h2 id="_5">工具函数</h2>
 <ul>
 <li>获取对象成员，<code>getmembers</code>, <code>dir</code>等函数</li>
 </ul>

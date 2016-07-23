@@ -1,0 +1,342 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>xgboost - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;xgboost</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">xgboost</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#xgboost">xgboost 论文导读</a><ul>
+<li><a href="#introduction">introduction</a></li>
+<li><a href="#tree-bossting-in-a-nutsell">Tree bossting in a nutsell</a></li>
+<li><a href="#_2">分裂点寻找算法</a></li>
+<li><a href="#_3">系统设计</a></li>
+</ul>
+</li>
+<li><a href="#_4">算法细节</a></li>
+<li><a href="#_5">源码实现</a></li>
+<li><a href="#todo">TODO</a></li>
+<li><a href="#reference">reference</a></li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>xgboost 据说是现在大数据竞赛冠军队的标配！</p>
+<h2 id="xgboost">xgboost 论文导读</h2>
+<p>三个关键点
+- large-scale
+- sparsity-aware algorithm for sparse data
+- weighted quantile sketch for approximate tree learning</p>
+<h3 id="introduction">introduction</h3>
+<ul>
+<li>机器学习和data-driven方法的成功依赖于两方面的发展：1，有效的（统计）模型 2，scalable 算法</li>
+<li>tree boosting 算法<ul>
+<li>P. Li. Robust Logitboost and adaptive base class (ABC)
+Logitboost. In Proceedings of the Twenty-Sixth Conference
+Annual Conference on Uncertainty in Artificial Intelligence
+(UAI’10), pages 302–311, 2010.</li>
+<li>C. Burges. From ranknet to lambdarank to lambdamart:
+An overview. Learning, 11:23–581, 2010.</li>
+<li>X. He, J. Pan, O. Jin, T. Xu, B. Liu, T. Xu, Y. Shi,
+A. Atallah, R. Herbrich, S. Bowers, and J. Q. n. Candela.
+Practical lessons from predicting clicks on ads at facebook.
+In Proceedings of the Eighth International Workshop on
+Data Mining for Online Advertising, ADKDD’14, 2014.</li>
+<li><strong>Netflix price</strong> J. Bennett and S. Lanning. The netflix prize. In
+Proceedings of the KDD Cup Workshop 2007, pages 3–6,
+New York, Aug. 2007.</li>
+</ul>
+</li>
+<li>Kaggle 2015 年29个比赛中，TOP3队伍中有17个用了XGBoost，其中8个用XGBoost直接预测，而另外的用XGBoost和神经网络进行集成。而DNN居然只有11个！</li>
+<li>KDDCup 2015 TOP10 队伍都用了XGBoost！！</li>
+<li>各种比赛中已解决的任务包括： store sales
+prediction; high energy physics event classification; web text
+classification; customer behavior prediction; motion detection;
+ad click through rate prediction; malware classification;
+product categorization; hazard risk prediction; massive online
+course dropout rate prediction.</li>
+<li>
+<p>XGBoost 创新点在于：</p>
+<ul>
+<li>a novel tree learning algorithm is for handling sparse data;</li>
+<li>a theoretically justified weighted
+quantile sketch procedure enables handling instance weights
+in approximate tree learning</li>
+<li>Parallel and distributed computing
+makes learning faster which enables quicker model exploration</li>
+<li>还可以使用out-of-core计算，使得在单机就可以处理上亿（hundred million）样本</li>
+</ul>
+</li>
+<li>
+<p>现有的并行的 tree boosting 算法有：</p>
+<ul>
+<li>B. Panda, J. S. Herbach, S. Basu, and R. J. Bayardo.
+Planet: Massively parallel learning of tree ensembles with
+mapreduce. Proceeding of VLDB Endowment,
+2(2):1426–1437, Aug. 2009.</li>
+<li>S. Tyree, K. Weinberger, K. Agrawal, and J. Paykin.
+Parallel boosted regression trees for web search ranking. In
+Proceedings of the 20th international conference on World
+wide web, pages 387–396. ACM, 2011.</li>
+<li>J. Ye, J.-H. Chow, J. Chen, and Z. Zheng. Stochastic
+gradient boosted distributed decision trees. In Proceedings
+of the 18th ACM Conference on Information and
+Knowledge Management, CIKM ’09.</li>
+</ul>
+</li>
+</ul>
+<p>尚未解决的问题是：out-of-core computation,
+cache-aware and sparsity-aware learning
+- 大神解决的几个方案，后面再膜拜
+    - T. Chen, H. Li, Q. Yang, and Y. Yu. General functional
+    matrix factorization using gradient boosting. In Proceeding
+    of 30th International Conference on Machine Learning
+    (ICML’13), volume 1, pages 436–444, 2013.
+    - T. Chen, S. Singh, B. Taskar, and C. Guestrin. Efficient
+    second-order gradient boosting for conditional random
+    fields. In Proceeding of 18th Artificial Intelligence and
+    Statistics Conference (AISTATS’15), volume 1, 2015.</p>
+<h3 id="tree-bossting-in-a-nutsell">Tree bossting in a nutsell</h3>
+<ul>
+<li>正则化目标函数</li>
+</ul>
+<p>回归树的数学表示如下，q是一个将特征向量x映射到树的叶子节点，T是叶子结点个数。
+每一个叶子结点对应一个连续值$(w_i)$，输出的是q映射的那个叶子结点的值。
+$$
+F = {f(x) = w_{q(x)} } (q : R^m → {1,2,...,T}, w ∈ R^T)
+$$</p>
+<p>树ensemble之后的输出是融合每一棵树的结果后的输出(直接求和！！？？)
+$$
+\hat{y} = \phi(x_i) = \sum_{k=1}^K f_k(x_i), f_k \in F
+$$</p>
+<p>添加正则项后的目标函数为
+$$
+L(\phi) = \sum_i l(y_i; \hat{y}_i) + \sum_k \Omega(f_k)  \\
+where Omega(f) = \gamma T + \frac{1}{2} \lambda ||w||^2
+$$</p>
+<p>这个损失函数也在Regularized greedy forest (RGF)  model 出现过，参看这篇文章</p>
+<p>T. Zhang and R. Johnson. Learning nonlinear functions
+using regularized greedy forest. IEEE Transactions on
+Pattern Analysis and Machine Intelligence, 36(5), 2014.</p>
+<p>上面的目标函数比 RGF 模型简单，更容易并行处理？！！
+传统的GBM模型没有正则项！</p>
+<ul>
+<li>Gradient Tree Boosting，目标函数通过顺序加树进行优化，在第t额颗树，
+$$
+L^t = \sum_{i=1}^ l(y_i, \hat{y}<em i="1">i + f_t(x_i)) + \Omega(f_t)
+$$
+将损失函数展开到二阶项，丢掉常数项后
+$$
+\hat{L}^t = \sum</em>^ [g_i f_t(x_i) + \frac{1}{2} h_i f_i^2(x_i)] + \Omega(f_t)
+$$</li>
+</ul>
+<p>例如，损失函数取为
+$$
+l(y_i, \hat{y}_i) = (y_i - \hat{y}_i)^2
+$$
+那么，对应的梯度和二阶导为
+$$
+g_i = -2(y_i - \hat{y}_i) = -2 e_i  \\
+h_i = 2
+$$</p>
+<p>定义样本集合$(I_j = { i | q(x_i) = j })$，即到达第j个叶子结点的样本集合。
+那么损失函数可以改写为对第t颗树的叶子结点求和，下面的权值w也是指第t颗树的
+$$
+\hat{L}^t = \sum_{j=1}^T [(\sum_{i \in I_j} g_i) w_j + \frac{1}{2} (\sum_{i \in I_j} h_i + \lambda) w_j^2] + \gamma T
+$$</p>
+<p>从上式可以求得在给定的q函数下，最佳的权值为
+$$
+w_j^* = - \frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}
+$$
+对应的最优目标函数为
+$$
+\hat{L}^t(q) = - \frac{1}{2} \sum_{j=1}^T \frac{(\sum_{i \in I_j} g_i)^2 }{\sum_{i \in I_j} h_i + \lambda} + \gamma T
+$$
+这个值可以作为q函数的score来评估树的结构，作用和CART的不纯度gini系数一样。
+理论上来说需要遍历所有可能的树，实际上用启发式的方法，从单叶子节点的树开始，然后添加分支。
+设分裂前的样本集为I，分裂后左右子树的样本集分别为$(I_L, I_R)$，那么分裂带来的损失函数减少量为
+$$
+L_{split} = \frac{1}{2} ( \frac{(\sum_{i \in I_L} g_i)^2 }{\sum_{i \in I_L} h_i + \lambda}  +  \frac{(\sum_{i \in I_R} g_i)^2 }{\sum_{i \in I_R} h_i + \lambda} - \frac{(\sum_{i \in I} g_i)^2 }{\sum_{i \in I} h_i + \lambda}) - \gamma
+$$
+就像C4.5 和 CART 的信息增益率和gini系数增加量那样，作为该分裂点的score，用来确定分裂点是否最优。</p>
+<ul>
+<li>Shrinkage and Column Subsampling
+这两种技巧用来防止过拟合</li>
+</ul>
+<p>shrinkage：
+J. Friedman. Stochastic gradient boosting. Computational
+Statistics &amp; Data Analysis, 38(4):367–378, 2002.</p>
+<p>shrink 将新加入的权值乘上一个系数$(\yita)$，为后面的树提供一定的学习空间。</p>
+<p>列采样来自随机森林：
+L. Breiman. Random forests. Maching Learning,
+45(1):5–32, Oct. 2001</p>
+<p>列采样之前没在Boosting里面用过，据说比行采样效果要好。我的理解是，列采样导致每个树学习的多样化，行采样也会有，但是会少很多。
+另一方面，也为算法并行化提供了好处。</p>
+<h3 id="_2">分裂点寻找算法</h3>
+<ul>
+<li>Basic Exact Greedy Algorithm</li>
+</ul>
+<p>在每一次寻找中，枚举所有可能的分裂点，然后利用score确定最佳分裂点。
+代表的实现软件有：sklearn， R的GBM， 单机版的XGBoost。
+算法首先对特征进行排序，然后依次访问数据，并以此数据该维特征的值作为分裂点，计算score。</p>
+<ul>
+<li>近似方法
+精确寻找不适用与分布式数据，近似方法通过特征的分布，按照百分比确定一组候选分裂点，通过遍历所有的候选分裂点来找到最佳分裂点。
+两种策略：全局策略和局部策略。在全局策略中，对每一个特征确定一个全局的候选分裂点集合，就不再改变；而在局部策略中，每一次分裂
+都要重选一次分裂点。前者需要较大的分裂集合，后者可以小一点。论文中对比了补充候选集策略与分裂点数目对模型的影响。
+全局策略需要更细的分裂点才能和局部策略差不多。</li>
+</ul>
+<blockquote>
+<p>什么意思：    </p>
+<p>Notably, it is also possible
+to directly construct approximate histograms of gradient
+statistics [19]    </p>
+<p>[19] S. Tyree, K. Weinberger, K. Agrawal, and J. Paykin.
+Parallel boosted regression trees for web search ranking. In
+Proceedings of the 20th international conference on World
+wide web, pages 387–396. ACM, 2011</p>
+</blockquote>
+<ul>
+<li>Weighted Quantile Sketch 算法
+对第k个特征，构造数据集
+$$
+D_k= {(x_{1k}, h_1) , (x_{2k},h_2) , ...,(x_{nk},h_n) }
+$$
+其中$(h_i)$是该数据点对应的损失函数的二阶梯度。二阶梯度在这里相当于样本的权值，目标函数可以看做一个带权的均方误差(通过近似，将所有凸函数形式的目标函数都变成了和最小均方误差一样了)。
+重新改写目标函数为
+$$
+\sum_{i=1}^n \frac{1}{2} h_i(f_t(x_i) - g_i / h_i)^2 + \Omega(f_t) + constant
+$$
+定义序函数为带权的序函数
+$$
+r_k(z) = \frac{1}{\sum_{(x,h) \in D_k } h} \sum_{(x,h) \in D_k, x&lt;z} h
+$$
+它代表第k个特征小于z的样本比例（带权的）。候选集的目标要使得相邻两个候选分裂点相差不超过某个值$(\epsilon)$。</li>
+</ul>
+<p>样本权值相同的时候， quantile sketch 算法可以找到这些分裂点：</p>
+<ol>
+<li>M. Greenwald and S. Khanna. Space-efficient online
+computation of quantile summaries. In Proceedings of the
+2001 ACM SIGMOD International Conference on
+Management of Data, pages 58–66, 2001.</li>
+<li>Q. Zhang and W. Wang. A fast algorithm for approximate
+quantiles in high speed data streams. In Proceedings of the
+19th International Conference on Scientific and Statistical
+Database Management, 2007.</li>
+</ol>
+<p>对于带权的，目前都是通过对随机抽取的子集进行排序得到的。缺点：没有理论保证，也存在一定错误概率。</p>
+<p>作者提出的一种 分布式带权 quantile sketch 算法，有概率上的理论保证。在附录里面有详细介绍。</p>
+<ul>
+<li>Sparsity-aware Split Finding
+为了发现稀疏数据里面的模式，为每一个树的节点提供一个默认的方向。如果该特征缺失，就以默认的方向向树的底部移动。
+（这不是相当于为空值人为地填充了一个值补全么？）这个方向是学习得到的！（好吧，怎么学的？）
+算法让所有缺失值的样本首先全部走到右子树，然后在非缺失值样本上迭代，依次选取不同分裂点求出最佳score，相当于missing value 全部用最大值填充，
+接着右让缺失值全部走左子树，然后依次选取不同分裂点求出最佳score，相当于missing value 全部用最小值填充，
+经过两次遍历后，选出最佳score，相当于比传统的方式多遍历一次？！（那为什么速度还比传统的快呢？）
+算法随非缺失值样本数目现行增长，因为它只在非缺失值样本上迭代。
+在Allstate-10K dataset上，比naive的算法快50倍！</li>
+</ul>
+<p>算法详细，请看论文。</p>
+<h3 id="_3">系统设计</h3>
+<ul>
+<li>Column Block for Parallel Learning
+最耗时的地方在于对样本排序，为了减少这部分时间，将数据保存在内存单元block中。
+在block中，数据以compressed column (CSC) 保存，每一列按照该列对应的特征进行排序。
+因此，这种数据只需要计算一次，就可以被反复使用。</li>
+</ul>
+<h2 id="_4">算法细节</h2>
+<h2 id="_5">源码实现</h2>
+<p><a href="https://github.com/dmlc/xgboost/blob/master/jvm-packages/xgboost4j-spark/src/main/scala/ml/dmlc/xgboost4j/scala/spark/XGBoost.scala#L61">dmlc</a></p>
+<ul>
+<li>xgboost的spark版本是对每一个分区单独训练？？？？没看懂</li>
+</ul>
+<div class="hlcode"><pre><span class="n">partitionedData</span><span class="o">.</span><span class="n">mapPartitions</span> <span class="o">{</span>
+      <span class="n">trainingSamples</span> <span class="k">=&gt;</span>
+        <span class="n">rabitEnv</span><span class="o">.</span><span class="n">put</span><span class="o">(</span><span class="s">&quot;DMLC_TASK_ID&quot;</span><span class="o">,</span> <span class="nc">TaskContext</span><span class="o">.</span><span class="n">getPartitionId</span><span class="o">().</span><span class="n">toString</span><span class="o">)</span>
+        <span class="nc">Rabit</span><span class="o">.</span><span class="n">init</span><span class="o">(</span><span class="n">rabitEnv</span><span class="o">.</span><span class="n">asJava</span><span class="o">)</span>
+        <span class="k">var</span> <span class="n">booster</span><span class="k">:</span> <span class="kt">Booster</span> <span class="o">=</span> <span class="kc">null</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">trainingSamples</span><span class="o">.</span><span class="n">hasNext</span><span class="o">)</span> <span class="o">{</span>
+          <span class="k">val</span> <span class="n">cacheFileName</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">useExternalMemory</span> <span class="o">&amp;&amp;</span> <span class="n">trainingSamples</span><span class="o">.</span><span class="n">hasNext</span><span class="o">)</span> <span class="o">{</span>
+              <span class="n">s</span><span class="s">&quot;$appName-dtrain_cache-${TaskContext.getPartitionId()}&quot;</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+              <span class="kc">null</span>
+            <span class="o">}</span>
+          <span class="o">}</span>
+          <span class="k">val</span> <span class="n">trainingSet</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">DMatrix</span><span class="o">(</span><span class="k">new</span> <span class="nc">JDMatrix</span><span class="o">(</span><span class="n">trainingSamples</span><span class="o">,</span> <span class="n">cacheFileName</span><span class="o">))</span>
+          <span class="n">booster</span> <span class="k">=</span> <span class="nc">SXGBoost</span><span class="o">.</span><span class="n">train</span><span class="o">(</span><span class="n">trainingSet</span><span class="o">,</span> <span class="n">xgBoostConfMap</span><span class="o">,</span> <span class="n">round</span><span class="o">,</span>
+            <span class="n">watches</span> <span class="k">=</span> <span class="k">new</span> <span class="n">mutable</span><span class="o">.</span><span class="nc">HashMap</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">DMatrix</span><span class="o">]</span> <span class="o">{</span>
+              <span class="n">put</span><span class="o">(</span><span class="s">&quot;train&quot;</span><span class="o">,</span> <span class="n">trainingSet</span><span class="o">)</span>
+            <span class="o">}.</span><span class="n">toMap</span><span class="o">,</span> <span class="n">obj</span><span class="o">,</span> <span class="n">eval</span><span class="o">)</span>
+          <span class="nc">Rabit</span><span class="o">.</span><span class="n">shutdown</span><span class="o">()</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+          <span class="nc">Rabit</span><span class="o">.</span><span class="n">shutdown</span><span class="o">()</span>
+          <span class="k">throw</span> <span class="k">new</span> <span class="nc">XGBoostError</span><span class="o">(</span><span class="n">s</span><span class="s">&quot;detect the empty partition in training dataset, partition ID:&quot;</span> <span class="o">+</span>
+            <span class="n">s</span><span class="s">&quot; ${TaskContext.getPartitionId().toString}&quot;</span><span class="o">)</span>
+        <span class="o">}</span>
+        <span class="nc">Iterator</span><span class="o">(</span><span class="n">booster</span><span class="o">)</span>
+    <span class="o">}.</span><span class="n">cache</span><span class="o">()</span>
+</pre></div>
+
+
+<h2 id="todo">TODO</h2>
+<ul>
+<li>了解一下Kaggle 2015年TOP3队伍解决方案</li>
+</ul>
+<h2 id="reference">reference</h2>
+<ul>
+<li><a href="http://dmlc.cs.washington.edu/data/pdf/XGBoostArxiv.pdf">XGBoost: A Scalable Tree Boosting System</a></li>
+<li><a href="https://homes.cs.washington.edu/~tqchen/data/pdf/BoostedTree.pdf">chen tianqi slide</a></li>
+<li><a href="https://github.com/dmlc/xgboost">github dmlc xgboost</a></li>
+<li><a href="http://docs.salford-systems.com/GreedyFuncApproxSS.pdf">Greedy function approximation: a gradient boosting machine</a></li>
+<li>The present and the future of the kdd cup competition: an outsider’s perspective.</li>
+</ul>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2016-07-23 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2016 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+    </body>
+</html>

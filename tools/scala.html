@@ -50,29 +50,38 @@
 </ul>
 </li>
 <li><a href="#_6">类型，静态类型</a></li>
+<li><a href="#_7">隐式转换</a><ul>
+<li><a href="#_8">隐式函数</a></li>
+<li><a href="#210">隐式类 2.10.+</a></li>
+</ul>
+</li>
 <li><a href="#sbt">构建工具 SBT</a></li>
-<li><a href="#-">集合 - 核心数据结构</a><ul>
+<li><a href="#-">字符串 - 核心数据结构</a><ul>
+<li><a href="#string-interpolationscala-210">字符串插值 String Interpolation，Scala 2.10.+</a></li>
+</ul>
+</li>
+<li><a href="#-_1">集合 - 核心数据结构</a><ul>
 <li><a href="#list">List</a></li>
 <li><a href="#set">Set</a></li>
 <li><a href="#seq">Seq</a></li>
 <li><a href="#map">Map</a></li>
 </ul>
 </li>
-<li><a href="#_7">层次结构</a><ul>
-<li><a href="#_8">常用子类</a></li>
-<li><a href="#_9">一些描述特性的特质</a></li>
+<li><a href="#_9">层次结构</a><ul>
+<li><a href="#_10">常用子类</a></li>
+<li><a href="#_11">一些描述特性的特质</a></li>
 <li><a href="#vs">可变 vs 不可变</a></li>
-<li><a href="#_10">可变集合</a></li>
+<li><a href="#_12">可变集合</a></li>
 <li><a href="#java">与Java转换</a></li>
 </ul>
 </li>
 <li><a href="#specs">使用specs进行测试</a></li>
-<li><a href="#_11">并发编程*</a><ul>
-<li><a href="#_12">线程安全的三种工具。</a></li>
+<li><a href="#_13">并发编程*</a><ul>
+<li><a href="#_14">线程安全的三种工具。</a></li>
 </ul>
 </li>
 <li><a href="#javajavascala">Java跨平台交互：在Java中使用Scala</a><ul>
-<li><a href="#_13">扩展规格</a></li>
+<li><a href="#_15">扩展规格</a></li>
 </ul>
 </li>
 </ul>
@@ -308,6 +317,7 @@ class BMW extends Car with Shiny {
 
 <ul>
 <li>异常， try ... catch ... finally</li>
+<li>private[spark] private 作用域为包含spark类的地方才可见</li>
 </ul>
 <h2 id="_3">基本数据结构</h2>
 <ul>
@@ -535,7 +545,59 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 <li>
 <p>关于类型，还有一些内容，看教程 <a href="https://twitter.github.io/scala_school/zh_cn/advanced-types.html">https://twitter.github.io/scala_school/zh_cn/advanced-types.html</a></p>
 </li>
+<li>
+<p>断言assert和require，通常用require做参数检查，而用assert做测试相关的。</p>
+</li>
 </ul>
+<div class="hlcode"><pre><span class="k">def</span> <span class="n">assert</span><span class="o">(</span><span class="n">assertion</span><span class="k">:</span> <span class="kt">Boolean</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">if</span> <span class="o">(!</span><span class="n">assertion</span><span class="o">)</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="nc">AssertionError</span><span class="o">(</span><span class="s">&quot;assertion failed&quot;</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="k">def</span> <span class="n">assume</span><span class="o">(</span><span class="n">assumption</span><span class="k">:</span> <span class="kt">Boolean</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">if</span> <span class="o">(!</span><span class="n">assumption</span><span class="o">)</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="nc">AssertionError</span><span class="o">(</span><span class="s">&quot;assumption failed&quot;</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="k">def</span> <span class="n">require</span><span class="o">(</span><span class="n">requirement</span><span class="k">:</span> <span class="kt">Boolean</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">if</span> <span class="o">(!</span><span class="n">requirement</span><span class="o">)</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nc">IllegalArgumentException</span><span class="o">(</span><span class="s">&quot;requirement failed&quot;</span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h2 id="_7">隐式转换</h2>
+<h3 id="_8">隐式函数</h3>
+<div class="hlcode"><pre><span class="k">implicit</span> <span class="k">def</span> <span class="n">intToString</span><span class="o">(</span><span class="n">x</span><span class="k">:</span><span class="kt">Int</span><span class="o">)</span> <span class="k">:</span> <span class="kt">x.toString</span>
+</pre></div>
+
+
+<h3 id="210">隐式类 2.10.+</h3>
+<p>隐式类的主方法可以用于隐式类型转换。</p>
+<div class="hlcode"><pre><span class="k">object</span> <span class="nc">Helpers</span> <span class="o">{</span>
+  <span class="k">implicit</span> <span class="k">class</span> <span class="nc">IntWithTimes</span><span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">def</span> <span class="n">times</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="o">=&gt;</span> <span class="n">A</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+      <span class="k">def</span> <span class="n">loop</span><span class="o">(</span><span class="n">current</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">current</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">f</span>
+          <span class="n">loop</span><span class="o">(</span><span class="n">current</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span>
+        <span class="o">}</span>
+      <span class="n">loop</span><span class="o">(</span><span class="n">x</span><span class="o">)</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="k">import</span> <span class="nn">Helpers._</span>
+<span class="mi">5</span> <span class="n">times</span> <span class="n">println</span><span class="o">(</span><span class="s">&quot;HI&quot;</span><span class="o">)</span>
+
+<span class="nc">HI</span>
+<span class="nc">HI</span>
+<span class="nc">HI</span>
+<span class="nc">HI</span>
+<span class="nc">HI</span>
+</pre></div>
+
+
 <h2 id="sbt">构建工具 SBT</h2>
 <ul>
 <li>安装命令<code>brew install sbt</code></li>
@@ -553,7 +615,29 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 </ul>
 </li>
 </ul>
-<h2 id="-">集合 - 核心数据结构</h2>
+<h2 id="-">字符串 - 核心数据结构</h2>
+<p>scala的字符串很多是直接借助于java的String类，但是还有一些scala的特性需要说明一下。</p>
+<h3 id="string-interpolationscala-210">字符串插值 String Interpolation，Scala 2.10.+</h3>
+<p>scala提供三种字符串插值方法，s, f and raw。
+- s支持局部变量和表达式。
+- f表明对变量进行格式化，类似于printf的功能。类型安全，如果不匹配，将会报错。<code>%s</code>是通用的？！
+- raw字符串就是不会对转义字符转义。相当于python里面的r</p>
+<div class="hlcode"><pre><span class="c1">// 插入局部变量</span>
+<span class="k">val</span> <span class="n">name</span> <span class="k">=</span> <span class="s">&quot;James&quot;</span>
+<span class="n">println</span><span class="o">(</span><span class="n">s</span><span class="s">&quot;Hello, $name&quot;</span><span class="o">)</span>  <span class="c1">// Hello, James</span>
+<span class="c1">// 插入表达式</span>
+<span class="n">println</span><span class="o">(</span><span class="n">s</span><span class="s">&quot;1 + 1 = ${1 + 1}&quot;</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="n">height</span> <span class="k">=</span> <span class="mf">1.9d</span>
+<span class="k">val</span> <span class="n">name</span> <span class="k">=</span> <span class="s">&quot;James&quot;</span>
+<span class="c1">// f 使用类似于printf格式字符</span>
+<span class="n">println</span><span class="o">(</span><span class="n">f</span><span class="s">&quot;$name%s is $height%2.2f meters tall&quot;</span><span class="o">)</span>  <span class="c1">// James is 1.90 meters tall</span>
+
+<span class="n">println</span><span class="o">(</span><span class="n">raw</span><span class="s">&quot;a\nb&quot;</span><span class="o">)</span> <span class="c1">// Output: a\nb</span>
+</pre></div>
+
+
+<h2 id="-_1">集合 - 核心数据结构</h2>
 <h3 id="list">List</h3>
 <ul>
 <li>创建集合</li>
@@ -602,6 +686,7 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 
 
 <p>请注意返回的是一个列表。因为Seq是一个特质；而列表是序列的很好实现。</p>
+<p>".mkString(seq)" 方法可以实现python的<code>join</code>方法的功能。</p>
 <h3 id="map">Map</h3>
 <ul>
 <li>创建MAP</li>
@@ -610,7 +695,7 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 </pre></div>
 
 
-<h2 id="_7">层次结构</h2>
+<h2 id="_9">层次结构</h2>
 <ul>
 <li>
 <p>traverable, <code>foreach</code> 实现遍历</p>
@@ -674,7 +759,7 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 <ul>
 <li>Map 键值对</li>
 </ul>
-<h3 id="_8">常用子类</h3>
+<h3 id="_10">常用子类</h3>
 <ul>
 <li>HashSet: implements immutable sets using a <strong> hash trie </strong></li>
 <li>HashMap: implements immutable maps using a hash trie</li>
@@ -690,7 +775,7 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 </pre></div>
 
 
-<h3 id="_9">一些描述特性的特质</h3>
+<h3 id="_11">一些描述特性的特质</h3>
 <ul>
 <li><code>IndexedSeq</code> 快速随机访问元素和一个快速的长度操作</li>
 <li><code>LinearSeq</code> 通过head快速访问第一个元素，也有一个快速的tail操作。</li>
@@ -703,7 +788,7 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 <p>一点也不能改变
 Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的可变性。这和var vs. val非常相似。我们总是先从val开始并在必要时回退为var。</p>
 <p>我们赞成使用不可改变的版本的集合，但如果性能使然，也可以切换到可变的。使用不可变集合意味着你在多线程不会意外地改变事物。</p>
-<h3 id="_10">可变集合</h3>
+<h3 id="_12">可变集合</h3>
 <ul>
 <li>ListBuffer和ArrayBuffer</li>
 <li>LinkedList and DoubleLinkedList</li>
@@ -757,7 +842,7 @@ Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的
 </pre></div>
 
 
-<h2 id="_11">并发编程*</h2>
+<h2 id="_13">并发编程*</h2>
 <ul>
 <li>Runnable/Callable定义如下，区别在于Runnable没有返回值，而Callable有。</li>
 </ul>
@@ -796,7 +881,7 @@ Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的
 <ul>
 <li>Futures. Future 代表异步计算。你可以把你的计算包装在Future中，当你需要计算结果的时候，你只需调用一个阻塞的 get() 方法就可以了。一个 Executor 返回一个 Future 。</li>
 </ul>
-<h3 id="_12">线程安全的三种工具。</h3>
+<h3 id="_14">线程安全的三种工具。</h3>
 <ul>
 <li>mutex 互斥锁。</li>
 <li>volatile</li>
@@ -831,7 +916,7 @@ Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的
 
 <p>略</p>
 <h2 id="javajavascala">Java跨平台交互：在Java中使用Scala</h2>
-<h3 id="_13">扩展规格</h3>
+<h3 id="_15">扩展规格</h3>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-07-05 </span></div>
 
