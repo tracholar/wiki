@@ -136,18 +136,18 @@ cache-aware and sparsity-aware learning
 <li>正则化目标函数</li>
 </ul>
 <p>回归树的数学表示如下，q是一个将特征向量x映射到树的叶子节点，T是叶子结点个数。
-每一个叶子结点对应一个连续值$(w_i)$，输出的是q映射的那个叶子结点的值。
-$$
+每一个叶子结点对应一个连续值$(w_i)$，输出的是q映射的那个叶子结点的值。</p>
+<p>$$
 F = {f(x) = w_{q(x)} } (q : R^m → {1,2,...,T}, w ∈ R^T)
 $$</p>
-<p>树ensemble之后的输出是融合每一棵树的结果后的输出(直接求和！！？？)
-$$
+<p>树ensemble之后的输出是融合每一棵树的结果后的输出(直接求和！！？？)</p>
+<p>$$
 \hat{y} = \phi(x_i) = \sum_{k=1}^K f_k(x_i), f_k \in F
 $$</p>
-<p>添加正则项后的目标函数为
-$$
+<p>添加正则项后的目标函数为</p>
+<p>$$
 L(\phi) = \sum_i l(y_i; \hat{y}_i) + \sum_k \Omega(f_k)  \\
-where Omega(f) = \gamma T + \frac{1}{2} \lambda ||w||^2
+where \Omega(f) = \gamma T + \frac{1}{2} \lambda ||w||^2
 $$</p>
 <p>这个损失函数也在Regularized greedy forest (RGF)  model 出现过，参看这篇文章</p>
 <p>T. Zhang and R. Johnson. Learning nonlinear functions
@@ -156,41 +156,41 @@ Pattern Analysis and Machine Intelligence, 36(5), 2014.</p>
 <p>上面的目标函数比 RGF 模型简单，更容易并行处理？！！
 传统的GBM模型没有正则项！</p>
 <ul>
-<li>Gradient Tree Boosting，目标函数通过顺序加树进行优化，在第t额颗树，
-$$
-L^t = \sum_{i=1}^ l(y_i, \hat{y}<em i="1">i + f_t(x_i)) + \Omega(f_t)
-$$
-将损失函数展开到二阶项，丢掉常数项后
-$$
-\hat{L}^t = \sum</em>^ [g_i f_t(x_i) + \frac{1}{2} h_i f_i^2(x_i)] + \Omega(f_t)
-$$</li>
+<li>Gradient Tree Boosting，目标函数通过顺序加树进行优化，在第t额颗树，</li>
 </ul>
-<p>例如，损失函数取为
-$$
+<p>$$
+L^t = \sum_{i=1}^ l(y_i, \hat{y}_i + f_t(x_i)) + \Omega(f_t)
+$$</p>
+<p>将损失函数展开到二阶项，丢掉常数项后</p>
+<p>$$
+\hat{L}^t = \sum_{i=1}^ [g_i f_t(x_i) + \frac{1}{2} h_i f_i^2(x_i)] + \Omega(f_t)
+$$</p>
+<p>例如，损失函数取为</p>
+<p>$$
 l(y_i, \hat{y}_i) = (y_i - \hat{y}_i)^2
-$$
-那么，对应的梯度和二阶导为
-$$
+$$</p>
+<p>那么，对应的梯度和二阶导为</p>
+<p>$$
 g_i = -2(y_i - \hat{y}_i) = -2 e_i  \\
 h_i = 2
 $$</p>
 <p>定义样本集合$(I_j = { i | q(x_i) = j })$，即到达第j个叶子结点的样本集合。
-那么损失函数可以改写为对第t颗树的叶子结点求和，下面的权值w也是指第t颗树的
-$$
+那么损失函数可以改写为对第t颗树的叶子结点求和，下面的权值w也是指第t颗树的</p>
+<p>$$
 \hat{L}^t = \sum_{j=1}^T [(\sum_{i \in I_j} g_i) w_j + \frac{1}{2} (\sum_{i \in I_j} h_i + \lambda) w_j^2] + \gamma T
 $$</p>
-<p>从上式可以求得在给定的q函数下，最佳的权值为
-$$
+<p>从上式可以求得在给定的q函数下，最佳的权值为</p>
+<p>$$
 w_j^* = - \frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}
 $$
-对应的最优目标函数为
-$$
+对应的最优目标函数为</p>
+<p>$$
 \hat{L}^t(q) = - \frac{1}{2} \sum_{j=1}^T \frac{(\sum_{i \in I_j} g_i)^2 }{\sum_{i \in I_j} h_i + \lambda} + \gamma T
 $$
 这个值可以作为q函数的score来评估树的结构，作用和CART的不纯度gini系数一样。
 理论上来说需要遍历所有可能的树，实际上用启发式的方法，从单叶子节点的树开始，然后添加分支。
-设分裂前的样本集为I，分裂后左右子树的样本集分别为$(I_L, I_R)$，那么分裂带来的损失函数减少量为
-$$
+设分裂前的样本集为I，分裂后左右子树的样本集分别为$(I_L, I_R)$，那么分裂带来的损失函数减少量为</p>
+<p>$$
 L_{split} = \frac{1}{2} ( \frac{(\sum_{i \in I_L} g_i)^2 }{\sum_{i \in I_L} h_i + \lambda}  +  \frac{(\sum_{i \in I_R} g_i)^2 }{\sum_{i \in I_R} h_i + \lambda} - \frac{(\sum_{i \in I} g_i)^2 }{\sum_{i \in I} h_i + \lambda}) - \gamma
 $$
 就像C4.5 和 CART 的信息增益率和gini系数增加量那样，作为该分裂点的score，用来确定分裂点是否最优。</p>
@@ -201,7 +201,7 @@ $$
 <p>shrinkage：
 J. Friedman. Stochastic gradient boosting. Computational
 Statistics &amp; Data Analysis, 38(4):367–378, 2002.</p>
-<p>shrink 将新加入的权值乘上一个系数$(\yita)$，为后面的树提供一定的学习空间。</p>
+<p>shrink 将新加入的权值乘上一个系数$(\eta)$，为后面的树提供一定的学习空间。</p>
 <p>列采样来自随机森林：
 L. Breiman. Random forests. Maching Learning,
 45(1):5–32, Oct. 2001</p>
@@ -233,21 +233,21 @@ wide web, pages 387–396. ACM, 2011</p>
 </blockquote>
 <ul>
 <li>Weighted Quantile Sketch 算法
-对第k个特征，构造数据集
-$$
+对第k个特征，构造数据集</li>
+</ul>
+<p>$$
 D_k= {(x_{1k}, h_1) , (x_{2k},h_2) , ...,(x_{nk},h_n) }
 $$
 其中$(h_i)$是该数据点对应的损失函数的二阶梯度。二阶梯度在这里相当于样本的权值，目标函数可以看做一个带权的均方误差(通过近似，将所有凸函数形式的目标函数都变成了和最小均方误差一样了)。
-重新改写目标函数为
-$$
+重新改写目标函数为</p>
+<p>$$
 \sum_{i=1}^n \frac{1}{2} h_i(f_t(x_i) - g_i / h_i)^2 + \Omega(f_t) + constant
 $$
-定义序函数为带权的序函数
-$$
+定义序函数为带权的序函数</p>
+<p>$$
 r_k(z) = \frac{1}{\sum_{(x,h) \in D_k } h} \sum_{(x,h) \in D_k, x&lt;z} h
 $$
-它代表第k个特征小于z的样本比例（带权的）。候选集的目标要使得相邻两个候选分裂点相差不超过某个值$(\epsilon)$。</li>
-</ul>
+它代表第k个特征小于z的样本比例（带权的）。候选集的目标要使得相邻两个候选分裂点相差不超过某个值$(\epsilon)$。</p>
 <p>样本权值相同的时候， quantile sketch 算法可以找到这些分裂点：</p>
 <ol>
 <li>M. Greenwald and S. Khanna. Space-efficient online
