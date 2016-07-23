@@ -5,6 +5,17 @@ date: 2016-07-10
 ---
 [TOC]
 
+## 基本语法相关
+- `*args`，将列表`args`展开为参数列表，`**kwargs`，将字典`kwargs`展开成kv形式的参数列表。
+
+参考 <https://stackoverflow.com/questions/2921847/what-does-the-star-operator-mean-in-python>
+和 <https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists>
+
+- 整数除法，在python2.x中`/`代表整数除法（除非左右操作数有一个是浮点数），而在python3.x中，代表浮点数除法，python3.x用`//`代表整数除法。
+- 反射函数，`type()`，`isinstance()`，`hasattr()`，`setattr()` 以及属性`__class__`
+- Mixin：python通过多重继承实现组合模式。sklearn中很多基础类使用这种模式实现的。<https://github.com/scikit-learn/scikit-learn/blob/51a765a/sklearn/base.py#L281>
+
+
 ## 类方法
 - @classmethod 装饰器，第一个参数代表类，类方法，既可以通过类调用，也可以通过类的实例调用
 - @staticmethod ，只能通过类调用

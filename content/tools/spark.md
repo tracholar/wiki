@@ -58,7 +58,7 @@ val sc = new SparkCsontext(sparkConf)
 - RDD 常用操作
     - `count()`
     - `foreach`, `map`, `flatMap`, `filter`,
-- 并行化容器，可以通过`SparkContext.parallelize` 方法创建分布式便于并行计算的数据结构。
+- 并行化容器，可以通过`SparkContext.parallelize` 方法创建分布式便于并行计算的数据结构。也可以用来将scala的容器转换为RDD结构的tips
 ```scala
 val data = Array(1,2,4,5,6,7)
 val distData = sc.parallelize(data)
@@ -102,6 +102,9 @@ def doStuff(rdd: RDD[String]): RDD[String] = {
     - java,  `org.apache.spark.api.java.function` 对象，或者java 8 的lambda表达式
     - python， lambda表达式，本地函数，模块的顶级函数，对象的方法
 
+- 重新分区，`repartition`会重新分配所有数据，如果是降低分区数目，可以用`coalesce`，它会避免移动所有数据，
+  而只是移动丢弃的分区的数据，参考[stackoverflow的讨论](https://stackoverflow.com/questions/31610971/spark-repartition-vs-coalesce)。
+  
 ### RDD持久化
 持久化的两个方法 `.cache()`和`.persist(StorageLevel.SOME_LEVEL)`，存储级别有：
 
@@ -409,9 +412,14 @@ spark的DataFrame每一列可以存储向量！甚至图像！任意值都行！
     - filter(sql表达式)
 
 - lazy val rdd 对象，可以通过RDD接口操作
+- df.sqlContext 可以访问创建该DataFrame 的SQLContext对象，rdd.sparkContext 可以访问创建RDD的SparkContext对象。
 
 
-#### 模型评估
+- 保存到磁盘
+```scala
+df.rdd.map { 转换操作 } .saveAsTextFile(filepath)
+```
+
 
 
 ### spark.mLlib
@@ -419,7 +427,7 @@ spark的DataFrame每一列可以存储向量！甚至图像！任意值都行！
 - LogisticRegressionModel， 要`model.clearThreshold` predict才会输出概率，否则输出的是判决后的值
 
 ### 基本数据结构
-- Vector, 可以通过工厂对象`Vectors`创建，普通向量`Vectors.dense`，稀疏向量`Vectors.sparse`
+- Vector, 可以通过工厂对象`Vectors`创建，普通向量`Vectors.dense`，稀疏向量`Vectors.sparse`，通过`.toArray`方法转换为`Array[Double]`
 - LabeledPoint, 二元组 `(label:Double, features: Vector)`
 - Matrix， 可以通过工厂对象`Matrices`创建，普通矩阵 `Matrices.dense`，稀疏矩阵`Matrices.sparse`
 - RowMatrix，前面的向量和矩阵都是存在单机中，这种和下面的矩阵是分布式存储的。

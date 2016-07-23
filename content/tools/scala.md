@@ -195,7 +195,7 @@ def calcType(calc: Calculator) = calc match {
   case c@Calculator(_, _) => "Calculator: %s of unknown type".format(c)
 ```
 - 异常， try ... catch ... finally
-
+- private[spark] private 作用域为包含spark类的地方才可见
 ## 基本数据结构
 - String 实际上就是java.lang.String
 - List 列表
@@ -389,8 +389,58 @@ class Container[A <% Int] { def addIt(x: A) = 123 + x }
 
 - 关于类型，还有一些内容，看教程 <https://twitter.github.io/scala_school/zh_cn/advanced-types.html>
 
+- 断言assert和require，通常用require做参数检查，而用assert做测试相关的。
+
+```scala
+def assert(assertion: Boolean) {
+  if (!assertion)
+    throw new java.lang.AssertionError("assertion failed")
+}
+
+def assume(assumption: Boolean) {
+  if (!assumption)
+    throw new java.lang.AssertionError("assumption failed")
+}
+
+def require(requirement: Boolean) {
+  if (!requirement)
+    throw new IllegalArgumentException("requirement failed")
+}
+```
 
 
+
+## 隐式转换
+### 隐式函数
+```scala
+implicit def intToString(x:Int) : x.toString
+```
+
+### 隐式类 2.10.+
+隐式类的主方法可以用于隐式类型转换。
+```scala
+object Helpers {
+  implicit class IntWithTimes(x: Int) {
+    def times[A](f: => A): Unit = {
+      def loop(current: Int): Unit =
+        if(current > 0) {
+          f
+          loop(current - 1)
+        }
+      loop(x)
+    }
+  }
+}
+
+import Helpers._
+5 times println("HI")
+
+HI
+HI
+HI
+HI
+HI
+```
 
 
 
@@ -408,6 +458,31 @@ class Container[A <% Int] { def addIt(x: A) = 123 + x }
         - src/test – 就像src/main，不过是对测试
         - lib_managed – 你的项目依赖的jar文件。由sbt update时填充
         - target – 生成物的目标路径（如自动生成的thrift代码，类文件，jar包）
+
+## 字符串 - 核心数据结构
+scala的字符串很多是直接借助于java的String类，但是还有一些scala的特性需要说明一下。
+
+### 字符串插值 String Interpolation，Scala 2.10.+
+scala提供三种字符串插值方法，s, f and raw。
+- s支持局部变量和表达式。
+- f表明对变量进行格式化，类似于printf的功能。类型安全，如果不匹配，将会报错。`%s`是通用的？！
+- raw字符串就是不会对转义字符转义。相当于python里面的r
+
+```scala
+// 插入局部变量
+val name = "James"
+println(s"Hello, $name")  // Hello, James
+// 插入表达式
+println(s"1 + 1 = ${1 + 1}")
+
+val height = 1.9d
+val name = "James"
+// f 使用类似于printf格式字符
+println(f"$name%s is $height%2.2f meters tall")  // James is 1.90 meters tall
+
+println(raw"a\nb") // Output: a\nb
+```
+
 
 ## 集合 - 核心数据结构
 ### List
@@ -454,12 +529,15 @@ res3: Seq[Int] = List(1, 1, 2)
 
 请注意返回的是一个列表。因为Seq是一个特质；而列表是序列的很好实现。
 
+".mkString(seq)" 方法可以实现python的`join`方法的功能。
+
 
 ### Map
 - 创建MAP
 ```
 Map('a' -> 1, 'b' -> 2)
 ```
+
 
 ## 层次结构
 - traverable, `foreach` 实现遍历

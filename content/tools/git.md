@@ -42,6 +42,30 @@ git push origin <tagname>
 1. <http://stackoverflow.com/a/5195913/4349983>
 2. <https://git-scm.com/book/zh/v1/Git-%E5%9F%BA%E7%A1%80-%E6%89%93%E6%A0%87%E7%AD%BE>
 
+## 分支
+```bash
+## 创建dev分支
+git branch dev
+## 切换到dev分支
+git checkout dev
+## 上述两条命令也可以合并为一条
+git checkout -b dev
+
+## 在dev分支作修改后，再切换回master分支
+git checkout master
+## 还可以创建多个其他分支
+git checkout -b issu35
+git checkout -b issu37
+## 在master分支中，合并dev分支
+## 可与选择只合并某一个分支
+git merge issu35  
+## 合并后，可以删除issu35分支
+git branch -d issu35
+## 如果合并分支时，发生冲突，解决冲突后再合并
+## 可以通过命令查看冲突的地方
+git status
+```
+
 ## `.gitignore`文件
 文件 .gitignore 的格式规范如下：
 
