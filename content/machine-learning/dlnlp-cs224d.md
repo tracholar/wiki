@@ -155,6 +155,8 @@ Perplexity ???
 - 梯度消减 Mikolov，如果梯度的范数超过阈值，就将梯度归一化到范数等于该阈值的向量或矩阵。
 - 补充对RNN求梯度的理论推导
 
+- 利用RNN学到的语言模型，生成词
+
 ### 实现细节
 - dropout正则化，在TensorFlow里面，可以使用`tf.nn.dropout`来实现。
 

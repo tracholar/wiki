@@ -104,7 +104,7 @@ def doStuff(rdd: RDD[String]): RDD[String] = {
 
 - 重新分区，`repartition`会重新分配所有数据，如果是降低分区数目，可以用`coalesce`，它会避免移动所有数据，
   而只是移动丢弃的分区的数据，参考[stackoverflow的讨论](https://stackoverflow.com/questions/31610971/spark-repartition-vs-coalesce)。
-  
+
 ### RDD持久化
 持久化的两个方法 `.cache()`和`.persist(StorageLevel.SOME_LEVEL)`，存储级别有：
 
@@ -376,6 +376,27 @@ pipeline实现了estimator的fit接口和transformer的transform接口。
 - 参数网格可以通过 `ParamGridBuilder`对象创建，他有三个方法，`addGrid(param, values:Array)`添加一个参数网格，
   `baseOn(paramPair)`设置指定参数为固定值，`build()`方法返回一个`Array[ParamMap]`数组
 
+#### 特征变换
+- `ml.feature`包中的模型 `IndexToString, StringIndexer`。
+    - `StringIndexer` 将字符串类型的变量（或者label）转换为索引序号，序号会按照频率排序，不是字典序
+    - `IndexToString` 和`StringIndexer`配合使用可以让字符串类型的变量的处理变得透明，这个是将index变成原来的字符串
+
+```scala
+val labelIndexer = new StringIndexer()
+    .setInputCol("label")
+    .setOutputCol("indexedLabel")
+    .fit(training)
+val rf = new RandomForestClassifier()
+    .setPredictionCol("indexedPrediction")
+    .setLabelCol("indexedLabel")
+setRFParam(rf, param)
+val labelConverter = new IndexToString()
+    .setInputCol("indexedPrediction")
+    .setOutputCol("prediction")
+    .setLabels(labelIndexer.labels)
+val pipeline = new Pipeline()
+    .setStages(Array(labelIndexer, rf, labelConverter))
+```
 
 #### DataFrame
 DataFrame相当于 RDD[Row]，而Row相当于一个可以包含各种不同数据的Seq。

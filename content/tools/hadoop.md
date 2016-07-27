@@ -23,8 +23,8 @@ date: 2016-07-12
     - `touchz`，创建一个0字节的空文件
     - `text`， 将源文件输出为文本格式。允许的格式是zip和TextRecordInputStream。
 - 与本地文件系统交互的命令
-    - `copyFromLocal`
-    - `copyToLocal`
+    - `copyFromLocal`   将本地路径拷贝到HDFS中
+    - `copyToLocal`     将HDFS中的路径原样拷贝到本地
     - `put`，可以用`-`代表标准输入，例如`hadoop fs -put - hdfs://host:port/hadoop/hadoopfile `
     - `get`， 例子 `hadoop fs -get /user/hadoop/file localfile`
     - `getmerge`, 获取分布式文件目录中所有的文件并合并到一个本地文件中，使用方法：`hadoop fs -getmerge <src> <localdst> [addnl]`，addnl是可选的，用于指定在每个文件结尾添加一个换行符。

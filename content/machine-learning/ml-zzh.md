@@ -13,7 +13,16 @@ date: 2016-06-28
 
 - NFL定理
 
+## 线性模型
+- 最大熵模型与多元逻辑回归的关系？没啥区别      
+    - <https://www.quora.com/What-is-the-relationship-between-Log-Linear-model-MaxEnt-model-and-Logistic-Regression>
+    - <https://stackoverflow.com/questions/21241602/maximum-entropy-model-and-logistic-regression>
 
+## 类别不平衡问题
+三种策略：（假设负样本比正样本多很多，实际遇到的问题基本上都是这种问题）     
+- 对负样本欠采样，简单的欠采样可能会丢失关键信息，代表性算法 EasyEnsemble [Liu , 2009] 利用集成学习的机制，将反例划分为若干个集合，供不同的学习使用，这样在每一个学习奇看来，都是欠采样，但全局来看却不会丢失信息。
+- 对正样本过采样，简单的重复样本会导致严重的过拟合，代表性算法 SMOTE [Chawla, 2002] 通过对训练集正样本进行插值来产生额外的正例。
+- resale，直接基于原始训练机进行学习，在预测的时候采用阈值移动的策略，将正负样本的比例因素考虑进去。
 ## 集成学习
 ### 集成学习基本思想
 利用很多个独立的（或者不同的）弱分类器，进行投票得到一个强的分类器。该理论可以由下面的推导得到
