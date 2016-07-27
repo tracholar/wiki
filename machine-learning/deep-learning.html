@@ -5,7 +5,7 @@
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>Hive - tracholar's personal knowledge wiki</title>
+        <title>深度学习 - tracholar's personal knowledge wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -35,42 +35,27 @@
         <div id="container">
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tools">tools</a>&nbsp;»&nbsp;Hive</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;深度学习</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">Hive</div>
+<div id="title">深度学习</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">关于</a></li>
-<li><a href="#hive-sql">Hive SQL</a><ul>
-<li><a href="#_2">优化排序</a></li>
-</ul>
-</li>
+<li><a href="#dnn">DNN 方向</a></li>
+<li><a href="#cnn">CNN 方向</a></li>
+<li><a href="#rnn">RNN 方向</a></li>
+<li><a href="#dqn">DQN 方向</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
-<p>学习Hive时的笔记</p>
-<h2 id="hive-sql">Hive SQL</h2>
-<ul>
-<li><code>row_number()</code> 函数用法，<code>partition</code>用来将数据分区编号，<code>order by</code>描述编号顺序</li>
-</ul>
-<div class="hlcode"><pre><span class="k">select</span> <span class="n">uid</span><span class="p">,</span> <span class="n">row_number</span><span class="p">()</span> <span class="n">over</span> <span class="p">(</span><span class="n">partition</span> <span class="k">by</span> <span class="n">uid</span> <span class="k">order</span> <span class="k">by</span> <span class="n">uid</span><span class="p">)</span>
-<span class="k">from</span>
-</pre></div>
-
-
-<ul>
-<li><code>datediff(d1, d2)</code>， 其中时间字符串要是这种格式<code>yyyy-MM-dd</code>，如果不是，需要先转换</li>
-<li><code>from_unixtime(t, 'yyyyMMdd')</code>, <code>unix_timestamp(str, 'yyyy-MM-dd')</code>这两个函数可以实现时间字符串格式转换</li>
-</ul>
-<h3 id="_2">优化排序</h3>
-<p>不要使用<code>order by</code> <a href="https://stackoverflow.com/questions/13715044/hive-cluster-by-vs-order-by-vs-sort-by">https://stackoverflow.com/questions/13715044/hive-cluster-by-vs-order-by-vs-sort-by</a>       <br />
-- <code>ORDER BY</code> 全局排序，但是只能使用一个reducer
-- <code>DISTRIBUTE BY</code> 采用Hash算法将map处理后的数据分发给reduce，它保证了相同的key是在同一个reducer
-- <code>SORT BY</code> 不是全局排序，而是在数据进入reduce之前完成排序，只能保证每个reducer的输出是有序的，不能保证全局有序。
-- <code>CLUSTER BY</code> 相当于先 DISTRIBUTE 然后 sort。也不能保证全局有序。</p>
+<p>深度学习的调研，相当于review 。</p>
+<h2 id="dnn">DNN 方向</h2>
+<h2 id="cnn">CNN 方向</h2>
+<h2 id="rnn">RNN 方向</h2>
+<h2 id="dqn">DQN 方向</h2>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2016-07-08 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2016-07-27 </span></div>
 
         </div>
         <div id="footer">

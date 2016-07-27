@@ -66,12 +66,13 @@
 <li><a href="#mllib">MLlib</a><ul>
 <li><a href="#sparkml">spark.ml 包</a><ul>
 <li><a href="#_5">基础类</a></li>
+<li><a href="#_6">特征变换</a></li>
 <li><a href="#dataframe_1">DataFrame</a></li>
 </ul>
 </li>
 <li><a href="#sparkmllib">spark.mLlib</a></li>
-<li><a href="#_6">基本数据结构</a></li>
-<li><a href="#_7">模型评估</a></li>
+<li><a href="#_7">基本数据结构</a></li>
+<li><a href="#_8">模型评估</a></li>
 </ul>
 </li>
 <li><a href="#tips">TIPS</a><ul>
@@ -497,6 +498,31 @@ pipeline实现了estimator的fit接口和transformer的transform接口。</p>
   <code>baseOn(paramPair)</code>设置指定参数为固定值，<code>build()</code>方法返回一个<code>Array[ParamMap]</code>数组</p>
 </li>
 </ul>
+<h4 id="_6">特征变换</h4>
+<ul>
+<li><code>ml.feature</code>包中的模型 <code>IndexToString, StringIndexer</code>。<ul>
+<li><code>StringIndexer</code> 将字符串类型的变量（或者label）转换为索引序号，序号会按照频率排序，不是字典序</li>
+<li><code>IndexToString</code> 和<code>StringIndexer</code>配合使用可以让字符串类型的变量的处理变得透明，这个是将index变成原来的字符串</li>
+</ul>
+</li>
+</ul>
+<div class="hlcode"><pre><span class="k">val</span> <span class="n">labelIndexer</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">()</span>
+    <span class="o">.</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;label&quot;</span><span class="o">)</span>
+    <span class="o">.</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;indexedLabel&quot;</span><span class="o">)</span>
+    <span class="o">.</span><span class="n">fit</span><span class="o">(</span><span class="n">training</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">rf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">RandomForestClassifier</span><span class="o">()</span>
+    <span class="o">.</span><span class="n">setPredictionCol</span><span class="o">(</span><span class="s">&quot;indexedPrediction&quot;</span><span class="o">)</span>
+    <span class="o">.</span><span class="n">setLabelCol</span><span class="o">(</span><span class="s">&quot;indexedLabel&quot;</span><span class="o">)</span>
+<span class="n">setRFParam</span><span class="o">(</span><span class="n">rf</span><span class="o">,</span> <span class="n">param</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">labelConverter</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">IndexToString</span><span class="o">()</span>
+    <span class="o">.</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;indexedPrediction&quot;</span><span class="o">)</span>
+    <span class="o">.</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;prediction&quot;</span><span class="o">)</span>
+    <span class="o">.</span><span class="n">setLabels</span><span class="o">(</span><span class="n">labelIndexer</span><span class="o">.</span><span class="n">labels</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">pipeline</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Pipeline</span><span class="o">()</span>
+    <span class="o">.</span><span class="n">setStages</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="n">labelIndexer</span><span class="o">,</span> <span class="n">rf</span><span class="o">,</span> <span class="n">labelConverter</span><span class="o">))</span>
+</pre></div>
+
+
 <h4 id="dataframe_1">DataFrame</h4>
 <p>DataFrame相当于 RDD[Row]，而Row相当于一个可以包含各种不同数据的Seq。
 DataFrame通过collect函数之后就是Array[Row]</p>
@@ -552,7 +578,7 @@ DataFrame通过collect函数之后就是Array[Row]</p>
 <li>LogisticRegressionWithLBFGS</li>
 <li>LogisticRegressionModel， 要<code>model.clearThreshold</code> predict才会输出概率，否则输出的是判决后的值</li>
 </ul>
-<h3 id="_6">基本数据结构</h3>
+<h3 id="_7">基本数据结构</h3>
 <ul>
 <li>Vector, 可以通过工厂对象<code>Vectors</code>创建，普通向量<code>Vectors.dense</code>，稀疏向量<code>Vectors.sparse</code>，通过<code>.toArray</code>方法转换为<code>Array[Double]</code></li>
 <li>LabeledPoint, 二元组 <code>(label:Double, features: Vector)</code></li>
@@ -573,7 +599,7 @@ DataFrame通过collect函数之后就是Array[Row]</p>
 </pre></div>
 
 
-<h3 id="_7">模型评估</h3>
+<h3 id="_8">模型评估</h3>
 <p>包名<code>org.apache.spark.mllib.evaluation</code></p>
 <ul>
 <li>两分类 BinaryClassificationMetrics</li>

@@ -62,8 +62,8 @@
 </ul>
 </li>
 <li>与本地文件系统交互的命令<ul>
-<li><code>copyFromLocal</code></li>
-<li><code>copyToLocal</code></li>
+<li><code>copyFromLocal</code>   将本地路径拷贝到HDFS中</li>
+<li><code>copyToLocal</code>     将HDFS中的路径原样拷贝到本地</li>
 <li><code>put</code>，可以用<code>-</code>代表标准输入，例如<code>hadoop fs -put - hdfs://host:port/hadoop/hadoopfile</code></li>
 <li><code>get</code>， 例子 <code>hadoop fs -get /user/hadoop/file localfile</code></li>
 <li><code>getmerge</code>, 获取分布式文件目录中所有的文件并合并到一个本地文件中，使用方法：<code>hadoop fs -getmerge &lt;src&gt; &lt;localdst&gt; [addnl]</code>，addnl是可选的，用于指定在每个文件结尾添加一个换行符。</li>

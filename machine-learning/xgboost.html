@@ -274,10 +274,39 @@ Database Management, 2007.</li>
 <p>算法详细，请看论文。</p>
 <h3 id="_3">系统设计</h3>
 <ul>
-<li>Column Block for Parallel Learning
+<li>Column Block for Parallel Learning    <br />
 最耗时的地方在于对样本排序，为了减少这部分时间，将数据保存在内存单元block中。
 在block中，数据以compressed column (CSC) 保存，每一列按照该列对应的特征进行排序。
 因此，这种数据只需要计算一次，就可以被反复使用。</li>
+</ul>
+<p>此外可以同时对所有的叶子结点执行 split finding 算法，寻找最优分裂点。</p>
+<blockquote>
+<p>什么意思：  <br />
+We do the split
+finding of all leaves collectively, so one scan over the block
+will collect the statistics of the split candidates in all leaf branches</p>
+</blockquote>
+<p>这种结构对近似搜索算法也有用，可以使用多个block，每一个block对应一个行的子集，
+不同的block还可以在不同的机器上，或者保存在磁盘上实现out-of-core计算。</p>
+<p>对每一列的统计可以并行，这导致了split finding 的并行算法。
+这种结构也支持列采样。</p>
+<p>这个结构还没搞懂，可能需要看一下代码。。。。。待续</p>
+<ul>
+<li>Cache-aware Access     <br />
+因为需要访问每行的梯度统计，这种结构导致内存的不连续访问，这会使得CPU cache命中率降低，
+而降低算法的运行速度！（靠！这都考虑到了，牛逼），需要合理选择block的大小。</li>
+</ul>
+<p>216 examples per block balances the
+cache property and parallelization.</p>
+<ul>
+<li>Blocks for Out-of-core Computation      <br />
+为了使得核外计算可能，将数据分为多个block，保存到磁盘。
+在计算的过程中，并行地用另外的线程将数据从磁盘预取到内存缓存中。
+但是由于IO通常会花费更多时间，简单地预取还是不够，我们采用下面两种技巧来优化：<ul>
+<li>Block Compression，block按照列压缩，然后在读取的时候，用另外的线程解压。对于行索引，保存于block初始索引的差值，16bit整数保存。</li>
+<li>Block Sharding，</li>
+</ul>
+</li>
 </ul>
 <h2 id="_4">算法细节</h2>
 <h2 id="_5">源码实现</h2>
