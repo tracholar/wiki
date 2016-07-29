@@ -113,10 +113,11 @@ pre, code {
 }
 
 code {
-    color: #666;
-    background-color: #eee;
+    color: #c7254e;
+    background-color: #f9f2f4;
     margin: 0 2px;
-    padding: 1px 3px;
+    padding: 2px 4px;
+    font-size: 90%;
 }
 
 pre {
