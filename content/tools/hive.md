@@ -25,3 +25,12 @@ from
 - `DISTRIBUTE BY` 采用Hash算法将map处理后的数据分发给reduce，它保证了相同的key是在同一个reducer
 - `SORT BY` 不是全局排序，而是在数据进入reduce之前完成排序，只能保证每个reducer的输出是有序的，不能保证全局有序。
 - `CLUSTER BY` 相当于先 DISTRIBUTE 然后 sort。也不能保证全局有序。
+
+
+### ERROR 汇总
+- metainfo 超大：  
+
+```
+org.apache.hadoop.yarn.exceptions.YarnRuntimeException: java.io.IOException: Split metadata size exceeded 10000000. Aborting job job_1469532484579_647683
+```
+解决方法：`set mapreduce.jobtracker.split.metainfo.maxsize=-1;`

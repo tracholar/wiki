@@ -372,6 +372,7 @@ model.fit([data_a, data_b], labels, nb_epoch=10)
 
 ### 一些例子
 一些前沿的例子，见<http://keras.io/getting-started/functional-api-guide/>
+
 - inception modeule
 - residual connection
 
@@ -412,10 +413,67 @@ z = merge([x, y], mode='sum')
 - `.get_output_shape_at(idx)`
 
 ### 内置的核心Layers
+- `Dense` 简单的全连接网络层，至少需要一个 `output_dim` 参数，对于非输入层，会自动获得输入的维数；
+如果是输入层，还需要指定`input_dim`参数。重要的参数：
+    - `activation` 激活函数，默认是线性函数，`a(x)=x`，即没有非线性变换，可以指定激活函数为预定义的非线性函数或者自定义的 element-wise 的符号函数。预定义函数可以通过字符串指定，常用的有：`sigmoid, relu, tanh, softmax, hard_sigmoid, softsign, softplus`
+    -
+- `Activation(name)` name 是激活函数的名字。既然Dense可以指定activation参数，为什么还要一个激活层？！
+- `Dropout(p)` Dropout 层，参数是dropout的概率。 [Dropout: A Simple Way to Prevent Neural Networks from Overfitting](http://www.cs.toronto.edu/~rsalakhu/papers/srivastava14a.pdf)
+- `Flatten()` 将多维特征展开为一维特征，不会影响样本维度。常用在卷积网络。
+- `Reshape(hape)` shape:Tuple，将特征尺寸reshape，不影响样本维度。
+- `Permute(dims)` dims:Tuple[int,int,...] 将维度重新变换，如果dims是两个元素，相当于转置。
+
+```python
+model = Sequential()
+model.add(Permute((2, 1), input_shape=(10, 64)))
+# now: model.output_shape == (None, 64, 10)
+# note: `None` is the batch dimension
+```
+
+- `RepeatVector(n:Int)` 将输入重复n次，
+
+```python
+model = Sequential()
+model.add(Dense(32, input_dim=32))
+# now: model.output_shape == (None, 32)
+# note: `None` is the batch dimension
+
+model.add(RepeatVector(3))
+# now: model.output_shape == (None, 3, 32)
+```
+
+- `Merge(layers:List[Layer], mode:String|Function, ...)` 融合层。
+- `Lambda(func:Function, output_shape:Tuple, args:Dict)` 将任意符号函数应用到之前的层
+
+```python
+# add a x -> x^2 layer
+model.add(Lambda(lambda x: x ** 2))
+```
+
+- `ActivityRegularization(l1=0.0, l2=0.0)` 添加正则项？怎么添加的？
+- `Masking` 不懂，貌似跟LSTM层有关系
+- `Highway` 也不懂，貌似跟LSTM层有关
+- `MaxoutDense` maxout 层，是线性层，不像`Dense`，不能添加激活函数，需要在后面添加激活函数层。
+- `TimeDistributedDense` 不懂，貌似在RNN中有用
 
 
 ## TensorFlow API
 
+## 模型可视化
+利用模块 `keras.utils.visualize_util` 里面的工具函数。
+
+- `plot(model, to_file=filename, show_shapes=False, show_layer_names=True)` 保存到文件
+- `model_to_dot(model, show_shapes=False, show_layer_names=True).create(format='dot')` 输出为dot绘图格式，也可以指定`format`为svg等格式。然后利用`IPython.display` 模块输出为SVG图像。
+
+```python
+from keras.utils.visualize_util import plot
+plot(model,show_shapes=True)
+
+from IPython.display import SVG
+from keras.utils.visualize_util import model_to_dot
+
+SVG(model_to_dot(model, show_shapes=True).create(prog='dot', format='svg'))
+```
 
 ## sklearn API
 将 Keras 模型封装成sklearn 的API。两个封装API，分别是分类器和回归器

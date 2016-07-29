@@ -279,6 +279,10 @@ cache property and parallelization.
     - Block Compression，block按照列压缩，然后在读取的时候，用另外的线程解压。对于行索引，保存于block初始索引的差值，16bit整数保存。
     - Block Sharding，
 
+## 个人注解
+### GBDT和XGBOOST的联系
+从损失函数来看，GBDT相当于$(H=2, \lambda = 0, \gamma = 0)$ 的特殊情形，
+此外陈天奇对XGBOOST并行实现的优化也很牛！
 
 ## 算法细节
 

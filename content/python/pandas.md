@@ -127,6 +127,7 @@ df.drop('colname', axis=1)
 ## 在原DataFrame上删除一列
 df.drop('colname', axis=1, inplace=True)
 ```
+## DataFrame API
 
 ## category 类型数据处理
 - 转换为category, `Series.astype('category')`
@@ -134,6 +135,16 @@ df.drop('colname', axis=1, inplace=True)
   赋值`cat.categories`改变他们的名字。
 
 ## IO操作
+### read_csv
+最常用的文本文件读取函数。一些重要的参数如下：          
+- `sep` 字段分隔符，默认为`,`，有些文件用`\t`
+- `header` 头部用来做index的行序号，None表示没有
+- `names` 用来指定行的label，一个list
+- `index_col` 是否使用index列，默认false
+- `nrows` 读取的行数
+- `true_values, false_values` 真假值字符串替换
+- `na_values` NAN值列表，默认作为NAN的值为`'-1.#IND', '1.#QNAN', '1.#IND', '-1.#QNAN', '#N/A N/A', '#N/A', 'N/A', 'NA', '#NA', 'NULL', 'NaN', '-NaN', 'nan', '-nan', ''`
+- `iterator` 默认false，指定为true用来迭代地读大文件，可以用`chunksize`指定每次读取的行数。
 
 
 ## 可视化plot
