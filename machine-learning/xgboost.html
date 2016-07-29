@@ -49,8 +49,12 @@
 <li><a href="#_3">系统设计</a></li>
 </ul>
 </li>
-<li><a href="#_4">算法细节</a></li>
-<li><a href="#_5">源码实现</a></li>
+<li><a href="#_4">个人注解</a><ul>
+<li><a href="#gbdtxgboost">GBDT和XGBOOST的联系</a></li>
+</ul>
+</li>
+<li><a href="#_5">算法细节</a></li>
+<li><a href="#_6">源码实现</a></li>
 <li><a href="#todo">TODO</a></li>
 <li><a href="#reference">reference</a></li>
 </ul>
@@ -308,8 +312,12 @@ cache property and parallelization.</p>
 </ul>
 </li>
 </ul>
-<h2 id="_4">算法细节</h2>
-<h2 id="_5">源码实现</h2>
+<h2 id="_4">个人注解</h2>
+<h3 id="gbdtxgboost">GBDT和XGBOOST的联系</h3>
+<p>从损失函数来看，GBDT相当于$(H=2, \lambda = 0, \gamma = 0)$ 的特殊情形，
+此外陈天奇对XGBOOST并行实现的优化也很牛！</p>
+<h2 id="_5">算法细节</h2>
+<h2 id="_6">源码实现</h2>
 <p><a href="https://github.com/dmlc/xgboost/blob/master/jvm-packages/xgboost4j-spark/src/main/scala/ml/dmlc/xgboost4j/scala/spark/XGBoost.scala#L61">dmlc</a></p>
 <ul>
 <li>xgboost的spark版本是对每一个分区单独训练？？？？没看懂</li>

@@ -50,8 +50,12 @@
 </ul>
 </li>
 <li><a href="#dataframe">DataFrame的修改</a></li>
+<li><a href="#dataframe-api">DataFrame API</a></li>
 <li><a href="#category">category 类型数据处理</a></li>
-<li><a href="#io">IO操作</a></li>
+<li><a href="#io">IO操作</a><ul>
+<li><a href="#read_csv">read_csv</a></li>
+</ul>
+</li>
 <li><a href="#plot">可视化plot</a></li>
 <li><a href="#tips">TIPS</a></li>
 </ul>
@@ -205,6 +209,7 @@
 </pre></div>
 
 
+<h2 id="dataframe-api">DataFrame API</h2>
 <h2 id="category">category 类型数据处理</h2>
 <ul>
 <li>转换为category, <code>Series.astype('category')</code></li>
@@ -212,6 +217,16 @@
   赋值<code>cat.categories</code>改变他们的名字。</li>
 </ul>
 <h2 id="io">IO操作</h2>
+<h3 id="read_csv">read_csv</h3>
+<p>最常用的文本文件读取函数。一些重要的参数如下：        <br />
+- <code>sep</code> 字段分隔符，默认为<code>,</code>，有些文件用<code>\t</code>
+- <code>header</code> 头部用来做index的行序号，None表示没有
+- <code>names</code> 用来指定行的label，一个list
+- <code>index_col</code> 是否使用index列，默认false
+- <code>nrows</code> 读取的行数
+- <code>true_values, false_values</code> 真假值字符串替换
+- <code>na_values</code> NAN值列表，默认作为NAN的值为<code>'-1.#IND', '1.#QNAN', '1.#IND', '-1.#QNAN', '#N/A N/A', '#N/A', 'N/A', 'NA', '#NA', 'NULL', 'NaN', '-NaN', 'nan', '-nan', ''</code>
+- <code>iterator</code> 默认false，指定为true用来迭代地读大文件，可以用<code>chunksize</code>指定每次读取的行数。</p>
 <h2 id="plot">可视化plot</h2>
 <h2 id="tips">TIPS</h2>
 <ul>

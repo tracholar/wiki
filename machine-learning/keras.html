@@ -67,7 +67,9 @@
 </ul>
 </li>
 <li><a href="#tensorflow-api">TensorFlow API</a></li>
+<li><a href="#_10">模型可视化</a></li>
 <li><a href="#sklearn-api">sklearn API</a></li>
+<li><a href="#-activation-axx-element-wise-sigmoid-relu-tanh-softmax-hard_sigmoid-softsign-softplus">- activation 激活函数，默认是线性函数，a(x)=x，即没有非线性变换，可以指定激活函数为预定义的非线性函数或者自定义的 element-wise 的符号函数。预定义函数可以通过字符串指定，常用的有：sigmoid, relu, tanh, softmax, hard_sigmoid, softsign, softplus</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -438,9 +440,11 @@
 <p>当输入或者输出只有一个时，可以通过 <code>.input_shape</code> 和 <code>.get_output, .output, .output_shape</code> 获取输入输出的信息。
 当有多个的时候，需要用 <code>.get_output_at, .get_input_shape_at</code> 替代。</p>
 <h3 id="_9">一些例子</h3>
-<p>一些前沿的例子，见<a href="http://keras.io/getting-started/functional-api-guide/">http://keras.io/getting-started/functional-api-guide/</a>
-- inception modeule
-- residual connection</p>
+<p>一些前沿的例子，见<a href="http://keras.io/getting-started/functional-api-guide/">http://keras.io/getting-started/functional-api-guide/</a></p>
+<ul>
+<li>inception modeule</li>
+<li>residual connection</li>
+</ul>
 <div class="hlcode"><pre><span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">merge</span><span class="p">,</span> <span class="n">Convolution2D</span><span class="p">,</span> <span class="n">Input</span>
 
 <span class="c"># input tensor for a 3-channel 256x256 image</span>
@@ -475,7 +479,69 @@
 - <code>.get_input_shape_at(idx)</code>
 - <code>.get_output_shape_at(idx)</code></p>
 <h3 id="layers_1">内置的核心Layers</h3>
+<ul>
+<li><code>Dense</code> 简单的全连接网络层，至少需要一个 <code>output_dim</code> 参数，对于非输入层，会自动获得输入的维数；
+如果是输入层，还需要指定<code>input_dim</code>参数。重要的参数：<h2 id="-activation-axx-element-wise-sigmoid-relu-tanh-softmax-hard_sigmoid-softsign-softplus">- <code>activation</code> 激活函数，默认是线性函数，<code>a(x)=x</code>，即没有非线性变换，可以指定激活函数为预定义的非线性函数或者自定义的 element-wise 的符号函数。预定义函数可以通过字符串指定，常用的有：<code>sigmoid, relu, tanh, softmax, hard_sigmoid, softsign, softplus</code></h2>
+</li>
+<li><code>Activation(name)</code> name 是激活函数的名字。既然Dense可以指定activation参数，为什么还要一个激活层？！</li>
+<li><code>Dropout(p)</code> Dropout 层，参数是dropout的概率。 <a href="http://www.cs.toronto.edu/~rsalakhu/papers/srivastava14a.pdf">Dropout: A Simple Way to Prevent Neural Networks from Overfitting</a></li>
+<li><code>Flatten()</code> 将多维特征展开为一维特征，不会影响样本维度。常用在卷积网络。</li>
+<li><code>Reshape(hape)</code> shape:Tuple，将特征尺寸reshape，不影响样本维度。</li>
+<li><code>Permute(dims)</code> dims:Tuple[int,int,...] 将维度重新变换，如果dims是两个元素，相当于转置。</li>
+</ul>
+<div class="hlcode"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Permute</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">)))</span>
+<span class="c"># now: model.output_shape == (None, 64, 10)</span>
+<span class="c"># note: `None` is the batch dimension</span>
+</pre></div>
+
+
+<ul>
+<li><code>RepeatVector(n:Int)</code> 将输入重复n次，</li>
+</ul>
+<div class="hlcode"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">input_dim</span><span class="o">=</span><span class="mi">32</span><span class="p">))</span>
+<span class="c"># now: model.output_shape == (None, 32)</span>
+<span class="c"># note: `None` is the batch dimension</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">RepeatVector</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="c"># now: model.output_shape == (None, 3, 32)</span>
+</pre></div>
+
+
+<ul>
+<li><code>Merge(layers:List[Layer], mode:String|Function, ...)</code> 融合层。</li>
+<li><code>Lambda(func:Function, output_shape:Tuple, args:Dict)</code> 将任意符号函数应用到之前的层</li>
+</ul>
+<div class="hlcode"><pre><span class="c"># add a x -&gt; x^2 layer</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Lambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+</pre></div>
+
+
+<ul>
+<li><code>ActivityRegularization(l1=0.0, l2=0.0)</code> 添加正则项？怎么添加的？</li>
+<li><code>Masking</code> 不懂，貌似跟LSTM层有关系</li>
+<li><code>Highway</code> 也不懂，貌似跟LSTM层有关</li>
+<li><code>MaxoutDense</code> maxout 层，是线性层，不像<code>Dense</code>，不能添加激活函数，需要在后面添加激活函数层。</li>
+<li><code>TimeDistributedDense</code> 不懂，貌似在RNN中有用</li>
+</ul>
 <h2 id="tensorflow-api">TensorFlow API</h2>
+<h2 id="_10">模型可视化</h2>
+<p>利用模块 <code>keras.utils.visualize_util</code> 里面的工具函数。</p>
+<ul>
+<li><code>plot(model, to_file=filename, show_shapes=False, show_layer_names=True)</code> 保存到文件</li>
+<li><code>model_to_dot(model, show_shapes=False, show_layer_names=True).create(format='dot')</code> 输出为dot绘图格式，也可以指定<code>format</code>为svg等格式。然后利用<code>IPython.display</code> 模块输出为SVG图像。</li>
+</ul>
+<div class="hlcode"><pre><span class="kn">from</span> <span class="nn">keras.utils.visualize_util</span> <span class="kn">import</span> <span class="n">plot</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">show_shapes</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">SVG</span>
+<span class="kn">from</span> <span class="nn">keras.utils.visualize_util</span> <span class="kn">import</span> <span class="n">model_to_dot</span>
+
+<span class="n">SVG</span><span class="p">(</span><span class="n">model_to_dot</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">show_shapes</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;dot&#39;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;svg&#39;</span><span class="p">))</span>
+</pre></div>
+
+
 <h2 id="sklearn-api">sklearn API</h2>
 <p>将 Keras 模型封装成sklearn 的API。两个封装API，分别是分类器和回归器</p>
 <ul>

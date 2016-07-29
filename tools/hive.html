@@ -44,6 +44,7 @@
 <li><a href="#_1">关于</a></li>
 <li><a href="#hive-sql">Hive SQL</a><ul>
 <li><a href="#_2">优化排序</a></li>
+<li><a href="#error">ERROR 汇总</a></li>
 </ul>
 </li>
 </ul>
@@ -69,6 +70,15 @@
 - <code>DISTRIBUTE BY</code> 采用Hash算法将map处理后的数据分发给reduce，它保证了相同的key是在同一个reducer
 - <code>SORT BY</code> 不是全局排序，而是在数据进入reduce之前完成排序，只能保证每个reducer的输出是有序的，不能保证全局有序。
 - <code>CLUSTER BY</code> 相当于先 DISTRIBUTE 然后 sort。也不能保证全局有序。</p>
+<h3 id="error">ERROR 汇总</h3>
+<ul>
+<li>metainfo 超大：  </li>
+</ul>
+<div class="hlcode"><pre><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">yarn</span><span class="p">.</span><span class="n">exceptions</span><span class="p">.</span><span class="n">YarnRuntimeException</span><span class="o">:</span> <span class="n">java</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">IOException</span><span class="o">:</span> <span class="n">Split</span> <span class="n">metadata</span> <span class="n">size</span> <span class="n">exceeded</span> <span class="mf">10000000.</span> <span class="n">Aborting</span> <span class="n">job</span> <span class="n">job_1469532484579_647683</span>
+</pre></div>
+
+
+<p>解决方法：<code>set mapreduce.jobtracker.split.metainfo.maxsize=-1;</code></p>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-07-08 </span></div>
 

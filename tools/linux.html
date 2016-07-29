@@ -50,6 +50,12 @@
 <li><a href="#sort">sort 命令</a></li>
 </ul>
 </li>
+<li><a href="#vim">VIM</a><ul>
+<li><a href="#_7">三种模式</a></li>
+<li><a href="#_8">移动光标</a></li>
+<li><a href="#_9">参考</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -134,6 +140,66 @@ grep -e keyword -e otherword log.txt
 - c 参数，检查是否排好序，输出第一个乱序行信息，返回1；C参数，也是检查，但不输出乱序行信息
 - M 参数，以月份排序，会识别月份（只对英文吧）
 - b 参数，忽略每一行前面所有空白</p>
+<h2 id="vim">VIM</h2>
+<h3 id="_7">三种模式</h3>
+<ul>
+<li>插入模式：可以输入文本，按<code>i</code>进入</li>
+<li>编辑模式：按<code>ESC</code>进入，可以移动和操纵文本</li>
+<li>命令模式：可以执行冒号命令，常用的有<code>:w [filename]</code>写入文件，<code>:q</code>退出vim。</li>
+</ul>
+<h3 id="_8">移动光标</h3>
+<p>在编辑模式下操作。</p>
+<ul>
+<li>基本移动：<ul>
+<li>k   上</li>
+<li>j   下</li>
+<li>h   左</li>
+<li>l   右</li>
+</ul>
+</li>
+<li>大范围移动          <ul>
+<li>ctrl + f 前进(forward)一页</li>
+<li>ctrl + b 后退(back)一页</li>
+</ul>
+</li>
+<li>更大范围移动<ul>
+<li><code>*</code>和<code>#</code> 搜索当前光标所在的 <strong>单词</strong> ，跳转到下/上个地方</li>
+<li><code>(</code>和<code>)</code> 移动到前/后一个 <strong>句子</strong> 的开始，以英文句号为准，对中文貌似没用，相当于段落跳转</li>
+<li><code>{</code>和<code>}</code> 在 <strong>段落</strong> 间移动</li>
+<li><code>fa</code> 前进到字符a，a可换成其他字符</li>
+<li><code>gg</code> 文件起始位置</li>
+<li><code>G</code> 最后一行起始位置</li>
+<li><code>ngg</code> n行起始位置</li>
+</ul>
+</li>
+<li>当前页跳转<ul>
+<li><code>H</code> 当前页的header，<code>3H</code>当前页第3行</li>
+<li><code>M</code> 当前页的middle</li>
+<li><code>L</code> 当前页最后一行 ，<code>3L</code>当期那也倒数第3行</li>
+</ul>
+</li>
+<li>行内移动<ul>
+<li><code>g_</code> 行尾，空字符不算</li>
+<li><code>^</code> 行首，空字符不算</li>
+<li><code>$</code> 行尾</li>
+<li><code>0</code> 行首</li>
+<li><code>w</code> 下一个word的开头</li>
+<li><code>e</code> 下一个word的结尾</li>
+<li><code>b</code> 前一个word的开头</li>
+</ul>
+</li>
+<li>搜索匹配<ul>
+<li><code>/str</code>，在编辑模式下输入<code>/</code>，后面跟要搜索字符串str，然后回车搜索。</li>
+<li><code>?str</code>，反向搜索字符串str</li>
+<li><code>n</code>，搜索到匹配后继续向后搜索</li>
+<li><code>N</code>，搜索到匹配后，继续向前搜索</li>
+</ul>
+</li>
+</ul>
+<h3 id="_9">参考</h3>
+<ol>
+<li><a href="http://www.jianshu.com/p/bcbe916f97e1">http://www.jianshu.com/p/bcbe916f97e1</a></li>
+</ol>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-07-18 </span></div>
 
