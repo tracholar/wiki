@@ -107,6 +107,7 @@ tf.placeholder(dtype, shape=None, name=None)
 - `tf.device` 指定CPU或者GPU
 - `tf.add_to_collection(name, value)`将value保存为名字为name的共享集合中，供后面使用.
   `tf.get_collection(name)`，获取存储的值
+- tensorflow里面的标量和`shape=[1]`是不同的，请注意。
 
 
 
