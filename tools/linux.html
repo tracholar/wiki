@@ -53,7 +53,11 @@
 <li><a href="#vim">VIM</a><ul>
 <li><a href="#_7">三种模式</a></li>
 <li><a href="#_8">移动光标</a></li>
-<li><a href="#_9">参考</a></li>
+<li><a href="#_9">编辑命令</a></li>
+<li><a href="#_10">插入模式</a></li>
+<li><a href="#_11">命令模式</a></li>
+<li><a href="#_12">外部工具集成</a></li>
+<li><a href="#_13">参考</a></li>
 </ul>
 </li>
 </ul>
@@ -196,7 +200,178 @@ grep -e keyword -e otherword log.txt
 </ul>
 </li>
 </ul>
-<h3 id="_9">参考</h3>
+<h3 id="_9">编辑命令</h3>
+<ul>
+<li>替换与删除：用<code>d</code>删除行，用<code>x</code>删除字符，用<code>r</code>替换字符。<ul>
+<li><code>rc</code> 用字符c替换当前字符</li>
+<li><code>nrc</code> 用c替换前n个字符</li>
+<li><code>x</code> 删除光标字符</li>
+<li><code>nx</code> 删除光标右侧n个字符</li>
+<li><code>dw</code> 删除光标右侧的word</li>
+<li><code>ndw</code> 删除n个word</li>
+<li><code>db</code> 删除光标左侧一个word</li>
+<li><code>ndb</code> 删除光标左侧n个word</li>
+<li><code>dd</code> 删除一行</li>
+<li><code>ndd</code> 删除n行</li>
+<li><code>d$</code> 删除字符到行尾</li>
+<li><code>d0</code> 删除字符到行首</li>
+<li><code>J</code> 删除本行回车，合并到下行</li>
+</ul>
+</li>
+<li>用输入的文本替换，进入插入模式<ul>
+<li><code>s</code> 输入文本替换当期字符，n个版<code>ns</code></li>
+<li><code>S</code> 删除当前行进入编辑模式，n个版<code>nS</code></li>
+<li><code>cw</code> 替换右侧一个字，n个版<code>ncw</code></li>
+<li><code>cW</code>,<code>c$</code> 替换右侧所有字</li>
+<li><code>cb</code> 替换左侧一个字，n个版<code>ncb</code></li>
+<li><code>cd</code> 替换当前行，n个版<code>ncd</code>，试过但是无效？！</li>
+<li><code>c$</code> 替换到行尾所有</li>
+<li><code>c0</code> 替换到行首所有</li>
+</ul>
+</li>
+<li>撤销<ul>
+<li><code>u</code> undo，撤销最后一个操作</li>
+<li><code>.</code> redo，重复最有一个操作</li>
+</ul>
+</li>
+<li>复制<code>y</code>粘贴<code>p</code><ul>
+<li><code>yy</code> 复制一行到缓冲区，n行版<code>nyy</code></li>
+<li><code>+y</code> 复制到系统剪贴板，n行版<code>+nyy</code>，mac貌似无效</li>
+<li><code>p</code> 将缓冲区内容粘贴到光标后面</li>
+<li><code>P</code> 到前面</li>
+</ul>
+</li>
+</ul>
+<h3 id="_10">插入模式</h3>
+<ul>
+<li>插入命令有：<ul>
+<li><code>i</code> 光标左侧插入</li>
+<li><code>I</code> 行开头插入</li>
+<li><code>a</code> 右侧插入</li>
+<li><code>A</code> 行结尾插入</li>
+<li><code>o</code> 下一行插入</li>
+<li><code>O</code> 上一行插入</li>
+</ul>
+</li>
+<li>退出插入模式命令<code>ESC, ctrl + [</code>，将进入编辑模式</li>
+</ul>
+<h3 id="_11">命令模式</h3>
+<p>编辑模式下按<code>:</code>号，进入命令模式，输入命令后回车即可运行命令。         <br />
+- 文件命令
+    - <code>:e path-to-file</code> 打开文件
+    - <code>:w</code> 保存当前文件
+    - <code>:w path-to-file</code> 另存为
+    - <code>:q</code> 退出，强制版<code>:q!</code>
+    - <code>:wq</code> 保存并退出
+    - <code>:f filename</code> 重命名文件
+    - <code>:r filename</code> 读取filename到光标后面
+- 行号与文件
+    - <code>:12</code> 移动到第12行
+    - <code>:12w filename</code> 第12行写入到文件
+    - <code>:12,32w filename</code> 将第12-32行写入到文件，这里可以用<code>$</code>表示最后一行，用<code>.</code>表示当前行，还可以用<code>.+5</code>表示当前行后的第5行
+- 命令模式下的搜索
+    - <code>:/str/</code>正向搜索<code>str</code>
+    - <code>:?str?</code>反向搜索<code>str</code>
+    - <code>:/str/w file</code>  正向搜索，并将第一个包含字符串 str 的行写入 file 文件
+    - <code>:/str1/,/str2/w file</code> 正向搜索，并将包含字符串 str1 的行至包含字符串 str2 的行写
+- 搜索正则表达式</p>
+<div class="hlcode"><pre>^                放在字符串前面，匹配行首的字；
+<span class="nv">$ </span>               放在字符串后面，匹配行尾的字；
+<span class="se">\&lt;</span>               匹配一个字的字头；
+<span class="se">\&gt;</span>               匹配一个字的字尾；
+.                匹配任何单个正文字符；
+<span class="o">[</span>str<span class="o">]</span>            匹配 str 中的任何单个字符；
+<span class="o">[</span>^str<span class="o">]</span>           匹配任何不在 str 中的单个字符；
+<span class="o">[</span>a-b<span class="o">]</span>            匹配 a 到 b 之间的任一字符；
+*                匹配前一个字符的 0 次或多次出现；
+<span class="se">\ </span>               转义后面的字符。
+</pre></div>
+
+
+<ul>
+<li>
+<p>正文替换:<code>:s</code>命令</p>
+<ul>
+<li><code>:%s/str1/str2/</code> 用字符串 str2 替换行中首次出现的字符串 str1</li>
+<li>
+<p><code>:s/str1/str2/g</code> 用字符串 str2 替换行中所有出现的字符串 str1</p>
+</li>
+<li>
+<p>g 放在命令末尾，表示对搜索字符串的每次出现进行替换,不止匹配每行中的第一次出现；不加 g，表示只对搜索字符串的首次出现进行替换；g 放在命令开头，表示对正文中所有包含搜索字符串的行进行替换操作;</p>
+</li>
+<li>s 表示后面跟着一串替换的命令；</li>
+<li>% 表示替换范围是所有行，即全文。</li>
+</ul>
+</li>
+</ul>
+<p>统计出现次数命令：<code>:%s/str1/&amp;/gn</code></p>
+<ul>
+<li>删除正文命令：略</li>
+<li>
+<p>恢复意外退出未保存的文件<code>:recover</code>命令</p>
+</li>
+<li>
+<p>执行shell命令：<code>:!some-command</code>，执行完后回到vim</p>
+</li>
+<li>
+<p>分屏</p>
+<ul>
+<li><code>:split</code>缩写<code>:sp</code>上下分屏</li>
+<li><code>:vsplit</code>缩写<code>:vsp</code> 左右分屏</li>
+<li>分屏后切换<code>ctrl + w  [hjkl]</code>，也可以直接用<code>Ctrl+w+w</code>顺序切换</li>
+<li>设置分屏尺寸<ul>
+<li><code>ctrl + w =</code> 所有屏幕等高或等宽</li>
+<li><code>ctrl + w -</code> 减少高度</li>
+<li><code>ctrl + w +</code> 增加高度</li>
+</ul>
+</li>
+<li>可以在分屏中用<code>:q</code>关闭文件即可关闭分屏</li>
+<li><code>:only</code> 关闭当前分屏外所有屏幕</li>
+</ul>
+</li>
+<li>
+<p>标签页</p>
+<ul>
+<li><code>:tabnew [filename]</code> 创建新标签文件名可选，有表示打开文件, 和<code>:tabe</code>差不多</li>
+<li><code>:tabc</code> 关闭当前标签close</li>
+<li><code>:tabo</code> 关闭当前标签外的所有标签only</li>
+<li><code>:tabn</code> 下一个标签next</li>
+<li><code>:tabp</code> 跳转到前一个标签preview</li>
+<li><code>:tabr</code> 和 <code>:tabfir</code> 到第一个 first</li>
+<li><code>:tabl</code> 最后一个last</li>
+<li><code>:tabdo</code> 为每个标签执行命令</li>
+</ul>
+</li>
+<li>
+<p>选项设置，命令<code>:set option</code></p>
+</li>
+</ul>
+<div class="hlcode"><pre>autoindent        设置该选项，则正文自动缩进
+ignorecase        设置该选项，则忽略规则表达式中大小写字母的区别
+number            设置该选项，则显示正文行号
+ruler             设置该选项，则在屏幕底部显示光标所在行、列的位置
+tabstop           设置按 Tab 键跳过的空格数。例如 :set <span class="nv">tabstop</span><span class="o">=</span>n，n 默认值为 8
+mk                将选项保存在当前目录的 .exrc 文件中
+</pre></div>
+
+
+<h3 id="_12">外部工具集成</h3>
+<ul>
+<li><code>vim + diff = vimdiff</code> 使用方法<code>vimdiff f1 f2</code> 或者 <code>vim -d</code><ul>
+<li>在已经打开的文件中执行命令<code>:diffsplit filename2</code>。
+<code>:diffpatch</code>，<code>diffsplit</code>默认上下分屏，可以用<code>:vert diffsplit</code>实现左右分屏</li>
+<li><code>:diffoff</code>关闭diff的颜色</li>
+<li><code>:diffu[pdate]</code> 更新diff</li>
+</ul>
+</li>
+<li><code>xxd</code>二进制编辑<ul>
+<li><code>vim -b</code> 编辑二进制文件</li>
+<li><code>%!xxd</code> 在vim内切换到二进制编辑</li>
+<li><code>%!xxd -r</code> 切回到文本编辑模式</li>
+</ul>
+</li>
+</ul>
+<h3 id="_13">参考</h3>
 <ol>
 <li><a href="http://www.jianshu.com/p/bcbe916f97e1">http://www.jianshu.com/p/bcbe916f97e1</a></li>
 </ol>

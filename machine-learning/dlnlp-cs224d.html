@@ -201,7 +201,7 @@ h_t = \sigma(W^{(hh) h_{t-1}} + W^{hx} x_{t}). \\
 \hat{y}_t = softmax(W^{(S)} h_t). \\
 P(x_{t+1}=v_j|x_t, ..., x_1) = \hat{y}_{t, j}.
 $$
-所有时刻的权值都是相同的。损失函数为交叉熵
+所有时刻的权值都是相同的。损失函数为所有时刻交叉熵的平均值
 $$
 J^{(t)}(\theta) = -\sum_{j=1}^{|V|} y_{t,j} \log \hat{y}_{t,j}. \\
 J = - \frac{1}{T} \sum_t J^{(t)}

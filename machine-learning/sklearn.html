@@ -41,15 +41,52 @@
 <div id="title">sklearn - python 机器学习库</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">决策树</a><ul>
-<li><a href="#_2">树的可视化</a></li>
+<li><a href="#_1">预处理模块</a><ul>
+<li><a href="#labelbinarizer">LabelBinarizer</a></li>
+<li><a href="#labelencoder">LabelEncoder</a></li>
 </ul>
 </li>
-<li><a href="#_3">特征离散化</a></li>
+<li><a href="#_2">决策树</a><ul>
+<li><a href="#_3">树的可视化</a></li>
+</ul>
+</li>
+<li><a href="#_4">特征离散化</a></li>
 </ul>
 </div>
-<h2 id="_1">决策树</h2>
-<h3 id="_2">树的可视化</h3>
+<h2 id="_1">预处理模块</h2>
+<h3 id="labelbinarizer"><code>LabelBinarizer</code></h3>
+<p>在one-vs-all里面经常用，将数值或者字符类型的label，转换为一个向量，向量每一维对应其中一个label值，
+就像one-hot编码。</p>
+<div class="hlcode"><pre><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">preprocessing</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">lb</span> <span class="o">=</span> <span class="n">preprocessing</span><span class="o">.</span><span class="n">LabelBinarizer</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">lb</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">LabelBinarizer</span><span class="p">(</span><span class="n">neg_label</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pos_label</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sparse_output</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">lb</span><span class="o">.</span><span class="n">classes_</span>
+<span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">lb</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+       <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+</pre></div>
+
+
+<p>属性<code>classes_</code>保存<code>fit</code>后的类列表，提供正变换<code>transform</code>，逆变换<code>inverse_transform</code>。</p>
+<h3 id="labelencoder"><code>LabelEncoder</code></h3>
+<p>用来将数值类型或者字符串类型编码为数字 0 到 n_classes-1。</p>
+<div class="hlcode"><pre><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">preprocessing</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">le</span> <span class="o">=</span> <span class="n">preprocessing</span><span class="o">.</span><span class="n">LabelEncoder</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">le</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="n">LabelEncoder</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">le</span><span class="o">.</span><span class="n">classes_</span>
+<span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">le</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">...</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">le</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+</pre></div>
+
+
+<h2 id="_2">决策树</h2>
+<h3 id="_3">树的可视化</h3>
 <p>利用<code>tree.export_graphviz</code>函数，可以将树导出为图文件。借助于<code>IPython</code>可以在notebook里面
 将树可视化显示出来。需要安装<code>graphviz</code>命令行工具，在mac里面可以通过brew安装，命令是<code>brew install graphviz</code>。
 如果你在终端里面输入<code>dot</code>，没有提示找不到命令，那么就安装好了。</p>
@@ -67,7 +104,7 @@
 </pre></div>
 
 
-<h2 id="_3">特征离散化</h2>
+<h2 id="_4">特征离散化</h2>
 <p>从scikit-learn 0.1.7版本开始可以通过树分类器的<code>.apply</code>
 方法，获取输出叶子节点的序号，然后利用<code>onehot</code>转换器转换为
 稀疏的离散特征。</p>

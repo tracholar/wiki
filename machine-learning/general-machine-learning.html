@@ -1,0 +1,198 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>机器学习中的基本概念 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;机器学习中的基本概念</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">机器学习中的基本概念</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">基础统计分布</a><ul>
+<li><a href="#_3">几种常见的分布</a></li>
+<li><a href="#_4">正态分布的和</a></li>
+<li><a href="#_5">卡方分布</a></li>
+<li><a href="#student-t">student-t 分布</a></li>
+<li><a href="#f">F分布</a></li>
+<li><a href="#tf">卡方分布、t分布、F分布的联系</a></li>
+<li><a href="#_6">参考</a></li>
+</ul>
+</li>
+<li><a href="#_7">统计检验</a><ul>
+<li><a href="#_8">方差统计</a></li>
+<li><a href="#_9">卡方统计</a></li>
+<li><a href="#f-classif">F classif</a></li>
+<li><a href="#f-regression">F regression</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>记录机器学习中的基本问题和概念。</p>
+<h2 id="_2">基础统计分布</h2>
+<h3 id="_3">几种常见的分布</h3>
+<p>包括正态分布、泊松分布、指数分布等。略，后面可能会写。</p>
+<h3 id="_4">正态分布的和</h3>
+<p>两个服从正太分布的随机变量 $(X_1, X_2)$， 只要其联合分布为正态分布，那么和也为正态分布。</p>
+<h3 id="_5">卡方分布</h3>
+<p>设$(X_1,...,X_n)$ iid，服从标准正态分布，那么平方和$(X_1^2+...+X_n^2)$服从自由度为n的卡方分布。</p>
+<p>卡方分布的和： $(X_1,X_2)$独立，$(X_1 \sim \chi_m^2, X_2 \sim \chi_n^2)$，那么 $(X_1+X_2 \sim \chi_{n+m}^2)$</p>
+<h3 id="student-t">student-t 分布</h3>
+<p>$(X_1,X_2)$独立，且$(X_1\sim\chi_n^2, X_2 \sim N(0,1))$，那么$(X_2 / \sqrt{X_1/n})$服从自由度为n的t分布。
+一个例子，从正态分布总体采样的n+1个样本均值对样本标准差归一化后的值服从自由度为n的t分布。</p>
+<h3 id="f">F分布</h3>
+<p>$(X_1\sim\chi_n^2, X_2\sim\chi_m^2)$且统计独立，那么$(m^{-1} X_2 / (n^{-1} X_1))$服从自由度为$((m,n))$的F分布</p>
+<h3 id="tf">卡方分布、t分布、F分布的联系</h3>
+<p>设 $(X_1,...,X_n,Y_1,...,Y_m)$独立同分布(iid)，服从标准正态分布，记 $(\bar{X} = (X_1+...+X_n)/n)$，
+$(S^2=\sum_i (X_i - \bar{X})^2/(n-1))$，则：       </p>
+<ol>
+<li>$((n-1)S^2)$服从自由度为n-1的卡方分布</li>
+<li>$(\sqrt{n}\bar{X}/S)$服从自由度为n-1的t分布</li>
+<li>$([S_Y^2/(m-1)]/[S_X^2/(n-1)])$服从自由度为(m-1,n-1)的F分布</li>
+</ol>
+<h3 id="_6">参考</h3>
+<ul>
+<li>陈希孺，概率论与数理统计，中国科学技术大学出版社</li>
+<li><a href="https://en.wikipedia.org/wiki/Cochran%27s_theorem#Sample_mean_and_sample_variance">Cochran theaream</a></li>
+</ul>
+<h2 id="_7">统计检验</h2>
+<h3 id="_8">方差统计</h3>
+<p>去掉方差太小的特征。</p>
+<h3 id="_9">卡方统计</h3>
+<p>卡方检验，也称独立性检验，拟合优度检验。使用要求，自变量为正值。
+<code>sklearn</code>中用来检验正值特征与目标是否独立，从而进行特征选择。</p>
+<p>例如变量 X 为性别（男0，女1），变量 Y 为是否为左撇子（否 0, 是 1) 。对于某个样本，
+有列联表：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>男</th>
+<th>女</th>
+<th>总计</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>否</td>
+<td>43</td>
+<td>44</td>
+<td>87</td>
+</tr>
+<tr>
+<td>是</td>
+<td>9</td>
+<td>4</td>
+<td>13</td>
+</tr>
+<tr>
+<td>总计</td>
+<td>52</td>
+<td>48</td>
+<td>100</td>
+</tr>
+</tbody>
+</table>
+<p>从数据中，可以看到几个边缘分布：</p>
+<p>$$
+P(男) = 0.52, P(女) = 0.48 \\
+P(否) = 0.87, P(是) = 0.13
+$$</p>
+<p>如果两个变量是独立的，那么列联表里面的分布应该由式</p>
+<p>$$
+P(X, Y) = P(X) P(Y)
+$$</p>
+<p>得到，我们将这个值作为期望值，记作$(E_{i,j})$，而将实际值记作$(O_{i,j})$，例如，男性不是左撇子的期望值为
+$(E_{1,1} = 100 * 0.52*0.87 = 45)$，而观测值为$(O_{1,1} = 43)$。</p>
+<p>利用上述符号，定义统计量     <br />
+$$
+\chi^2 = \sum_{i=1}^r \sum_{j=1}^c \frac{(O_{i,j} - E_{i,j})^2}{E_{i,j}}
+$$</p>
+<p>则它近似服从自由度为$((r-1)(c-1))$的卡方分布（理论呢？）。该统计量越小，说明越符合独立分布，因此，变量间越独立。</p>
+<p>如果其中一个是连续值，<code>sklearn</code>中是将连续值求和，然后用类的分布概率乘以该值作为期望值，而实际不同类求和的值作为观测值，然后求卡方值。</p>
+<div class="hlcode"><pre><span class="c">## Y是类别的one-hot编码，X是特征</span>
+<span class="n">observed</span> <span class="o">=</span> <span class="n">safe_sparse_dot</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>          <span class="c"># n_classes * n_features</span>
+<span class="n">feature_count</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">class_prob</span> <span class="o">=</span> <span class="n">Y</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">expected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">class_prob</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">feature_count</span><span class="p">)</span>
+</pre></div>
+
+
+<h3 id="f-classif">F classif</h3>
+<p>ANOVA F-value</p>
+<p>连续变量与类别变量之间的独立性检验，只要求为正态分布。</p>
+<p>统计检验量是样本在各个分组之间的差异(between-group mean square value)与组内的差异之和(within-group mean of squares)的比值。
+组间差异是指每个样本用它所在组的均值替换，然后汇总每个样本与样本均值的差的平方，最后除以自由度。
+而组内差异是指直接计算每个样本与该组样本均值的差的平方，最后除以自由度。</p>
+<p>如果自变量对因变量没有显著影响，那么这个比值应该接近于1，反之将远大于1.</p>
+<p>$$
+MSB = \frac{1}{K-1}\sum_{i,j} (\bar{Y_i} - \bar{Y})^2  \\
+MSW = \frac{1}{K(N-1)}\sum_{i,j} (Y_{i,j} - \bar{Y_i})^2 \\
+F = MSB / MSW
+$$</p>
+<p>这里$(K,N)$分别是分组数目（或者分类类别数目）和每组样本数目，分母其实是自由度。
+最后得到的统计检验量服从自由度为(K-1,K(N-1))的F分布。</p>
+<p>参考<a href="https://en.wikipedia.org/wiki/F-test#One-way_ANOVA_example">wikipedia</a></p>
+<h3 id="f-regression">F regression</h3>
+<p>Univariate linear regression tests</p>
+<p>构建很多个单因素的线性回归检验.</p>
+<ul>
+<li>SST 总的平方差之和 $(\sum (Y - \bar{Y})^2)$</li>
+<li>SSM 模型的平方差之和 $(\sum (Y_{pred} - \bar{Y})^2)$</li>
+<li>SSR 残余的平方差之和 SST - SSM.</li>
+<li>MSM 模型均方差 SSM / SSM的自由度</li>
+<li>MSR 残余均方差 SSR / SSR的自由度</li>
+</ul>
+<p>$$
+R^2 = SSM / SST  \\
+F =  MSM / MSR
+$$</p>
+<p>参考 <a href="http://homepages.inf.ed.ac.uk/bwebb/statistics/Univariate_Regression.pdf">http://homepages.inf.ed.ac.uk/bwebb/statistics/Univariate_Regression.pdf</a></p>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2016-07-27 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2016 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+    </body>
+</html>
