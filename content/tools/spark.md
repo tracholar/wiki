@@ -317,7 +317,7 @@ sqlContext.udf.register("strLen", (s: String) => s.length())
 
 ## MLlib
 - 不同的包的特点，推荐`spark.ml`
-    - `spark.mllib` contains the original API built on top of RDDs.
+    - `spark.mllib` contains the original API built on top of RDDs. 在2.0版本不在支持新特性了，不再维护。
     - `spark.ml` provides higher-level API built on top of `DataFrames` for constructing ML pipelines.
 
 ### spark.ml 包
@@ -332,7 +332,8 @@ sqlContext.udf.register("strLen", (s: String) => s.length())
     - rawPredictedCol 预测的裸数据？向量？逻辑回归是`wx`貌似，默认名字为 `rawPrediction`
     - probabilityCol 预测的概率，默认名字为 `probability`
 
-- 模型参数封装类 `Param`，他的一个常用子类是 `ParamMap`，实现了Map接口，可以通过 `get, put`进行操作
+- 模型参数封装类 `Param`，他的一个常用子类是 `ParamMap`，实现了Map接口，可以通过 `get, put`进行操作。
+在2.0版本开始，Spark对Estimators和Transformers提供统一的参数API。
 
 ```scala
 val paramMap = ParamMap(lr.maxIter -> 20)
@@ -349,7 +350,7 @@ paramMap.update({lr.regParam: 0.1, lr.threshold: 0.55}) # Specify multiple Param
 - `pipeline` 将不同模型（transform）堆叠起来，类似于sklearn里面的pipeline。
 pipeline保存了一个Array[PipelineStage]，可以通过`.setStage(Array[_ <: PipelineStage])`函数进行设置。
 pipeline实现了estimator的fit接口和transformer的transform接口。
-
+- 模型持久化 `save, load`
 - `PipelineStage`抽象类，啥也没干？？？？？？？？！！！！！`transformer`还是它的子类！！
 - `UnaryTransformer` 单列转换对象，是transformer的子抽象类，也实现了pipelinestage接口。
   有两个变量`inputCol`和`outputCol`代表输入输出列的名字。
@@ -376,10 +377,51 @@ pipeline实现了estimator的fit接口和transformer的transform接口。
 - 参数网格可以通过 `ParamGridBuilder`对象创建，他有三个方法，`addGrid(param, values:Array)`添加一个参数网格，
   `baseOn(paramPair)`设置指定参数为固定值，`build()`方法返回一个`Array[ParamMap]`数组
 
+#### 特征提取
+- TF-IDF(HashingTF and IDF)，传统的词统计是通过维护一个查找的词典（hash表或者查找树实现），
+HashTF则是直接通过对特征计算hash函数映射到低维索引。还可以通过第二个hash函数确定是否存在冲突。
+有什么优势？？？使用的类`HashingTF, IDF, Tokenizer`
+- Word2Vec，低维词向量学习，对应的类：`Word2Vec`
+- CountVectorizer，直接统计：`CountVectorizer`
+
 #### 特征变换
-- `ml.feature`包中的模型 `IndexToString, StringIndexer`。
-    - `StringIndexer` 将字符串类型的变量（或者label）转换为索引序号，序号会按照频率排序，不是字典序
-    - `IndexToString` 和`StringIndexer`配合使用可以让字符串类型的变量的处理变得透明，这个是将index变成原来的字符串
+- Tokenizer：将文本转换为一个一个的词。例如中文分词就算一个，对于英文可以简单的用空白字符分割就行。可用的类有：
+    - `Tokenizer` 常规Tokenizer
+    - `RegexTokenizer` 正则式Tokenizer
+- StopWordsRemover：停止词的移除。`StopWordsRemover`，可以通过`setCaseSensitive`设置大小写敏感，
+和`setStopWords(value: Array[String])`设置停止词词典。
+- n-gram：将输入的一串词转换为n-gram。`NGram`
+- Binarizer：通过阈值将数值特征变成二值特征。类`Binarizer`，主要方法：`setThreshold`
+- PCA：PCA 降维。`PCA`，方法`setK`
+- PolynomialExpansion：将特征展开为多项式特征，实现特征交叉。`x1,x2->x1^2,x2^2,x1x2`。`PolynomialExpansion`方法:`setDegree`
+- DCT：离散余弦变换。`DCT`
+- `StringIndexer` 将字符串类型的变量（或者label）转换为索引序号，序号会按照频率排序，不是字典序。对于不在词典的string，默认抛出异常，也可以通过`setHandleInvalid("skip")`直接丢弃。
+- `IndexToString` 和`StringIndexer`配合使用可以让字符串类型的变量的处理变得透明，这个是将index变成原来的字符串
+- `OneHotEncoder`：将单个数字转换为0-1编码的向量。`1->(0,1,0,0)`。常用在类别特征的变换。
+- `VectorIndexer`：将输入向量中的类别特征自动编码为index。比较高端，需要学习一下！`setMaxCategories(4)`表示特征的值数目超过4个就认为是连续特征，否则认为需要编码。
+- `Normalizer`：归一化。需要指定p-norm的值`setP`。按照p范数归一化，默认为2。可以用在输出概率或score时归一化？
+- `StandardScaler`：标准化特征到方差为1，也可以将均值设为0. 方法：`setWithStd(bool), setWithMean(bool)`
+- `MinMaxScaler`：归一化到0-1之间。也可以指定min和max
+- `MaxAbsScaler`：@since(2.0.0)，除以最大值的绝对值，从而将特征归一化到[-1,1]
+- `Bucketizer`：分桶。方法`setSplits(splits)`来设置分割点，分割点需要严格递增。
+- `ElementwiseProduct`：对输入向量乘以一个权值。方法`setScalingVec`设置权值。
+- `SQLTransformer`：让你用SQL语句进行变换特征。例子：
+
+```scala
+val sqlTrans = new SQLTransformer().setStatement(
+  "SELECT *, (v1 + v2) AS v3, (v1 * v2) AS v4 FROM __THIS__")
+```
+
+- `VectorAssembler`：将多个特征合并到一个向量，也可以合并向量。通过`setInputCols(Array[String]`设置要合并的列。
+- `QuantileDiscretizer`：首先对特征采样，然后根据采样值将特征按照等量分桶（等频离散化）。基于采样，所以每次不同。方法`setNumBuckets(i:Int)`设置桶的个数。
+
+#### 特征选择
+- `VectorSlicer`：通过slice选择特征，人工指定indices。方法`setIndices`设置选择的indices。字符串indices通过`setNames`方法设置索引。
+- `RFormula`：通过R模型公式选择特征，例如`clicked ~ country + hour`，输出列是默认是公式的响应变量名字。它会对字符串one-hot编码，对数值列转换为double类型。需要人工指定哪些特征。
+- `ChiSqSelector`：通过卡方独立性检验来选择特征。方法`setNumTopFeatures`指定要选择的卡方值前多少个。
+
+
+
 
 ```scala
 val labelIndexer = new StringIndexer()
@@ -397,6 +439,36 @@ val labelConverter = new IndexToString()
 val pipeline = new Pipeline()
     .setStages(Array(labelIndexer, rf, labelConverter))
 ```
+
+
+#### 分类 `org.apache.spark.ml.classification`
+- 逻辑回归：`LogisticRegression`，参数`maxIter, regParam, elasticNetParam` 分别是最大迭代次数、正则项系数、elastic网的参数。
+- 决策树：`DecisionTreeClassifier`
+- 随机森林：`RandomForestClassifier`
+- GBDT：`GBTClassifier`
+- 多层感知器（全连接神经网络）：`MultilayerPerceptronClassifier`，`setLayers`指定每层的节点数目。**有没有预训练？需要研究一下！！！**
+- One-vs-All：`OneVsRest`，将二分类变成多分类模型，采用One-vs-all策略。方法`setClassifier`设置二分类器。
+- 朴素贝叶斯：`NaiveBayes`，
+#### 回归 `org.apache.spark.ml.regression`
+- 线性回归：`LinearRegression`
+- 广义线性回归：`GeneralizedLinearRegression` @since(2.0.0)
+- 决策树回归：`DecisionTreeRegressor`
+- 随机森林回归：`RandomForestRegressor`
+- GBDT回归：`GBTRegressor`
+- Survival regression：`AFTSurvivalRegression`，什么东西？
+- Isotonic 回归：`IsotonicRegression`，什么东西？
+
+
+
+#### 聚类 `org.apache.spark.ml.clustering`
+- `KMeans`，K-means聚类，通过`setK`设置类的数目。[K-means++的分布式实现](http://theory.stanford.edu/~sergei/papers/vldb12-kmpar.pdf)。
+- `LDA`：Latent Dirichlet allocation
+- `BisectingKMeans`：Bisecting k-means 聚类，@since(2.0.0) 不懂？
+- `GaussianMixture`：GMM 模型。@since(2.0.0)
+#### 协同过滤
+- `ALS`：ALS算法，2.0才加到ml包里面，之前在mllib包。
+
+
 
 #### DataFrame
 DataFrame相当于 RDD[Row]，而Row相当于一个可以包含各种不同数据的Seq。
@@ -440,8 +512,6 @@ spark的DataFrame每一列可以存储向量！甚至图像！任意值都行！
 ```scala
 df.rdd.map { 转换操作 } .saveAsTextFile(filepath)
 ```
-
-
 
 ### spark.mLlib
 - LogisticRegressionWithLBFGS

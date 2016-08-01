@@ -28,6 +28,8 @@ $(X_1,X_2)$独立，且$(X_1\sim\chi_n^2, X_2 \sim N(0,1))$，那么$(X_2 / \sqr
 ### F分布
 $(X_1\sim\chi_n^2, X_2\sim\chi_m^2)$且统计独立，那么$(m^{-1} X_2 / (n^{-1} X_1))$服从自由度为$((m,n))$的F分布
 
+由于F分布是两个卡方分布的比值，而卡方分布是正态分布的平方和，常出现在方差之中，所以F分布在方差分析之中被大量使用。
+
 ### 卡方分布、t分布、F分布的联系
 设 $(X_1,...,X_n,Y_1,...,Y_m)$独立同分布(iid)，服从标准正态分布，记 $(\bar{X} = (X_1+...+X_n)/n)$，
 $(S^2=\sum_i (X_i - \bar{X})^2/(n-1))$，则：       
@@ -131,4 +133,48 @@ R^2 = SSM / SST  \\\\
 F =  MSM / MSR
 $$
 
+如果自变量与因变量没有明显的关系，那么F值应该很小。
+
 参考 <http://homepages.inf.ed.ac.uk/bwebb/statistics/Univariate_Regression.pdf>
+
+## 特征变换
+### 特征Hash
+
+一种快速的空间效率高的向量化特征的方法。Yahoo 研究院的Weinberger与ICML2009提出。
+[Feature Hashing for Large Scale Multitask Learning](http://www.machinelearning.org/archive/icml2009/papers/407.pdf)
+
+Hash 算法是一种有效的特征降维的方法，非参数估计。可以用来做 multitask learning with hundreds of
+thousands of tasks！！！
+
+核方法 kernel trick：$(x_1,...,x_n \in X)$，半正定核
+
+$$
+k(x_1, x_2) = (\phi(x_1), \phi(x_2))
+$$
+
+这种方法可以将原空间非线性决策边界变成变换后空间的线性可分的界。（SVM）
+相反的问题是，如果问题在原空间是现行可分的（通常是通过人工的非线性特征工程实现），
+但是特征的维度很高。作者提出一种和 kernel trick 互补的方法 hash trick，
+将高维空间$(R^d)$特征映射到低维空间$(R^m)$，$(\phi(x) \to R^m)$（Langford et al., 2007; Shi et al., 2009）。
+并且有$(m << d)$。
+不同于 **随机投影？** ， hash trick 解决了稀疏性，也不需要额外的存储空间存储核矩阵。
+
+hash 内积
+
+hash trick 在 multi-task learning 场景下很有用，这里原始特征是数据集的交叉积 cross product。
+每一个任务 U 可以采用不同的hash 函数$(\phi_1(x),...,\phi_{|U|}(x))$，另外共享一个通用的hash函数$(\phi_0(x))$。
+
+以垃圾邮件分类为例，每一个用户需要有他自己的个性化偏好，这里的任务集 U 是针对所有用户（对于 Yahoo mail 和 Gmail数目很大）。
+特征空间是大量的语言的词汇集合。
+
+论文的主要贡献：
+
+1. 专门实现的任意内积hash函数，可以应用到许多 kernel method
+2. 指数界解释
+3. 独立hash子空间使得大规模 multi-task learning 空间使用很小
+4. 实际的协同垃圾邮件过滤系统
+
+
+Hash 函数：
+
+hash 函数 $(h: N \to \\{1,...,m\\})$

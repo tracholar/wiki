@@ -160,6 +160,18 @@ Perplexity ???
 ### 实现细节
 - dropout正则化，在TensorFlow里面，可以使用`tf.nn.dropout`来实现。
 
+### bidirectionl RNNS 双向RNN
+每一个隐层存在两个变量，$(h^L, h^R)$。
+
+$$
+h_t^R = f(W^R x_t + V^R h_{t-1}^R + b^R) \\\\
+h_t^L = f(W^L x_t + V^L h_{t+1}^L + b^L) \\\\
+y_t = g(U [h_t^R; h_t^L] + c)
+$$
+
+问题：$(h_{t+1}^L)$的值怎么来？
+
+数据集 MPQA	1.2	corpus
 
 ## Deep-learning package zoom
 - Torch
@@ -170,6 +182,68 @@ Perplexity ???
 - Mxnet
 
 
+## RNN 机器翻译
+### 传统统计机器翻译：
+参考CS224n
+
+- 翻译模型 p(f|e) 和 语言模型 f(e)，然后得到目标语 Decoder : $(argmax_e p(f|e) p(e))$
+- alignment
+
+### RNN 模型
+- 最简单的encoder + decoder 模型：
+	- Encoder：利用RNN将句子变成一个向量  $(h_t = f(W^{hh} h_{t-1} + W^{hx} x_t))$
+	- Decoder：将句子向量变成一句话  $(h_t = W^{hh} h_{t-1}, y_t = softmax(W^S h_t))$
+	- 损失函数：最小化所有输出结果的交叉熵， $(\max_{\theta} \frac{1}{N} \sum_{n=1}^N \log p_{\theta} (y^{(n)}| x^{n}))$
+用句子向量作为中间桥梁。
+
+- 对上述模型的改进措施
+	- 对Encoder和Decoder训练不同的权值
+	- 对Decoder，采用三个变量计算隐层，上一个时间的隐层$(h_{t-1})$，Encoder最后的状态c，上一个输出结果$(y_{t-1})$：$(h_t = \phi(h_{t-1}, c, y_{t-1}))$
+	- 多层网络训练
+	- 双向RNN Encoder
+	- 反过来训练？
+	- 门限递归单元GRU
+
+论文：2014年，Kyunghyun Cho, Yoshua Bengio, Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation
+
+### GRU
+门限RNN单元
+
+- 更新门$(z_t)$，基于当前输入和上一时刻隐层状态
+- 重置门$(r_t)$，如果重置门接近于0，那么当前隐层状态将忘记之前的隐层状态，只依赖当前输入
+- 新的隐层$(\widetilde{h}_t)$，另外一个的隐层状态，最终的隐层状态是基于更新门组合这个新隐层和上一时刻的隐层
+
+$$
+z_t = \sigma(W^{(z)} x_t + U^{(z)} h_{t-1})  \\\\
+r_t = \sigma(W^{(r)} x_t + U^{(r)} h_{t-1})  \\\\
+\widetilde{h}\_t = tanh(W x_t + r_t \circ U h_{t-1})	\\\\
+h_t = z_t \circ h_{t-1} + (1 - z_t) \circ \widetilde{h}_t
+$$
+
+当重置门接近0，允许模型忘记历史，实现短期依赖。
+当更新门接近1，简单复制上一时刻的隐层，导致更少的vanishing gradients，实现长期依赖。
+
+### LSTM
+跟多的门，每一个门都是当前输入和上一时刻的隐层的函数，只是权值不同。
+
+- 输入门 $(i_t)$
+- 忘记门 $(f_t)$
+- 输出门 $(o_t)$
+
+- 新的存储单元：$(\widetilde{c}\_t = tanh(w^c x_t + U^c h_{t-1}))$
+- 最终的存储单元：$(c_t = f_t \circ c_{t-1} + i_t \circ \widetilde{c}\_t)$
+- 新的隐层：$(h_t = tanh(c_t))$
+
+存储单元可以保存输入信息，除非输入让它忘记或者重写它；它可以决定是否输出信息或者只是简单地保存信息。
+
+论文：2014, Sutskever, Sequence to Sequence Learning with Neural Networks, Google inc
+
+比赛：WMT	2016 competition
+
+### 更多的门 GRUs
+Gated Feedback Recurrent Neural	Networks, Chung	et	al, Bengio.	2015
+
+更多的门来控制多个隐层之间互相连接。
 ## Project
 - 利用deeplearning去解决kaggle上的NLP问题。
 

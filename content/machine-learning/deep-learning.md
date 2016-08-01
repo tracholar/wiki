@@ -17,6 +17,15 @@ date: 2016-07-27
 
 ## RNN 方向
 
+### 递归神经网络语言模型
+论文：
+
+- Mikolov, Recurrent neural network based language model, interspeech 2010, Johns Hopkins University
+
+人物：
+
+- Toma´s Mikolov, "Johns Hopkins University", "Speech@FIT, Brno University of Technology, Czech Republi"
+
 
 
 ## DQN 方向
