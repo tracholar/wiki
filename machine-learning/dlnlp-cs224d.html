@@ -56,9 +56,18 @@
 <li><a href="#bengio-2003">神经网络语言模型 Bengio 2003</a></li>
 <li><a href="#_5">递归神经网络</a></li>
 <li><a href="#_6">实现细节</a></li>
+<li><a href="#bidirectionl-rnns-rnn">bidirectionl RNNS 双向RNN</a></li>
 </ul>
 </li>
 <li><a href="#deep-learning-package-zoom">Deep-learning package zoom</a></li>
+<li><a href="#rnn">RNN 机器翻译</a><ul>
+<li><a href="#_7">传统统计机器翻译：</a></li>
+<li><a href="#rnn_1">RNN 模型</a></li>
+<li><a href="#gru">GRU</a></li>
+<li><a href="#lstm">LSTM</a></li>
+<li><a href="#grus">更多的门 GRUs</a></li>
+</ul>
+</li>
 <li><a href="#project">Project</a></li>
 <li><a href="#nlp-benchmark-tasks">NLP benchmark tasks</a><ul>
 <li><a href="#tasks">tasks</a></li>
@@ -238,6 +247,15 @@ Units,    Le  et  al. 2015</p>
 <ul>
 <li>dropout正则化，在TensorFlow里面，可以使用<code>tf.nn.dropout</code>来实现。</li>
 </ul>
+<h3 id="bidirectionl-rnns-rnn">bidirectionl RNNS 双向RNN</h3>
+<p>每一个隐层存在两个变量，$(h^L, h^R)$。</p>
+<p>$$
+h_t^R = f(W^R x_t + V^R h_{t-1}^R + b^R) \\
+h_t^L = f(W^L x_t + V^L h_{t+1}^L + b^L) \\
+y_t = g(U [h_t^R; h_t^L] + c)
+$$</p>
+<p>问题：$(h_{t+1}^L)$的值怎么来？</p>
+<p>数据集 MPQA    1.2 corpus</p>
 <h2 id="deep-learning-package-zoom">Deep-learning package zoom</h2>
 <ul>
 <li>Torch</li>
@@ -247,6 +265,72 @@ Units,    Le  et  al. 2015</p>
 <li>Tensorflow</li>
 <li>Mxnet</li>
 </ul>
+<h2 id="rnn">RNN 机器翻译</h2>
+<h3 id="_7">传统统计机器翻译：</h3>
+<p>参考CS224n</p>
+<ul>
+<li>翻译模型 p(f|e) 和 语言模型 f(e)，然后得到目标语 Decoder : $(argmax_e p(f|e) p(e))$</li>
+<li>alignment</li>
+</ul>
+<h3 id="rnn_1">RNN 模型</h3>
+<ul>
+<li>
+<p>最简单的encoder + decoder 模型：</p>
+<ul>
+<li>Encoder：利用RNN将句子变成一个向量  $(h_t = f(W^{hh} h_{t-1} + W^{hx} x_t))$</li>
+<li>Decoder：将句子向量变成一句话  $(h_t = W^{hh} h_{t-1}, y_t = softmax(W^S h_t))$</li>
+<li>损失函数：最小化所有输出结果的交叉熵， $(\max_{\theta} \frac{1}{N} \sum_{n=1}^N \log p_{\theta} (y^{(n)}| x^{n}))$
+用句子向量作为中间桥梁。</li>
+</ul>
+</li>
+<li>
+<p>对上述模型的改进措施</p>
+<ul>
+<li>对Encoder和Decoder训练不同的权值</li>
+<li>对Decoder，采用三个变量计算隐层，上一个时间的隐层$(h_{t-1})$，Encoder最后的状态c，上一个输出结果$(y_{t-1})$：$(h_t = \phi(h_{t-1}, c, y_{t-1}))$</li>
+<li>多层网络训练</li>
+<li>双向RNN Encoder</li>
+<li>反过来训练？</li>
+<li>门限递归单元GRU</li>
+</ul>
+</li>
+</ul>
+<p>论文：2014年，Kyunghyun Cho, Yoshua Bengio, Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation</p>
+<h3 id="gru">GRU</h3>
+<p>门限RNN单元</p>
+<ul>
+<li>更新门$(z_t)$，基于当前输入和上一时刻隐层状态</li>
+<li>重置门$(r_t)$，如果重置门接近于0，那么当前隐层状态将忘记之前的隐层状态，只依赖当前输入</li>
+<li>新的隐层$(\widetilde{h}_t)$，另外一个的隐层状态，最终的隐层状态是基于更新门组合这个新隐层和上一时刻的隐层</li>
+</ul>
+<p>$$
+z_t = \sigma(W^{(z)} x_t + U^{(z)} h_{t-1})  \\
+r_t = \sigma(W^{(r)} x_t + U^{(r)} h_{t-1})  \\
+\widetilde{h}_t = tanh(W x_t + r_t \circ U h_{t-1})    \\
+h_t = z_t \circ h_{t-1} + (1 - z_t) \circ \widetilde{h}_t
+$$</p>
+<p>当重置门接近0，允许模型忘记历史，实现短期依赖。
+当更新门接近1，简单复制上一时刻的隐层，导致更少的vanishing gradients，实现长期依赖。</p>
+<h3 id="lstm">LSTM</h3>
+<p>跟多的门，每一个门都是当前输入和上一时刻的隐层的函数，只是权值不同。</p>
+<ul>
+<li>输入门 $(i_t)$</li>
+<li>忘记门 $(f_t)$</li>
+<li>
+<p>输出门 $(o_t)$</p>
+</li>
+<li>
+<p>新的存储单元：$(\widetilde{c}_t = tanh(w^c x_t + U^c h_{t-1}))$</p>
+</li>
+<li>最终的存储单元：$(c_t = f_t \circ c_{t-1} + i_t \circ \widetilde{c}_t)$</li>
+<li>新的隐层：$(h_t = tanh(c_t))$</li>
+</ul>
+<p>存储单元可以保存输入信息，除非输入让它忘记或者重写它；它可以决定是否输出信息或者只是简单地保存信息。</p>
+<p>论文：2014, Sutskever, Sequence to Sequence Learning with Neural Networks, Google inc</p>
+<p>比赛：WMT  2016 competition</p>
+<h3 id="grus">更多的门 GRUs</h3>
+<p>Gated Feedback Recurrent Neural Networks, Chung et  al, Bengio. 2015</p>
+<p>更多的门来控制多个隐层之间互相连接。</p>
 <h2 id="project">Project</h2>
 <ul>
 <li>利用deeplearning去解决kaggle上的NLP问题。</li>

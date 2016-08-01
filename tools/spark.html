@@ -66,13 +66,19 @@
 <li><a href="#mllib">MLlib</a><ul>
 <li><a href="#sparkml">spark.ml 包</a><ul>
 <li><a href="#_5">基础类</a></li>
-<li><a href="#_6">特征变换</a></li>
+<li><a href="#_6">特征提取</a></li>
+<li><a href="#_7">特征变换</a></li>
+<li><a href="#_8">特征选择</a></li>
+<li><a href="#orgapachesparkmlclassification">分类 org.apache.spark.ml.classification</a></li>
+<li><a href="#orgapachesparkmlregression">回归 org.apache.spark.ml.regression</a></li>
+<li><a href="#orgapachesparkmlclustering">聚类 org.apache.spark.ml.clustering</a></li>
+<li><a href="#_9">协同过滤</a></li>
 <li><a href="#dataframe_1">DataFrame</a></li>
 </ul>
 </li>
 <li><a href="#sparkmllib">spark.mLlib</a></li>
-<li><a href="#_7">基本数据结构</a></li>
-<li><a href="#_8">模型评估</a></li>
+<li><a href="#_10">基本数据结构</a></li>
+<li><a href="#_11">模型评估</a></li>
 </ul>
 </li>
 <li><a href="#tips">TIPS</a><ul>
@@ -417,7 +423,7 @@
 <h2 id="mllib">MLlib</h2>
 <ul>
 <li>不同的包的特点，推荐<code>spark.ml</code><ul>
-<li><code>spark.mllib</code> contains the original API built on top of RDDs.</li>
+<li><code>spark.mllib</code> contains the original API built on top of RDDs. 在2.0版本不在支持新特性了，不再维护。</li>
 <li><code>spark.ml</code> provides higher-level API built on top of <code>DataFrames</code> for constructing ML pipelines.</li>
 </ul>
 </li>
@@ -438,7 +444,8 @@
 </ul>
 </li>
 <li>
-<p>模型参数封装类 <code>Param</code>，他的一个常用子类是 <code>ParamMap</code>，实现了Map接口，可以通过 <code>get, put</code>进行操作</p>
+<p>模型参数封装类 <code>Param</code>，他的一个常用子类是 <code>ParamMap</code>，实现了Map接口，可以通过 <code>get, put</code>进行操作。
+在2.0版本开始，Spark对Estimators和Transformers提供统一的参数API。</p>
 </li>
 </ul>
 <div class="hlcode"><pre><span class="k">val</span> <span class="n">paramMap</span> <span class="k">=</span> <span class="nc">ParamMap</span><span class="o">(</span><span class="n">lr</span><span class="o">.</span><span class="n">maxIter</span> <span class="o">-&gt;</span> <span class="mi">20</span><span class="o">)</span>
@@ -454,14 +461,11 @@
 
 
 <ul>
-<li>
-<p><code>pipeline</code> 将不同模型（transform）堆叠起来，类似于sklearn里面的pipeline。
+<li><code>pipeline</code> 将不同模型（transform）堆叠起来，类似于sklearn里面的pipeline。
 pipeline保存了一个Array[PipelineStage]，可以通过<code>.setStage(Array[_ &lt;: PipelineStage])</code>函数进行设置。
-pipeline实现了estimator的fit接口和transformer的transform接口。</p>
-</li>
-<li>
-<p><code>PipelineStage</code>抽象类，啥也没干？？？？？？？？！！！！！<code>transformer</code>还是它的子类！！</p>
-</li>
+pipeline实现了estimator的fit接口和transformer的transform接口。</li>
+<li>模型持久化 <code>save, load</code></li>
+<li><code>PipelineStage</code>抽象类，啥也没干？？？？？？？？！！！！！<code>transformer</code>还是它的子类！！</li>
 <li>
 <p><code>UnaryTransformer</code> 单列转换对象，是transformer的子抽象类，也实现了pipelinestage接口。
   有两个变量<code>inputCol</code>和<code>outputCol</code>代表输入输出列的名字。
@@ -498,13 +502,54 @@ pipeline实现了estimator的fit接口和transformer的transform接口。</p>
   <code>baseOn(paramPair)</code>设置指定参数为固定值，<code>build()</code>方法返回一个<code>Array[ParamMap]</code>数组</p>
 </li>
 </ul>
-<h4 id="_6">特征变换</h4>
+<h4 id="_6">特征提取</h4>
 <ul>
-<li><code>ml.feature</code>包中的模型 <code>IndexToString, StringIndexer</code>。<ul>
-<li><code>StringIndexer</code> 将字符串类型的变量（或者label）转换为索引序号，序号会按照频率排序，不是字典序</li>
-<li><code>IndexToString</code> 和<code>StringIndexer</code>配合使用可以让字符串类型的变量的处理变得透明，这个是将index变成原来的字符串</li>
+<li>TF-IDF(HashingTF and IDF)，传统的词统计是通过维护一个查找的词典（hash表或者查找树实现），
+HashTF则是直接通过对特征计算hash函数映射到低维索引。还可以通过第二个hash函数确定是否存在冲突。
+有什么优势？？？使用的类<code>HashingTF, IDF, Tokenizer</code></li>
+<li>Word2Vec，低维词向量学习，对应的类：<code>Word2Vec</code></li>
+<li>CountVectorizer，直接统计：<code>CountVectorizer</code></li>
+</ul>
+<h4 id="_7">特征变换</h4>
+<ul>
+<li>Tokenizer：将文本转换为一个一个的词。例如中文分词就算一个，对于英文可以简单的用空白字符分割就行。可用的类有：<ul>
+<li><code>Tokenizer</code> 常规Tokenizer</li>
+<li><code>RegexTokenizer</code> 正则式Tokenizer</li>
 </ul>
 </li>
+<li>StopWordsRemover：停止词的移除。<code>StopWordsRemover</code>，可以通过<code>setCaseSensitive</code>设置大小写敏感，
+和<code>setStopWords(value: Array[String])</code>设置停止词词典。</li>
+<li>n-gram：将输入的一串词转换为n-gram。<code>NGram</code></li>
+<li>Binarizer：通过阈值将数值特征变成二值特征。类<code>Binarizer</code>，主要方法：<code>setThreshold</code></li>
+<li>PCA：PCA 降维。<code>PCA</code>，方法<code>setK</code></li>
+<li>PolynomialExpansion：将特征展开为多项式特征，实现特征交叉。<code>x1,x2-&gt;x1^2,x2^2,x1x2</code>。<code>PolynomialExpansion</code>方法:<code>setDegree</code></li>
+<li>DCT：离散余弦变换。<code>DCT</code></li>
+<li><code>StringIndexer</code> 将字符串类型的变量（或者label）转换为索引序号，序号会按照频率排序，不是字典序。对于不在词典的string，默认抛出异常，也可以通过<code>setHandleInvalid("skip")</code>直接丢弃。</li>
+<li><code>IndexToString</code> 和<code>StringIndexer</code>配合使用可以让字符串类型的变量的处理变得透明，这个是将index变成原来的字符串</li>
+<li><code>OneHotEncoder</code>：将单个数字转换为0-1编码的向量。<code>1-&gt;(0,1,0,0)</code>。常用在类别特征的变换。</li>
+<li><code>VectorIndexer</code>：将输入向量中的类别特征自动编码为index。比较高端，需要学习一下！<code>setMaxCategories(4)</code>表示特征的值数目超过4个就认为是连续特征，否则认为需要编码。</li>
+<li><code>Normalizer</code>：归一化。需要指定p-norm的值<code>setP</code>。按照p范数归一化，默认为2。可以用在输出概率或score时归一化？</li>
+<li><code>StandardScaler</code>：标准化特征到方差为1，也可以将均值设为0. 方法：<code>setWithStd(bool), setWithMean(bool)</code></li>
+<li><code>MinMaxScaler</code>：归一化到0-1之间。也可以指定min和max</li>
+<li><code>MaxAbsScaler</code>：@since(2.0.0)，除以最大值的绝对值，从而将特征归一化到[-1,1]</li>
+<li><code>Bucketizer</code>：分桶。方法<code>setSplits(splits)</code>来设置分割点，分割点需要严格递增。</li>
+<li><code>ElementwiseProduct</code>：对输入向量乘以一个权值。方法<code>setScalingVec</code>设置权值。</li>
+<li><code>SQLTransformer</code>：让你用SQL语句进行变换特征。例子：</li>
+</ul>
+<div class="hlcode"><pre><span class="k">val</span> <span class="n">sqlTrans</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SQLTransformer</span><span class="o">().</span><span class="n">setStatement</span><span class="o">(</span>
+  <span class="s">&quot;SELECT *, (v1 + v2) AS v3, (v1 * v2) AS v4 FROM __THIS__&quot;</span><span class="o">)</span>
+</pre></div>
+
+
+<ul>
+<li><code>VectorAssembler</code>：将多个特征合并到一个向量，也可以合并向量。通过<code>setInputCols(Array[String]</code>设置要合并的列。</li>
+<li><code>QuantileDiscretizer</code>：首先对特征采样，然后根据采样值将特征按照等量分桶（等频离散化）。基于采样，所以每次不同。方法<code>setNumBuckets(i:Int)</code>设置桶的个数。</li>
+</ul>
+<h4 id="_8">特征选择</h4>
+<ul>
+<li><code>VectorSlicer</code>：通过slice选择特征，人工指定indices。方法<code>setIndices</code>设置选择的indices。字符串indices通过<code>setNames</code>方法设置索引。</li>
+<li><code>RFormula</code>：通过R模型公式选择特征，例如<code>clicked ~ country + hour</code>，输出列是默认是公式的响应变量名字。它会对字符串one-hot编码，对数值列转换为double类型。需要人工指定哪些特征。</li>
+<li><code>ChiSqSelector</code>：通过卡方独立性检验来选择特征。方法<code>setNumTopFeatures</code>指定要选择的卡方值前多少个。</li>
 </ul>
 <div class="hlcode"><pre><span class="k">val</span> <span class="n">labelIndexer</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">()</span>
     <span class="o">.</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;label&quot;</span><span class="o">)</span>
@@ -523,6 +568,37 @@ pipeline实现了estimator的fit接口和transformer的transform接口。</p>
 </pre></div>
 
 
+<h4 id="orgapachesparkmlclassification">分类 <code>org.apache.spark.ml.classification</code></h4>
+<ul>
+<li>逻辑回归：<code>LogisticRegression</code>，参数<code>maxIter, regParam, elasticNetParam</code> 分别是最大迭代次数、正则项系数、elastic网的参数。</li>
+<li>决策树：<code>DecisionTreeClassifier</code></li>
+<li>随机森林：<code>RandomForestClassifier</code></li>
+<li>GBDT：<code>GBTClassifier</code></li>
+<li>多层感知器（全连接神经网络）：<code>MultilayerPerceptronClassifier</code>，<code>setLayers</code>指定每层的节点数目。<strong>有没有预训练？需要研究一下！！！</strong></li>
+<li>One-vs-All：<code>OneVsRest</code>，将二分类变成多分类模型，采用One-vs-all策略。方法<code>setClassifier</code>设置二分类器。</li>
+<li>朴素贝叶斯：<code>NaiveBayes</code>，</li>
+</ul>
+<h4 id="orgapachesparkmlregression">回归 <code>org.apache.spark.ml.regression</code></h4>
+<ul>
+<li>线性回归：<code>LinearRegression</code></li>
+<li>广义线性回归：<code>GeneralizedLinearRegression</code> @since(2.0.0)</li>
+<li>决策树回归：<code>DecisionTreeRegressor</code></li>
+<li>随机森林回归：<code>RandomForestRegressor</code></li>
+<li>GBDT回归：<code>GBTRegressor</code></li>
+<li>Survival regression：<code>AFTSurvivalRegression</code>，什么东西？</li>
+<li>Isotonic 回归：<code>IsotonicRegression</code>，什么东西？</li>
+</ul>
+<h4 id="orgapachesparkmlclustering">聚类 <code>org.apache.spark.ml.clustering</code></h4>
+<ul>
+<li><code>KMeans</code>，K-means聚类，通过<code>setK</code>设置类的数目。<a href="http://theory.stanford.edu/~sergei/papers/vldb12-kmpar.pdf">K-means++的分布式实现</a>。</li>
+<li><code>LDA</code>：Latent Dirichlet allocation</li>
+<li><code>BisectingKMeans</code>：Bisecting k-means 聚类，@since(2.0.0) 不懂？</li>
+<li><code>GaussianMixture</code>：GMM 模型。@since(2.0.0)</li>
+</ul>
+<h4 id="_9">协同过滤</h4>
+<ul>
+<li><code>ALS</code>：ALS算法，2.0才加到ml包里面，之前在mllib包。</li>
+</ul>
 <h4 id="dataframe_1">DataFrame</h4>
 <p>DataFrame相当于 RDD[Row]，而Row相当于一个可以包含各种不同数据的Seq。
 DataFrame通过collect函数之后就是Array[Row]</p>
@@ -578,7 +654,7 @@ DataFrame通过collect函数之后就是Array[Row]</p>
 <li>LogisticRegressionWithLBFGS</li>
 <li>LogisticRegressionModel， 要<code>model.clearThreshold</code> predict才会输出概率，否则输出的是判决后的值</li>
 </ul>
-<h3 id="_7">基本数据结构</h3>
+<h3 id="_10">基本数据结构</h3>
 <ul>
 <li>Vector, 可以通过工厂对象<code>Vectors</code>创建，普通向量<code>Vectors.dense</code>，稀疏向量<code>Vectors.sparse</code>，通过<code>.toArray</code>方法转换为<code>Array[Double]</code></li>
 <li>LabeledPoint, 二元组 <code>(label:Double, features: Vector)</code></li>
@@ -599,7 +675,7 @@ DataFrame通过collect函数之后就是Array[Row]</p>
 </pre></div>
 
 
-<h3 id="_8">模型评估</h3>
+<h3 id="_11">模型评估</h3>
 <p>包名<code>org.apache.spark.mllib.evaluation</code></p>
 <ul>
 <li>两分类 BinaryClassificationMetrics</li>
