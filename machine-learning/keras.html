@@ -69,7 +69,6 @@
 <li><a href="#tensorflow-api">TensorFlow API</a></li>
 <li><a href="#_10">模型可视化</a></li>
 <li><a href="#sklearn-api">sklearn API</a></li>
-<li><a href="#-activation-axx-element-wise-sigmoid-relu-tanh-softmax-hard_sigmoid-softsign-softplus">- activation 激活函数，默认是线性函数，a(x)=x，即没有非线性变换，可以指定激活函数为预定义的非线性函数或者自定义的 element-wise 的符号函数。预定义函数可以通过字符串指定，常用的有：sigmoid, relu, tanh, softmax, hard_sigmoid, softsign, softplus</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -481,7 +480,9 @@
 <h3 id="layers_1">内置的核心Layers</h3>
 <ul>
 <li><code>Dense</code> 简单的全连接网络层，至少需要一个 <code>output_dim</code> 参数，对于非输入层，会自动获得输入的维数；
-如果是输入层，还需要指定<code>input_dim</code>参数。重要的参数：<h2 id="-activation-axx-element-wise-sigmoid-relu-tanh-softmax-hard_sigmoid-softsign-softplus">- <code>activation</code> 激活函数，默认是线性函数，<code>a(x)=x</code>，即没有非线性变换，可以指定激活函数为预定义的非线性函数或者自定义的 element-wise 的符号函数。预定义函数可以通过字符串指定，常用的有：<code>sigmoid, relu, tanh, softmax, hard_sigmoid, softsign, softplus</code></h2>
+如果是输入层，还需要指定<code>input_dim</code>参数。重要的参数：<ul>
+<li><code>activation</code> 激活函数，默认是线性函数，<code>a(x)=x</code>，即没有非线性变换，可以指定激活函数为预定义的非线性函数或者自定义的 element-wise 的符号函数。预定义函数可以通过字符串指定，常用的有：<code>sigmoid, relu, tanh, softmax, hard_sigmoid, softsign, softplus</code></li>
+</ul>
 </li>
 <li><code>Activation(name)</code> name 是激活函数的名字。既然Dense可以指定activation参数，为什么还要一个激活层？！</li>
 <li><code>Dropout(p)</code> Dropout 层，参数是dropout的概率。 <a href="http://www.cs.toronto.edu/~rsalakhu/papers/srivastava14a.pdf">Dropout: A Simple Way to Prevent Neural Networks from Overfitting</a></li>
