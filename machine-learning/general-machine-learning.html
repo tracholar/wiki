@@ -217,7 +217,44 @@ $$</p>
 <li>实际的协同垃圾邮件过滤系统</li>
 </ol>
 <p>Hash 函数：</p>
-<p>hash 函数 $(h: N \to \{1,...,m\})$</p>
+<p>hash 函数 $(h: \mathbb{N} \to \{1,...,m\})$，另一个hash函数$(\xi : \mathbb{N} \to \{\pm 1\})$.
+对于向量 $(x,x' \in l_2)$，定义hash 特征映射</p>
+<p>$$
+\phi_i^{(h, \xi)} = \sum_{j: h(j)=i} \xi(j) x_j \\
+\langle x, x' \rangle_{\phi} = \langle  \phi^{(h, \xi)}(x), \phi^{(h, \xi)}(x') \rangle
+$$</p>
+<p>这里的hash函数定义在自然数集上，实际上对字符串也成立，因为有限长字符串都可以表示为一个自然数。</p>
+<p>个人理解：举例，假设h是一个求余函数，那么特征映射后的低维空间的每一个分量相当于将向量等间隔的分量交替求和，从而实现降维。</p>
+<p>引理： hash kernel 是无偏的，如果 $(E_{\phi} [\langle x, x' \rangle_{\phi}] = \langle x, x' \rangle)$。
+并且方差 $(\sigma_{x,x'}^2 = \frac{1}{m} \sum_{i\neq j} x_i^2 x_j^{'2} + x_i x_i' x_j x_j')$，如果原始向量
+都是标准化的，即二范数为1，那么方差为$(O({\frac{1}{m}}))$。</p>
+<p>略去若干理论和证明，后面有需要再来看。</p>
+<p>Multiple Hashing</p>
+<p>近似正交性：对于multi-task learning，需要学习不同的权值，当映射到同一个空间时，需要参数空间交叉部分尽可能少。
+设$(w \in R^m)$是$( U \ {u})$中的某个任务的参数向量，对任意特征$(x \in u)$，$(w)$ 和 $(\phi_u(x))$的内积很小。</p>
+<p>应用：减少存储，避免矩阵向量乘法运算 Locality Sensitive Hashing ？</p>
+<p>个性化：每一个task更新局部(local)权值和全局(global)权值。正交性让我们可以将这些特征hash到同一个空间，而没有太多的重叠部分。</p>
+<p>邮件过滤问题：每个用户有一些标记数据，但是很少，如果对每一个用户单独训练一个模型$(w_u)$（模型参数？），将缺乏数据而使模型不可用。
+可以通过一个全局模型$(w_0)$使得数据能够在多个分类器中共享。存储所有分类器需要$(O(d (|U| + 1)))$的空间复杂度。
+简单的方法是排除低频的token。但这回导致恶意错误拼写的单词被丢弃，而hash到一个低维空间，使得这些低频词也能对模型有所贡献。
+而且大规模的邮件过滤器对内存和时间有严格要求，因为用户量太大。为此，我们将权值向量$(w_0, ..., w_{|U})$ 通过不同的映射$(\phi_0,...,\phi_{|U|})$，
+映射到低维特征空间$(R^m)$。最终的权值为：</p>
+<p>$$
+w_h = \phi_0(w_0) + \sum_{u \in U} \phi_u(w_u)
+$$</p>
+<p>实际上，$(w_h)$可以在低维空间直接学习，重来不需要去计算高维向量。对于用户u新的文档或者邮件x，预测任务变成计算内积$(\langle \phi_0(x) + \phi_u(x), w_h \rangle)$。hash操作将会带来内积的计算的失真$(\epsilon_d)$，其他hash函数带来的重叠$(\epsilon_i)$。</p>
+<p>$$
+\langle \phi_0(x) + \phi_u(x), w_h \rangle = \langle x, w_0 + w_u \rangle + \epsilon_d + \epsilon_i
+$$</p>
+<p>大规模协同过滤：$(M = U^T W)$，U和W $(\in R^{nd})$，存储需要大量空间，利用hash只需要两个m维向量$(u, w)$</p>
+<p>$$
+u_i = \sum_{j,k:h(j,k)=i} \xi(j,k) U_{jk},\\
+w_i = \sum_{j,k:h'(j,k)=i} \xi'(j,k) W_{jk}
+$$</p>
+<p>这里$((h,\xi), (h',\xi'))$是两组独立的hash 函数。近似计算$(M_{ij})$的方法是：</p>
+<p>$$
+M_{ij}^{\phi} = \sum_k \xi(k,i)\xi'(k,j) u_{h(k,i)} w_{h'(k,j)}
+$$</p>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-07-27 </span></div>
 
