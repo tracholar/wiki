@@ -416,7 +416,6 @@ z = merge([x, y], mode='sum')
 - `Dense` 简单的全连接网络层，至少需要一个 `output_dim` 参数，对于非输入层，会自动获得输入的维数；
 如果是输入层，还需要指定`input_dim`参数。重要的参数：
     - `activation` 激活函数，默认是线性函数，`a(x)=x`，即没有非线性变换，可以指定激活函数为预定义的非线性函数或者自定义的 element-wise 的符号函数。预定义函数可以通过字符串指定，常用的有：`sigmoid, relu, tanh, softmax, hard_sigmoid, softsign, softplus`
-    -
 - `Activation(name)` name 是激活函数的名字。既然Dense可以指定activation参数，为什么还要一个激活层？！
 - `Dropout(p)` Dropout 层，参数是dropout的概率。 [Dropout: A Simple Way to Prevent Neural Networks from Overfitting](http://www.cs.toronto.edu/~rsalakhu/papers/srivastava14a.pdf)
 - `Flatten()` 将多维特征展开为一维特征，不会影响样本维度。常用在卷积网络。

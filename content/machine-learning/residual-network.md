@@ -10,7 +10,7 @@ Residual Networks 残差网络，何凯明，孙剑 @MSRA。
 
 ## 残差网络2015年的论文导读
 ### 摘要
-152层残差网络，是VDD net的8倍，但是复杂度更低，效果更好。
+152层残差网络，是 VGG net的8倍，但是复杂度更低，效果更好。
     - ImageNet 测试集错误率为 3.57%
     - COCO object detection dataset 28% 相对提升
     - ILSVRC & COCO 2015 competitions 第一名，on the tasks of ImageNet detection, ImageNet localization,
@@ -34,7 +34,8 @@ using convolutional networks. In ICLR, 2014
 4. M. D. Zeiler and R. Fergus. Visualizing and understanding convolutional
 neural networks. In ECCV, 2014.
 
-- 近期研究表明，堆叠的深度是至关重要的因素。
+
+近期研究表明，堆叠的深度是至关重要的因素。
 
 1. K. Simonyan and A. Zisserman. Very deep convolutional networks
 for large-scale image recognition. In ICLR, 2015
@@ -42,7 +43,7 @@ for large-scale image recognition. In ICLR, 2015
 V. Vanhoucke, and A. Rabinovich. Going deeper with convolutions.
 In CVPR, 2015
 
-- ImageNet 的最佳结果都是很深的模型，从13层到30层。深度模型对其他的图像任务也有帮助。
+ImageNet 的最佳结果都是很深的模型，从13层到30层。深度模型对其他的图像任务也有帮助。
 
 1. K. He, X. Zhang, S. Ren, and J. Sun. Delving deep into rectifiers:
 Surpassing human-level performance on imagenet classification. In
@@ -53,7 +54,7 @@ network training by reducing internal covariate shift. In ICML, 2015
 Z. Huang, A. Karpathy, A. Khosla, M. Bernstein, et al. Imagenet
 large scale visual recognition challenge. arXiv:1409.0575, 2014.
 
-- 学习深度模型最大的问题在于 vanishing gradient，梯度消减！导致模型无法收敛。
+学习深度模型最大的问题在于 vanishing gradient，梯度消减！导致模型无法收敛。
 利用这些技巧，几十层深度的模型也可以通过BP算法+SGD进行训练。
 
 1. Y. Bengio, P. Simard, and P. Frasconi. Learning long-term dependencies
@@ -62,7 +63,7 @@ Networks, 5(2):157–166, 1994.
 2. X. Glorot and Y. Bengio. Understanding the difficulty of training
 deep feedforward neural networks. In AISTATS, 2010.
 
-- 梯度消减的问题被很大程度上通过 normalized initialization 和 intermediate normalization layers 解决了
+梯度消减的问题被很大程度上通过 normalized initialization 和 intermediate normalization layers 解决了
 
 1. Y. LeCun, L. Bottou, G. B. Orr, and K.-R. Muller. Efficient backprop. ¨
 In Neural Networks: Tricks of the Trade, pages 9–50. Springer, 1998.
@@ -75,15 +76,15 @@ ICCV, 2015.
 4. S. Ioffe and C. Szegedy. Batch normalization: Accelerating deep
 network training by reducing internal covariate shift. In ICML, 2015.
 
-- 随着层数的加深，模型的性能逐渐饱和，然后迅速恶化。这个问题并不是由于过拟合，更深的模型导致更差的性能！
+随着层数的加深，模型的性能逐渐饱和，然后迅速恶化。这个问题并不是由于过拟合，更深的模型导致更差的性能！
 理论上来讲，深层模型应该可以做到比浅层模型更好的性能，可以设想多余的层是恒等变换，那么深层模型结果和浅层一样。
 但是实际上的结果并非如此。
 
-- 残差网络并不直接拟合目标，而是拟合残差。假设潜在的目标映射为$(\mathcal{H}(x))$，我们让非线性层学习残差
+残差网络并不直接拟合目标，而是拟合残差。假设潜在的目标映射为$(\mathcal{H}(x))$，我们让非线性层学习残差
 $(\mathcal{F}(x):=\mathcal{H}(x) - x)$，并提供一条短路（或直连）通道，使得输出为$(\mathcal{F}(x)+x)$。
 我们假设优化残差比原始映射要简单！（假设！！！！）
 在极端情况下，可以让非线性层置0，使得直接输出输入值。（我的思考：存在正则项的时候，这个确实更优，那是不是就证明残差网络不会比浅层网络更差了呢？！）
-短连接在这里可以跳过一层或者多层。单位短路通道（即短路通道直接输出输入的值）不增加计算复杂度也不增加额外的参数。
+短路连接在这里可以跳过一层或者多层。单位短路通道（即短路通道直接输出输入的值）不增加计算复杂度也不增加额外的参数。
 整个网络可以采用 end-to-end 使用SGD+BP算法，可以采用现有的求解器就能实现。
 
 
@@ -130,7 +131,22 @@ neighbor search. TPAMI, 33, 2011.
 
 - 低级视觉和计算机图形学中，为了解决PDE，采用Multigrid方法。。。。不懂，所以略。
 
-#### shortcut connection
+#### Shortcut Connection
+已被研究多日了（哈哈哈哈），早起的多层感知器研究在输入输出间单独加了一个线性层。
+在另外两篇论文中，一些中间层直接连接到一个辅助的分类器，通过这种方式减少梯度消减。
+
+1. C.-Y. Lee, S. Xie, P. Gallagher, Z. Zhang, and Z. Tu. Deeply supervised
+nets. arXiv:1409.5185, 2014.
+2. R. K. Srivastava, K. Greff, and J. Schmidhuber. Highway networks.
+arXiv:1505.00387, 2015
+
+等等其他，略。
+
+highway networks 在短路链接采用了门函数，该门函数有参数需要通过数据学习。
+当门关掉（为0值）时，网络就是传统的神经网络，而不是残差网络。
+
+### Deep Residual Learning
+
 
 ## 参考
 1. [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385)
