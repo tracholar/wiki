@@ -146,7 +146,103 @@ highway networks 在短路链接采用了门函数，该门函数有参数需要
 当门关掉（为0值）时，网络就是传统的神经网络，而不是残差网络。
 
 ### Deep Residual Learning
+- 假设：（还是一个open question）多层非线性可以逼近复杂函数。
+- 当输入输出是相同的维度，可以假设它逼近残差$(\mathcal{H}(x) - x)$。虽然逼近原始函数和逼近残差，这两个函数都很复杂，
+但是后者更容易！前面说过，如果这些加入的非线性层是单位映射，那么多层不会比浅层差。但是由于梯度消减，多层非线性难以逼近单位函数，
+但是残差网络可以很容易，让非线性层置0即可。实际上，单位映射往往不是最优的。实验结果表明，残差部分学出来的结果都比较小，
+这表明单位映射是一个很好的先验条件。
+- 残差网络基本模块是：
 
+$$
+y = \mathcal{F}(x, \{W_i\}) + x   \\\\
+\mathcal{F} = W_2 \sigma(W_1 x)   \\\\
+\sigma = ReLU
+$$
+
+如果输入输出维度不同，可以通过投影的方法解决。$(W_s)$仅仅用来解决维度匹配的问题，如果维度相同，单位映射就好了。
+
+$$
+y = \mathcal{F}(x, \{W_i\}) + W_s x
+$$
+
+- 在论文里面，在ImageNet上最好的结果是110层，作者也试过1202层，发现训练集误差相近，但是测试集效果变差了，作者认为是
+过拟合的原因，因为没有用到MaxOut[1]和Dropout[2]强正则化的做法。
+
+1. I. J. Goodfellow, D. Warde-Farley, M. Mirza, A. Courville, and
+Y. Bengio. Maxout networks. arXiv:1302.4389, 2013.
+2. G. E. Hinton, N. Srivastava, A. Krizhevsky, I. Sutskever, and
+R. R. Salakhutdinov. Improving neural networks by preventing coadaptation
+of feature detectors. arXiv:1207.0580, 2012
+
+## 何凯明PPT@ICML2016
+此时他已经来到Facebook AI团队了！
+
+### 深度的演化
+- AlexNet, 8 layers (ILSVRC	2012)
+- VGG, 19 layers (ILSVRC 2014)
+- GoogleNet, 22	layers (ILSVRC	2014)
+- ResNet, 152 layers (ILSVRC 2015)
+
+> \>	200	citations	in	6	months	after	posted	on	arXiv (Dec.	2015)
+
+### 深度频谱
+- 5	layers:	easy
+- >10	layers:	initialization,	Batch	Normalization
+- >30	layers:	skip	connections
+- >100	layers:	identity	skip	connections
+
+### 初始化技巧
+总结，好的初始化很重要，当层数较深（20-30）时，可能收敛更快，初始化不好可能不收敛。
+
+1. LeCun et	al	1998	“Efficient	Backprop”
+2. Glorot&	Bengio 2010	“Understanding	the	difficulty	of	training	deep	feedforward	neural	networks”
+
+### Batch Normalize
+- 输入标准化
+- 标准化每一层 for each mini-batch
+- 极大地加速训练
+- 减少初值敏感
+- 增强正则化
+
+$$
+\hat{x} = \frac{x - \mu}{\sigma} \\\\
+y = \gamma \hat{x} + \beta
+$$
+
+- $(\mu, \sigma)$ 分别是 mini-batch 的均值和标准差，是由数据计算出来的
+- $(\gamma, \beta)$ 是缩放因子和位移量，需要模型学出来。
+- 注意，训练集的均值方差是从数据中计算，但是测试集是采用训练集计算的结果（平均）。
+
+### Deep Residual Network 10-100层
+- 简单叠加会变差！
+
+### 单位映射的重要性
+单位映射下：
+
+$$
+x_L = x_l + \sum_{i=l}^{L-1} \mathcal{F}\_i(x_i)  \\\\
+\frac{\par E}{\par x_l} = \frac{\par E}{\par x_L}(1 + \frac{\par E}{\par x_l} \sum_{i=l}^{L-1} \mathcal{F}\_i(x_i))
+$$
+
+在单位映射下，梯度可以以恒定比例传递过来，
+如果不是，一旦深度变深了，要么衰减，要么爆炸！
+
+加总之后，还是单位映射好，（我觉得还是梯度传递的问题，需要单位范数的映射才能不使得梯度消失和爆炸！）pre-active
+
+1. Kaiming	He,	Xiangyu	Zhang,	Shaoqing	 Ren,	&	Jian	Sun.	“Identity	Mappings	in	Deep	Residual	Networks”.	arXiv	2016.
+
+### 未来的方向
+- Representation
+• skipping	1	layer	vs.	multiple	layers?
+• Flat	vs.	Bottleneck?
+• Inception-ResNet[Szegedy et	al	2016]
+• ResNetin	ResNet[Targ et	al	2016]
+• Width	vs.	Depth	[Zagoruyko &	Komodakis 2016]
+- Generalization
+• DropOut,	MaxOut,	DropConnect,	…
+• Drop	Layer	(Stochastic	Depth)	[Huang	et	al	2016]
+- Optimization
+• Without	residual/shortcut?
 
 ## 参考
 1. [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385)
