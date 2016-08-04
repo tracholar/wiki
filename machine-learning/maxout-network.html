@@ -47,6 +47,7 @@
 <li><a href="#review-of-dropout">Review of Dropout</a></li>
 <li><a href="#maxout">Maxout 模型</a></li>
 <li><a href="#_3">效果</a></li>
+<li><a href="#keras">Keras 实现</a></li>
 </ul>
 </li>
 </ul>
@@ -91,6 +92,16 @@ $$</p>
 <ul>
 <li>MNIST 手写数字数据集两层 Conv. maxout + dropout 得到最佳效果 0.45%</li>
 </ul>
+<h3 id="keras">Keras 实现</h3>
+<p><a href="https://github.com/fchollet/keras/blob/master/keras/layers/core.py#L807">https://github.com/fchollet/keras/blob/master/keras/layers/core.py#L807</a></p>
+<div class="hlcode"><pre><span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="c"># no activation, this layer is only linear.</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias</span><span class="p">:</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output</span>
+</pre></div>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-08-04 </span></div>
 
