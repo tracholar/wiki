@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>MaxOut 网络 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;MaxOut 网络</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">MaxOut 网络</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#maxout-networks">Maxout networks 论文导读</a><ul>
+<li><a href="#_2">导言</a></li>
+<li><a href="#review-of-dropout">Review of Dropout</a></li>
+<li><a href="#maxout">Maxout 模型</a></li>
+<li><a href="#_3">效果</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>2013年， Ian Goodfellow, Yoshua Bengio 提出maxout网络，号称只需要两个隐层，就可以逼近任意分片连续函数。</p>
+<h2 id="maxout-networks">Maxout networks 论文导读</h2>
+<p>论文地址 <a href="http://jmlr.org/proceedings/papers/v28/goodfellow13.pdf">maxout networks</a></p>
+<h3 id="_2">导言</h3>
+<p>Dropout 是 Hinton 2012 年提出的一种简单的方法， 模型平均？！</p>
+<blockquote>
+<p>We argue that rather than using dropout as a slight
+performance enhancement applied to arbitrary models,
+the best performance may be obtained by directly
+designing a model that enhances dropout’s abilities as
+a model averaging technique</p>
+</blockquote>
+<h3 id="review-of-dropout">Review of Dropout</h3>
+<p>对于给定的输入向量$(v)$，预测输出$(y)$，一系列的隐层 $(\vec{h} = { h^{(1)}, ..., h^{(L)} })$。
+Dropout 用变量$(v, \vec{h})$ 的一部分变量，训练一组模型（这是随机置0的高级理解！！？）。
+这些模型采用同一个模型参数 $(\theta \in \mathcal{M})$，和一个二元 mask 变量 $(\mu)$。
+对于每一个样本，对不同的随机参数$(\mu)$，我们通过$(log p(y|v; \theta, \mu))$ 的梯度训练一个
+子模型。</p>
+<p>Dropout 很像 bagging 的方法，在数据集的很多子集上训练一组模型。
+不同的是， Dropout 每一个模型只训练一步，并且不同模型共享一个参数。
+因此，在训练的时候，每一步需要比较大的影响（把步长调大？）。</p>
+<h3 id="maxout">Maxout 模型</h3>
+<p>Maxout 模型也是一个多层的前馈结构，它的基本单元是 Maxout unit。
+对给定的 $(x \in \mathbb{R}^d)$，一个 maxout 隐层为：</p>
+<p>$$
+h_i(x) = \max_{j \in [1, k]} z_{i,j} \\
+z_{i, j} = x^T W_{.ij} + b_{ij}, W \in \mathbb{R}^{d \times m \times k}, b \in \mathbb{R}^{m\times k}
+$$</p>
+<p>相当于$(k)$个常规的纺射变换（一个线性变化$(W)$ 加上平移 $(b)$），然后取每一个模型的最大值作为最终的输出。</p>
+<p>单个 Maxout 单元可以理解为，对凸的分片连续函数的近似。</p>
+<ul>
+<li>Stone-Weierstrass 函数逼近理论说，紧集（闭区间的推广）上的连续函数可以用连续的分片线性函数(PWL) <strong>一致逼近</strong>。</li>
+<li>Wang 2004 的理论表明，任意连续分片线性函数可以表达为两个凸的分片线性函数之差。</li>
+</ul>
+<p>个人总结：Maxout 模型很简单，理论也容易理解，就是要逼近效果好，需要$(k)$值足够大，这将会导致参数个数随$(k)$增大，而线性增长。</p>
+<h3 id="_3">效果</h3>
+<ul>
+<li>MNIST 手写数字数据集两层 Conv. maxout + dropout 得到最佳效果 0.45%</li>
+</ul>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2016-08-04 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2016 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+    </body>
+</html>

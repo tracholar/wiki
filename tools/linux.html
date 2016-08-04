@@ -48,16 +48,21 @@
 <li><a href="#_5">操作系统相关</a></li>
 <li><a href="#_6">字符串工具</a></li>
 <li><a href="#sort">sort 命令</a></li>
+<li><a href="#watch">watch 命令</a><ul>
+<li><a href="#_7">常用参数：</a></li>
+<li><a href="#_8">例子</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#vim">VIM</a><ul>
-<li><a href="#_7">三种模式</a></li>
-<li><a href="#_8">移动光标</a></li>
-<li><a href="#_9">编辑命令</a></li>
-<li><a href="#_10">插入模式</a></li>
-<li><a href="#_11">命令模式</a></li>
-<li><a href="#_12">外部工具集成</a></li>
-<li><a href="#_13">参考</a></li>
+<li><a href="#_9">三种模式</a></li>
+<li><a href="#_10">移动光标</a></li>
+<li><a href="#_11">编辑命令</a></li>
+<li><a href="#_12">插入模式</a></li>
+<li><a href="#_13">命令模式</a></li>
+<li><a href="#_14">外部工具集成</a></li>
+<li><a href="#_15">参考</a></li>
 </ul>
 </li>
 </ul>
@@ -144,14 +149,35 @@ grep -e keyword -e otherword log.txt
 - c 参数，检查是否排好序，输出第一个乱序行信息，返回1；C参数，也是检查，但不输出乱序行信息
 - M 参数，以月份排序，会识别月份（只对英文吧）
 - b 参数，忽略每一行前面所有空白</p>
+<h3 id="watch">watch 命令</h3>
+<p>用来周期性地执行某个程序，全屏显示执行结果。常用来 <code>tail log-file</code>，是的，我就是要干这个事情才搜到这个命令的。</p>
+<h4 id="_7">常用参数：</h4>
+<ul>
+<li><code>-n 或 --interval</code> 指定间隔秒钟数，缺省为2</li>
+<li><code>-d 或 --differences</code> 高亮变化的区域，如果<code>-d=cumulative</code>会将每次变动积累并高亮</li>
+<li><code>-t 或 -no-title</code> 关闭顶部时间显示</li>
+</ul>
+<p>最后接你要周期执行的命令即可。</p>
+<h4 id="_8">例子</h4>
+<div class="hlcode"><pre><span class="c"># 监控log</span>
+watch -n 1 -d tail log-file
+
+<span class="c"># 显示网络连接变化</span>
+watch -n 1 -d netstat -ant
+
+<span class="c"># 每秒高亮显示http连接数变化</span>
+watch -n 1 -d <span class="s1">&#39;pstree|grep http&#39;</span>
+</pre></div>
+
+
 <h2 id="vim">VIM</h2>
-<h3 id="_7">三种模式</h3>
+<h3 id="_9">三种模式</h3>
 <ul>
 <li>插入模式：可以输入文本，按<code>i</code>进入</li>
 <li>编辑模式：按<code>ESC</code>进入，可以移动和操纵文本</li>
 <li>命令模式：可以执行冒号命令，常用的有<code>:w [filename]</code>写入文件，<code>:q</code>退出vim。</li>
 </ul>
-<h3 id="_8">移动光标</h3>
+<h3 id="_10">移动光标</h3>
 <p>在编辑模式下操作。</p>
 <ul>
 <li>基本移动：<ul>
@@ -200,7 +226,7 @@ grep -e keyword -e otherword log.txt
 </ul>
 </li>
 </ul>
-<h3 id="_9">编辑命令</h3>
+<h3 id="_11">编辑命令</h3>
 <ul>
 <li>替换与删除：用<code>d</code>删除行，用<code>x</code>删除字符，用<code>r</code>替换字符。<ul>
 <li><code>rc</code> 用字符c替换当前字符</li>
@@ -242,7 +268,7 @@ grep -e keyword -e otherword log.txt
 </ul>
 </li>
 </ul>
-<h3 id="_10">插入模式</h3>
+<h3 id="_12">插入模式</h3>
 <ul>
 <li>插入命令有：<ul>
 <li><code>i</code> 光标左侧插入</li>
@@ -255,7 +281,7 @@ grep -e keyword -e otherword log.txt
 </li>
 <li>退出插入模式命令<code>ESC, ctrl + [</code>，将进入编辑模式</li>
 </ul>
-<h3 id="_11">命令模式</h3>
+<h3 id="_13">命令模式</h3>
 <p>编辑模式下按<code>:</code>号，进入命令模式，输入命令后回车即可运行命令。         <br />
 - 文件命令
     - <code>:e path-to-file</code> 打开文件
@@ -355,7 +381,7 @@ mk                将选项保存在当前目录的 .exrc 文件中
 </pre></div>
 
 
-<h3 id="_12">外部工具集成</h3>
+<h3 id="_14">外部工具集成</h3>
 <ul>
 <li><code>vim + diff = vimdiff</code> 使用方法<code>vimdiff f1 f2</code> 或者 <code>vim -d</code><ul>
 <li>在已经打开的文件中执行命令<code>:diffsplit filename2</code>。
@@ -371,7 +397,7 @@ mk                将选项保存在当前目录的 .exrc 文件中
 </ul>
 </li>
 </ul>
-<h3 id="_13">参考</h3>
+<h3 id="_15">参考</h3>
 <ol>
 <li><a href="http://www.jianshu.com/p/bcbe916f97e1">http://www.jianshu.com/p/bcbe916f97e1</a></li>
 </ol>

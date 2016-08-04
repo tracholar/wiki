@@ -70,11 +70,13 @@
 <p>Residual Networks 残差网络，何凯明，孙剑 @MSRA。</p>
 <h2 id="2015">残差网络2015年的论文导读</h2>
 <h3 id="_2">摘要</h3>
-<p>152层残差网络，是 VGG net的8倍，但是复杂度更低，效果更好。
-    - ImageNet 测试集错误率为 3.57%
-    - COCO object detection dataset 28% 相对提升
-    - ILSVRC &amp; COCO 2015 competitions 第一名，on the tasks of ImageNet detection, ImageNet localization,
-COCO detection, and COCO segmentation</p>
+<ul>
+<li>152层残差网络，是 VGG net的8倍，但是复杂度更低，效果更好。</li>
+<li>ImageNet 测试集错误率为 3.57%</li>
+<li>COCO object detection dataset 28% 相对提升</li>
+<li>ILSVRC &amp; COCO 2015 competitions 第一名，on the tasks of ImageNet detection, ImageNet localization,
+COCO detection, and COCO segmentation</li>
+</ul>
 <h3 id="_3">导言</h3>
 <ul>
 <li>深度卷积网络（CNN）是图像分类问题的重大突破，
@@ -306,7 +308,7 @@ $$</p>
 <p>单位映射下：</p>
 <p>$$
 x_L = x_l + \sum_{i=l}^{L-1} \mathcal{F}_i(x_i)  \\
-\frac{\par E}{\par x_l} = \frac{\par E}{\par x_L}(1 + \frac{\par E}{\par x_l} \sum_{i=l}^{L-1} \mathcal{F}_i(x_i))
+\frac{\partial E}{\partial x_l} = \frac{\partial E}{\partial x_L}(1 + \frac{\partial E}{\partial x_l} \sum_{i=l}^{L-1} \mathcal{F}_i(x_i))
 $$</p>
 <p>在单位映射下，梯度可以以恒定比例传递过来，
 如果不是，一旦深度变深了，要么衰减，要么爆炸！</p>
@@ -316,17 +318,23 @@ $$</p>
 </ol>
 <h3 id="_9">未来的方向</h3>
 <ul>
-<li>Representation
-• skipping  1   layer   vs. multiple    layers?
-• Flat  vs. Bottleneck?
-• Inception-ResNet[Szegedy et   al  2016]
-• ResNetin  ResNet[Targ et  al  2016]
-• Width vs. Depth   [Zagoruyko &amp;    Komodakis 2016]</li>
-<li>Generalization
-• DropOut,  MaxOut, DropConnect,    …
-• Drop  Layer   (Stochastic Depth)  [Huang  et  al  2016]</li>
-<li>Optimization
-• Without   residual/shortcut?</li>
+<li>Representation<ul>
+<li>skipping  1   layer   vs. multiple    layers?</li>
+<li>Flat  vs. Bottleneck?</li>
+<li>Inception-ResNet[Szegedy et   al  2016]</li>
+<li>ResNetin  ResNet[Targ et  al  2016]</li>
+<li>Width vs. Depth   [Zagoruyko &amp;    Komodakis 2016]</li>
+</ul>
+</li>
+<li>Generalization<ul>
+<li>DropOut,  MaxOut, DropConnect,    …</li>
+<li>Drop  Layer   (Stochastic Depth)  [Huang  et  al  2016]</li>
+</ul>
+</li>
+<li>Optimization<ul>
+<li>Without   residual/shortcut?</li>
+</ul>
+</li>
 </ul>
 <h2 id="_10">参考</h2>
 <ol>
