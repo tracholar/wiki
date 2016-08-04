@@ -51,3 +51,17 @@ $$
 
 ### 效果
 - MNIST 手写数字数据集两层 Conv. maxout + dropout 得到最佳效果 0.45%
+
+
+### Keras 实现
+<https://github.com/fchollet/keras/blob/master/keras/layers/core.py#L807>
+
+```python
+def call(self, x, mask=None):
+    # no activation, this layer is only linear.
+    output = K.dot(x, self.W)
+    if self.bias:
+        output += self.b
+    output = K.max(output, axis=1)
+    return output
+```
