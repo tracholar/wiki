@@ -10,10 +10,10 @@ Residual Networks 残差网络，何凯明，孙剑 @MSRA。
 
 ## 残差网络2015年的论文导读
 ### 摘要
-152层残差网络，是 VGG net的8倍，但是复杂度更低，效果更好。
-    - ImageNet 测试集错误率为 3.57%
-    - COCO object detection dataset 28% 相对提升
-    - ILSVRC & COCO 2015 competitions 第一名，on the tasks of ImageNet detection, ImageNet localization,
+- 152层残差网络，是 VGG net的8倍，但是复杂度更低，效果更好。
+- ImageNet 测试集错误率为 3.57%
+- COCO object detection dataset 28% 相对提升
+- ILSVRC & COCO 2015 competitions 第一名，on the tasks of ImageNet detection, ImageNet localization,
 COCO detection, and COCO segmentation
 
 ### 导言
@@ -221,7 +221,7 @@ $$
 
 $$
 x_L = x_l + \sum_{i=l}^{L-1} \mathcal{F}\_i(x_i)  \\\\
-\frac{\par E}{\par x_l} = \frac{\par E}{\par x_L}(1 + \frac{\par E}{\par x_l} \sum_{i=l}^{L-1} \mathcal{F}\_i(x_i))
+\frac{\partial E}{\partial x_l} = \frac{\partial E}{\partial x_L}(1 + \frac{\partial E}{\partial x_l} \sum_{i=l}^{L-1} \mathcal{F}\_i(x_i))
 $$
 
 在单位映射下，梯度可以以恒定比例传递过来，
@@ -233,16 +233,16 @@ $$
 
 ### 未来的方向
 - Representation
-• skipping	1	layer	vs.	multiple	layers?
-• Flat	vs.	Bottleneck?
-• Inception-ResNet[Szegedy et	al	2016]
-• ResNetin	ResNet[Targ et	al	2016]
-• Width	vs.	Depth	[Zagoruyko &	Komodakis 2016]
+	- skipping	1	layer	vs.	multiple	layers?
+	- Flat	vs.	Bottleneck?
+	- Inception-ResNet[Szegedy et	al	2016]
+	- ResNetin	ResNet[Targ et	al	2016]
+	- Width	vs.	Depth	[Zagoruyko &	Komodakis 2016]
 - Generalization
-• DropOut,	MaxOut,	DropConnect,	…
-• Drop	Layer	(Stochastic	Depth)	[Huang	et	al	2016]
+	- DropOut,	MaxOut,	DropConnect,	…
+	- Drop	Layer	(Stochastic	Depth)	[Huang	et	al	2016]
 - Optimization
-• Without	residual/shortcut?
+	- Without	residual/shortcut?
 
 ## 参考
 1. [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385)

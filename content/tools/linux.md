@@ -80,6 +80,27 @@ grep -e keyword -e otherword log.txt
 - M 参数，以月份排序，会识别月份（只对英文吧）
 - b 参数，忽略每一行前面所有空白
 
+### watch 命令
+用来周期性地执行某个程序，全屏显示执行结果。常用来 `tail log-file`，是的，我就是要干这个事情才搜到这个命令的。
+
+#### 常用参数：
+
+- `-n 或 --interval` 指定间隔秒钟数，缺省为2
+- `-d 或 --differences` 高亮变化的区域，如果`-d=cumulative`会将每次变动积累并高亮
+- `-t 或 -no-title` 关闭顶部时间显示
+
+最后接你要周期执行的命令即可。
+#### 例子
+```bash
+# 监控log
+watch -n 1 -d tail log-file
+
+# 显示网络连接变化
+watch -n 1 -d netstat -ant
+
+# 每秒高亮显示http连接数变化
+watch -n 1 -d 'pstree|grep http'
+```
 ## VIM
 ### 三种模式
 - 插入模式：可以输入文本，按`i`进入
