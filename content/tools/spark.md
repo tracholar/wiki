@@ -178,6 +178,10 @@ val counts = pairs.reduceByKey((a, b) => a + b)
 val broadcastVar = sc.broadcast(Array(1, 2, 3))
 broadcastVar.value
 ```
+
+优点在于，不同于简单复制，可以采用P2P协议来提升在多个节点之间复制的性能！对于很大的共享对象，性能提升很明显！
+<https://stackoverflow.com/questions/26884871/advantage-of-broadcast-variables>
+
 - Accumulator,
 ```scala
 val accum = sc.accumulator(0, "My Accumulator")
