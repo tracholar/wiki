@@ -42,15 +42,137 @@
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">关于</a></li>
-<li><a href="#hive-sql">Hive SQL</a><ul>
-<li><a href="#_2">优化排序</a></li>
-<li><a href="#error">ERROR 汇总</a></li>
+<li><a href="#_2">配置</a></li>
+<li><a href="#hive">Hive 基本概念</a><ul>
+<li><a href="#hive_1">Hive 的定位</a></li>
+<li><a href="#_3">数据单元</a></li>
 </ul>
 </li>
+<li><a href="#_4">类型系统</a><ul>
+<li><a href="#_5">复杂类型</a></li>
+<li><a href="#_6">操作</a></li>
+<li><a href="#_7">内置函数</a></li>
+</ul>
+</li>
+<li><a href="#hive-sql">Hive SQL</a><ul>
+<li><a href="#_8">优化排序</a></li>
+</ul>
+</li>
+<li><a href="#hive_2">HIVE 命令</a></li>
+<li><a href="#_9">文件格式</a><ul>
+<li><a href="#avro">Avro 格式</a></li>
+<li><a href="#orc">ORC 格式</a></li>
+<li><a href="#parquet">Parquet 格式</a></li>
+<li><a href="#_10">压缩文件格式</a></li>
+<li><a href="#lzo">LZO</a></li>
+</ul>
+</li>
+<li><a href="#udf">UDF</a></li>
+<li><a href="#join">JOIN</a></li>
+<li><a href="#udf_1">编写自己的UDF</a></li>
+<li><a href="#union">UNION</a></li>
+<li><a href="#lateral-view">Lateral View</a></li>
+<li><a href="#_11">子查询</a></li>
+<li><a href="#_12">采样</a></li>
+<li><a href="#_13">虚拟列</a></li>
+<li><a href="#_14">窗函数和分析函数</a><ul>
+<li><a href="#_15">窗函数(没搞懂)</a></li>
+<li><a href="#over">OVER</a></li>
+<li><a href="#_16">分析函数</a></li>
+<li><a href="#_17">其他细节</a></li>
+</ul>
+</li>
+<li><a href="#enhanced-aggregation-cube-grouping-and-rollup">Enhanced Aggregation, Cube, Grouping and Rollup</a></li>
+<li><a href="#explain">EXPLAIN 命令</a></li>
+<li><a href="#hive_3">HIVE 权限管理</a></li>
+<li><a href="#more">MORE</a></li>
+<li><a href="#udf_2">UDF 开发</a><ul>
+<li><a href="#udf_3">UDF</a></li>
+</ul>
+</li>
+<li><a href="#mac-jdk">MAC 切换不同的JDK</a></li>
+<li><a href="#error">ERROR 汇总</a></li>
+<li><a href="#_18">问题</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
 <p>学习Hive时的笔记</p>
+<h2 id="_2">配置</h2>
+<p>环境要求
+    - Hive 1.2 需要 java 1.7+， 0.14-1.1 可以工作在 java1.6 版本上。
+    - Hadoop 2.x
+    - 可以运行在 Linux 和 Windows 环境， Mac 通常用来做开发的！</p>
+<p>添加 <code>$HIVE_HOME</code> 环境变量，并将<code>$bin</code>目录添加到<code>$PATH</code>变量中。</p>
+<p><code>hive.metastore.warehouse.dir</code> 配置指明数据仓库的目录，默认是 <code>/user/hive/warehouse</code> 和 <code>/tmp</code>（临时文件目录）</p>
+<h2 id="hive">Hive 基本概念</h2>
+<h3 id="hive_1">Hive 的定位</h3>
+<p>Hive 用来做数据仓库，非实时数据处理。</p>
+<h3 id="_3">数据单元</h3>
+<ul>
+<li>Database： 用来做名字空间，防止表名字冲突，也可以用于用户权限管理。</li>
+<li>Tables：表，就是传统数据库意义上的表</li>
+<li>Partitions：分区，一个表通常由多个分区组成。获取某个特定分区的数据比全表扫描快！每个分区一个目录！</li>
+<li>Buckets (or Clusters)：分桶或分簇，在一个分区里面，可以按照某些字段的hash值进行分桶，便于采样。例如PV表按照userid分桶</li>
+</ul>
+<h2 id="_4">类型系统</h2>
+<ul>
+<li>Integers<ul>
+<li>TINYINT—1 byte integer</li>
+<li>SMALLINT—2 byte integer</li>
+<li>INT—4 byte integer</li>
+<li>BIGINT—8 byte integer</li>
+</ul>
+</li>
+<li>Boolean type<ul>
+<li>BOOLEAN—TRUE/FALSE</li>
+</ul>
+</li>
+<li>Floating point numbers<ul>
+<li>FLOAT—single precision</li>
+<li>DOUBLE—Double precision</li>
+</ul>
+</li>
+<li>Fixed point numbers<ul>
+<li>DECIMAL—a fixed point value of user defined scale and precision</li>
+</ul>
+</li>
+<li>String types<ul>
+<li>STRING—sequence of characters in a specified character set</li>
+<li>VARCHAR—sequence of characters in a specified character set with a maximum length</li>
+<li>CHAR—sequence of characters in a specified character set with a defined length</li>
+</ul>
+</li>
+<li>Date and time types<ul>
+<li>TIMESTAMP— a specific point in time, up to nanosecond precision</li>
+<li>DATE—a date</li>
+</ul>
+</li>
+<li>Binary types<ul>
+<li>BINARY—a sequence of bytes</li>
+</ul>
+</li>
+</ul>
+<p>隐式类型转换，只能从低精度到高精度。也允许从 STRING 到 DOUBLE。
+显示类型转化可以用内置函数实现。</p>
+<h3 id="_5">复杂类型</h3>
+<ul>
+<li>Structs 结构体</li>
+<li>Maps key-value</li>
+<li>Arrays 索引list</li>
+</ul>
+<p>结构体类型的操作！怎么用？！</p>
+<h3 id="_6">操作</h3>
+<p>除了常规的比较操作，还支持正则式比较：</p>
+<p><code>A RLIKE B, A REGEXP B</code>，字符串A是否匹配Java正则式B。</p>
+<h3 id="_7">内置函数</h3>
+<ul>
+<li>数值类型函数：<code>round, floor, ceil, rand</code></li>
+<li>字符串函数： <code>caoncat, substr, upper, ucase, lower, lcase, trim, ltrim, rtrim, regexp_replace</code></li>
+<li>时间函数： <code>from_unixtime, to_date, year, month, day</code></li>
+<li>复杂类型函数：<code>size, get_json_object</code></li>
+<li>其他：<code>cast</code></li>
+<li>内置聚合函数：<code>count, sum, avg, min, max</code></li>
+</ul>
 <h2 id="hive-sql">Hive SQL</h2>
 <ul>
 <li><code>row_number()</code> 函数用法，<code>partition</code>用来将数据分区编号，<code>order by</code>描述编号顺序</li>
@@ -62,15 +184,483 @@
 
 <ul>
 <li><code>datediff(d1, d2)</code>， 其中时间字符串要是这种格式<code>yyyy-MM-dd</code>，如果不是，需要先转换</li>
-<li><code>from_unixtime(t, 'yyyyMMdd')</code>, <code>unix_timestamp(str, 'yyyy-MM-dd')</code>这两个函数可以实现时间字符串格式转换</li>
+<li>
+<p><code>from_unixtime(t, 'yyyyMMdd')</code>, <code>unix_timestamp(str, 'yyyy-MM-dd')</code>这两个函数可以实现时间字符串格式转换</p>
+</li>
+<li>
+<p>JOIN：支持常规的内连接 inner join，外链接 outer join。还支持 left semi join，用来从左边表过滤出满足join条件的记录，
+相当于 where exists subquery 方式，也可以替代in，效率比 inner join高。（此时要不要将大表放右边？！哈哈）</p>
+</li>
 </ul>
-<h3 id="_2">优化排序</h3>
+<p>join优化：将大表放右边！</p>
+<blockquote>
+<p>Also it is best to put the largest table on the rightmost side of the join to get the best performance.</p>
+</blockquote>
+<ul>
+<li>
+<p>聚合操作不能 distinct 两个不同的列</p>
+</li>
+<li>
+<p>HAVING @since(0.7.0) 可以将聚合函数放在 WHERE 中当做条件使用，</p>
+</li>
+<li>多表/文件插入操作：还是看代码吧！</li>
+</ul>
+<div class="hlcode"><pre><span class="k">FROM</span> <span class="n">pv_users</span>
+<span class="k">INSERT</span> <span class="n">OVERWRITE</span> <span class="k">TABLE</span> <span class="n">pv_gender_sum</span>
+    <span class="k">SELECT</span> <span class="n">pv_users</span><span class="p">.</span><span class="n">gender</span><span class="p">,</span> <span class="n">count_distinct</span><span class="p">(</span><span class="n">pv_users</span><span class="p">.</span><span class="n">userid</span><span class="p">)</span>
+    <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">pv_users</span><span class="p">.</span><span class="n">gender</span>
+
+<span class="k">INSERT</span> <span class="n">OVERWRITE</span> <span class="n">DIRECTORY</span> <span class="s1">&#39;/user/data/tmp/pv_age_sum&#39;</span>
+    <span class="k">SELECT</span> <span class="n">pv_users</span><span class="p">.</span><span class="n">age</span><span class="p">,</span> <span class="n">count_distinct</span><span class="p">(</span><span class="n">pv_users</span><span class="p">.</span><span class="n">userid</span><span class="p">)</span>
+    <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">pv_users</span><span class="p">.</span><span class="n">age</span><span class="p">;</span>
+</pre></div>
+
+
+<ul>
+<li>动态分区插入：@since(0.6.0)，能够减少调度时间，显著提升性能！但是注意几个问题。</li>
+</ul>
+<div class="hlcode"><pre><span class="k">insert</span> <span class="n">overwrite</span> <span class="k">table</span> <span class="n">pv</span> <span class="n">partition</span> <span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="s1">&#39;2010-01-01&#39;</span><span class="p">,</span> <span class="n">country</span><span class="p">)</span>  <span class="c1">----- 动态决定country分区，dt分区值固定</span>
+<span class="k">insert</span> <span class="n">overwrite</span> <span class="k">table</span> <span class="n">pv</span> <span class="n">partition</span> <span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">country</span><span class="o">=</span><span class="s1">&#39;US&#39;</span><span class="p">)</span>          <span class="c1">----- 将所有dt分区下 country=&#39;US&#39; 子分区都覆盖，一般不要能用这种写法！</span>
+</pre></div>
+
+
+<p>如果分区字段为NULL，会写入到默认分区HIVE_DEFAULT_PARTITION中。</p>
+<p>影响动态分区的一些配置：</p>
+<ul>
+<li>hive.exec.max.dynamic.partitions.pernode (default value being 100) 每个 mapper 或者 reducer 能够创建的最大分区数目。</li>
+<li>hive.exec.max.dynamic.partitions (default value being 1000) 一个表能够创建的最大分区数目。</li>
+<li>hive.exec.max.created.files (default value being 100000) 所有的 mapper 和 reducer 能够创建的全部文件数目最大值</li>
+<li>hive.exec.dynamic.partition.mode=strict 禁止动态分区 nostric 使用动态分区。只能使用静态分区。</li>
+<li>
+<p>hive.exec.dynamic.partition=true/false 彻底禁止动态分区。</p>
+</li>
+<li>
+<p>写入本地文件：<code>INSERT OVERWRITE LOCAL DIRECTORY '/tmp/pv_gender_sum'</code></p>
+</li>
+<li>快速采样：<code>TABLESAMPLE(BUCKET x OUT OF y)</code>，需要在建表的时候<code>CLUSTERED BY</code>支持。例如选出第3个bucket。</li>
+</ul>
+<div class="hlcode"><pre><span class="n">TABLESAMPLE</span><span class="p">(</span><span class="n">BUCKET</span> <span class="mi">3</span> <span class="k">OUT</span> <span class="k">OF</span> <span class="mi">64</span> <span class="k">ON</span> <span class="n">userid</span><span class="p">)</span>
+</pre></div>
+
+
+<ul>
+<li>UNION ALL：</li>
+<li>Array 操作：</li>
+</ul>
+<div class="hlcode"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">array_table</span> <span class="p">(</span><span class="n">int_array_column</span> <span class="nb">ARRAY</span><span class="o">&lt;</span><span class="nb">INT</span><span class="o">&gt;</span><span class="p">);</span>
+
+<span class="k">SELECT</span> <span class="n">pv</span><span class="p">.</span><span class="n">friends</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="k">FROM</span> <span class="n">page_views</span> <span class="n">pv</span><span class="p">;</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>Map 操作：</p>
+</li>
+<li>
+<p>Custom Map/Reduce Scripts： <code>MAP, REDUCE</code>（是<code>TRANSFORM</code>的语法糖而已），或者<code>TRANSFORM</code> 函数（是否只能实现UDF的功能，UDAF和UDTF呢？）</p>
+</li>
+</ul>
+<div class="hlcode"><pre><span class="k">FROM</span> <span class="p">(</span>
+     <span class="k">FROM</span> <span class="n">pv_users</span>
+     <span class="k">MAP</span> <span class="n">pv_users</span><span class="p">.</span><span class="n">userid</span><span class="p">,</span> <span class="n">pv_users</span><span class="p">.</span><span class="nb">date</span>
+     <span class="k">USING</span> <span class="s1">&#39;map_script&#39;</span>
+     <span class="k">AS</span> <span class="n">dt</span><span class="p">,</span> <span class="n">uid</span>
+     <span class="k">CLUSTER</span> <span class="k">BY</span> <span class="n">dt</span><span class="p">)</span> <span class="n">map_output</span>
+
+<span class="k">INSERT</span> <span class="n">OVERWRITE</span> <span class="k">TABLE</span> <span class="n">pv_users_reduced</span>
+     <span class="n">REDUCE</span> <span class="n">map_output</span><span class="p">.</span><span class="n">dt</span><span class="p">,</span> <span class="n">map_output</span><span class="p">.</span><span class="n">uid</span>
+     <span class="k">USING</span> <span class="s1">&#39;reduce_script&#39;</span>
+     <span class="k">AS</span> <span class="nb">date</span><span class="p">,</span> <span class="k">count</span><span class="p">;</span>
+</pre></div>
+
+
+<p>脚本：</p>
+<div class="hlcode"><pre><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">:</span>
+  <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+  <span class="n">userid</span><span class="p">,</span> <span class="n">unixtime</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
+  <span class="n">weekday</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">unixtime</span><span class="p">))</span><span class="o">.</span><span class="n">isoweekday</span><span class="p">()</span>
+  <span class="k">print</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">userid</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">weekday</span><span class="p">)])</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p><code>CLUSTER BY, DISTRIBUTE BY, SORT BY</code></p>
+</li>
+<li>
+<p>分组：<code>CLUSTER BY</code> 相当于先按列<code>DISTRIBUTE BY</code>，然后<code>SORT BY</code></p>
+</li>
+</ul>
+<h3 id="_8">优化排序</h3>
 <p>不要使用<code>order by</code> <a href="https://stackoverflow.com/questions/13715044/hive-cluster-by-vs-order-by-vs-sort-by">https://stackoverflow.com/questions/13715044/hive-cluster-by-vs-order-by-vs-sort-by</a>       <br />
 - <code>ORDER BY</code> 全局排序，但是只能使用一个reducer
 - <code>DISTRIBUTE BY</code> 采用Hash算法将map处理后的数据分发给reduce，它保证了相同的key是在同一个reducer
 - <code>SORT BY</code> 不是全局排序，而是在数据进入reduce之前完成排序，只能保证每个reducer的输出是有序的，不能保证全局有序。
 - <code>CLUSTER BY</code> 相当于先 DISTRIBUTE 然后 sort。也不能保证全局有序。</p>
-<h3 id="error">ERROR 汇总</h3>
+<h2 id="hive_2">HIVE 命令</h2>
+<ul>
+<li><code>set &lt;key&gt;=&lt;value&gt;</code> 设置参数</li>
+<li><code>add FILE[S] &lt;filepath&gt; &lt;filepath&gt;*</code>, <code>add JAR[S] &lt;filepath&gt; &lt;filepath&gt;*</code>, <code>add ARCHIVE[S] &lt;filepath&gt; &lt;filepath&gt;*</code> 添加文件</li>
+</ul>
+<h2 id="_9">文件格式</h2>
+<h3 id="avro">Avro 格式</h3>
+<ul>
+<li>要求：Hive 0.9.1+</li>
+<li>不同版本要求的语法还不同，具体参看<a href="https://cwiki.apache.org/confluence/display/Hive/AvroSerDe">https://cwiki.apache.org/confluence/display/Hive/AvroSerDe</a>。
+0.14 以后的版本可以在创建表的时候这样写：<code>STORED AS AVRO</code> 即可。</li>
+</ul>
+<h3 id="orc">ORC 格式</h3>
+<p>Optimized Row Columnar 格式，采用这种格式可以提升HIVE读写性能。</p>
+<ul>
+<li>输出是单个文件，减少 NameNode 的负载</li>
+<li>支持Hive所有格式，包括复杂格式</li>
+<li>文件中存储了轻量级的索引，便于以行为单位移动指针</li>
+<li>压缩：游程编码（Int）字典码（String）</li>
+<li>同时读同一个文件</li>
+<li>split 文件，而不需要scanning for markers</li>
+<li>限制了读写内存</li>
+</ul>
+<p>文件结构：以Strip为单位（默认250MB）。</p>
+<p>cli读取命令 <code>hive --orcfiledump</code></p>
+<p>创建表的时候这样写：<code>STORED AS ORC</code> 即可。</p>
+<h3 id="parquet">Parquet 格式</h3>
+<p>Hadoop 生态中的一个！</p>
+<h3 id="_10">压缩文件格式</h3>
+<p>直接从 gzip 等格式中存取为text格式表格。</p>
+<div class="hlcode"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">raw</span> <span class="p">(</span><span class="n">line</span> <span class="n">STRING</span><span class="p">)</span>
+   <span class="k">ROW</span> <span class="n">FORMAT</span> <span class="n">DELIMITED</span> <span class="n">FIELDS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\t&#39;</span> <span class="n">LINES</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\n&#39;</span><span class="p">;</span>
+
+<span class="k">LOAD</span> <span class="k">DATA</span> <span class="k">LOCAL</span> <span class="n">INPATH</span> <span class="s1">&#39;/tmp/weblogs/20090603-access.log.gz&#39;</span> <span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">raw</span><span class="p">;</span>
+</pre></div>
+
+
+<h3 id="lzo">LZO</h3>
+<p>略</p>
+<h2 id="udf">UDF</h2>
+<p>UDF，UDAF，UDTF</p>
+<h2 id="join">JOIN</h2>
+<ul>
+<li>多表 JOIN 的时候，当JOIN条件都包含同一个Key的时候，会用同一个 Map/Reduce 处理，例如</li>
+</ul>
+<div class="hlcode"><pre><span class="k">SELECT</span> <span class="n">a</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="k">c</span><span class="p">.</span><span class="n">val</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">b</span> <span class="k">ON</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key1</span><span class="p">)</span> <span class="k">JOIN</span> <span class="k">c</span> <span class="k">ON</span> <span class="p">(</span><span class="k">c</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key1</span><span class="p">)</span>
+</pre></div>
+
+
+<p>只有一个 Map/Reduce 任务。而下面这个会有2个 Map/Reduce 任务(JOIN a,b; JOIN * ,c)。</p>
+<div class="hlcode"><pre><span class="k">SELECT</span> <span class="n">a</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="k">c</span><span class="p">.</span><span class="n">val</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">b</span> <span class="k">ON</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key1</span><span class="p">)</span> <span class="k">JOIN</span> <span class="k">c</span> <span class="k">ON</span> <span class="p">(</span><span class="k">c</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key2</span><span class="p">)</span>
+</pre></div>
+
+
+<blockquote>
+<p>In every map/reduce stage of the join, the last table in the sequence is streamed through the reducers where as the others are buffered. Therefore, it helps to reduce the memory needed in the reducer for buffering the rows for a particular value of the join key by organizing the tables such that the largest tables appear last in the sequence.</p>
+</blockquote>
+<p>将大表放后面，大表会以streaming的方式进入reducer，而其他的一buffer的方式存在（内存？），可以减少内存的需求。
+默认让最后的表以streaming方式进入reducer，也可以手动指定。</p>
+<div class="hlcode"><pre><span class="k">SELECT</span> <span class="cm">/*+ STREAMTABLE(a) */</span> <span class="n">a</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="k">c</span><span class="p">.</span><span class="n">val</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">b</span> <span class="k">ON</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key1</span><span class="p">)</span> <span class="k">JOIN</span> <span class="k">c</span> <span class="k">ON</span> <span class="p">(</span><span class="k">c</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key1</span><span class="p">)</span>
+</pre></div>
+
+
+<p>当存在这个hint的时候，会将表b，c缓存，而让a以流的方式进入reducer。不存在的时候，则会将最后的表以流的方式进入reducer。</p>
+<ul>
+<li>JOIN 逻辑发生在 WHERE 之前！对于 inner join，条件放在 ON 还是 WHERE 都是一样的，但是如果是其他 JOIN， 则会有区别。
+<a href="https://stackoverflow.com/questions/354070/sql-join-where-clause-vs-on-clause">https://stackoverflow.com/questions/354070/sql-join-where-clause-vs-on-clause</a></li>
+</ul>
+<p>但是在实现的时候，会先用WHERE里面的条件过滤吧？！否则性能不是很差！？</p>
+<ul>
+<li>
+<p>JOIN 是不可交换的！</p>
+</li>
+<li>
+<p>左半连接更有效！ 要求右表的字段只在 ON 条件中出现！在map端过滤掉不会参加join操作的数据，则可以大大节省网络IO。</p>
+</li>
+</ul>
+<blockquote>
+<p>LEFT SEMI JOIN implements the uncorrelated IN/EXISTS subquery semantics in an efficient way.</p>
+</blockquote>
+<ul>
+<li>MAPJOIN，JOIN 小表的时候，可以减少 reducer，提升性能！但是右链接和全连接中不能用！</li>
+</ul>
+<div class="hlcode"><pre><span class="k">SELECT</span> <span class="cm">/*+ MAPJOIN(b) */</span> <span class="n">a</span><span class="p">.</span><span class="k">key</span><span class="p">,</span> <span class="n">a</span><span class="p">.</span><span class="n">value</span>
+<span class="k">FROM</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">b</span> <span class="k">ON</span> <span class="n">a</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="k">key</span>
+</pre></div>
+
+
+<p>上述代码不需要 reducer！</p>
+<blockquote>
+<p>The restriction is that a <strong>FULL/RIGHT OUTER JOIN</strong> b cannot be performed.</p>
+</blockquote>
+<ul>
+<li>如果在 JOIN 列上，进行分桶了，并且其中一个表的桶数目是另一个的倍数，那么就可以采用 MAPJOIN 优化了。
+在 MAP 的时候，左表的第一个桶只会去取右表的第一个桶，而不是所有的数据！这个行为不是默认的，需要设置参数：</li>
+</ul>
+<div class="hlcode"><pre><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">optimize</span><span class="p">.</span><span class="n">bucketmapjoin</span> <span class="o">=</span> <span class="k">true</span>
+</pre></div>
+
+
+<ul>
+<li>如果两个表 JOIN 的字段分桶且排序的，并且分桶数目相同，那么可以采用 sort-merge。例如满足上述条件的两个表的join可以
+只需要 Map 阶段！</li>
+</ul>
+<div class="hlcode"><pre><span class="k">SELECT</span> <span class="cm">/*+ MAPJOIN(b) */</span> <span class="n">a</span><span class="p">.</span><span class="k">key</span><span class="p">,</span> <span class="n">a</span><span class="p">.</span><span class="n">value</span>
+<span class="k">FROM</span> <span class="n">A</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">B</span> <span class="n">b</span> <span class="k">ON</span> <span class="n">a</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="k">key</span>
+</pre></div>
+
+
+<p>同时需要设置参数：</p>
+<div class="hlcode"><pre><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="k">input</span><span class="p">.</span><span class="n">format</span><span class="o">=</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">BucketizedHiveInputFormat</span><span class="p">;</span>
+<span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">optimize</span><span class="p">.</span><span class="n">bucketmapjoin</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+<span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">optimize</span><span class="p">.</span><span class="n">bucketmapjoin</span><span class="p">.</span><span class="n">sortedmerge</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+</pre></div>
+
+
+<ul>
+<li>MAPJOIN 可以用来 JOIN 小表，实现优化，但是下列情况是不行的！！！我晕！<ul>
+<li>Union Followed by a MapJoin</li>
+<li>Lateral View Followed by a MapJoin</li>
+<li>Reduce Sink (Group By/Join/Sort By/Cluster By/Distribute By) Followed by MapJoin</li>
+<li>MapJoin Followed by Union</li>
+<li>MapJoin Followed by Join</li>
+<li>MapJoin Followed by MapJoin</li>
+</ul>
+</li>
+</ul>
+<p>可以设置 <code>hive.auto.convert.join=true</code> 让hive自动帮你转为 MAPJOIN。从 Hive 0.11.0  开始，默认值就是true。
+MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+JoinOptimization">https://cwiki.apache.org/confluence/display/Hive/LanguageManual+JoinOptimization</a></p>
+<div class="hlcode"><pre><span class="n">Local</span> <span class="n">work</span><span class="o">:</span>
+<span class="n">read</span> <span class="n">records</span> <span class="n">via</span> <span class="n">standard</span> <span class="n">table</span> <span class="n">scan</span> <span class="p">(</span><span class="n">including</span> <span class="n">filters</span> <span class="n">and</span> <span class="n">projections</span><span class="p">)</span> <span class="n">from</span> <span class="n">source</span> <span class="n">on</span> <span class="n">local</span> <span class="n">machine</span>
+<span class="n">build</span> <span class="n">hashtable</span> <span class="n">in</span> <span class="n">memory</span>
+<span class="n">write</span> <span class="n">hashtable</span> <span class="n">to</span> <span class="n">local</span> <span class="n">disk</span>
+<span class="n">upload</span> <span class="n">hashtable</span> <span class="n">to</span> <span class="n">dfs</span>
+<span class="n">add</span> <span class="n">hashtable</span> <span class="n">to</span> <span class="n">distributed</span> <span class="n">cache</span>
+
+<span class="n">Map</span> <span class="n">task</span>
+<span class="n">read</span> <span class="n">hashtable</span> <span class="n">from</span> <span class="n">local</span> <span class="n">disk</span> <span class="p">(</span><span class="n">distributed</span> <span class="n">cache</span><span class="p">)</span> <span class="n">into</span> <span class="n">memory</span>
+<span class="n">match</span> <span class="n">records</span><span class="err">&#39;</span> <span class="n">keys</span> <span class="n">against</span> <span class="n">hashtable</span>
+<span class="n">combine</span> <span class="n">matches</span> <span class="n">and</span> <span class="n">write</span> <span class="n">to</span> <span class="n">output</span>
+</pre></div>
+
+
+<p>MAPJOIN 的限制：</p>
+<ul>
+<li>一次只能一个KEY</li>
+<li>chain of MAPJOINs 是不可以的，除非写成子查询形式。<code>mapjoin(table, subquery(mapjoin(table, subquery....)</code></li>
+<li>
+<p>每一次 MAPJOIN 都需要重新建立 HASH 表，包括上传和下载</p>
+</li>
+<li>
+<p>优化链式 MAPJOIN</p>
+</li>
+</ul>
+<div class="hlcode"><pre><span class="k">select</span> <span class="cm">/*+ MAPJOIN(time_dim, date_dim) */</span> <span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">from</span>
+<span class="n">store_sales</span>
+<span class="k">join</span> <span class="n">time_dim</span> <span class="k">on</span> <span class="p">(</span><span class="n">ss_sold_time_sk</span> <span class="o">=</span> <span class="n">t_time_sk</span><span class="p">)</span>
+<span class="k">join</span> <span class="n">date_dim</span> <span class="k">on</span> <span class="p">(</span><span class="n">ss_sold_date_sk</span> <span class="o">=</span> <span class="n">d_date_sk</span><span class="p">)</span>
+<span class="k">where</span> <span class="n">t_hour</span> <span class="o">=</span> <span class="mi">8</span> <span class="k">and</span> <span class="n">d_year</span> <span class="o">=</span> <span class="mi">2002</span>
+</pre></div>
+
+
+<p>通过两个值设置 MAPJOIN</p>
+<div class="hlcode"><pre><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">auto</span><span class="p">.</span><span class="k">convert</span><span class="p">.</span><span class="k">join</span><span class="p">.</span><span class="n">noconditionaltask</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+<span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">auto</span><span class="p">.</span><span class="k">convert</span><span class="p">.</span><span class="k">join</span><span class="p">.</span><span class="n">noconditionaltask</span><span class="p">.</span><span class="k">size</span> <span class="o">=</span> <span class="mi">10000000</span><span class="p">;</span>
+</pre></div>
+
+
+<p>SMB Map Join: Sort-Merge-Bucket (SMB) joins</p>
+<p>表已经是分桶并且排序好的， JOIN 过程通过顺序 merge 已经排序好的表即可。（效率比普通 JOIN 高）</p>
+<blockquote>
+<p>However, if the tables are partitioned, there could be a slow down as each mapper would need to get a very small chunk of a partition which has a single key.</p>
+</blockquote>
+<div class="hlcode"><pre><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">auto</span><span class="p">.</span><span class="k">convert</span><span class="p">.</span><span class="n">sortmerge</span><span class="p">.</span><span class="k">join</span><span class="o">=</span><span class="k">true</span><span class="p">;</span>
+<span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">optimize</span><span class="p">.</span><span class="n">bucketmapjoin</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+<span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">optimize</span><span class="p">.</span><span class="n">bucketmapjoin</span><span class="p">.</span><span class="n">sortedmerge</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+
+<span class="c1">------ 大表自动转化设置</span>
+<span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">auto</span><span class="p">.</span><span class="k">convert</span><span class="p">.</span><span class="n">sortmerge</span><span class="p">.</span><span class="k">join</span><span class="p">.</span><span class="n">bigtable</span><span class="p">.</span><span class="n">selection</span><span class="p">.</span><span class="n">policy</span>
+    <span class="o">=</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">optimizer</span><span class="p">.</span><span class="n">TableSizeBasedBigTableSelectorForAutoSMJ</span><span class="p">;</span>
+</pre></div>
+
+
+<p>大表选择策略会自动决定哪个表被 streaming，而不是 hash 并且 streaming。可选策略有</p>
+<div class="hlcode"><pre><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">optimizer</span><span class="p">.</span><span class="n">AvgPartitionSizeBasedBigTableSelectorForAutoSMJ</span> <span class="p">(</span><span class="k">default</span><span class="p">)</span>
+<span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">optimizer</span><span class="p">.</span><span class="n">LeftmostBigTableSelectorForAutoSMJ</span>
+<span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">optimizer</span><span class="p">.</span><span class="n">TableSizeBasedBigTableSelectorForAutoSMJ</span>
+</pre></div>
+
+
+<p>如果表有不同数量的keys（SORT 列），会发生异常！</p>
+<p>SMB 存在的目的主要是为了解决大表与大表间的 Join 问题，分桶其实就是把大表化成了“小表”，然后 Map-Side Join 解决之，这是典型的分而治之的思想。</p>
+<p>这个Blog写的不错，<a href="https://my.oschina.net/leejun2005/blog/178631">https://my.oschina.net/leejun2005/blog/178631</a></p>
+<h2 id="udf_1">编写自己的UDF</h2>
+<p>TRANSFORM 貌似不能实现 UDAF。可以用java写UDF或UDAF，UDTF等。需要jdk1.7版本。</p>
+<div class="hlcode"><pre><span class="k">ADD</span> <span class="n">JAR</span> <span class="n">hdfs</span><span class="p">:</span><span class="o">///</span><span class="k">user</span><span class="o">/</span><span class="n">hadoop</span><span class="o">-</span><span class="k">data</span><span class="o">/</span><span class="n">user_upload</span><span class="o">/</span><span class="n">hive</span><span class="o">-</span><span class="n">kv</span><span class="o">-</span><span class="n">udaf_2</span><span class="p">.</span><span class="mi">10</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">.</span><span class="n">jar</span><span class="p">;</span>
+<span class="k">CREATE</span> <span class="k">TEMPORARY</span> <span class="k">FUNCTION</span> <span class="n">kv</span> <span class="k">as</span> <span class="s1">&#39;KV&#39;</span><span class="p">;</span>
+</pre></div>
+
+
+<h2 id="union">UNION</h2>
+<ul>
+<li>UNION ALL：不去重融合 1.2.0 以前只支持这个</li>
+<li>UNION DISTINCT：去重，1.2.0 以后默认（UNION）是这个融合</li>
+<li>UNION 常需要对列名重命名，使得UNION的时候，列名是相同的</li>
+</ul>
+<h2 id="lateral-view">Lateral View</h2>
+<p>用在 UDTF 中。对于输入的一行，输出是多行。0.12.0 版本开始，列名可以不用写，会自动采用UDTF输出的StructObjectInspector对象自动得到列名。参考<a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+LateralView">https://cwiki.apache.org/confluence/display/Hive/LanguageManual+LateralView</a></p>
+<p>一个例子，adid_list是一个Array，<code>explode()</code>函数会将这个list输出为多行。</p>
+<div class="hlcode"><pre><span class="k">SELECT</span> <span class="n">pageid</span><span class="p">,</span> <span class="n">adid</span>
+<span class="k">FROM</span> <span class="n">pageAds</span> <span class="k">LATERAL</span> <span class="k">VIEW</span> <span class="n">explode</span><span class="p">(</span><span class="n">adid_list</span><span class="p">)</span> <span class="n">adTable</span> <span class="k">AS</span> <span class="n">adid</span><span class="p">;</span>
+
+<span class="k">SELECT</span> <span class="n">adid</span><span class="p">,</span> <span class="k">count</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">FROM</span> <span class="n">pageAds</span> <span class="k">LATERAL</span> <span class="k">VIEW</span> <span class="n">explode</span><span class="p">(</span><span class="n">adid_list</span><span class="p">)</span> <span class="n">adTable</span> <span class="k">AS</span> <span class="n">adid</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">adid</span><span class="p">;</span>
+
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">src</span> <span class="k">LATERAL</span> <span class="k">VIEW</span> <span class="k">OUTER</span> <span class="n">explode</span><span class="p">(</span><span class="nb">array</span><span class="p">())</span> <span class="k">C</span> <span class="k">AS</span> <span class="n">a</span> <span class="k">limit</span> <span class="mi">10</span><span class="p">;</span>
+</pre></div>
+
+
+<p>FROM 语句里面可以包含多个 Lateral View。通过 <code>OUTER</code> 关键字可以让 <code>explode</code> 输出为NULL的时候，
+记录至少存在一行！（没有这个关键字，结果中将不会出现记录）</p>
+<h2 id="_11">子查询</h2>
+<p>子查询放在 FROM 里面，在 0.13 版本后，可以放在 IN 和 EXISTS 之中，但是存在一些限制。</p>
+<ul>
+<li>只能放在表达式右边</li>
+<li>IN/NOT IN 子查询只支持单列</li>
+<li>EXISTS/NOT EXISTS 必须有一个或者多个 correlated predicates （where 条件？）</li>
+<li>对父查询字段的引用只支持在 WHERE 中。</li>
+</ul>
+<h2 id="_12">采样</h2>
+<div class="hlcode"><pre><span class="n">TABLESAMPLE</span> <span class="p">(</span><span class="n">BUCKET</span> <span class="n">x</span> <span class="k">OUT</span> <span class="k">OF</span> <span class="n">y</span> <span class="p">[</span><span class="k">ON</span> <span class="n">colname</span><span class="p">])</span>
+</pre></div>
+
+
+<p>colname 可以是非分区字段以外的字段 或者 <code>RAND()</code>。
+表采样是很慢的，如果建表的时候采用<code>CLUSTERED BY</code>创建，
+那么可以加快采样速度，因为只要简单地取出对应的BUCKET就可以了，而不用全表扫描。</p>
+<p>更多信息参考：<a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Sampling">https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Sampling</a></p>
+<p>block sampling @since(0.8)</p>
+<div class="hlcode"><pre><span class="n">TABLESAMPLE</span> <span class="p">(</span><span class="n">n</span> <span class="n">PERCENT</span><span class="p">)</span>
+<span class="n">TABLESAMPLE</span> <span class="p">(</span><span class="n">ByteLengthLiteral</span><span class="p">)</span>   <span class="c1">---- 例如 100M</span>
+<span class="n">TABLESAMPLE</span> <span class="p">(</span><span class="n">n</span> <span class="k">ROWS</span><span class="p">)</span>
+
+<span class="c1">----- 例子</span>
+<span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="k">source</span> <span class="n">TABLESAMPLE</span><span class="p">(</span><span class="mi">100</span><span class="n">M</span><span class="p">)</span> <span class="n">s</span><span class="p">;</span>
+</pre></div>
+
+
+<p>这个是在 HDFS block level 上进行的采样，
+所以一些压缩格式表数据不支持这个特性。复现可以通过设置种子来实现<code>set hive.sample.seednumber=&lt;INTEGER&gt;;</code>。</p>
+<h2 id="_13">虚拟列</h2>
+<p><code>INPUT__FILE__NAME, BLOCK__OFFSET__INSIDE__FILE</code> 在 Mapper 里面分别指输入文件名 和 全局文件位置</p>
+<p>简单例子</p>
+<div class="hlcode"><pre><span class="k">select</span> <span class="n">INPUT__FILE__NAME</span><span class="p">,</span> <span class="k">key</span><span class="p">,</span> <span class="n">BLOCK__OFFSET__INSIDE__FILE</span> <span class="k">from</span> <span class="n">src</span><span class="p">;</span>
+<span class="k">select</span> <span class="k">key</span><span class="p">,</span> <span class="k">count</span><span class="p">(</span><span class="n">INPUT__FILE__NAME</span><span class="p">)</span> <span class="k">from</span> <span class="n">src</span> <span class="k">group</span> <span class="k">by</span> <span class="k">key</span> <span class="k">order</span> <span class="k">by</span> <span class="k">key</span><span class="p">;</span>
+<span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">src</span> <span class="k">where</span> <span class="n">BLOCK__OFFSET__INSIDE__FILE</span> <span class="o">&gt;</span> <span class="mi">12000</span> <span class="k">order</span> <span class="k">by</span> <span class="k">key</span><span class="p">;</span>
+</pre></div>
+
+
+<h2 id="_14">窗函数和分析函数</h2>
+<p>@since(0.11)</p>
+<h3 id="_15">窗函数(没搞懂)</h3>
+<ul>
+<li>LEAD， LEAD 开窗函数返回位于分区中当前行的下方（之后）的某个给定偏移量位置的行的值。如果超过窗的末尾了，返回NULL。例子 <a href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/r_Examples_of_LEAD_WF.html">https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/r_Examples_of_LEAD_WF.html</a></li>
+<li>LAG，LAG 开窗函数返回位于分区中当前行的上方（之前）的某个给定偏移量位置的行的值。如果超过窗的开头，返回NULL。例子<a href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/r_Examples_of_LAG_WF.html">https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/r_Examples_of_LAG_WF.html</a></li>
+<li>FIRST_VALUE，返回分区第一个值</li>
+<li>LAST_VALUE，返回分区最后一个值</li>
+</ul>
+<h3 id="over">OVER</h3>
+<p>可以将聚合函数的返回值应用到每一列（窗函数的功能），就像分析函数那样！！</p>
+<ul>
+<li>标准聚合函数 <code>COUNT, SUM, AVG, MAX, MIN</code></li>
+<li><code>PARTITION BY</code> 一个或多个分区列，<code>ORDER BY</code> 一个或多个字段</li>
+<li>可以在 OVER 里面指定窗 <code>ROWS ((CURRENT ROW) | (UNBOUNDED | [num]) PRECEDING) AND (UNBOUNDED | [num]) FOLLOWING</code></li>
+</ul>
+<div class="hlcode"><pre><span class="k">SELECT</span> <span class="n">a</span><span class="p">,</span> <span class="k">SUM</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="n">OVER</span> <span class="p">(</span><span class="n">PARTITION</span> <span class="k">BY</span> <span class="k">c</span><span class="p">,</span> <span class="n">d</span> <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">e</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+<span class="k">FROM</span> <span class="n">T</span><span class="p">;</span>
+
+<span class="k">SELECT</span> <span class="n">a</span><span class="p">,</span> <span class="k">SUM</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="n">OVER</span> <span class="p">(</span><span class="n">PARTITION</span> <span class="k">BY</span> <span class="k">c</span> <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">d</span> <span class="k">ROWS</span> <span class="k">BETWEEN</span> <span class="n">UNBOUNDED</span> <span class="n">PRECEDING</span> <span class="k">AND</span> <span class="k">CURRENT</span> <span class="k">ROW</span><span class="p">)</span>
+<span class="k">FROM</span> <span class="n">T</span><span class="p">;</span>
+</pre></div>
+
+
+<h3 id="_16">分析函数</h3>
+<ul>
+<li>RANK，返回序数，可能存在相同的序号，因为同时排第一之类的</li>
+<li>ROW_NUMBER，返回行号</li>
+<li>DENSE_RANK，返回序号，不存在相同的序号，即使相同，也会让后面一个序号+1</li>
+<li>CUME_DIST，返回累积分布 0-1 之间的值。</li>
+<li>PERCENT_RANK，百分比排名 0-1 之间的值。计算公式 (row_number - 1) / (count - 1)</li>
+<li>NTILE，对排名进行分组，尽可能保证每组数目均匀，返回分组编号。</li>
+</ul>
+<h3 id="_17">其他细节</h3>
+<ul>
+<li><code>DISTINCT</code> 关键词使用在这些函数中要到 2.1.0 版本之后。</li>
+<li>在 OVER 中使用聚合函数也要到 2.1.0 版本之后</li>
+</ul>
+<div class="hlcode"><pre><span class="k">COUNT</span><span class="p">(</span><span class="k">DISTINCT</span> <span class="n">a</span><span class="p">)</span> <span class="n">OVER</span> <span class="p">(</span><span class="n">PARTITION</span> <span class="k">BY</span> <span class="k">c</span><span class="p">)</span>
+
+<span class="k">SELECT</span> <span class="n">rank</span><span class="p">()</span> <span class="n">OVER</span> <span class="p">(</span><span class="k">ORDER</span> <span class="k">BY</span> <span class="k">sum</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+<span class="k">FROM</span> <span class="n">T</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">a</span><span class="p">;</span>
+</pre></div>
+
+
+<h2 id="enhanced-aggregation-cube-grouping-and-rollup">Enhanced Aggregation, Cube, Grouping and Rollup</h2>
+<ul>
+<li>GROUPING SETS：等价于多个 GROUP BY 然后 UNION</li>
+</ul>
+<div class="hlcode"><pre><span class="k">SELECT</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="k">SUM</span><span class="p">(</span><span class="k">c</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">tab1</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="k">GROUPING</span> <span class="k">SETS</span> <span class="p">(</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+<span class="c1">---- 等价于</span>
+<span class="k">SELECT</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="k">SUM</span><span class="p">(</span> <span class="k">c</span> <span class="p">)</span> <span class="k">FROM</span> <span class="n">tab1</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span>
+<span class="k">UNION</span>
+<span class="k">SELECT</span> <span class="n">a</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="k">SUM</span><span class="p">(</span> <span class="k">c</span> <span class="p">)</span> <span class="k">FROM</span> <span class="n">tab1</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">a</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>Grouping__ID</p>
+</li>
+<li>
+<p>Cubes and Rollups
+<code>WITH CUBE/ROLLUP</code> 关键字，只能用在 <code>GROUP BY</code> 之中。
+<code>GROUP BY a, b, c WITH CUBE</code> 会组合所有的可能 <code>(a, b, c), (a, b), (b, c), (a, c), (a), (b), (c), ( )</code>。
+而 <code>GROUP BY a, b, c, WITH ROLLUP</code> 等价于  <code>GROUP BY a, b, c GROUPING SETS ( (a, b, c), (a, b), (a), ( ))</code>.</p>
+</li>
+</ul>
+<p>设置 <code>hive.new.job.grouping.set.cardinality</code> 的值，当候选分组数目（上面分别是8和4）超过这个值时，将开启额外的 Mapper Reducer 任务来处理。</p>
+<h2 id="explain">EXPLAIN 命令</h2>
+<p>用来显示 query  的执行计划的，例如对于这个query有几个stage等。</p>
+<p><code>EXPLAIN [EXTENDED|DEPENDENCY|AUTHORIZATION] query</code></p>
+<h2 id="hive_3">HIVE 权限管理</h2>
+<p>略</p>
+<h2 id="more">MORE</h2>
+<p>HIVE on spark!</p>
+<h2 id="udf_2">UDF 开发</h2>
+<p>支持 JAVA（或Scala） 写UDF UDAF UDTF！依赖：</p>
+<ul>
+<li>Java UDF：<a href="https://github.com/apache/hive/tree/master/ql/src/java/org/apache/hadoop/hive/ql/udf/generic">https://github.com/apache/hive/tree/master/ql/src/java/org/apache/hadoop/hive/ql/udf/generic</a></li>
+<li>Scala UDF及单元测试的例子：<a href="https://github.com/sharethrough/hive-udfs">https://github.com/sharethrough/hive-udfs</a></li>
+</ul>
+<h3 id="udf_3">UDF</h3>
+<p>实现普通函数 (v1, ...) -&gt; (w1, ...)。
+需要继承<code>org.apache.hadoop.hive.ql.exec.UDF</code>这个类，并实现 <code>evaluate</code> 方法。</p>
+<p><a href="https://issues.apache.org/jira/secure/attachment/12542020/UDFTrim.java">UDFTrim 模板</a></p>
+<h2 id="mac-jdk">MAC 切换不同的JDK</h2>
+<p>参考：<a href="https://stackoverflow.com/questions/20974607/can-java-7-and-java-8-co-exist-on-osx">https://stackoverflow.com/questions/20974607/can-java-7-and-java-8-co-exist-on-osx</a></p>
+<div class="hlcode"><pre>use-java <span class="o">()</span> <span class="o">{</span>
+    <span class="nb">export </span><span class="nv">JAVA_HOME</span><span class="o">=</span><span class="sb">`</span>/usr/libexec/java_home -v 1.<span class="nv">$1</span><span class="sb">`</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>然后使用 <code>use-java 7</code> 就可以切换到 <code>jdk 1.7</code> 了。</p>
+<h2 id="error">ERROR 汇总</h2>
 <ul>
 <li>metainfo 超大：  </li>
 </ul>
@@ -79,6 +669,10 @@
 
 
 <p>解决方法：<code>set mapreduce.jobtracker.split.metainfo.maxsize=-1;</code></p>
+<h2 id="_18">问题</h2>
+<ul>
+<li>HIVE 中使用 VIEW 视图！</li>
+</ul>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-07-08 </span></div>
 

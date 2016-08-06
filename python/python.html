@@ -42,10 +42,13 @@
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">基本语法相关</a></li>
-<li><a href="#_2">类方法</a></li>
-<li><a href="#_3">迭代器相关函数</a></li>
-<li><a href="#_4">各种坑</a></li>
-<li><a href="#_5">工具函数</a></li>
+<li><a href="#_2">函数</a></li>
+<li><a href="#_3">类</a></li>
+<li><a href="#_4">装饰器</a></li>
+<li><a href="#with">上下文管理器 with</a></li>
+<li><a href="#_5">迭代器相关函数</a></li>
+<li><a href="#_6">各种坑</a></li>
+<li><a href="#_7">工具函数</a></li>
 </ul>
 </div>
 <h2 id="_1">基本语法相关</h2>
@@ -59,18 +62,190 @@
 <li>反射函数，<code>type()</code>，<code>isinstance()</code>，<code>hasattr()</code>，<code>setattr()</code> 以及属性<code>__class__</code></li>
 <li>Mixin：python通过多重继承实现组合模式。sklearn中很多基础类使用这种模式实现的。<a href="https://github.com/scikit-learn/scikit-learn/blob/51a765a/sklearn/base.py#L281">https://github.com/scikit-learn/scikit-learn/blob/51a765a/sklearn/base.py#L281</a></li>
 </ul>
-<h2 id="_2">类方法</h2>
+<h2 id="_2">函数</h2>
+<p>参考：<a href="https://stackoverflow.com/documentation/python/228/functions">https://stackoverflow.com/documentation/python/228/functions</a></p>
+<ul>
+<li>任意参数：<code>*args, **kwargs</code></li>
+</ul>
+<div class="hlcode"><pre><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="c"># args will be a tuple containing all values that are passed in</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>字符串函数拾遗：除了<code>upper, lower</code> 之外还有：<a href="https://stackoverflow.com/documentation/python/278/string-methods">https://stackoverflow.com/documentation/python/278/string-methods</a></p>
+<ul>
+<li><code>capitalize</code> 将第一个变为大写，其他的变为小写！</li>
+<li><code>title</code> 将每个单词第一个字母变为大写，其他的为小写！</li>
+<li>
+<p><code>casefold</code> @since(3.3) 小写转换的unicode字符版！希腊字母也可以转</p>
+</li>
+<li>
+<p><code>translate</code> 按照替换表进行字母替换</p>
+</li>
+<li><code>format</code> 格式化</li>
+<li><code>split, rsplit</code> 当指定 <code>maxsplit</code> 参数的时候，有区别</li>
+<li>string 模块常量，要使用<code>import string</code>导入：<code>string.ascii_letters</code> 字母表, <code>string.ascii_lowercase, string.ascii_uppercase, string.digits, string.hexdigits, string.octaldigits, string.punctuation, string.whitespace, string.printable</code></li>
+<li>unicodedata, 一个有趣的模块</li>
+<li><code>str.count(sub[, start[, end]])</code> 统计出现的次数</li>
+<li><code>str.replace(old, new[, count])</code> 简单替换，<code>re.sub</code>基于正则式替换</li>
+<li><code>str.isupper(), str.islower() and str.istitle()</code></li>
+<li><code>str.ljust and str.rjust</code> 字符串对齐</li>
+<li><code>'hello'[::-1]</code> 字符串反转</li>
+<li><code>str.strip([chars]), str.rstrip([chars]) and str.lstrip([chars])</code> 去掉空白字符</li>
+<li><code>"foo" in my_str</code> 字符串包含检查</li>
+<li><code>str.startswith() and str.endswith()</code> 字符串首尾</li>
+<li><code>encode, decode</code> 字符串和unicode字符串之间的转换</li>
+<li>共同前缀！</li>
+</ul>
+</li>
+</ul>
+<div class="hlcode"><pre><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">mylist</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;&amp;abcd&quot;</span><span class="p">,</span> <span class="s">&quot;&amp;abbe&quot;</span><span class="p">,</span> <span class="s">&quot;&amp;ab&quot;</span><span class="p">]</span>
+<span class="k">print</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">commonprefix</span><span class="p">(</span><span class="n">mylist</span><span class="p">))</span>
+</pre></div>
+
+
+<h2 id="_3">类</h2>
+<p>参考 <a href="https://stackoverflow.com/documentation/python/419/classes">https://stackoverflow.com/documentation/python/419/classes</a></p>
+<ul>
+<li>Bound, unbound, and static methods</li>
+</ul>
+<p>Bound 方法就是通过类的实例访问的方法（instancemethod）， unbound 方法就是通过类本身访问的动态方法（Python3.x 已废弃)</p>
+<div class="hlcode"><pre><span class="n">a</span> <span class="o">=</span> <span class="n">A</span><span class="p">()</span>
+<span class="n">a</span><span class="o">.</span><span class="n">f</span>
+<span class="c"># &lt;bound method A.f of &lt;__main__.A object at ...&gt;&gt;</span>
+<span class="n">a</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="c"># 4</span>
+
+<span class="c"># Note: the bound method object a.f is recreated *every time* you call it:</span>
+<span class="n">a</span><span class="o">.</span><span class="n">f</span> <span class="ow">is</span> <span class="n">a</span><span class="o">.</span><span class="n">f</span>  <span class="c"># False</span>
+<span class="c"># As a performance optimization you can store the bound method in the object&#39;s</span>
+<span class="c"># __dict__, in which case the method object will remain fixed:</span>
+<span class="n">a</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">f</span>
+<span class="n">a</span><span class="o">.</span><span class="n">f</span> <span class="ow">is</span> <span class="n">a</span><span class="o">.</span><span class="n">f</span>  <span class="c"># True</span>
+</pre></div>
+
+
 <ul>
 <li>@classmethod 装饰器，第一个参数代表类，类方法，既可以通过类调用，也可以通过类的实例调用</li>
 <li>@staticmethod ，只能通过类调用</li>
-<li>无装饰器， 只能通过实例调用</li>
+<li>
+<p>无装饰器， 只能通过实例调用</p>
+</li>
+<li>
+<p>类的继承：从3.x开始，<code>super</code> 不再需要传入参数了！</p>
+</li>
 </ul>
-<h2 id="_3">迭代器相关函数</h2>
+<div class="hlcode"><pre><span class="k">class</span> <span class="nc">Square</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="c"># call parent constructor, w and h are both s</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="n">s</span>
+</pre></div>
+
+
+<ul>
+<li>抽象类：<code>abc</code>模块，需要制定<code>__metaclass__</code>变量为<code>ABCMeta</code>，子类需要注册！</li>
+</ul>
+<div class="hlcode"><pre><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span>
+
+<span class="k">class</span> <span class="nc">AbstractClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="c"># the metaclass attribute must always be set as a class variable</span>
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
+
+   <span class="c"># the abstractmethod decorator registers this method as undefined</span>
+   <span class="nd">@abstractmethod</span>
+   <span class="k">def</span> <span class="nf">virtual_method_subclasses_must_define</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+       <span class="c"># Can be left completely blank, or a base implementation can be provided</span>
+       <span class="c"># Note that ordinarily a blank interpretation implicitly returns `None`,</span>
+       <span class="c"># but by registering, this behaviour is no longer enforced.</span>
+
+<span class="k">class</span> <span class="nc">Subclass</span><span class="p">:</span>
+   <span class="k">def</span> <span class="nf">virtual_method_subclasses_must_define</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+       <span class="k">return</span>
+
+<span class="c"># registration is mandatory to truly create an abstract class</span>
+<span class="n">AbstractClass</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">SubClass</span><span class="p">)</span>
+</pre></div>
+
+
+<ul>
+<li>多重继承：<code>class FooBar(Foo, Bar)</code></li>
+<li>私有变量：<code>_non_public</code> 通过添加一个下划线实现！（哈哈！）</li>
+<li>属性方法：可以将属性设置为只读，不提供<code>setter</code>方法</li>
+</ul>
+<div class="hlcode"><pre><span class="k">class</span> <span class="nc">MyClass</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">_my_string</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">my_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_my_string</span>
+
+    <span class="nd">@my_string.setter</span>
+    <span class="k">def</span> <span class="nf">my_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_my_string</span> <span class="o">=</span> <span class="n">new_value</span>
+
+    <span class="nd">@my_string.deleter</span>
+    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_my_string</span>
+</pre></div>
+
+
+<h2 id="_4">装饰器</h2>
+<p>任何传入一个函数，返回一个函数的函数都可以作为装饰器！(貌似无效！py2.7)</p>
+<div class="hlcode"><pre><span class="k">def</span> <span class="nf">super_secret_function</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">f</span>
+
+<span class="nd">@super_secret_function</span>
+<span class="k">def</span> <span class="nf">my_function</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;This is my secret function.&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>这里<code>@</code> 相当于实现 <code>my_function = super_secret_function(my_function)</code></p>
+<p>装饰器类：<code>__call__</code> 方法进行装饰。如果需要装饰成员方法，需要指定<code>__get__</code>方法！
+装饰器可以使用参数，只要在函数内部定义一个类，然后返回即可。</p>
+<div class="hlcode"><pre><span class="k">class</span> <span class="nc">Decorator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simple decorator class.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Before the function call.&#39;</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;After the function call.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span>
+
+<span class="nd">@Decorator</span>
+<span class="k">def</span> <span class="nf">testfunc</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Inside the function.&#39;</span><span class="p">)</span>
+
+<span class="n">testfunc</span><span class="p">()</span>
+<span class="c"># Before the function call.</span>
+<span class="c"># Inside the function.</span>
+<span class="c"># After the function call.</span>
+</pre></div>
+
+
+<h2 id="with">上下文管理器 <code>with</code></h2>
+<ul>
+<li>把文件当做上下文，上下文结束的时候会自动关闭文件！</li>
+<li>自己的上下文管理器需要实现两个方法 <code>__enter__() and __exit__()</code></li>
+</ul>
+<h2 id="_5">迭代器相关函数</h2>
 <ul>
 <li><code>enumerate(iter)</code> 返回<code>(idx, value)</code>的迭代器，可以应用在需要使用index的时候。</li>
 <li><code>(x for x ... )</code> 圆括号生成迭代器的一个语法糖。</li>
 </ul>
-<h2 id="_4">各种坑</h2>
+<h2 id="_6">各种坑</h2>
 <ul>
 <li>不要用可变对象作为函数默认值。字典,集合,列表等等对象是不适合作为函数默认值的.
   因为这个默认值是在函数建立的时候就生成了, 每次调用都是用了这个对象的”缓存”.</li>
@@ -210,7 +385,7 @@
 <ul>
 <li><code>is</code> 和 <code>==</code> 前者比较是否是同一个对象，后者比较值是否相等</li>
 </ul>
-<h2 id="_5">工具函数</h2>
+<h2 id="_7">工具函数</h2>
 <ul>
 <li>获取对象成员，<code>getmembers</code>, <code>dir</code>等函数</li>
 </ul>
