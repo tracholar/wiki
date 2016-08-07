@@ -37,7 +37,7 @@ RBM 中的 Contrastive Divergence 更新。
 
 学习一个输入$(X)$ 的表达$(Y)$，实际上是学习条件概率$(q(Y|X) = q(Y|X; \theta))$。$(\theta)$是要学习的参数。
 
-一个基本要求是要尽可能保留输入的信息，在信息论里面可以表达为最大化交互信息 $(\matchcal{I}(X; Y))$： Linsker (1989)
+一个基本要求是要尽可能保留输入的信息，在信息论里面可以表达为最大化交互信息 $(\mathcal{I}(X; Y))$： Linsker (1989)
 
 ### 独立成分分析（ICA）：Bell and Sejnowski (1995)
 
@@ -59,7 +59,7 @@ $$
 $$
 
 当两个分布相同的时候，可以得到精确的交互信息。infomax ICA 中，特征映射为 $(Y = f_{\theta}(X))$。
-那么$(q(X, Y;\theta) = q(X) \approxy q^0(X))$，即用样本集的分布代替总体分布。优化问题变为：
+那么$(q(X, Y;\theta) = q(X) \approx q^0(X))$，即用样本集的分布代替总体分布。优化问题变为：
 
 $$
 \max_{\theta, \theta'} \mathcal{E}\_{q^0(X)} [\log p(X|Y=f_{\theta}(X); \theta')]
@@ -86,14 +86,14 @@ $$
 
 $$
 y = f_{\theta}(x) = s(Wx+b)   \\\\
-\theta = \{ W, b \}
+\theta = \\{ W, b \\}
 $$
 
 特征重构（Decoder）变换也用sigmoid函数
 
 $$
 z = g_{\theta'}(y) = s(W' y + b') \\\\
-\theta'  = \{ W', b' \}
+\theta'  = \\{ W', b' \\}
 $$
 
 ## Reference
