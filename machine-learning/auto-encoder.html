@@ -77,7 +77,7 @@ RBM 中的 Contrastive Divergence 更新。</p>
 <p>实验表明，一个无监督准则的初始化，可以帮助分类任务得到明显地提升。
 人类能够快速地学习新的东西一个重要的原因是已经获得了这个任务的一些先验知识。</p>
 <p>学习一个输入$(X)$ 的表达$(Y)$，实际上是学习条件概率$(q(Y|X) = q(Y|X; \theta))$。$(\theta)$是要学习的参数。</p>
-<p>一个基本要求是要尽可能保留输入的信息，在信息论里面可以表达为最大化交互信息 $(\matchcal{I}(X; Y))$： Linsker (1989)</p>
+<p>一个基本要求是要尽可能保留输入的信息，在信息论里面可以表达为最大化交互信息 $(\mathcal{I}(X; Y))$： Linsker (1989)</p>
 <h3 id="icabell-and-sejnowski-1995">独立成分分析（ICA）：Bell and Sejnowski (1995)</h3>
 <p>$$
 \arg \max_{\theta} \mathcal{I}(X; Y) = \arg \max_{\theta} - \mathcal{H}(X|Y) \\
@@ -92,7 +92,7 @@ $$</p>
 \max_{\theta, \theta'} \mathcal{E}_{q(X, Y; \theta)} [\log p(X|Y; \theta')]
 $$</p>
 <p>当两个分布相同的时候，可以得到精确的交互信息。infomax ICA 中，特征映射为 $(Y = f_{\theta}(X))$。
-那么$(q(X, Y;\theta) = q(X) \approxy q^0(X))$，即用样本集的分布代替总体分布。优化问题变为：</p>
+那么$(q(X, Y;\theta) = q(X) \approx q^0(X))$，即用样本集的分布代替总体分布。优化问题变为：</p>
 <p>$$
 \max_{\theta, \theta'} \mathcal{E}_{q^0(X)} [\log p(X|Y=f_{\theta}(X); \theta')]
 $$</p>
@@ -112,12 +112,12 @@ $$</p>
 <p>在传统 autoencoder(AE) 中，特征变换函数（Encoder）用sigmoid函数来近似：</p>
 <p>$$
 y = f_{\theta}(x) = s(Wx+b)   \\
-\theta = { W, b }
+\theta = \{ W, b \}
 $$</p>
 <p>特征重构（Decoder）变换也用sigmoid函数</p>
 <p>$$
 z = g_{\theta'}(y) = s(W' y + b') \\
-\theta'  = { W', b' }
+\theta'  = \{ W', b' \}
 $$</p>
 <h2 id="reference">Reference</h2>
 <ol>
