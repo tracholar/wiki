@@ -31,8 +31,30 @@ estimator有个属性`_estimator_type`，用来表示他是分类器还是回归
 
 
 ## 线性模型
+### `base.py`
+
+- `LinearModel` 线性模型的基础类
+    - 继承 `BaseEstimator`，提供抽象方法 `fit` 需要子类实现。
+    - 它实现了 `predict` 方法，用来预测，该方法直接输出 `_decision_function` 的结果！
+    - 它的核心就是这个 `_decision_function`，代码很简单 `safe_sparse_dot(X, self.coef_.T, dense_output=True) + self.intercept_`。
+就是对特征向量`X`做一个仿射变换 `y = W X + b`。此外，还有一个 `_set_intercept` 用来设置偏置$(b = \bar{y} - w \bar{x})$。
+    - 在实现的时候，会对数据做中心化处理，有一个私有的中心化函数 `_conter_data`。
+
+- `LinearClassifierMixin` 线性分类器 Mixin，只处理预测
+    - 核心的函数是 `decision_function` 返回样本到超平面的有向距离，和上面的函数一样（？为什么分开写）。
+    - `predict` 如果是两分类，返回 `(scores > 0).astype(np.int)`，多分类则返回距离最大的那个index `scores.argmax(axis=1)`，
+最后会将结果映射会label标签的值。
+    - `_predict_proba_lr` LR的私有方法，输出概率！代码采用 inplaced 优化空间，可以看[这个代码](https://github.com/scikit-learn/scikit-learn/blob/51a765acfa4c5d1ec05fc4b406968ad233c75162/sklearn/linear_model/base.py#L284)
 
 
+- `SparseCoefMixin` 稀疏系数 Mixin 类。稀疏稀疏和普通系数互相转换。L1 正则化需要继承这个类
+    - `densify` 方法将稀疏系数转为普通向量。
+    - `sparsify`  转为稀疏系数
+
+- `LinearRegression` 线性回归模型，继承 `LinearModel, RegressorMixin`。
+    - `residues_` 采用 `@property` 修饰实现只读属性！0.19要废弃这个属性
+    - [`fit` 方法](https://github.com/scikit-learn/scikit-learn/blob/51a765acfa4c5d1ec05fc4b406968ad233c75162/sklearn/linear_model/base.py#L440)
+    是核心。对于稀疏数据，
 ### 逻辑回归
 
 
