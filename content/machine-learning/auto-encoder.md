@@ -110,13 +110,13 @@ $$
 autoenoder 的训练最小化重构误差，即优化下列问题：
 
 $$
-\arg \min_{\theta, \theta'} \mathbb{E}_{q^0(X)} L(X, Z=g_{\theta'}(f_{\theta}(X)))
+\arg \min_{\theta, \theta'} \mathbb{E}\_{q^0(X)} L(X, Z=g_{\theta'}(f_{\theta}(X)))
 $$
 
 等价于
 
 $$
-\arg \max_{\theta, \theta'} \mathbb{E}_{q^0(X)} \log(p(X| Y=f_{\theta}(X); \theta'))
+\arg \max_{\theta, \theta'} \mathbb{E}\_{q^0(X)} \log(p(X| Y=f_{\theta}(X); \theta'))
 $$
 
 这表明，我们是在最大化X和Y的交互信息量的下界！
