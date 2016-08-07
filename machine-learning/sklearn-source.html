@@ -44,6 +44,7 @@
 <li><a href="#_1">关于</a></li>
 <li><a href="#basepy">基础类 base.py</a></li>
 <li><a href="#_2">线性模型</a><ul>
+<li><a href="#basepy_1">base.py</a></li>
 <li><a href="#_3">逻辑回归</a></li>
 </ul>
 </li>
@@ -71,6 +72,43 @@
 <p>estimator有个属性<code>_estimator_type</code>，用来表示他是分类器还是回归器。这是通过两个Mixin类来实现的。</p>
 <p>在<code>base</code>模块中，还提供一个<code>clone</code>函数，用于克隆一个现有的estimator。</p>
 <h2 id="_2">线性模型</h2>
+<h3 id="basepy_1"><code>base.py</code></h3>
+<ul>
+<li>
+<p><code>LinearModel</code> 线性模型的基础类</p>
+<ul>
+<li>继承 <code>BaseEstimator</code>，提供抽象方法 <code>fit</code> 需要子类实现。</li>
+<li>它实现了 <code>predict</code> 方法，用来预测，该方法直接输出 <code>_decision_function</code> 的结果！</li>
+<li>它的核心就是这个 <code>_decision_function</code>，代码很简单 <code>safe_sparse_dot(X, self.coef_.T, dense_output=True) + self.intercept_</code>。
+就是对特征向量<code>X</code>做一个仿射变换 <code>y = W X + b</code>。此外，还有一个 <code>_set_intercept</code> 用来设置偏置$(b = \bar{y} - w \bar{x})$。</li>
+<li>在实现的时候，会对数据做中心化处理，有一个私有的中心化函数 <code>_conter_data</code>。</li>
+</ul>
+</li>
+<li>
+<p><code>LinearClassifierMixin</code> 线性分类器 Mixin，只处理预测</p>
+<ul>
+<li>核心的函数是 <code>decision_function</code> 返回样本到超平面的有向距离，和上面的函数一样（？为什么分开写）。</li>
+<li><code>predict</code> 如果是两分类，返回 <code>(scores &gt; 0).astype(np.int)</code>，多分类则返回距离最大的那个index <code>scores.argmax(axis=1)</code>，
+最后会将结果映射会label标签的值。</li>
+<li><code>_predict_proba_lr</code> LR的私有方法，输出概率！代码采用 inplaced 优化空间，可以看<a href="https://github.com/scikit-learn/scikit-learn/blob/51a765acfa4c5d1ec05fc4b406968ad233c75162/sklearn/linear_model/base.py#L284">这个代码</a></li>
+</ul>
+</li>
+<li>
+<p><code>SparseCoefMixin</code> 稀疏系数 Mixin 类。稀疏稀疏和普通系数互相转换。L1 正则化需要继承这个类</p>
+<ul>
+<li><code>densify</code> 方法将稀疏系数转为普通向量。</li>
+<li><code>sparsify</code>  转为稀疏系数</li>
+</ul>
+</li>
+<li>
+<p><code>LinearRegression</code> 线性回归模型，继承 <code>LinearModel, RegressorMixin</code>。</p>
+<ul>
+<li><code>residues_</code> 采用 <code>@property</code> 修饰实现只读属性！0.19要废弃这个属性</li>
+<li><a href="https://github.com/scikit-learn/scikit-learn/blob/51a765acfa4c5d1ec05fc4b406968ad233c75162/sklearn/linear_model/base.py#L440"><code>fit</code> 方法</a>
+是核心。对于稀疏数据，</li>
+</ul>
+</li>
+</ul>
 <h3 id="_3">逻辑回归</h3>
 <h2 id="_4">特征选取</h2>
 <h2 id="_5">参考</h2>
