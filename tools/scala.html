@@ -84,6 +84,7 @@
 <li><a href="#_15">扩展规格</a></li>
 </ul>
 </li>
+<li><a href="#_16">泛型编程</a></li>
 <li><a href="#test">Test</a></li>
 </ul>
 </div>
@@ -921,6 +922,35 @@ Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的
 <p>略</p>
 <h2 id="javajavascala">Java跨平台交互：在Java中使用Scala</h2>
 <h3 id="_15">扩展规格</h3>
+<h2 id="_16">泛型编程</h2>
+<ul>
+<li>使用<code>ClassTag</code>，用类型作为参数 <a href="https://github.com/apache/spark/blob/v2.0.0/core/src/main/scala/org/apache/spark/SparkContext.scala#L1189">Spark rdd.objectFile 源码</a></li>
+</ul>
+<p>从classTag创建对象的方法还没搞清楚，参看<a href="https://github.com/apache/spark/blob/v2.0.0/core/src/main/scala/org/apache/spark/SparkContext.scala#L2342">代码</a>！：</p>
+<div class="hlcode"><pre><span class="k">import</span> <span class="nn">scala.reflect.</span><span class="o">{</span><span class="n">classTag</span><span class="o">,</span> <span class="nc">ClassTag</span><span class="o">}</span>
+
+<span class="k">def</span> <span class="n">objectFile</span><span class="o">[</span><span class="kt">T:</span> <span class="kt">ClassTag</span><span class="o">](</span>
+      <span class="n">path</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span>
+      <span class="n">minPartitions</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">defaultMinPartitions</span><span class="o">)</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span> <span class="k">=</span> <span class="n">withScope</span> <span class="o">{</span>
+    <span class="n">assertNotStopped</span><span class="o">()</span>
+    <span class="n">sequenceFile</span><span class="o">(</span><span class="n">path</span><span class="o">,</span> <span class="n">classOf</span><span class="o">[</span><span class="kt">NullWritable</span><span class="o">],</span> <span class="n">classOf</span><span class="o">[</span><span class="kt">BytesWritable</span><span class="o">],</span> <span class="n">minPartitions</span><span class="o">)</span>
+      <span class="o">.</span><span class="n">flatMap</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="nc">Utils</span><span class="o">.</span><span class="n">deserialize</span><span class="o">[</span><span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">]](</span><span class="n">x</span><span class="o">.</span><span class="n">_2</span><span class="o">.</span><span class="n">getBytes</span><span class="o">,</span> <span class="nc">Utils</span><span class="o">.</span><span class="n">getContextOrSparkClassLoader</span><span class="o">))</span>
+  <span class="o">}</span>
+
+
+<span class="k">private</span> <span class="k">implicit</span> <span class="k">def</span> <span class="n">arrayToArrayWritable</span><span class="o">[</span><span class="kt">T</span> <span class="k">&lt;%</span> <span class="kt">Writable:</span> <span class="kt">ClassTag</span><span class="o">](</span><span class="n">arr</span><span class="k">:</span> <span class="kt">Traversable</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span>
+  <span class="k">:</span> <span class="kt">ArrayWritable</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">anyToWritable</span><span class="o">[</span><span class="kt">U</span> <span class="k">&lt;%</span> <span class="kt">Writable</span><span class="o">](</span><span class="n">u</span><span class="k">:</span> <span class="kt">U</span><span class="o">)</span><span class="k">:</span> <span class="kt">Writable</span> <span class="o">=</span> <span class="n">u</span>
+
+  <span class="k">new</span> <span class="nc">ArrayWritable</span><span class="o">(</span><span class="n">classTag</span><span class="o">[</span><span class="kt">T</span><span class="o">].</span><span class="n">runtimeClass</span><span class="o">.</span><span class="n">asInstanceOf</span><span class="o">[</span><span class="kt">Class</span><span class="o">[</span><span class="kt">Writable</span><span class="o">]],</span>
+      <span class="n">arr</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">anyToWritable</span><span class="o">(</span><span class="n">x</span><span class="o">)).</span><span class="n">toArray</span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<ul>
+<li><code>.asInstanceOf[T]</code> 进行类型转换。</li>
+</ul>
 <h2 id="test">Test</h2>
 <p>包 <code>http://www.scalatest.org/</code></p>
 </div>

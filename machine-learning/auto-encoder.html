@@ -47,6 +47,7 @@
 <li><a href="#_4">好的特征表达： 交互信息 到 自编码</a><ul>
 <li><a href="#icabell-and-sejnowski-1995">独立成分分析（ICA）：Bell and Sejnowski (1995)</a></li>
 <li><a href="#_5">传统自编码</a></li>
+<li><a href="#denoise">Denoise 准则</a></li>
 </ul>
 </li>
 <li><a href="#reference">Reference</a></li>
@@ -154,8 +155,14 @@ regime of its nonlinearity without paying a high price in reconstruction error.<
 </blockquote>
 <p>另外，也可以添加其他约束，而不是更低的维度。
 例如通过添加稀疏约束，可以采用过完备的维度，即比输入更大的维度。</p>
-<p>稀疏表达，稀疏编码：Olshausen and Field (1996) on sparse coding
+<p>稀疏表达，稀疏编码：Olshausen and Field (1996) on sparse coding.
 稀疏自编码（A sparse over-complete representations）：sparse representations (Ranzato et al., 2007, 2008).</p>
+<h3 id="denoise">Denoise 准则</h3>
+<p>目标：还原部分腐蚀的输入，即降噪！Denoising</p>
+<p>一个好的表达应该是能够鲁棒地表达腐蚀后的输入，可以帮助恢复任务！</p>
+<p>输入加入噪声：高斯噪声（连续变量），椒盐噪声，马赛克噪声。</p>
+<p>几何解释：
+流形学习。</p>
 <h2 id="reference">Reference</h2>
 <ol>
 <li>Hinton, G. E. and Salakhutdinov, R. R. Reducing the dimensionality of data with neural networks. Science 2006.</li>

@@ -93,6 +93,7 @@
 <li><a href="#mac-jdk">MAC 切换不同的JDK</a></li>
 <li><a href="#error">ERROR 汇总</a></li>
 <li><a href="#_18">问题</a></li>
+<li><a href="#tips">TIPS</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -112,7 +113,8 @@
 <li>Database： 用来做名字空间，防止表名字冲突，也可以用于用户权限管理。</li>
 <li>Tables：表，就是传统数据库意义上的表</li>
 <li>Partitions：分区，一个表通常由多个分区组成。获取某个特定分区的数据比全表扫描快！每个分区一个目录！</li>
-<li>Buckets (or Clusters)：分桶或分簇，在一个分区里面，可以按照某些字段的hash值进行分桶，便于采样。例如PV表按照userid分桶</li>
+<li>Buckets (or Clusters)：分桶或分簇，在一个分区里面，可以按照某些字段的hash值进行分桶，便于采样。例如PV表按照userid分桶
+<code>clustered by (userid) into 100 buckets</code>。</li>
 </ul>
 <h2 id="_4">类型系统</h2>
 <ul>
@@ -163,13 +165,14 @@
 <p>结构体类型的操作！怎么用？！</p>
 <h3 id="_6">操作</h3>
 <p>除了常规的比较操作，还支持正则式比较：</p>
-<p><code>A RLIKE B, A REGEXP B</code>，字符串A是否匹配Java正则式B。</p>
+<p><code>A RLIKE B, A REGEXP B</code>，字符串A是否匹配Java正则式B。注意有个坑，正则式B中的<code>\</code>需要转义字符！！
+例子：<code>lat rlike '\d+\.\d+'</code>是错误的，应该是 <code>lat rlike '\\d+\\.\\d+'</code></p>
 <h3 id="_7">内置函数</h3>
 <ul>
 <li>数值类型函数：<code>round, floor, ceil, rand</code></li>
 <li>字符串函数： <code>caoncat, substr, upper, ucase, lower, lcase, trim, ltrim, rtrim, regexp_replace</code></li>
 <li>时间函数： <code>from_unixtime, to_date, year, month, day</code></li>
-<li>复杂类型函数：<code>size, get_json_object</code></li>
+<li>复杂类型函数：<code>size, get_json_object</code>, <code>reflect,java_method</code>可以用来调用所有java内置的函数！！</li>
 <li>其他：<code>cast</code></li>
 <li>内置聚合函数：<code>count, sum, avg, min, max</code></li>
 </ul>
@@ -254,13 +257,10 @@
 </pre></div>
 
 
+<p>相关UDAF函数<code>percentile_approx, histogram_numeric, collect_set, collect_list</code>
+- Map 操作：</p>
 <ul>
-<li>
-<p>Map 操作：</p>
-</li>
-<li>
-<p>Custom Map/Reduce Scripts： <code>MAP, REDUCE</code>（是<code>TRANSFORM</code>的语法糖而已），或者<code>TRANSFORM</code> 函数（是否只能实现UDF的功能，UDAF和UDTF呢？）</p>
-</li>
+<li>Custom Map/Reduce Scripts： <code>MAP, REDUCE</code>（是<code>TRANSFORM</code>的语法糖而已），或者<code>TRANSFORM</code> 函数（是否只能实现UDF的功能，UDAF和UDTF呢？）</li>
 </ul>
 <div class="hlcode"><pre><span class="k">FROM</span> <span class="p">(</span>
      <span class="k">FROM</span> <span class="n">pv_users</span>
@@ -672,6 +672,18 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <h2 id="_18">问题</h2>
 <ul>
 <li>HIVE 中使用 VIEW 视图！</li>
+</ul>
+<h2 id="tips">TIPS</h2>
+<ul>
+<li>
+<p>HIVE 中上传本地csv文件作为表格的简单方法：利用hive建表命令，创建一个表格，然后将本地csv文件通过 hadoop shell 上传到
+表对应的HDF文件夹即可！注意建表的时候要用文本格式，注意分隔符要匹配。</p>
+</li>
+<li>
+<p>SQL 将列重命名不要命名为已存在的列的名字！否则将会取存在的列的值，而不是你想要的值！</p>
+</li>
+<li>group by 和 sort by func(col)，可以是一个函数</li>
+<li></li>
 </ul>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-07-08 </span></div>
