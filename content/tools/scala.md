@@ -756,6 +756,33 @@ class Person(val name: AtomicReference[String]) {
 
 ### 扩展规格
 
+## 泛型编程
+- 使用`ClassTag`，用类型作为参数 [Spark rdd.objectFile 源码](https://github.com/apache/spark/blob/v2.0.0/core/src/main/scala/org/apache/spark/SparkContext.scala#L1189)
+
+从classTag创建对象的方法还没搞清楚，参看[代码](https://github.com/apache/spark/blob/v2.0.0/core/src/main/scala/org/apache/spark/SparkContext.scala#L2342)！：
+
+```scala
+import scala.reflect.{classTag, ClassTag}
+
+def objectFile[T: ClassTag](
+      path: String,
+      minPartitions: Int = defaultMinPartitions): RDD[T] = withScope {
+    assertNotStopped()
+    sequenceFile(path, classOf[NullWritable], classOf[BytesWritable], minPartitions)
+      .flatMap(x => Utils.deserialize[Array[T]](x._2.getBytes, Utils.getContextOrSparkClassLoader))
+  }
+
+
+private implicit def arrayToArrayWritable[T <% Writable: ClassTag](arr: Traversable[T])
+  : ArrayWritable = {
+  def anyToWritable[U <% Writable](u: U): Writable = u
+
+  new ArrayWritable(classTag[T].runtimeClass.asInstanceOf[Class[Writable]],
+      arr.map(x => anyToWritable(x)).toArray)
+}
+```
+
+- `.asInstanceOf[T]` 进行类型转换。
 
 ## Test
 包 `http://www.scalatest.org/`

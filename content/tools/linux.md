@@ -101,6 +101,39 @@ watch -n 1 -d netstat -ant
 # 每秒高亮显示http连接数变化
 watch -n 1 -d 'pstree|grep http'
 ```
+
+### `wc` 命令
+用来统计文件的文本行数、单词数、字节数等。
+
+参数：-c, --bytes
+打印字节数（print the byte counts）
+
+参数：-m, --chars
+打印字符数（print the character counts）
+
+参数：-l, --lines
+打印行数（print the newline counts）
+
+参数：-L, --max-line-length
+打印最长行的长度（print the length of the longest line）
+
+参数：-w, --words
+打印单词数（print the word counts）
+
+### `tar` 打包命令
+常用参数 `-v` 显示处理过程。`-c` 创建, `-f` 指定文件, `-r` 追加, `-x`解压， `-z` gzip压缩。
+
+常用组合有：
+
+- `tar cf files.tar files` 将files打包到tar包中
+- `tar rf file.tar file` 将文件添加到tar包中，原来已经有个tar包了
+- `tar tf file.tar` 测试tar完整性
+- `tar xf file.tar` 解压tar包
+- `tar zcf file.tar.gz files` 将files打包并压缩到 file.tar.gz
+- `tar zxf file.tar.gz` 解压包
+
+
+
 ## VIM
 ### 三种模式
 - 插入模式：可以输入文本，按`i`进入

@@ -30,6 +30,7 @@ Hive 用来做数据仓库，非实时数据处理。
 - Tables：表，就是传统数据库意义上的表
 - Partitions：分区，一个表通常由多个分区组成。获取某个特定分区的数据比全表扫描快！每个分区一个目录！
 - Buckets (or Clusters)：分桶或分簇，在一个分区里面，可以按照某些字段的hash值进行分桶，便于采样。例如PV表按照userid分桶
+`clustered by (userid) into 100 buckets`。
 
 ## 类型系统
 - Integers
@@ -67,14 +68,15 @@ Hive 用来做数据仓库，非实时数据处理。
 ### 操作
 除了常规的比较操作，还支持正则式比较：
 
-`A RLIKE B, A REGEXP B`，字符串A是否匹配Java正则式B。
+`A RLIKE B, A REGEXP B`，字符串A是否匹配Java正则式B。注意有个坑，正则式B中的`\`需要转义字符！！
+例子：`lat rlike '\d+\.\d+'`是错误的，应该是 `lat rlike '\\d+\\.\\d+'`
 
 
 ### 内置函数
 - 数值类型函数：`round, floor, ceil, rand`
 - 字符串函数： `caoncat, substr, upper, ucase, lower, lcase, trim, ltrim, rtrim, regexp_replace`
 - 时间函数： `from_unixtime, to_date, year, month, day`
-- 复杂类型函数：`size, get_json_object`
+- 复杂类型函数：`size, get_json_object`, `reflect,java_method`可以用来调用所有java内置的函数！！
 - 其他：`cast`
 - 内置聚合函数：`count, sum, avg, min, max`
 
@@ -145,6 +147,7 @@ SELECT pv.friends[2]
 FROM page_views pv;
 ```
 
+相关UDAF函数`percentile_approx, histogram_numeric, collect_set, collect_list`
 - Map 操作：
 
 - Custom Map/Reduce Scripts： `MAP, REDUCE`（是`TRANSFORM`的语法糖而已），或者`TRANSFORM` 函数（是否只能实现UDF的功能，UDAF和UDTF呢？）
@@ -583,3 +586,12 @@ org.apache.hadoop.yarn.exceptions.YarnRuntimeException: java.io.IOException: Spl
 
 ## 问题
 - HIVE 中使用 VIEW 视图！
+
+
+## TIPS
+- HIVE 中上传本地csv文件作为表格的简单方法：利用hive建表命令，创建一个表格，然后将本地csv文件通过 hadoop shell 上传到
+表对应的HDF文件夹即可！注意建表的时候要用文本格式，注意分隔符要匹配。
+
+- SQL 将列重命名不要命名为已存在的列的名字！否则将会取存在的列的值，而不是你想要的值！
+- group by 和 sort by func(col)，可以是一个函数
+- 

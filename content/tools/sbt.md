@@ -286,3 +286,12 @@ base filter ClasspathUtilities.isArchive
     - toString
     - absString ，
     - getPaths ， 返回Seq[String]
+
+## 插件
+插件用来扩展构建定义，可能是一个新的task。
+
+添加插件申明，在项目根目录下的 `/project` 目录添加 `.sbt` 文件，然后在其中添加语句
+
+```scala
+addSbtPlugin("com.typesafe.sbt" % "sbt-site" % "0.7.0")
+```

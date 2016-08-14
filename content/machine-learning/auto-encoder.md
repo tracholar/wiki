@@ -138,8 +138,20 @@ $$
 另外，也可以添加其他约束，而不是更低的维度。
 例如通过添加稀疏约束，可以采用过完备的维度，即比输入更大的维度。
 
-稀疏表达，稀疏编码：Olshausen and Field (1996) on sparse coding
+稀疏表达，稀疏编码：Olshausen and Field (1996) on sparse coding.
 稀疏自编码（A sparse over-complete representations）：sparse representations (Ranzato et al., 2007, 2008).
+
+
+### Denoise 准则
+
+目标：还原部分腐蚀的输入，即降噪！Denoising
+
+一个好的表达应该是能够鲁棒地表达腐蚀后的输入，可以帮助恢复任务！
+
+输入加入噪声：高斯噪声（连续变量），椒盐噪声，马赛克噪声。
+
+几何解释：
+流形学习。
 
 
 ## Reference
