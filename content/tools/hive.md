@@ -594,4 +594,12 @@ org.apache.hadoop.yarn.exceptions.YarnRuntimeException: java.io.IOException: Spl
 
 - SQL 将列重命名不要命名为已存在的列的名字！否则将会取存在的列的值，而不是你想要的值！
 - group by 和 sort by func(col)，可以是一个函数
-- 
+- 设置mapreduce阶段的mapper和reducer数目
+
+```bash
+# YARN: Hadoop 2
+set mapreduce.job.maps=<num>;
+set mapreduce.job.reduces=<num>;
+```
+
+- 用 `distribute by` 控制进入reducer的样本

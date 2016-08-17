@@ -216,7 +216,20 @@ hostPort._2  // 80
 与样本类不同，元组不能通过名称获取字段，而是使用位置下标来读取对象；而且这个下标基于1，而不是基于0。
 在创建两个元素的元组时，可以使用特殊语法：`1 -> 2`，见映射
 
-unpack：`val (v1, v2) = (1,2)`
+unpack：`val (v1, v2) = (1,2)`, [函数参数unpack例子](https://stackoverflow.com/questions/15034565/is-there-a-scala-equivalent-of-the-python-list-unpack-a-k-a-operator)
+: `_*`
+
+```scala
+def hello( names: String*) {
+  println( "Hello " + names.mkString(" and " ) )
+}
+
+scala> val names = List("john", "paul", "george", "ringo")
+names: List[String] = List(john, paul, george, ringo)
+scala> hello( names: _* )
+Hello john and paul and george and ringo
+```
+
 
 - Map 映射，类似于python的字典，c的hash_map
 ```scala
