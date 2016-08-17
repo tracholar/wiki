@@ -57,7 +57,28 @@
 <li><a href="#cnn">CNN</a></li>
 </ul>
 </li>
-<li><a href="#_9">目标检测</a></li>
+<li><a href="#_9">目标检测</a><ul>
+<li><a href="#hoghistogram-of-oriented-gradient">HOG(Histogram of Oriented Gradient)</a></li>
+<li><a href="#deformable-parts-model-dpm">Deformable Parts Model : DPM</a></li>
+</ul>
+</li>
+<li><a href="#_10">表达可视化</a></li>
+<li><a href="#rnn">RNN</a></li>
+<li><a href="#cnn-practice">CNN practice</a><ul>
+<li><a href="#data-augmentation">Data Augmentation 数据增强：</a></li>
+<li><a href="#transfer-learning">Transfer Learning 迁移学习</a></li>
+<li><a href="#cnn_1">CNN 细节</a></li>
+<li><a href="#_11">卷积的实现</a></li>
+<li><a href="#_12">浮点精度</a></li>
+</ul>
+</li>
+<li><a href="#caffe-torch-theano-tensorflow">软件包 Caffe / Torch / Theano / TensorFlow</a><ul>
+<li><a href="#caffe">Caffe</a></li>
+<li><a href="#torch">Torch</a></li>
+<li><a href="#theano">Theano</a></li>
+<li><a href="#tensorflow">TensorFlow</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -89,7 +110,7 @@ $$</p>
 <li>学习率，自动调整衰减。动量机制，减少震荡。</li>
 </ul>
 <p>$$
-\Delta w(t+1) = \yita \frac{\partial E_{t+1}}{\partial w} + \mu \Delta w(t)
+\Delta w(t+1) = \eta \frac{\partial E_{t+1}}{\partial w} + \mu \Delta w(t)
 $$</p>
 <ul>
 <li>自适应学习率</li>
@@ -173,9 +194,250 @@ $$</p>
 </ol>
 <h2 id="_9">目标检测</h2>
 <p>任务：分类 + 定位</p>
-<p>Location as Regression: 输入图片，输出4个坐标！（非常简单）</p>
+<p>Location as Regression: 输入图片，输出4个坐标！（非常简单）L2损失函数，作为回归问题处理。
+分类 + 定位 作为多任务，共用同一个CNN做特征提取层。</p>
+<p>输入图像 =&gt; CNN =&gt; FC =&gt; softmax/Regression</p>
+<p>回归层连接的位置 ：在CNN层后面（Overfeat， VGG）； 在全连接层(FC)后面：DeepPose，R-CNN</p>
+<p>检测多个目标：共用CNN层做特征提取层。</p>
 <p>姿势估计：Toshev and Szegedy, “DeepPose: Human Pose Estimation via Deep Neural Networks”, CVPR 2014</p>
 <p>sliding window: Overfeat:Integrated Recognition, Localization and Detection using Convolutional Networks,  ICLR 2014</p>
+<ul>
+<li>在高精度图片的不同位置训练模型进行分类和回归。</li>
+<li>将FC也变成卷积层，减少运算量：Overfeat</li>
+<li>结合所有的位置的结果，得到最终的结果（MAX Pool）</li>
+<li>实际使用中：采用多个不同位置不同尺寸的窗</li>
+</ul>
+<p>通过一个滑动窗，目标检测可以作为一个分类问题！需要大量的计算匹配！</p>
+<h3 id="hoghistogram-of-oriented-gradient">HOG(Histogram of Oriented Gradient)</h3>
+<p>Dalal and Triggs, “Histograms of Oriented Gradients for Human Detection”, CVPR 2005</p>
+<ul>
+<li>在不同分辨率计算方向梯度直方图</li>
+<li>略，不懂</li>
+</ul>
+<h3 id="deformable-parts-model-dpm">Deformable Parts Model : DPM</h3>
+<p>Felzenszwalb et al, “Object Detection with Discriminatively
+Trained Part Based Models”, PAMI 2010</p>
+<p>DPM is CNN?</p>
+<p>Girschick et al, “Deformable Part Models are Convolutional Neural Networks”, CVPR 2015</p>
+<p>Detection as Classification:</p>
+<p>问题：需要测试很多位置和尺寸，计算量大！</p>
+<p>方案：仅仅测试一个很小的子集！</p>
+<p>How to：</p>
+<p>Region Proposals: Selective Search</p>
+<p>自底向上，分割图像，然后在不同层级合并相似区域，得到不同层级的分割结果。</p>
+<p>Uijlings et al, “Selective Search for Object Recognition”, IJCV 2013</p>
+<p>其他方法：EdgeBox？</p>
+<p>检测 Review：  Hosang et al, “What makes for effective detection proposals?”, PAMI 2015</p>
+<p>R-CNN！ Girschick et al, “Rich feature hierarchies for
+accurate object detection and semantic
+segmentation”, CVPR 2014</p>
+<ul>
+<li>Step 1: Train (or download) a classification model for ImageNet (AlexNet)</li>
+<li>Step 2: Fine-tune model for detection<ul>
+<li>把1000个分类变成20个目标+背景</li>
+<li>扔掉最后一层FC层，重新初始化</li>
+<li>用正负样本区域训练</li>
+</ul>
+</li>
+<li>Step 3: 抽取特征<ul>
+<li>对所有图片，找到感兴趣区域</li>
+<li>对每一个区域，剪切或者压缩到CNN输入尺寸，run forward through CNN，保存pool5特征到硬盘</li>
+</ul>
+</li>
+<li>Step 4: 对每一个类，用上述抽取的特征，训练一个2分类SVM</li>
+<li>Step 5: (bbox regression) 对 每一个类，训练一个线性回归模型，从上述特征得到box的偏移量！</li>
+</ul>
+<p>目标检测数据集：PASCAL VOC (2010)， ImageNet Detection (ILSVRC 2014)， MS-COCO (2014)</p>
+<p>评估指标：“mean average precision” (mAP)</p>
+<p>RCNN问题：</p>
+<ul>
+<li>Slow at test-time: 对每一个区域都要计算CNN抽取的特征</li>
+<li>SVM和回归都不会对CNN的特征进行更新，不存在调优</li>
+<li>复杂的多阶段流程</li>
+</ul>
+<p>Fast-RCNN：Girschick, “Fast R-CNN”, ICCV 2015</p>
+<ul>
+<li>计算慢的问题：对整个图像计算CNN后的特征，共享计算量</li>
+<li>end-to-end 地训练一次！</li>
+</ul>
+<p>ROI(region of interest) 抽取：</p>
+<ol>
+<li>对整个图像卷积+Pooling，得到高精度的特征</li>
+<li>将投影区域划分为 h*w 个格子</li>
+</ol>
+<p>训练加速8.8倍，测试加速146倍！</p>
+<p>问题：测试加速不包过 ROI 提取！？</p>
+<p>Faster RCNN：在最后一层卷积层加入一层Region Proposal
+Network (RPN)</p>
+<p>Ren et al, “Faster R-CNN: Towards Real-Time Object
+Detection with Region Proposal Networks”, NIPS 2015</p>
+<p>进一步将test时间加速10倍！</p>
+<h2 id="_10">表达可视化</h2>
+<p>t-SNE visualization：two images are placed nearby if their CNN codes are close.
+Laurens van der Maaten , <strong>Geoffrey Hinton</strong>, 2008.</p>
+<p>Deconv方法：选择某个CNN层，将该层的梯度全部置0，除了其中一个！然后BP到输入，得到Deconv图像！ BP to image.</p>
+<p>Visualizing and Understanding Convolutional Networks, Zeiler and Fergus 2013</p>
+<p>Optimization to Image 方法：寻找最大化某些类别的score！</p>
+<p>$$
+\arg \max_{I} S_c(I) - \lambda ||I||_2^2
+$$</p>
+<ol>
+<li>将输入层置0，即输入全零图像。</li>
+<li>将输出层的梯度为单位向量，某个类别为1其他为0，然后 BP to image!</li>
+</ol>
+<p>Deep Inside Convolutional Networks: Visualising Image Classification Models and Saliency Maps, Karen Simonyan, Andrea Vedaldi, Andrew Zisserman, 2014.</p>
+<p>Understanding Neural Networks Through Deep Visualization, Yosinski et al. , 2015</p>
+<p>问题：给定一个CNN编码，能否重构出原始图像？</p>
+<p>Understanding Deep Image Representations by Inverting Them， Mahendran and Vedaldi, 2014</p>
+<p>DeepDream， <a href="https://github.com/google/deepdream">https://github.com/google/deepdream</a></p>
+<p>Understanding Neural Networks Through Deep Visualization, Jason Yosinski, 2015</p>
+<h2 id="rnn">RNN</h2>
+<p>字母维度的语言模型：</p>
+<p>Image Captioning：将CNN抽取的特征，作为RNN隐层额外的输入！RNN的初始输入用一个固定的值，后续时刻用前一时刻的输出作为输入！</p>
+<p>Image Sentence Datasets：Microsoft COCO [Tsung-Yi Lin et al. 2014]</p>
+<p>RNN 在产生单词的时候，关注图像的部分：Show Attend and Tell, Xu et al., 2015</p>
+<h2 id="cnn-practice">CNN practice</h2>
+<h3 id="data-augmentation">Data Augmentation 数据增强：</h3>
+<p>对图像进行变换：</p>
+<ol>
+<li>水平翻转</li>
+<li>随机裁剪和缩放</li>
+</ol>
+<p>Training: sample random crops / scales
+ResNet:</p>
+<ol>
+<li>Pick random L in range [256, 480]</li>
+<li>Resize training image, short side = L</li>
+<li>Sample random 224 x 224 patch</li>
+</ol>
+<p>Testing: average a fixed set of crops
+ResNet:
+1. Resize image at 5 scales: {224, 256, 384, 480, 640}
+2. For each size, use 10 224 x 224 crops: 4 corners + center, + flips</p>
+<ol>
+<li>color jitter：色彩抖动？</li>
+<li>更多：Random mix/combinations of :<ul>
+<li>translation</li>
+<li>rotation</li>
+<li>stretching</li>
+<li>shearing,</li>
+<li>lens distortions, … (go crazy)</li>
+</ul>
+</li>
+</ol>
+<p>加噪声！
+训练：添加随机噪声； 测试：排除噪声！</p>
+<h3 id="transfer-learning">Transfer Learning 迁移学习</h3>
+<ol>
+<li>在ImageNet上训练CNN</li>
+<li>在小数据集上，固定前面所有层，只改变最后一层参数！相当于用CNN做特征提取，没有调优！</li>
+<li>在中等数据集上，固定前面大多数层，只改变后面少许层参数，进行调优！</li>
+</ol>
+<p>CNN Features off-the-shelf: an Astounding Baseline for Recognition，[Razavian et al, 2014]</p>
+<p>DeCAF: A Deep Convolutional Activation Feature for Generic Visual Recognition, 2014.</p>
+<h3 id="cnn_1">CNN 细节</h3>
+<p>多个小滤波器堆叠比一个大滤波器好！因为可以用较少的参数，得到相同的非线性！（用最后一层的神经元所能看到的输入像素个数来度量？）
+并且计算量更小！</p>
+<p>1x1 大小的滤波器，用来降维！？GoogleNet！</p>
+<p>用两个1xN和Nx1的滤波器，代替一个NxN的滤波器？！！减少参数</p>
+<p>Szegedy et al, “Rethinking the Inception Architecture for Computer Vision”</p>
+<h3 id="_11">卷积的实现</h3>
+<p>将多个卷积计算变成一个矩阵乘法运算！ im2col，需要大额外的内存</p>
+<ol>
+<li>设图像特征map为 H<em>M</em>C 维，D个卷积滤波器维度为K<em>K</em>C 维。</li>
+<li>将图像reshape成 (K^2<em>C)*N维矩阵，而将滤波器变为(K^2</em>C)*D维矩阵，然后计算矩阵乘法，最后将D*N维结果再reshape为给定的大小。</li>
+</ol>
+<p>FFT实现：对于小的滤波器没有提升！
+Vasilache et al, Fast Convolutional Nets With fbfft: A GPU Performance Evaluation</p>
+<p>Strassen’s 矩阵乘法算法！加速。
+Lavin and Gray, “Fast Algorithms for Convolutional Neural Networks”, 2015</p>
+<p>GPU：NVIDIA is much more common for deep learning</p>
+<p>CEO of NVIDIA: Jen-Hsun Huang
+(Stanford EE Masters 1992)</p>
+<p>CPU:
+Few, fast cores (1 - 16),
+Good at sequential processing.</p>
+<p>GPU:
+Many, slower cores (thousands),
+Originally for graphics,
+Good at parallel computation</p>
+<p>GUDA vs OpenCL.</p>
+<p>Udacity: Intro to Parallel Programming</p>
+<p>GPU 非常适合矩阵乘法！</p>
+<p>多GPU训练：</p>
+<ol>
+<li>模型并行：FC全连接层</li>
+<li>数据并行：CNN层</li>
+</ol>
+<p>Alex Krizhevsky, “One weird trick for parallelizing convolutional neural networks”</p>
+<p>Google：分布式 CPU 训练！数据并行 and 模型并行！</p>
+<p>Large Scale Distributed Deep Networks, <strong>Jeff Dean</strong> et al., 2013</p>
+<p>Google：异步 and 同步</p>
+<p>Abadi et al, “TensorFlow: Large-Scale Machine Learning on Heterogeneous Distributed Systems”</p>
+<p>GPU - CPU 通信瓶颈：</p>
+<ul>
+<li>CPU：数据预取 + data augment</li>
+<li>GPU：forward/backward</li>
+</ul>
+<p>CPU - disk 瓶颈：磁盘 =&gt; SSD</p>
+<p>GPU memory 瓶颈：
+Titan X: 12 GB &lt;- currently the max。
+GTX 980 Ti: 6 GB</p>
+<p>AlexNet: ~3GB needed with batch size 256</p>
+<h3 id="_12">浮点精度</h3>
+<ul>
+<li>大多数编程环境：64bit 双精度</li>
+<li>CNN：32bit 单精度</li>
+<li>16bit 半精度将成为新的标准！cuDNN 已经支持！</li>
+</ul>
+<p>最低精度能到多少？
+16bit 定点 with 随机 round！</p>
+<p>Gupta et al, “Deep Learning with Limited Numerical Precision”, ICML 2015</p>
+<p>10bit 激活函数，12bit参数更新！
+Courbariaux et al, “BinaryNet: Training Deep Neural Networks with Weights and Activations Constrained to +1 or -1”, arXiv 2016</p>
+<p>未来：binary network？</p>
+<h2 id="caffe-torch-theano-tensorflow">软件包 Caffe / Torch / Theano / TensorFlow</h2>
+<h3 id="caffe">Caffe</h3>
+<ul>
+<li>U. C. Berkeley</li>
+<li>C++</li>
+<li>Has Python and MATLAB bindings</li>
+<li>Good for training or finetuning feedforward models</li>
+</ul>
+<p>主要类：</p>
+<ul>
+<li>Blob: 存储数据</li>
+<li>Layers：将底层Blob变成顶层Blob</li>
+<li>Net：很多Layers</li>
+<li>Solver：使用梯度更新权值</li>
+</ul>
+<p>Protocol Buffers: "Typed Json" from Google</p>
+<p>训练和调优：不需要写代码！</p>
+<p>Caffe: Model Zoo，预训练好的模型！</p>
+<p>提供Python接口</p>
+<p>not good for RNN</p>
+<h3 id="torch">Torch</h3>
+<ul>
+<li>NYU + IDIAP</li>
+<li>C and Lua</li>
+<li>Used a lot a Facebook, DeepMind</li>
+</ul>
+<p>Tensors： ndarray</p>
+<p>not good for RNN</p>
+<h3 id="theano">Theano</h3>
+<ul>
+<li><strong>Yoshua Bengio</strong>’s group at University of Montreal</li>
+<li>High-level wrappers: <strong>Keras</strong>, Lasagne</li>
+</ul>
+<p>计算图！</p>
+<p>问题：每次更新权值需要将权值和梯度移到 CPU 计算！
+可以通过 shared_variable 得到解决！</p>
+<h3 id="tensorflow">TensorFlow</h3>
+<ul>
+<li>From Google</li>
+<li>Tensorboard for 可视化</li>
+</ul>
+<p>目前还比较慢！</p>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-07-01 </span></div>
 

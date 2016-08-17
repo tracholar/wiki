@@ -683,7 +683,16 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <p>SQL 将列重命名不要命名为已存在的列的名字！否则将会取存在的列的值，而不是你想要的值！</p>
 </li>
 <li>group by 和 sort by func(col)，可以是一个函数</li>
-<li></li>
+<li>设置mapreduce阶段的mapper和reducer数目</li>
+</ul>
+<div class="hlcode"><pre><span class="c"># YARN: Hadoop 2</span>
+<span class="nb">set </span>mapreduce.job.maps<span class="o">=</span>&lt;num&gt;;
+<span class="nb">set </span>mapreduce.job.reduces<span class="o">=</span>&lt;num&gt;;
+</pre></div>
+
+
+<ul>
+<li>用 <code>distribute by</code> 控制进入reducer的样本</li>
 </ul>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-07-08 </span></div>

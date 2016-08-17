@@ -349,7 +349,21 @@ class BMW extends Car with Shiny {
 
 <p>与样本类不同，元组不能通过名称获取字段，而是使用位置下标来读取对象；而且这个下标基于1，而不是基于0。
 在创建两个元素的元组时，可以使用特殊语法：<code>1 -&gt; 2</code>，见映射</p>
-<p>unpack：<code>val (v1, v2) = (1,2)</code></p>
+<dl>
+<dt>unpack：<code>val (v1, v2) = (1,2)</code>, <a href="https://stackoverflow.com/questions/15034565/is-there-a-scala-equivalent-of-the-python-list-unpack-a-k-a-operator">函数参数unpack例子</a></dt>
+<dd><code>_*</code></dd>
+</dl>
+<div class="hlcode"><pre><span class="k">def</span> <span class="n">hello</span><span class="o">(</span> <span class="n">names</span><span class="k">:</span> <span class="kt">String*</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">println</span><span class="o">(</span> <span class="s">&quot;Hello &quot;</span> <span class="o">+</span> <span class="n">names</span><span class="o">.</span><span class="n">mkString</span><span class="o">(</span><span class="s">&quot; and &quot;</span> <span class="o">)</span> <span class="o">)</span>
+<span class="o">}</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">names</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="s">&quot;john&quot;</span><span class="o">,</span> <span class="s">&quot;paul&quot;</span><span class="o">,</span> <span class="s">&quot;george&quot;</span><span class="o">,</span> <span class="s">&quot;ringo&quot;</span><span class="o">)</span>
+<span class="n">names</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="n">john</span><span class="o">,</span> <span class="n">paul</span><span class="o">,</span> <span class="n">george</span><span class="o">,</span> <span class="n">ringo</span><span class="o">)</span>
+<span class="n">scala</span><span class="o">&gt;</span> <span class="n">hello</span><span class="o">(</span> <span class="n">names</span><span class="k">:</span> <span class="k">_</span><span class="kt">*</span> <span class="o">)</span>
+<span class="nc">Hello</span> <span class="n">john</span> <span class="n">and</span> <span class="n">paul</span> <span class="n">and</span> <span class="n">george</span> <span class="n">and</span> <span class="n">ringo</span>
+</pre></div>
+
+
 <ul>
 <li>Map 映射，类似于python的字典，c的hash_map</li>
 </ul>
