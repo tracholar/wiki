@@ -140,6 +140,13 @@ grep -e keyword -e otherword log.txt
 </pre></div>
 
 
+<p><code>grep -E</code> 扩展了默认的正则式，可以使用一下特性：</p>
+<ul>
+<li><code>[]</code>字符选择</li>
+<li><code>+</code>1个和多个</li>
+<li><code>?</code>有或无</li>
+<li><code>{}</code>注意花括号要加反斜杠<code>\</code>转义，因为bash中花括号有特殊含义</li>
+</ul>
 <h3 id="sort">sort 命令</h3>
 <p>将文件的每一行作为一个单位，进行排序，从首字符开始，按照ASCII码进行比较（默认情况）。          <br />
 - u 参数，去重

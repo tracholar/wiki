@@ -79,6 +79,13 @@
 <li><a href="#tensorflow">TensorFlow</a></li>
 </ul>
 </li>
+<li><a href="#video">Video</a></li>
+<li><a href="#_13">无监督学习</a><ul>
+<li><a href="#autoencoders">Autoencoders</a></li>
+<li><a href="#variational-autoencoder">Variational autoencoder</a></li>
+<li><a href="#generative-adversarial-nets">Generative adversarial nets</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -438,6 +445,60 @@ Courbariaux et al, “BinaryNet: Training Deep Neural Networks with Weights and 
 <li>Tensorboard for 可视化</li>
 </ul>
 <p>目前还比较慢！</p>
+<h2 id="video">Video</h2>
+<p>feature based 方法（运动识别）：</p>
+<ul>
+<li>Dense trajectories and motion boundary descriptors for action recognition
+Wang et al., 2013<ol>
+<li>检测不同尺度的图像的特征点</li>
+<li>跟踪特征点 optical flow</li>
+<li>在局部坐标中抽取 HOG/HOF/MBH 特征</li>
+<li>相关文献：<ul>
+<li>[G. Farnebäck, “Two-frame motion estimation based on polynomial expansion,” 2003]</li>
+<li>[T. Brox and J. Malik, “Large displacement optical flow: Descriptor matching in variational motion estimation,” 2011]</li>
+<li>[J. Shi and C. Tomasi, “Good features to track,” CVPR 1994]</li>
+<li>[Ivan Laptev 2005]</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>Action Recognition with Improved Trajectories
+Wang and Schmid, 2013</li>
+<li>Spatio-Temporal Conv：<ul>
+<li>[3D Convolutional Neural Networks for Human Action Recognition, Ji et al., 2010]</li>
+<li>Sequential Deep Learning for Human Action Recognition, Baccouche et al., 2011</li>
+<li>[Large-scale Video Classification with Convolutional Neural Networks, Karpathy et al., 2014]</li>
+<li>3D VGGNet : [Learning Spatiotemporal Features with 3D Convolutional Networks, Tran et al. 2015]</li>
+</ul>
+</li>
+</ul>
+<h2 id="_13">无监督学习</h2>
+<h3 id="autoencoders">Autoencoders</h3>
+<ul>
+<li>Encoder and Decoder：<ol>
+<li>线性 + 非线性激活函数(sigmoid)</li>
+<li>Deep 全连接</li>
+<li>ReLU CNN</li>
+</ol>
+</li>
+<li>loss function: L2</li>
+<li>使用Encoder初始化神经网络</li>
+<li>逐层训练：Greedy training：RBM 2006 <strong>Hinton</strong>。现在不再流行了，因为 ReLU, 合理的初始化，batchnorm, Adam etc easily train
+from scratch</li>
+<li>生成样本！</li>
+</ul>
+<h3 id="variational-autoencoder">Variational autoencoder</h3>
+<p>Kingma and Welling, “Auto-Encoding
+Variational Bayes”, ICLR 2014</p>
+<ul>
+<li>intuition：$(z)$以概率 $(p_{\theta*}(x|z))$产生图片样本$(x)$，z 可以使类别，属性等！</li>
+<li>problem：在不知道z的情况下，估计参数$(\theta)$</li>
+<li>prior：$(p(z))$是标准高斯分布</li>
+<li>condition：$(p(x|z))$是对角高斯分布！用神经网络预测均值和方差</li>
+</ul>
+<h3 id="generative-adversarial-nets">Generative adversarial nets</h3>
+<p>Goodfellow et al, “Generative
+Adversarial Nets”, NIPS 2014</p>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-07-01 </span></div>
 

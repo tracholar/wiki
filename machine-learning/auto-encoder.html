@@ -50,6 +50,12 @@
 <li><a href="#denoise">Denoise 准则</a></li>
 </ul>
 </li>
+<li><a href="#variational-autoencoders">Variational autoencoders 论文导读</a><ul>
+<li><a href="#variational-bound">变分界 variational bound</a></li>
+<li><a href="#the-sgvb-estimator-and-aevb-algorithm">The SGVB estimator and AEVB algorithm</a></li>
+<li><a href="#_6">例子：变分自编码</a></li>
+</ul>
+</li>
 <li><a href="#reference">Reference</a></li>
 </ul>
 </div>
@@ -163,10 +169,69 @@ regime of its nonlinearity without paying a high price in reconstruction error.<
 <p>输入加入噪声：高斯噪声（连续变量），椒盐噪声，马赛克噪声。</p>
 <p>几何解释：
 流形学习。</p>
+<h2 id="variational-autoencoders">Variational autoencoders 论文导读</h2>
+<p>论文：Auto-Encoding Variational Bayes, Diederik P. Kingma, Max Welling, 2014</p>
+<p><img src="/wiki/static/images/variational-autoencoder-model.png" alt="模型" style="width:600px; float:left" /></p>
+<p>N个iid样本$(x^{(i)})$，连续或离散值。假定这些数据从一些随机过程产生！</p>
+<ol>
+<li>从先验分布$(p_{\theta^* }(z))$产生隐变量$(z)$。</li>
+<li>从条件概率$(p_{\theta^* }(x|z))$产生$(x)$。</li>
+</ol>
+<p>假定先验分布和条件分布无限可微！
+难点：</p>
+<ol>
+<li>边际分布$(p(x))$需要计算一个积分，对于神经网络等复杂模型，难以求导！EM 算法失效；</li>
+<li>大数据集，batch优化没有效率，需要随机梯度之类的优化</li>
+</ol>
+<p>工作：</p>
+<ol>
+<li>有效地近似地实现 ML 和 MAP估计参数$(\theta)$</li>
+<li>给定x，推导z，有效的近似算法</li>
+<li>有效的估计x的边际分布</li>
+</ol>
+<p>建立识别模型$(q_{\phi}(z|x))$，近似$(p_{\theta}(z|x))$，编码角度来看，就是一个编码器！
+而 $(p_{\theta}(x|z))$ 作为解码器！</p>
+<h3 id="variational-bound">变分界 variational bound</h3>
+<p>边际分布的对数似然函数为</p>
+<p>$$
+\log p(x^{(1)}, ..., x^{(N)}) = \sum_i \log p_{\theta} (x^{(i)})
+$$</p>
+<p>而其中每一项可以改写为</p>
+<p>$$
+\log p_{\theta} (x^{(i)}) = D_{KL}(q_{\phi}(z|x^{(i)}) || p_{\theta} (x^{(i)})) \\
+    + \mathcal{L}(\theta, \phi; x^{(i)})      \\
+\mathcal{L}(\theta, \phi; x^{(i)})  = \mathbb{E}_{q_{\phi(z|x)}}[-\log q_{\phi}(z|x) + \log p_{\theta}(x, z)] \\
+    = - D_{KL}(q_{\phi}(z|x^{(i)}) || p_{\theta}(z)) + \mathbb{E}_{q_{\phi(z|x^{(i)}}} \left[ \log p_{\theta}(x^{(i)} | z) \right]}
+$$</p>
+<p>对数似然函数第一项是近似误差，第二项是近似之后的似然函数，或者数据i的边际对数似然函数下界！
+第二项可以写为一个KL距离和一个期望，前者可以通过解析积分计算，后者要采用近似估计！
+而通常的 Monte Carlo 梯度估计在这个问题上方差太大，不适用与这里！</p>
+<h3 id="the-sgvb-estimator-and-aevb-algorithm">The SGVB estimator and AEVB algorithm</h3>
+<p>分布$(\tilde{z} \sim q_{\phi(z|x^{(i)}})$通过一个可微的变换$(g_{\phi}(\epsilon, x))$，
+从一个noise变量$(\epsilon \sim p(\epsilon))$采样得到。</p>
+<p>$$
+\mathbb{E}_{q_{\phi}(z|x^{(i)})}[f(z)] \approx \frac{1}{L} \sum_{l=1}^L f(g_{\phi}(\epsilon^{(l)}, x^{(i)})), \\
+\epsilon^{(l)} \sim p(\epsilon)
+$$</p>
+<p>mini-batch方法：</p>
+<p>$$
+\mathcal{L}(\theta, \phi; X) \approx \tilde{\mathcal{L}}^M(\theta, \phi; x^M) \\
+    = \frac{N}{M} \sum_{i=1}^M \tilde{\mathcal{L}}(\theta, \phi; x^{(i)})
+$$</p>
+<p>$({X^M})$ 是随机从全部数据集采样的M个数据。</p>
+<p>auto-encoder角度：似然函数的第一项相当于正则，第二项是重构误差</p>
+<h3 id="_6">例子：变分自编码</h3>
 <h2 id="reference">Reference</h2>
 <ol>
 <li>Hinton, G. E. and Salakhutdinov, R. R. Reducing the dimensionality of data with neural networks. Science 2006.</li>
 <li>2010, Pascal Vincent, Yoshua Bengio, Stacked Denoising Autoencoders: Learning Useful Representations in a Deep Network with a Local Denoising Criterion.</li>
+</ol>
+<p>近期进展</p>
+<ol>
+<li>Richard Socher, Jeffrey Pennington, Eric H. Huang, Andrew Y. Ng, and Christopher D. Manning.
+Semi-supervised recursive autoencoders for predicting sentiment distributions. In
+EMNLP, 2011.</li>
+<li>Variational autoencoders</li>
 </ol>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-07-21 </span></div>

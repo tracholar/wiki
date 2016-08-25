@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>fast text Facebook开源词向量工具背后的理论 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;fast text Facebook开源词向量工具背后的理论</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">fast text Facebook开源词向量工具背后的理论</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">论文导读</a><ul>
+<li><a href="#enriching-word-vectors-with-subword-information">Enriching Word Vectors with Subword Information</a><ul>
+<li><a href="#_3">摘要</a></li>
+<li><a href="#_4">导言</a></li>
+<li><a href="#subword">subword 模型</a></li>
+<li><a href="#_5">结论</a></li>
+</ul>
+</li>
+<li><a href="#bag-of-tricks-for-efficient-text-classification">Bag of Tricks for Efficient Text Classification</a><ul>
+<li><a href="#_6">模型结构</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>fast text 开源工具见<a href="https://github.com/facebookresearch/fastText">https://github.com/facebookresearch/fastText</a>。
+主要涉及的两篇文章是：</p>
+<ol>
+<li>P. Bojanowski, E. Grave*, A. Joulin, <strong>T. Mikolov</strong>, Enriching Word Vectors with Subword Information</li>
+<li>A. Joulin, E. Grave, P. Bojanowski, <strong>T. Mikolov</strong>, Bag of Tricks for Efficient Text Classification</li>
+</ol>
+<h2 id="_2">论文导读</h2>
+<h3 id="enriching-word-vectors-with-subword-information">Enriching Word Vectors with Subword Information</h3>
+<h4 id="_3">摘要</h4>
+<p>论文的基本思想：由于之前的词向量方法都是以词为单位进行学习，而通常一个词的有很多不同的形态！（不能用stem将形态标准化么？）
+为此，作者提出一种基于skip-gram结构的新方法，词被表达为多个 n-gram 字母的bag。
+对每一个n-gram学习一个向量，而词向量用这些n-gram的向量求和得到。
+这种方法非常快！作者在5种不同的语言中训练词向量，评估了在word similarity and analogy
+tasks上的效果！</p>
+<h4 id="_4">导言</h4>
+<h4 id="subword">subword 模型</h4>
+<p>在skip-gram模型中，两个词之间相似度用两个词词向量的内基表示$(score = s(w,c) = w^T c)$。
+这个模型将一个词的n-gram g单独赋予一个向量$(z_g)$，而词向量用该词所有的n-gram向量之和来表示。
+不同词之间，共享n-gram向量！那么$(s(w,c) = \sum z_g^T v_c )$。
+词本身也加到了n-gram集合中，并且 词向量和n-gram向量不同，比如as作为单词和作为paste的n-gram是不共享向量的！</p>
+<p>n-gram 词典的设计，论文只保留了长度为3-6的n-gram。为开始位置和结束位置添加特殊字符，用以区分前缀和后缀。</p>
+<p>限制内存：将n-gram hash 到 1 to K，论文中K取200W！</p>
+<p>效率提升：最最常出现的P个单词，不使用n-gram！</p>
+<h4 id="_5">结论</h4>
+<p>对 rare words, morphologically rich languages and small training datasets 提升明显。</p>
+<p>实现性能比skip-gram baseline 慢1.5倍。105k words/second/thread VS 145k words/second/thread for the baseline。</p>
+<h3 id="bag-of-tricks-for-efficient-text-classification">Bag of Tricks for Efficient Text Classification</h3>
+<p>论文：Bag of Tricks for Efficient Text Classification, Armand Joulin, Edouard Grave, Piotr Bojanowski, <strong>Tomas Mikolov</strong></p>
+<p>fastText 在多核CPU上，训练超过10亿的单词，不到10分钟！
+分类50W句子，312K个类别，只需要不到1分钟！</p>
+<p>现有的神经网络建模句子的表达，速度慢：</p>
+<ol>
+<li>[Bengio et al.2003]</li>
+<li>Ronan Collobert and Jason
+Weston. 2008. A unified architecture for natural language
+processing: Deep neural networks with multitask
+learning. In ICML.</li>
+</ol>
+<p>线性模型建模，速度快： (Mikolov et al., 2013; Levy et al., 2015).
+通过加入n-gram 信息，可以将线性模型的性能提高到和深度模型接近，但是速度快几个量级！</p>
+<h4 id="_6">模型结构</h4>
+<p>baseline：将句子表达为bag of word，然后训练一个线性模型 LR or linearSVM。
+线性模型不能共享权值，导致泛化能力不强。</p>
+<p><img src="/wiki/static/images/fasttext-model.png" alt="模型" style="float:left; width:300px;" /></p>
+<p>Hierarchical softmax 优化，略</p>
+<p>N-gram features：n-gram 特征加入会极大影响速度，采用 hash trick解决！</p>
+<p>trick方案论文：Strategies for training large scale neural network language
+models.</p>
+<p><img src="/wiki/static/images/fasttext-result.png" alt="结果" /></p>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2016-08-20 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2016 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+    </body>
+</html>

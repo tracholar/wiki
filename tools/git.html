@@ -46,6 +46,13 @@
 <li><a href="#tag">打tag</a></li>
 <li><a href="#_3">分支</a></li>
 <li><a href="#gitignore">.gitignore文件</a></li>
+<li><a href="#_4">强大的分支</a><ul>
+<li><a href="#_5">创建分支</a></li>
+<li><a href="#_6">分支合并</a></li>
+<li><a href="#_7">删除分支</a></li>
+<li><a href="#_8">分支管理</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -156,6 +163,33 @@ git rm log/<span class="se">\*</span>.log
 
 
 <p>会递归删除当前目录及其子目录中所有 ~ 结尾的文件。</p>
+<h2 id="_4">强大的分支</h2>
+<h3 id="_5">创建分支</h3>
+<p>创建<code>dev</code>分支：</p>
+<div class="hlcode"><pre>git branch dev
+</pre></div>
+
+
+<p>git的分支实际上是一个指针，指向一个提交的对象！
+git有一个<code>HEAD</code>指针，指向当前分支指针的指针！
+可以通过<code>git checkout dev</code>命令将<code>HEAD</code>指针指向<code>dev</code>分支。</p>
+<p>可以合并创建和切换分支为一条指令<code>git checkout -b dev</code>.</p>
+<p>由于git创建分支非常快，只是写入42字节到文件！所以可以频繁地使用分支！</p>
+<h3 id="_6">分支合并</h3>
+<p>使用<code>git merge other-branch</code> 合并分支:</p>
+<p>fast-forward模式：如果其中当前分支是另一个分支的上游，那么git会简单的将当前分支对应的指针移动到另一个分支所指向的commit对象！
+非常快！</p>
+<p>正常合并：当前分支不是另一个分支的祖先，那么git会将当前分支快照和另一个分支的快照，以及两者最近共同祖先，进行三方合并！
+最后创建一个新的快照，将当前分支指针指向它！</p>
+<p>合并冲突：手动修复冲突后，重新提交！</p>
+<p>分之合并的图形化工具：<code>git mergetool</code></p>
+<h3 id="_7">删除分支</h3>
+<p>分支的删除：<code>git branch -d one-branch</code></p>
+<h3 id="_8">分支管理</h3>
+<ul>
+<li>查看当前所有分支命令：<code>git branch</code></li>
+<li>查看所有分支最后一次提交：<code>git branch -v</code>,<code>--merged,--no-merged</code>参数可以指定显示合并分支和未合并分支！</li>
+</ul>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-05-31 20:51 </span></div>
 
