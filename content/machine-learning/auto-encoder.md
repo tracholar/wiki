@@ -154,6 +154,83 @@ $$
 流形学习。
 
 
+## Variational autoencoders 论文导读
+论文：Auto-Encoding Variational Bayes, Diederik P. Kingma, Max Welling, 2014
+
+<img src="/wiki/static/images/variational-autoencoder-model.png" alt="模型" style="width:600px; float:left" />
+
+N个iid样本$(x^{(i)})$，连续或离散值。假定这些数据从一些随机过程产生！
+
+1. 从先验分布$(p_{\theta^* }(z))$产生隐变量$(z)$。
+2. 从条件概率$(p_{\theta^* }(x|z))$产生$(x)$。
+
+假定先验分布和条件分布无限可微！
+难点：
+
+1. 边际分布$(p(x))$需要计算一个积分，对于神经网络等复杂模型，难以求导！EM 算法失效；
+2. 大数据集，batch优化没有效率，需要随机梯度之类的优化
+
+工作：
+
+1. 有效地近似地实现 ML 和 MAP估计参数$(\theta)$
+2. 给定x，推导z，有效的近似算法
+3. 有效的估计x的边际分布
+
+建立识别模型$(q_{\phi}(z|x))$，近似$(p_{\theta}(z|x))$，编码角度来看，就是一个编码器！
+而 $(p_{\theta}(x|z))$ 作为解码器！
+
+### 变分界 variational bound
+边际分布的对数似然函数为
+
+$$
+\log p(x^{(1)}, ..., x^{(N)}) = \sum_i \log p_{\theta} (x^{(i)})
+$$
+
+而其中每一项可以改写为
+
+$$
+\log p_{\theta} (x^{(i)}) = D_{KL}(q_{\phi}(z|x^{(i)}) || p_{\theta} (x^{(i)})) \\\\
+    + \mathcal{L}(\theta, \phi; x^{(i)})      \\\\
+\mathcal{L}(\theta, \phi; x^{(i)})  = \mathbb{E}\_{q_{\phi(z|x)}}[-\log q_{\phi}(z|x) + \log p_{\theta}(x, z)] \\\\
+    = - D_{KL}(q_{\phi}(z|x^{(i)}) || p_{\theta}(z)) + \mathbb{E}\_{q_{\phi(z|x^{(i)}}} \left[ \log p_{\theta}(x^{(i)} | z) \right]}
+$$
+
+对数似然函数第一项是近似误差，第二项是近似之后的似然函数，或者数据i的边际对数似然函数下界！
+第二项可以写为一个KL距离和一个期望，前者可以通过解析积分计算，后者要采用近似估计！
+而通常的 Monte Carlo 梯度估计在这个问题上方差太大，不适用与这里！
+
+### The SGVB estimator and AEVB algorithm
+分布$(\tilde{z} \sim q_{\phi(z|x^{(i)}})$通过一个可微的变换$(g_{\phi}(\epsilon, x))$，
+从一个noise变量$(\epsilon \sim p(\epsilon))$采样得到。
+
+$$
+\mathbb{E}\_{q_{\phi}(z|x^{(i)})}[f(z)] \approx \frac{1}{L} \sum_{l=1}^L f(g_{\phi}(\epsilon^{(l)}, x^{(i)})), \\\\
+\epsilon^{(l)} \sim p(\epsilon)
+$$
+
+mini-batch方法：
+
+$$
+\mathcal{L}(\theta, \phi; X) \approx \tilde{\mathcal{L}}^M(\theta, \phi; x^M) \\\\
+    = \frac{N}{M} \sum_{i=1}^M \tilde{\mathcal{L}}(\theta, \phi; x^{(i)})
+$$
+
+$(\{X^M\})$ 是随机从全部数据集采样的M个数据。
+
+auto-encoder角度：似然函数的第一项相当于正则，第二项是重构误差
+
+
+### 例子：变分自编码
+
+
+
 ## Reference
 1. Hinton, G. E. and Salakhutdinov, R. R. Reducing the dimensionality of data with neural networks. Science 2006.
 2. 2010, Pascal Vincent, Yoshua Bengio, Stacked Denoising Autoencoders: Learning Useful Representations in a Deep Network with a Local Denoising Criterion.
+
+近期进展
+
+1. Richard Socher, Jeffrey Pennington, Eric H. Huang, Andrew Y. Ng, and Christopher D. Manning.
+Semi-supervised recursive autoencoders for predicting sentiment distributions. In
+EMNLP, 2011.
+2. Variational autoencoders

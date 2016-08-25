@@ -68,6 +68,15 @@ grep keyword log.txt
 grep -E 'keyword|otherword' log.txt
 grep -e keyword -e otherword log.txt
 ```
+
+`grep -E` 扩展了默认的正则式，可以使用一下特性：
+
+- `[]`字符选择
+- `+`1个和多个
+- `?`有或无
+- `{}`注意花括号要加反斜杠`\`转义，因为bash中花括号有特殊含义
+
+
 ### sort 命令
 将文件的每一行作为一个单位，进行排序，从首字符开始，按照ASCII码进行比较（默认情况）。            
 - u 参数，去重

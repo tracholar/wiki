@@ -80,6 +80,14 @@ Hive 用来做数据仓库，非实时数据处理。
 - 其他：`cast`
 - 内置聚合函数：`count, sum, avg, min, max`
 
+count 会自动去掉NULL值，这在条件count的时候很有用，例如分别统计在a>1的情况下和a<0情况下的uid，可以用一个查询搞定，不用join
+
+```sql
+select count(distinct if(a>1, uid, null)) as cnt1,
+        count(distinct if(a<0, uid, null)) as cnt0
+from some_table
+```
+
 ## Hive SQL
 - `row_number()` 函数用法，`partition`用来将数据分区编号，`order by`描述编号顺序
 ```sql
