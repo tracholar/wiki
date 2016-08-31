@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>Collaborative Filtering with Recurrent Neural Networks - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;Collaborative Filtering with Recurrent Neural Networks</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">Collaborative Filtering with Recurrent Neural Networks</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">论文导读</a><ul>
+<li><a href="#_2">协同过滤作为一个序列预测问题</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="_1">论文导读</h2>
+<p>Collaborative Filtering with Recurrent Neural Networks， IRIDIA，2016</p>
+<h3 id="_2">协同过滤作为一个序列预测问题</h3>
+<p>传统方法，用t时刻之前，用户消费的item集合预测t时刻之后用户消费的集合。
+没有考虑顺序！</p>
+<p>新方法：用t时刻之前的消费序列$(x_1, x_2, x_3)$，预测t之后消费$(x_4,x_5)$。
+考虑顺序！预测结果也考虑顺序！</p>
+<ul>
+<li>短期预测：预测下一个消费的item</li>
+<li>长期预测：预测最终消费的item</li>
+</ul>
+<p>序列预测方法适合短期预测！短期预测可以提高推荐的多样性！
+而不管顺序的静态方法适合长期预测！</p>
+<p>作者任务隐藏在序列里面的信息很重要！静态方法没有充分考虑。
+可以找到用户兴趣变化，帮助辨别哪些item与当前用户兴趣是无关的，或者哪些商品导致用户兴趣的消失。
+也能了解哪些item对用户变化的兴趣更有影响力？！</p>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2016-07-21 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2016 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+    </body>
+</html>

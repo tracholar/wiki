@@ -45,15 +45,17 @@
 <li><a href="#logistic-regression">Logistic Regression</a><ul>
 <li><a href="#_2">模型拟合</a></li>
 <li><a href="#bayesian-logistic-regression">Bayesian logistic regression</a></li>
+<li><a href="#drivation-of-bic">Drivation of BIC</a></li>
+<li><a href="#_3">高斯近似</a></li>
 </ul>
 </li>
 <li><a href="#glm">广义线性模型和指数族 GLM</a><ul>
-<li><a href="#_3">指数族分布</a><ul>
-<li><a href="#_4">重要性：</a></li>
-<li><a href="#_5">定义</a></li>
-<li><a href="#_6">极大似然估计</a></li>
-<li><a href="#_7">贝叶斯统计</a></li>
-<li><a href="#_8">最大熵原理</a></li>
+<li><a href="#_4">指数族分布</a><ul>
+<li><a href="#_5">重要性：</a></li>
+<li><a href="#_6">定义</a></li>
+<li><a href="#_7">极大似然估计</a></li>
+<li><a href="#_8">贝叶斯统计</a></li>
+<li><a href="#_9">最大熵原理</a></li>
 </ul>
 </li>
 <li><a href="#glm_1">广义线性模型 GLM</a></li>
@@ -71,14 +73,14 @@
 <li>生成模型，建模$(p(x, y))$，然后利用贝叶斯公式得到后验概率$(p(y|x))$.</li>
 <li>判别模型，直接建模$(p(y|x))$.</li>
 </ul>
-<p>逻辑回归模型：$p(y|x, w) = Bernoulli(y| sigm(w^T x))$</p>
+<p>逻辑回归模型：$(  p(y|x, w) = Bernoulli(y| sigm(w^T x)   )$</p>
 <h3 id="_2">模型拟合</h3>
 <p>极大似然MLE：</p>
 <p>负对数似然函数(也叫交叉熵)</p>
 <p>$$
 NLL(w) = - \sum_{i=1}^N \left[    y_i  \log \mu_i  (1-y_i) \log (1-\mu_i)     \right]
 $$</p>
-<p>另外一种写法：$(y \in {-1, +1})$，那么$(p(y) = \frac{1}{1+\exp(y w^T x)})$。
+<p>另外一种写法：$(y \in \{-1, +1\})$，那么$(p(y) = \frac{1}{1+\exp(y w^T x)})$。
 所以</p>
 <p>$$
 NLL(w) = - \sum_{i=1}^N \log(1+\exp(y_i w^T x))
@@ -86,7 +88,7 @@ $$</p>
 <p>closed form: 由常数，变量，通过四则运算，n次方，指数，对数，三角函数，反三角函数，经过有限次运算和符合得到的表达式（通常没有极限运算）</p>
 <p>一个问题被称为可解的（P问题），表示可以用闭形式解决！？</p>
 <p>很多累积分布没有闭形式，但是可以通过误差函数、gamma函数表达！</p>
-<p><img src="/wiki/static/images/close-form.png" style="width:500px; float:left" /></p>
+<p><img src="/wiki/static/images/close-form.png" style="width:800px;" /></p>
 <p>NLL 无法表达为闭形式？所以，采用数值优化，需要计算梯度和海森矩阵！</p>
 <p>$$
 g = X^T (\mu - y) \\
@@ -117,29 +119,55 @@ $$</p>
 <p>MAP 估计导致正则项，高斯先验：l2正则。</p>
 <p>多分类逻辑回归，最大熵模型</p>
 <h3 id="bayesian-logistic-regression">Bayesian logistic regression</h3>
-<p>需要计算 $(p(w|\mathbb{D}))$，从而得到$(p(y|x, \mathbb{D}) = p(y|x, w) p(w|\mathbb{D}))$。</p>
+<p>需要计算 $(p(w|\mathcal{D}))$，从而得到$(p(y|x, \mathcal{D}) = p(y|x, w) p(w|\mathcal{D}))$。</p>
 <p>问题：逻辑回归没有一个方便的共轭先验（和似然函数形式相同的分布）。
 一些解决方案：MCMC，variational inference，expectation propagation(Kuss and Rasmussen 2005)</p>
-<p>拉普拉斯近似，高斯近似：假定</p>
+<p>拉普拉斯近似，高斯近似：假定（对数据本身建立生成模型$( \theta =&gt; \mathcal{D}  )$）后验概率为</p>
 <p>$$
-p(\theta| \mathbb{D}) = \frac{1}{Z} e^{-E(\theta)}
+p(\theta| \mathcal{D}) = \frac{1}{Z} e^{-E(\theta)}
 $$</p>
-<p>$(E(\theta))$ 叫做能量函数，等于$( - p(\theta, \mathbb{D}) )$，而$(Z = p(\mathbb{D}))$。
+<p>$(E(\theta))$ 叫做能量函数，等于$( - p(\theta, \mathcal{D}) )$，而$(Z = p(\mathcal{D}))$。
 利用泰勒级数，将能量函数在最低能量值$(\theta*)$附近展开到二阶项。</p>
 <p>$$
-E(\theta) \approx E(\theta<em>) + (\theta - \theta</em>)^T g + \frac{1}{2} (\theta - \theta<em>)^T H (\theta - \theta</em>)
+E(\theta) \approx E(\theta*) + (\theta - \theta*)^T g + \frac{1}{2} (\theta - \theta*)^T H (\theta - \theta*)
 $$</p>
 <p>g是能量函数在最低能量位置的梯度，等于0，所以</p>
 <p>$$
-\hat{p}(\theta| \mathbb{D}) \approx \frac{1}{Z} e^{-E(\theta<em>)} \exp \left[  -\frac{1}{2} (\theta - \theta</em>)^T H   (\theta - \theta<em>) \right] \\
-= \mathbb{N}(\theta | \theta</em> , H^{-1}) \\
-Z = p(\mathbb{D}) = e^{-E(\theta*)} (2\pi)^{D/2} |H|^{-1/2}
+\hat{p}(\theta| \mathcal{D}) \approx \frac{1}{Z} e^{-E(\theta*)} \exp \left[  -\frac{1}{2} (\theta - \theta*)^T H   (\theta - \theta*) \right] \\
+= \mathcal{N}(\theta | \theta* , H^{-1}) \\
+Z = p(\mathcal{D}) \approx e^{-E(\theta*)} (2\pi)^{D/2} |H|^{-1/2}
 $$</p>
+<p>最后一个式子是对边际分布的 <strong>拉普拉斯近似</strong> ，因此，把第一个式子称作对后验概率的拉普拉斯近似（其实更应该称作 <strong>高斯近似</strong>）。
+高斯近似通常是一个较好的近似，随着样本数目的增加，中心极限定理可以保证！（<strong>saddle point approximation</strong> in physics)</p>
+<h3 id="drivation-of-bic">Drivation of BIC</h3>
+<p>利用高斯近似，边际分布的对数似然函数为(去掉不相关常数)：</p>
+<p>$$
+p(\mathcal{D}) \approx \log p(\mathcal{D}|\theta^* ) + \log p(\theta^*) - \frac{1}{2} \log |H|
+$$</p>
+<p>$( p(\mathcal{D}|\theta^* ) )$ 常称作 <strong>Occam factor</strong>，用作模型复杂度的度量，如果假定均匀分布先验，即$( p(\theta^) \varpropto 1   )$，那么可以简化为极大似然估计，可以用MLE的值$( \hat{\theta} )$替换$( \theta^*  )$。</p>
+<p>对于第三项，有 $( H = \sum_i H_i, H_i = \nabla \nabla \log p(\mathcal{D}_i | \theta) )$，
+假定每个$( H_i = \hat{H} )$，是一个常数矩阵（此时样本分布是什么情况？），那么</p>
+<p>$$
+\log |H| = \log |N \hat{H}| = \log (N^D \hat{H}) \\
+    = D \log N + \log |\hat{H}|
+$$</p>
+<p>其中$(D)$是参数空间的维度，H是满秩的。最后一项与N无关，可以作为常数丢弃！那么可得BIC score</p>
+<p>$$
+\log p(\mathcal{D}) = \log p(\mathcal{D}|\hat{\theta}) - \frac{D}{2} \log N
+$$</p>
+<h3 id="_3">高斯近似</h3>
+<p>近似先验 $(  p(w) = \mathcal{N}(0, V_0)   )$，后验概率为</p>
+<p>$$
+p(w | \mathcal{D}) \approx \mathcal{N}(w|\hat{w}, H^{-1})
+$$</p>
+<p>其中$(\hat{w})$是极大似然估计值，$( \hat{w} = \arg \min_w E(w) )$，$( E(w) = - \log p(\mathcal{D} | w) - \log p(w) )$。
+而 $(H = \nabla \nabla E(w) |_{w^*})$。</p>
+<p>当数据是线性可分的情况下，极大似然估计的模型参数$(w)$将可以是任意大的向量！sigmoid函数就变成了阶跃函数！</p>
 <h2 id="glm">广义线性模型和指数族 GLM</h2>
-<h3 id="_3">指数族分布</h3>
+<h3 id="_4">指数族分布</h3>
 <p>指数族分布：高斯，Bernoulli,  gamma分布等！
 非指数族例子：Student t 分布, 均匀分布</p>
-<h4 id="_4">重要性：</h4>
+<h4 id="_5">重要性：</h4>
 <ul>
 <li>finite-sized sucient statistics.</li>
 </ul>
@@ -157,7 +185,7 @@ $$</p>
 <blockquote>
 <p>The exponential family can be shown to be the family of distributions that makes the least set of assumptions subject to some user-chosen constraint</p>
 </blockquote>
-<h4 id="_5">定义</h4>
+<h4 id="_6">定义</h4>
 <p>概率密度函数</p>
 <p>$$
 p(x) = h(x) \exp(\theta^T \phi(x) - A(\theta)) \\
@@ -170,7 +198,7 @@ $(\phi(x) \in \mathcal{R}^d)$被称为充分统计向量(vector of sucient stati
 <ul>
 <li>$(A(\theta))$的一阶导是$(\phi(x))$的期望，而二阶导是其协方差矩阵！即对数矩母函数！</li>
 </ul>
-<h4 id="_6">极大似然估计</h4>
+<h4 id="_7">极大似然估计</h4>
 <p>N个iid的样本的对数似然函数为：</p>
 <p>$$
 l(\theta) = \theta^T \sum_i \phi(x_i) - N A(\theta) + constant
@@ -188,7 +216,7 @@ $$</p>
 <p>例如对 Bernoulli 分布样本，$(\phi(X)= \mathbb{I}(X=1))$，因此要求模型预测的期望值要和样本均值相同！</p>
 <p><strong>Pitman-Koopman-Darmois theorem</strong> 理论：在一些约束下，指数族是为一个分布族，其充分统计量是有限的（不随样本个数增加而增加）！
 例如这里充分统计量数目不随N增长，一直为 N 和 $(\sum_i \phi(x_i))$！</p>
-<h4 id="_7">贝叶斯统计</h4>
+<h4 id="_8">贝叶斯统计</h4>
 <p>似然函数具有如下形式：</p>
 <p>$$
 p(\mathcal{D}|\theta) \varpropto g(\theta)^N \exp(\eta(\theta)^T s_N)
@@ -206,7 +234,7 @@ $$</p>
 p(\theta|\mathcal{D}) = p(\theta| v_0 +N , \tau_0 + s_N)  \\
 p(\eta|\mathcal{D}) = p(\eta| v_0 +N , \frac{v_0 \bar{\tau_0} + N \bar{s}}{v_0 + N})
 $$</p>
-<h4 id="_8">最大熵原理</h4>
+<h4 id="_9">最大熵原理</h4>
 <p>最大熵原理是说，要选择分布使得熵最大，在约束条件：对一些特殊函数（特征）期望值和样本均值相同！</p>
 <p>$$
 \max -\sum_x p(x) \log(p(x)) \\
@@ -243,7 +271,7 @@ $$</p>
 <ul>
 <li><strong>线性回归</strong>，$(y_i \in \mathbb{R}, \theta_i = \mu_i = w^T x_i, A(\theta)=\theta^2/2)$</li>
 <li><strong>binomial回归</strong>，$(y_i\in{0,1,...,N_i}, \pi_i = sigm(w^T x_i), \theta = \log(\pi_i / (1-\pi_i)) = w^T x)$</li>
-<li><strong>泊松回归</strong>，$(y_i \in \mathbb{N}^+, \mu_i = exp(\theta), \theta=w^T x)$</li>
+<li><strong>泊松回归</strong>，$(y_i \in \mathcal{N}^+, \mu_i = exp(\theta), \theta=w^T x)$</li>
 </ul>
 <p>极大似然估计和最大后验估计</p>
 <p>对数似然函数为为：</p>
@@ -297,7 +325,7 @@ $$</p>
 由于有多个任务需要多个$(\beta)$。
 可以单独训练每一个模型，但在实际问题中，比如商品偏好模型，由于长尾分布的原因，某些商品数据很多，而其他的很少！
 对于数据少的模型，训练很困难。可以通过隐变量，让这些数据共享！
-具体做法是控制模型参数的先验分布：$(\beta_j \sim \mathbb{N}(\beta_*, \sigma_j^2 I), \beta_* \sim \mathbb{N}(\mu, \sigma_*^2 I))$
+具体做法是控制模型参数的先验分布：$(\beta_j \sim \mathcal{N}(\beta_*, \sigma_j^2 I), \beta_* \sim \mathcal{N}(\mu, \sigma_*^2 I))$
 每个模型的参数通过先验分布参数$(\beta_*)$联系到一起。
 可以通过交叉验证选取$(\mu, \sigma_j, \sigma_*)$。</p>
 <p>案例：<strong>个性化垃圾邮件过滤</strong></p>
