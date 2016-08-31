@@ -13,7 +13,7 @@ date: 2016-08-19
 - 生成模型，建模$(p(x, y))$，然后利用贝叶斯公式得到后验概率$(p(y|x))$.
 - 判别模型，直接建模$(p(y|x))$.
 
-逻辑回归模型：$p(y|x, w) = Bernoulli(y| sigm(w^T x))$
+逻辑回归模型：$(  p(y|x, w) = Bernoulli(y| sigm(w^T x)   )$
 
 ### 模型拟合
 极大似然MLE：
@@ -24,7 +24,7 @@ $$
 NLL(w) = - \sum_{i=1}^N \left[    y_i  \log \mu_i  (1-y_i) \log (1-\mu_i)     \right]
 $$
 
-另外一种写法：$(y \in \{-1, +1\})$，那么$(p(y) = \frac{1}{1+\exp(y w^T x)})$。
+另外一种写法：$(y \in \\{-1, +1\\})$，那么$(p(y) = \frac{1}{1+\exp(y w^T x)})$。
 所以
 
 $$
@@ -37,7 +37,7 @@ closed form: 由常数，变量，通过四则运算，n次方，指数，对数
 
 很多累积分布没有闭形式，但是可以通过误差函数、gamma函数表达！
 
-<img src="/wiki/static/images/close-form.png" style="width:500px; float:left" />
+<img src="/wiki/static/images/close-form.png" style="width:800px;" />
 
 NLL 无法表达为闭形式？所以，采用数值优化，需要计算梯度和海森矩阵！
 
@@ -86,33 +86,70 @@ MAP 估计导致正则项，高斯先验：l2正则。
 
 
 ### Bayesian logistic regression
-需要计算 $(p(w|\mathbb{D}))$，从而得到$(p(y|x, \mathbb{D}) = p(y|x, w) p(w|\mathbb{D}))$。
+需要计算 $(p(w|\mathcal{D}))$，从而得到$(p(y|x, \mathcal{D}) = p(y|x, w) p(w|\mathcal{D}))$。
 
 问题：逻辑回归没有一个方便的共轭先验（和似然函数形式相同的分布）。
 一些解决方案：MCMC，variational inference，expectation propagation(Kuss and Rasmussen 2005)
 
-拉普拉斯近似，高斯近似：假定
+拉普拉斯近似，高斯近似：假定（对数据本身建立生成模型$( \theta => \mathcal{D}  )$）后验概率为
 
 $$
-p(\theta| \mathbb{D}) = \frac{1}{Z} e^{-E(\theta)}
+p(\theta| \mathcal{D}) = \frac{1}{Z} e^{-E(\theta)}
 $$
 
-$(E(\theta))$ 叫做能量函数，等于$( - p(\theta, \mathbb{D}) )$，而$(Z = p(\mathbb{D}))$。
-利用泰勒级数，将能量函数在最低能量值$(\theta*)$附近展开到二阶项。
+$(E(\theta))$ 叫做能量函数，等于$( - p(\theta, \mathcal{D}) )$，而$(Z = p(\mathcal{D}))$。
+利用泰勒级数，将能量函数在最低能量值$(\theta\*)$附近展开到二阶项。
 
 $$
-E(\theta) \approx E(\theta*) + (\theta - \theta*)^T g + \frac{1}{2} (\theta - \theta*)^T H (\theta - \theta*)
+E(\theta) \approx E(\theta*) + (\theta - \theta\*)^T g + \frac{1}{2} (\theta - \theta\*)^T H (\theta - \theta\*)
 $$
 
 g是能量函数在最低能量位置的梯度，等于0，所以
 
 $$
-\hat{p}(\theta| \mathbb{D}) \approx \frac{1}{Z} e^{-E(\theta*)} \exp \left[  -\frac{1}{2} (\theta - \theta*)^T H   (\theta - \theta*) \right] \\\\
-= \mathbb{N}(\theta | \theta* , H^{-1}) \\\\
-Z = p(\mathbb{D}) = e^{-E(\theta*)} (2\pi)^{D/2} |H|^{-1/2}
+\hat{p}(\theta| \mathcal{D}) \approx \frac{1}{Z} e^{-E(\theta*)} \exp \left[  -\frac{1}{2} (\theta - \theta\*)^T H   (\theta - \theta\*) \right] \\\\
+= \mathcal{N}(\theta | \theta\* , H^{-1}) \\\\
+Z = p(\mathcal{D}) \approx e^{-E(\theta\*)} (2\pi)^{D/2} |H|^{-1/2}
 $$
 
+最后一个式子是对边际分布的 **拉普拉斯近似** ，因此，把第一个式子称作对后验概率的拉普拉斯近似（其实更应该称作 **高斯近似**）。
+高斯近似通常是一个较好的近似，随着样本数目的增加，中心极限定理可以保证！（**saddle point approximation** in physics)
 
+
+### Drivation of BIC
+利用高斯近似，边际分布的对数似然函数为(去掉不相关常数)：
+
+$$
+p(\mathcal{D}) \approx \log p(\mathcal{D}|\theta^\* ) + \log p(\theta^\*) - \frac{1}{2} \log |H|
+$$
+
+$( p(\mathcal{D}|\theta^\* ) )$ 常称作 **Occam factor**，用作模型复杂度的度量，如果假定均匀分布先验，即$( p(\theta^) \varpropto 1   )$，那么可以简化为极大似然估计，可以用MLE的值$( \hat{\theta} )$替换$( \theta^\*  )$。
+
+对于第三项，有 $( H = \sum_i H_i, H_i = \nabla \nabla \log p(\mathcal{D}\_i | \theta) )$，
+假定每个$( H_i = \hat{H} )$，是一个常数矩阵（此时样本分布是什么情况？），那么
+
+$$
+\log |H| = \log |N \hat{H}| = \log (N^D \hat{H}) \\\\
+    = D \log N + \log |\hat{H}|
+$$
+
+其中$(D)$是参数空间的维度，H是满秩的。最后一项与N无关，可以作为常数丢弃！那么可得BIC score
+
+$$
+\log p(\mathcal{D}) = \log p(\mathcal{D}|\hat{\theta}) - \frac{D}{2} \log N
+$$
+
+### 高斯近似
+近似先验 $(  p(w) = \mathcal{N}(0, V_0)   )$，后验概率为
+
+$$
+p(w | \mathcal{D}) \approx \mathcal{N}(w|\hat{w}, H^{-1})
+$$
+
+其中$(\hat{w})$是极大似然估计值，$( \hat{w} = \arg \min_w E(w) )$，$( E(w) = - \log p(\mathcal{D} | w) - \log p(w) )$。
+而 $(H = \nabla \nabla E(w) |\_{w^\*})$。
+
+当数据是线性可分的情况下，极大似然估计的模型参数$(w)$将可以是任意大的向量！sigmoid函数就变成了阶跃函数！
 
 
 
@@ -204,6 +241,8 @@ p(\theta|\mathcal{D}) = p(\theta| v_0 +N , \tau_0 + s_N)  \\\\
 p(\eta|\mathcal{D}) = p(\eta| v_0 +N , \frac{v_0 \bar{\tau_0} + N \bar{s}}{v_0 + N})
 $$
 
+
+
 #### 最大熵原理
 最大熵原理是说，要选择分布使得熵最大，在约束条件：对一些特殊函数（特征）期望值和样本均值相同！
 
@@ -255,7 +294,7 @@ $$
 
 - **线性回归**，$(y_i \in \mathbb{R}, \theta_i = \mu_i = w^T x_i, A(\theta)=\theta^2/2)$
 - **binomial回归**，$(y_i\in\{0,1,...,N_i\}, \pi_i = sigm(w^T x_i), \theta = \log(\pi_i / (1-\pi_i)) = w^T x)$
-- **泊松回归**，$(y_i \in \mathbb{N}^+, \mu_i = exp(\theta), \theta=w^T x)$
+- **泊松回归**，$(y_i \in \mathcal{N}^+, \mu_i = exp(\theta), \theta=w^T x)$
 
 
 极大似然估计和最大后验估计
@@ -330,7 +369,7 @@ Hierarchical Bayes for multi-task learning：
 由于有多个任务需要多个$(\beta)$。
 可以单独训练每一个模型，但在实际问题中，比如商品偏好模型，由于长尾分布的原因，某些商品数据很多，而其他的很少！
 对于数据少的模型，训练很困难。可以通过隐变量，让这些数据共享！
-具体做法是控制模型参数的先验分布：$(\beta_j \sim \mathbb{N}(\beta_\*, \sigma_j^2 I), \beta_\* \sim \mathbb{N}(\mu, \sigma_\*^2 I))$
+具体做法是控制模型参数的先验分布：$(\beta_j \sim \mathcal{N}(\beta_\*, \sigma_j^2 I), \beta_\* \sim \mathcal{N}(\mu, \sigma_\*^2 I))$
 每个模型的参数通过先验分布参数$(\beta_*)$联系到一起。
 可以通过交叉验证选取$(\mu, \sigma_j, \sigma_\*)$。
 

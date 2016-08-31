@@ -611,3 +611,7 @@ set mapreduce.job.reduces=<num>;
 ```
 
 - 用 `distribute by` 控制进入reducer的样本
+- 不要用 `count(distinct id)` 因为只能用一个reducer！可以用`sum(1) + group by id`，多一个job但是快很多，因为`group by`可以用多个reducer。
+一个数据，约3亿不同的id，第一种用时40分钟，其中reducer耗时35分钟！后一种5分钟！
+<https://stackoverflow.com/questions/19311193/why-is-countdistinct-slower-than-group-by-in-hive>
+- `SET hive.exec.parallel=true;` 让不同job并发执行！
