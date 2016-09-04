@@ -614,4 +614,19 @@ set mapreduce.job.reduces=<num>;
 - 不要用 `count(distinct id)` 因为只能用一个reducer！可以用`sum(1) + group by id`，多一个job但是快很多，因为`group by`可以用多个reducer。
 一个数据，约3亿不同的id，第一种用时40分钟，其中reducer耗时35分钟！后一种5分钟！
 <https://stackoverflow.com/questions/19311193/why-is-countdistinct-slower-than-group-by-in-hive>
+
+另一种去重的方法
+
+```sql
+select sum(if(r=1, 1, 0)) as distinct_num,
+    sum(1) as num
+from (
+    select
+        id,
+        row_number() over (partition by id) as r
+    from tableA
+)
+```
+
+条件
 - `SET hive.exec.parallel=true;` 让不同job并发执行！

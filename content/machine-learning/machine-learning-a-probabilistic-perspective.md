@@ -149,9 +149,69 @@ $$
 其中$(\hat{w})$是极大似然估计值，$( \hat{w} = \arg \min_w E(w) )$，$( E(w) = - \log p(\mathcal{D} | w) - \log p(w) )$。
 而 $(H = \nabla \nabla E(w) |\_{w^\*})$。
 
+也就是说我们之前用极大似然估计出来的参数，是参数后验分布的期望值！
+
 当数据是线性可分的情况下，极大似然估计的模型参数$(w)$将可以是任意大的向量！sigmoid函数就变成了阶跃函数！
 
+### 后验预测
+没有正则项的预测$(p(y|x, \hat{w}))$是对参数的极大似然估计。
+带正则项的预测$(p(y|x, \hat{w}))$ 是对参数的最大后验轨迹。
+这两者预测出来的数值都只是在一个参数点的条件概率！！
+这个点可以是极大似然估计出来的，也可以是最大后验估计出来的！
+如果要得到在数据集上的后验概率，需要计算
 
+$$
+p(y| x, \mathcal{D}) = \int p(y|x,w) p(w| \mathcal{D}) dw
+$$
+
+但是，这个积分没难以求解，一个简单的近似是用w的 **后验均值**！
+
+$$
+p(y| x, \mathcal{D}) \approx p(y| x, \mathbb{E}[w])
+$$
+
+$(\mathbb{E}[w])$称作贝叶斯点！
+
+<img src="/wiki/static/images/beyes-lr.png" style="width:600px" />
+
+**蒙特卡洛近似**，即随机采样一些w，近似积分！
+
+$$
+p(y=1| x, \mathcal{D}) \approx \frac{1}{S} \sum_{s=1}^S sigm((w^s)^T x)
+$$
+
+$(w^s \sim p(w|\mathcal{D}))$ 采样自后验分布！高斯近似下，就相当于采样高斯分布！
+采样多个样本时，不但可以得到较好的概率估计值，可以得到输出概率的置信区间！！！
+
+**probit 近似** 当w的后验分布用高斯近似$(\mathcal{N}(w|m_N, V_N))$时，可以
+
+$$
+p(y=1| x, \mathcal{D}) \approx \int sigm(w^T x) p(w|\mathcal{D}) dw \\\\
+        = \int sigm(a) \mathcal{N}(a|\mu_a, \sigma_a^2)   \\\\
+a = w^T x \\\\
+\mu_a = \mathbb{E}[a] = m_N^T x \\\\
+\sigma_a^2 = x^T V_N x.
+$$
+
+将sigmoid函数用probit函数近似，probit函数是标准正态分布的累积分布函数！
+和sigmoid函数非常接近，见上图！
+采用这种近似后，前述积分可以得到解析表达式！
+
+$$
+\int sigm(a) \mathcal{N}(a|\mu_a, \sigma_a^2) \approx sigm(k(\sigma^2)\mu) \\\\
+k(\sigma^2) = (1+\pi \sigma^2/8)^{-\frac{1}{2}}.
+$$
+
+此时，由于k小于1，因此相当于在极大似然估计的概率上，在横轴进行缩放！通过$(\sigma)$控制过拟合？！
+但是判决面并没有变！
+
+**Residul analysis(outlier detection)**
+在回归问题中，计算残差$(r_i = y_i - \hat{y_i})$，其中模型估计值$(\hat{y_i} = \hat{w}^T x_i)$.
+该残差应该服从正态分布$(\mathcal{N}(0, \sigma^2))$，从而可以通过 qq-plot 得到离异值？！
+
+分类问题可以采用另外的方法！
+
+### Online learning
 
 
 
@@ -296,6 +356,10 @@ $$
 - **binomial回归**，$(y_i\in\{0,1,...,N_i\}, \pi_i = sigm(w^T x_i), \theta = \log(\pi_i / (1-\pi_i)) = w^T x)$
 - **泊松回归**，$(y_i \in \mathcal{N}^+, \mu_i = exp(\theta), \theta=w^T x)$
 
+$$
+\mathbb{E}[y|x,w,\sigma^2] = \mu_i = A'(\theta) \\\\
+Var[y|x,w,\sigma^2] = \sigma_i^2 = \sigma^2 A''(\theta) \\\\
+$$
 
 极大似然估计和最大后验估计
 
