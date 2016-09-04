@@ -47,15 +47,17 @@
 <li><a href="#bayesian-logistic-regression">Bayesian logistic regression</a></li>
 <li><a href="#drivation-of-bic">Drivation of BIC</a></li>
 <li><a href="#_3">高斯近似</a></li>
+<li><a href="#_4">后验预测</a></li>
+<li><a href="#online-learning">Online learning</a></li>
 </ul>
 </li>
 <li><a href="#glm">广义线性模型和指数族 GLM</a><ul>
-<li><a href="#_4">指数族分布</a><ul>
-<li><a href="#_5">重要性：</a></li>
-<li><a href="#_6">定义</a></li>
-<li><a href="#_7">极大似然估计</a></li>
-<li><a href="#_8">贝叶斯统计</a></li>
-<li><a href="#_9">最大熵原理</a></li>
+<li><a href="#_5">指数族分布</a><ul>
+<li><a href="#_6">重要性：</a></li>
+<li><a href="#_7">定义</a></li>
+<li><a href="#_8">极大似然估计</a></li>
+<li><a href="#_9">贝叶斯统计</a></li>
+<li><a href="#_10">最大熵原理</a></li>
 </ul>
 </li>
 <li><a href="#glm_1">广义线性模型 GLM</a></li>
@@ -162,12 +164,56 @@ p(w | \mathcal{D}) \approx \mathcal{N}(w|\hat{w}, H^{-1})
 $$</p>
 <p>其中$(\hat{w})$是极大似然估计值，$( \hat{w} = \arg \min_w E(w) )$，$( E(w) = - \log p(\mathcal{D} | w) - \log p(w) )$。
 而 $(H = \nabla \nabla E(w) |_{w^*})$。</p>
+<p>也就是说我们之前用极大似然估计出来的参数，是参数后验分布的期望值！</p>
 <p>当数据是线性可分的情况下，极大似然估计的模型参数$(w)$将可以是任意大的向量！sigmoid函数就变成了阶跃函数！</p>
+<h3 id="_4">后验预测</h3>
+<p>没有正则项的预测$(p(y|x, \hat{w}))$是对参数的极大似然估计。
+带正则项的预测$(p(y|x, \hat{w}))$ 是对参数的最大后验轨迹。
+这两者预测出来的数值都只是在一个参数点的条件概率！！
+这个点可以是极大似然估计出来的，也可以是最大后验估计出来的！
+如果要得到在数据集上的后验概率，需要计算</p>
+<p>$$
+p(y| x, \mathcal{D}) = \int p(y|x,w) p(w| \mathcal{D}) dw
+$$</p>
+<p>但是，这个积分没难以求解，一个简单的近似是用w的 <strong>后验均值</strong>！</p>
+<p>$$
+p(y| x, \mathcal{D}) \approx p(y| x, \mathbb{E}[w])
+$$</p>
+<p>$(\mathbb{E}[w])$称作贝叶斯点！</p>
+<p><img src="/wiki/static/images/beyes-lr.png" style="width:600px" /></p>
+<p><strong>蒙特卡洛近似</strong>，即随机采样一些w，近似积分！</p>
+<p>$$
+p(y=1| x, \mathcal{D}) \approx \frac{1}{S} \sum_{s=1}^S sigm((w^s)^T x)
+$$</p>
+<p>$(w^s \sim p(w|\mathcal{D}))$ 采样自后验分布！高斯近似下，就相当于采样高斯分布！
+采样多个样本时，不但可以得到较好的概率估计值，可以得到输出概率的置信区间！！！</p>
+<p><strong>probit 近似</strong> 当w的后验分布用高斯近似$(\mathcal{N}(w|m_N, V_N))$时，可以</p>
+<p>$$
+p(y=1| x, \mathcal{D}) \approx \int sigm(w^T x) p(w|\mathcal{D}) dw \\
+        = \int sigm(a) \mathcal{N}(a|\mu_a, \sigma_a^2)   \\
+a = w^T x \\
+\mu_a = \mathbb{E}[a] = m_N^T x \\
+\sigma_a^2 = x^T V_N x.
+$$</p>
+<p>将sigmoid函数用probit函数近似，probit函数是标准正态分布的累积分布函数！
+和sigmoid函数非常接近，见上图！
+采用这种近似后，前述积分可以得到解析表达式！</p>
+<p>$$
+\int sigm(a) \mathcal{N}(a|\mu_a, \sigma_a^2) \approx sigm(k(\sigma^2)\mu) \\
+k(\sigma^2) = (1+\pi \sigma^2/8)^{-\frac{1}{2}}.
+$$</p>
+<p>此时，由于k小于1，因此相当于在极大似然估计的概率上，在横轴进行缩放！通过$(\sigma)$控制过拟合？！
+但是判决面并没有变！</p>
+<p><strong>Residul analysis(outlier detection)</strong>
+在回归问题中，计算残差$(r_i = y_i - \hat{y_i})$，其中模型估计值$(\hat{y_i} = \hat{w}^T x_i)$.
+该残差应该服从正态分布$(\mathcal{N}(0, \sigma^2))$，从而可以通过 qq-plot 得到离异值？！</p>
+<p>分类问题可以采用另外的方法！</p>
+<h3 id="online-learning">Online learning</h3>
 <h2 id="glm">广义线性模型和指数族 GLM</h2>
-<h3 id="_4">指数族分布</h3>
+<h3 id="_5">指数族分布</h3>
 <p>指数族分布：高斯，Bernoulli,  gamma分布等！
 非指数族例子：Student t 分布, 均匀分布</p>
-<h4 id="_5">重要性：</h4>
+<h4 id="_6">重要性：</h4>
 <ul>
 <li>finite-sized sucient statistics.</li>
 </ul>
@@ -185,7 +231,7 @@ $$</p>
 <blockquote>
 <p>The exponential family can be shown to be the family of distributions that makes the least set of assumptions subject to some user-chosen constraint</p>
 </blockquote>
-<h4 id="_6">定义</h4>
+<h4 id="_7">定义</h4>
 <p>概率密度函数</p>
 <p>$$
 p(x) = h(x) \exp(\theta^T \phi(x) - A(\theta)) \\
@@ -198,7 +244,7 @@ $(\phi(x) \in \mathcal{R}^d)$被称为充分统计向量(vector of sucient stati
 <ul>
 <li>$(A(\theta))$的一阶导是$(\phi(x))$的期望，而二阶导是其协方差矩阵！即对数矩母函数！</li>
 </ul>
-<h4 id="_7">极大似然估计</h4>
+<h4 id="_8">极大似然估计</h4>
 <p>N个iid的样本的对数似然函数为：</p>
 <p>$$
 l(\theta) = \theta^T \sum_i \phi(x_i) - N A(\theta) + constant
@@ -216,7 +262,7 @@ $$</p>
 <p>例如对 Bernoulli 分布样本，$(\phi(X)= \mathbb{I}(X=1))$，因此要求模型预测的期望值要和样本均值相同！</p>
 <p><strong>Pitman-Koopman-Darmois theorem</strong> 理论：在一些约束下，指数族是为一个分布族，其充分统计量是有限的（不随样本个数增加而增加）！
 例如这里充分统计量数目不随N增长，一直为 N 和 $(\sum_i \phi(x_i))$！</p>
-<h4 id="_8">贝叶斯统计</h4>
+<h4 id="_9">贝叶斯统计</h4>
 <p>似然函数具有如下形式：</p>
 <p>$$
 p(\mathcal{D}|\theta) \varpropto g(\theta)^N \exp(\eta(\theta)^T s_N)
@@ -234,7 +280,7 @@ $$</p>
 p(\theta|\mathcal{D}) = p(\theta| v_0 +N , \tau_0 + s_N)  \\
 p(\eta|\mathcal{D}) = p(\eta| v_0 +N , \frac{v_0 \bar{\tau_0} + N \bar{s}}{v_0 + N})
 $$</p>
-<h4 id="_9">最大熵原理</h4>
+<h4 id="_10">最大熵原理</h4>
 <p>最大熵原理是说，要选择分布使得熵最大，在约束条件：对一些特殊函数（特征）期望值和样本均值相同！</p>
 <p>$$
 \max -\sum_x p(x) \log(p(x)) \\
@@ -273,6 +319,10 @@ $$</p>
 <li><strong>binomial回归</strong>，$(y_i\in{0,1,...,N_i}, \pi_i = sigm(w^T x_i), \theta = \log(\pi_i / (1-\pi_i)) = w^T x)$</li>
 <li><strong>泊松回归</strong>，$(y_i \in \mathcal{N}^+, \mu_i = exp(\theta), \theta=w^T x)$</li>
 </ul>
+<p>$$
+\mathbb{E}[y|x,w,\sigma^2] = \mu_i = A'(\theta) \\
+Var[y|x,w,\sigma^2] = \sigma_i^2 = \sigma^2 A''(\theta) \\
+$$</p>
 <p>极大似然估计和最大后验估计</p>
 <p>对数似然函数为为：</p>
 <p>$$
