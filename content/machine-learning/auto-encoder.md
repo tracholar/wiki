@@ -221,6 +221,58 @@ auto-encoder角度：似然函数的第一项相当于正则，第二项是重�
 
 
 ### 例子：变分自编码
+用多层感知器从输入学习到两个参数向量$(\mu, \sigma)$，
+隐变量通过随机采样得到$(z \sim \mathcal{N}(z; \mu, \sigma))$。
+
+解码器和编码器一样，从应变量z通过多层感知器学习到两个参数$(\mu', \sigma')$，
+重构变量$(x' \sim \mathcal{N}(x'; \mu', \sigma'))$得到。
+对于贝努利分布，参数只有一个均值。
+
+
+## Stacked What-Where Auto-encoders
+论文导读：Stacked What-Where Auto-encoders， Junbo Zhao, Michael Mathieu, Ross Goroshin, **Yann LeCun**, ICLR 2016.
+
+What: 就是polling后得到的max值，而where是最大值所在的位置信息，用来帮助解卷积器重构！
+
+文章的方法将编码器学习和监督学习进行联合训练学习，作者认为（深度比较深时？）用自编码初始化的参数所携带的信息，
+会在调优的时候丢失，导致预训练没啥乱用！而解决的方法就是进行联合训练。
+此时，重构误差相当于一种正则！
+目标函数为：
+
+$$
+L = L_{NLL} + \lambda_{L2rec} L_{L2rec} + \lambda_{L2M} L_{L2M}
+$$
+
+其中NLL代表监督学习的损失函数，负对数似然函数，对回归问题是L2损失，分类问题是交叉熵。
+重构损失函数为L2损失函数。L2rec 代表输入和输出的重构样本的重构误差，L2M 代表中间编码器输入特征和解码器输出特征的重构误差。
+
+<img src="/wiki/static/images/swwae.png" style="width:600px" />
+
+实现监督学习，无监督学习，半监督学习的统一框架！
+
+### 软最大值max和argmax
+Ross Goroshin, Michael Mathieu, and Yann LeCun. Learning to linearize under uncertainty. arXiv preprint arXiv:1506.03011, 2015.
+
+<img src="/wiki/static/images/softmax-argmax.png" style="width:400px; margin:auto; display:block;" />
+
+文章中，取$(\beta=100)$！
+
+### where的重要性
+<img src="/wiki/static/images/unpooling.png" style="width:600px; float:left;" />
+
+对比采用where信息做unpooling的重构结果和直接copy的upsampling的结果，可以看出where信息对重构输入至关重要！
+想想也能想到啊！肯定重要啊！
+
+what学习到的具有平移不变性！
+
+### 结论
+
+<img src="/wiki/static/images/swwae-performance.png" style="width:600px; float:left;" />
+
+从论文中的结果来看，添加重构误差项还是挺重要的！
+如果没有重构误差项，错误率会增加！
+训练中也可以加入 droupout 正则化方法！
+
 
 
 
