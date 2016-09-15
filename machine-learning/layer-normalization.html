@@ -47,9 +47,9 @@
 <li><a href="#_4">不变性分析</a></li>
 <li><a href="#geometry-of-parameter-space-during-learning">Geometry of parameter space during learning</a><ul>
 <li><a href="#glm">GLM 的几何分析</a></li>
-<li><a href="#_5">实验结果</a></li>
 </ul>
 </li>
+<li><a href="#_5">实验结果</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -120,7 +120,7 @@ $$</p>
 <p>Riemannian metric along the magnitude of the incoming weights for the standard GLM is scaled by the norm of its input, whereas learning the gain parameters for the batch normalized and layer normalized models depends only on the magnitude of the prediction error. Learning the magnitude of incoming weights in the normalized model is therefore, more robust to the scaling of the input and its parameters than in the standard model.</p>
 </blockquote>
 <p>归一化改变曲率？还学习到了输入幅度？！</p>
-<h3 id="_5">实验结果</h3>
+<h2 id="_5">实验结果</h2>
 <p>在多个任务上进行试验：对RNN和全连接网络有效，可以加速收敛，但是CNN上的结果不如BN，作者认为CNN神经元之间的统计特性相差太大导致的，
 因为每个神经元都只链接上一层一小块区域，从而导致同一层的神经元统计特性相差很大！但是作者没有报道具体结果，LN比BN差多少也不得而知。</p>
 <ul>

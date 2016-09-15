@@ -1,0 +1,203 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>强化学习 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;强化学习</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">强化学习</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#markov-decision-process">Markov Decision Process</a></li>
+<li><a href="#reinforcement-learning">Reinforcement Learning</a><ul>
+<li><a href="#model-based-learning">model-based Learning</a></li>
+</ul>
+</li>
+<li><a href="#tutorialicml2016">深度强化学习tutorial@ICML2016</a><ul>
+<li><a href="#value-based-deep-rl">Value-Based Deep RL</a></li>
+<li><a href="#deep-policy-networks">Deep Policy Networks</a></li>
+</ul>
+</li>
+<li><a href="#_2">相关资料</a></li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>强化学习是未来很重要的方向！参考 Alpha Go！</p>
+<h2 id="markov-decision-process">Markov Decision Process</h2>
+<ul>
+<li>A set of states $(s \in S)$</li>
+<li>A set of actions $(a \in A)$</li>
+<li>A transition function $(T(s, a, s'))$<ul>
+<li>转移概率 $(P(s'| s, a))$</li>
+<li>也叫 model 或者 dynamics</li>
+</ul>
+</li>
+<li>A reward function $(R(s, a, s'))$<ul>
+<li>通常只是状态的函数$(R(s), R(s'))$</li>
+</ul>
+</li>
+<li>一个初始状态</li>
+<li>一个终止状态</li>
+</ul>
+<p>MDP 不是一个确定性的搜索问题，一种方法是 <strong>期望值最大搜索</strong> ？！</p>
+<p>马尔科夫性说的是未来的决策与过去无关，至于当前状态和策略有关！</p>
+<p>（最优）策略：$(\pi^* : S \rightarrow A)$</p>
+<p>状态转移函数 $(T(s, a, s') = p(s'| s, a))$</p>
+<p>discounting reward: $(r_0 + \gamma r_1 + \gamma^2 r_2 + ...)$</p>
+<p>当 $(\gamma &lt; 1)$时，discounting reward 有界 $(R_{max}/(1-\gamma))$！</p>
+<p>或者采用 finite horizon，当迭代到 T 步时，停止！</p>
+<ul>
+<li>
+<p>MDP quantities:</p>
+<ul>
+<li>Policy = 对每一个状态选择一个action</li>
+<li>Utility = sum of (discounted) rewards</li>
+</ul>
+</li>
+<li>
+<p>状态 value function： $(V^* (s))$</p>
+</li>
+<li>q-state (s, a), $(Q^* (s,a))$</li>
+<li>
+<p>最优策略 $(\i^* (s))$</p>
+</li>
+<li>
+<p>递归定义：</p>
+<ul>
+<li>$(V^<em> (s) = \max_a Q^</em> (s, a))$</li>
+<li>$(Q^<em> (s, a) = \sum_{s'} (s, a, s') \left[ R(s, a, s') + \gamma V^</em> (s') \right])$</li>
+<li>$(V^<em> (s) = \max_a \sum_{s'} (s, a, s') \left[ R(s, a, s') + \gamma V^</em> (s') \right])$</li>
+</ul>
+</li>
+<li>
+<p>Time-limited value: 定义$(V_k(s))$ 为状态s下，最多k步下的最优value</p>
+</li>
+<li>Value iteration:<ol>
+<li>$(V_0(s) = 0)$</li>
+<li>$(V_{k+1}(s) \leftarrow \max_a \sum_{s'} (s, a, s') \left[ R(s, a, s') + \gamma V_k^* (s') \right]) )$</li>
+<li>重复1-2直到收敛！</li>
+<li>复杂度，每次迭代 $(O(S^2A))$</li>
+<li>收敛到唯一最优值！</li>
+</ol>
+</li>
+</ul>
+<h2 id="reinforcement-learning">Reinforcement Learning</h2>
+<p>仍然是一个MDP过程，仍然寻找最优决策！
+但是不知道状态转移函数T 和 回报函数 R！</p>
+<ul>
+<li>MDP：Offline</li>
+<li>RL：Online</li>
+</ul>
+<h3 id="model-based-learning">model-based Learning</h3>
+<p>通过经验，学习一个近似模型，然后求解！</p>
+<ul>
+<li>Step1：学习经验MDP模型：<ol>
+<li>对每一个个(s, a)统计s'</li>
+<li>归一化得到$(\hat{T}(s, a, s'))$</li>
+<li></li>
+</ol>
+</li>
+</ul>
+<h2 id="tutorialicml2016">深度强化学习tutorial@ICML2016</h2>
+<p>AI = RL + DL</p>
+<ul>
+<li>值函数</li>
+<li>策略</li>
+<li>状态转移模型</li>
+</ul>
+<p>使用深度学习建模值函数，策略和模型！</p>
+<h3 id="value-based-deep-rl">Value-Based Deep RL</h3>
+<p>Q-Networks</p>
+<p>$$
+Q(s, a, w) \approx Q^* (s, a)
+$$</p>
+<p>Q-Learning：</p>
+<p>最优 Q-value 应该遵循 Bellman 方程</p>
+<p>$$
+Q^<em> (s, a) = \mathbb{E}_{s'} \left[ r + \gamma \max_{a'} Q(s', a')^</em> |s, a  \right]
+$$</p>
+<p>其中 s 表示状态，a 表示agent对环境做出的 action！
+将方程右边当做目标，用神经网络学习！
+损失函数：</p>
+<p>$$
+l = (r + \gamma \max_{a'} Q(s', a', w) - Q(s, a, w) )^2
+$$</p>
+<p>问题：1. 训练样本不是 iid； 2. 目标不稳定！</p>
+<p>DQN：利用 agent 自身经验构建样本！</p>
+<p>$$
+l = (r + \gamma \max_{a'} Q(s', a', w^-) - Q(s, a, w) )^2
+$$</p>
+<p>$(w^-)$是固定的！</p>
+<p>Double DQN</p>
+<ul>
+<li>当前的 Q-network w 用来选择 action</li>
+<li>老的 Q-network w- 用来评估 action</li>
+</ul>
+<p>$$
+l = \left( r + \gamma Q( s', \arg\max_{a'} Q(s', a', w), w^- ) - Q(s, a, w)  \right)^2
+$$</p>
+<p>Duelling network</p>
+<h3 id="deep-policy-networks">Deep Policy Networks</h3>
+<p>用神经网络建模策略函数</p>
+<p>$$
+a = \pi(a| s, \mathbf{u}) = \pi( s, \mathbf{u})
+$$</p>
+<p>目标函数为total discounted reward</p>
+<p>$$
+L(u) = \mathbf{E}(r_1 + \gamma r_2 + \gamma^2 r_3 + ... | \pi(., u))
+$$</p>
+<h2 id="_2">相关资料</h2>
+<ul>
+<li>强化学习书籍：<a href="https://webdocs.cs.ualberta.ca/~sutton/book/ebook/the-book.html">https://webdocs.cs.ualberta.ca/~sutton/book/ebook/the-book.html</a></li>
+<li>Tutorial: Deep Reinforcement Learning， ICML 2016. David Silver, Google Deepmind.</li>
+<li>Berkeley 课程：Deep RL. <a href="http://rll.berkeley.edu/deeprlcourse/">http://rll.berkeley.edu/deeprlcourse/</a></li>
+<li><a href="http://ai.berkeley.edu/course_schedule.html">http://ai.berkeley.edu/course_schedule.html</a></li>
+</ul>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2016-09-04 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2016 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+    </body>
+</html>
