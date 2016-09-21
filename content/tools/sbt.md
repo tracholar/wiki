@@ -295,3 +295,6 @@ base filter ClasspathUtilities.isArchive
 ```scala
 addSbtPlugin("com.typesafe.sbt" % "sbt-site" % "0.7.0")
 ```
+
+## 调试
+传入 `-jvm-debug <port>  Turn on JVM debugging, open at the given port.`参数即可远程调试，例如 `sbt -jvm-debug 5005 run`
