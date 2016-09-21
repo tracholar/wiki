@@ -42,7 +42,14 @@
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">关于</a></li>
-<li><a href="#_2">阿里巴巴</a></li>
+<li><a href="#_2">阿里巴巴</a><ul>
+<li><a href="#_3">机器学习</a></li>
+</ul>
+</li>
+<li><a href="#azure">微软 Azure</a></li>
+<li><a href="#_4">亚马逊</a></li>
+<li><a href="#google">Google</a></li>
+<li><a href="#twitter">Twitter</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -53,8 +60,62 @@
 <ul>
 <li>构建于阿里云MaxCompute、GPU等计算集群之上</li>
 <li>分布式算法，包括数据处理、特征工程、机器学习算法、文本算法等</li>
-<li></li>
+<li>基于MaxCompute、GPU集群，支持MR、MPI、SQL、BSP、SPARK等计算类型。</li>
+<li>机器学习支持的功能如下</li>
 </ul>
+<h3 id="_3">机器学习</h3>
+<ul>
+<li>输入输出源：ODPS数据表</li>
+<li>特征预处理：<ul>
+<li>采样：随机采样；加权采样（某一列作为权值）；分层采样</li>
+<li>清洗：SQL条件过滤</li>
+<li>缺失值填充：</li>
+<li>归一化：log，MinMax，ZScore</li>
+</ul>
+</li>
+<li>特征工程：<ul>
+<li>降维去噪：PCA</li>
+<li>规范化</li>
+<li>离散化：等距等频</li>
+<li>异常值平滑：Zscore平滑（3sigma），百分位平滑，阈值</li>
+<li>特征选择：随机森林、GBDT特征重要性；线性模型特征重要性，重要性定义为 weight * std。即学到的系数与特征的标准差乘积？！(支持可视化)</li>
+<li>偏好计算：</li>
+</ul>
+</li>
+<li>统计分析：<ul>
+<li>百分位统计</li>
+<li>相关系数</li>
+<li>直方图统计</li>
+<li>特征分析：离散值和连续值</li>
+<li>统计检验：t检验，卡方检验</li>
+</ul>
+</li>
+<li>机器学习：<ul>
+<li>分类和回归算法 + XGBOOST</li>
+</ul>
+</li>
+<li>文本分析和特征：<ul>
+<li>word2vec</li>
+<li>文本相似性</li>
+<li>分词</li>
+</ul>
+</li>
+</ul>
+<h2 id="azure">微软 Azure</h2>
+<ul>
+<li>可视化交互，和阿里差不多</li>
+<li>支持脚本！！ Python R</li>
+<li>更多的数据处理功能，滤波</li>
+<li>OpenCV？</li>
+</ul>
+<h2 id="_4">亚马逊</h2>
+<p>不够开放</p>
+<h2 id="google">Google</h2>
+<ul>
+<li>语音，图像，文本等都有很好的支持</li>
+<li>基于API接口调用</li>
+</ul>
+<h2 id="twitter">Twitter</h2>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-09-09 </span></div>
 

@@ -43,6 +43,28 @@
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">关于</a></li>
 <li><a href="#_2">导言</a></li>
+<li><a href="#_3">语义向量空间模型</a><ul>
+<li><a href="#the-termdocument-matrixsalton-et-al-1975">文档的相似性：The Term–Document Matrix，Salton et al. (1975)</a></li>
+<li><a href="#the-wordcontext-matrix">词的相似性：The Word–Context Matrix</a></li>
+<li><a href="#the-pairpattern-matrix">关系的相似性：The Pair–Pattern Matrix</a></li>
+<li><a href="#types-and-tokens">Types and Tokens</a></li>
+<li><a href="#_4">五个假设</a></li>
+</ul>
+</li>
+<li><a href="#linguistic-processing-for-vsm">Linguistic Processing for VSM</a><ul>
+<li><a href="#tokenization">Tokenization</a></li>
+<li><a href="#normalization">Normalization</a></li>
+<li><a href="#annotation">Annotation</a></li>
+</ul>
+</li>
+<li><a href="#mathematical-processing-for-vector-space-models">Mathematical Processing for Vector Space Models</a><ul>
+<li><a href="#_5">频率统计</a></li>
+<li><a href="#_6">加权频率变换</a></li>
+<li><a href="#_7">平滑矩阵</a></li>
+<li><a href="#_8">比较向量</a></li>
+<li><a href="#_9">有效的比较</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -65,6 +87,189 @@
 <li>measuring the similarity of semantic relations: Lin &amp; Pantel, 2001; Turney, 2006; Nakov &amp; Hearst, 2008.</li>
 </ul>
 </li>
+</ul>
+<p><strong>案例</strong></p>
+<p>IQ测试 or 性格测试： subject-item matrix!</p>
+<p>向量分析方法：<strong>因子分析</strong>！</p>
+<p>向量空间模型里面向量的元素来自于 <strong>事件频率统计</strong>！！</p>
+<ul>
+<li><strong>Latent Semantic Analysis (LSA)</strong> Deerwester et al., 1990; Lan- dauer &amp; Dumais, 1997</li>
+<li><strong>Hyperspace Analogue to Language (HAL)</strong> (Lund, Burgess, &amp; Atchley, 1995; Lund &amp; Burgess, 1996)</li>
+</ul>
+<h2 id="_3">语义向量空间模型</h2>
+<ul>
+<li>假设<ul>
+<li><strong>statistical semantics hypothesis</strong>: statistical patterns of human word usage can be used to figure out what people mean.</li>
+<li><strong>bag of words hypothesis</strong></li>
+<li><strong>distributional hypothesis</strong></li>
+<li><strong>extended distributional hypothesis</strong></li>
+<li><strong>latent relation hypothesis</strong></li>
+</ul>
+</li>
+</ul>
+<h3 id="the-termdocument-matrixsalton-et-al-1975">文档的相似性：The Term–Document Matrix，Salton et al. (1975)</h3>
+<ul>
+<li>行向量对应于一个term，通常是一个词；列向量是一个document，例如一个网页！</li>
+<li><strong>bag</strong> 是指一个集合，不同的是可以有重复，但是元素的顺序没有意义，不同顺序是等价的！
+一个bag可以用一个向量来表示，向量每个元素表示对应的bag元素出现的次数，例如{a,a,b,c,c,c,}可以表示为&lt;2,1,3&gt;.
+一系列的bag可以用一个矩阵X表示，矩阵的一列对应于一个bag向量，而一行对应于一个唯一的元素，$(x_{ij})$为第j个bag中元素i出现的次数。</li>
+<li>term-document中，一个文档被表达为一个 bag of word，每一个列向量对应于bag的向量表达。</li>
+</ul>
+<blockquote>
+<p>In information retrieval, the bag of words hypothesis is that we can estimate the relevance of documents to a query by representing the documents and the query as bags of words. (Salton et al., 1975)</p>
+</blockquote>
+<ul>
+<li>矩阵的每一列 $(x_{:j})$代表文档$(d_j)$的一种向量化表达，虽然没有考虑词的顺序、短语、句子等语义结构，但是仍然在搜索引擎中工作的很好！</li>
+<li>而每一行 $(x_{i})$代表term $(w_i)$ 的一种签名！可以用来度量 term 的相似性！Deerwester et al. (1990)</li>
+<li>一种解释：the topic of a document will probabilistically influence the author’s choice of words when writing the document. 直接导致LDA模型的出现！</li>
+</ul>
+<h3 id="the-wordcontext-matrix">词的相似性：The Word–Context Matrix</h3>
+<ul>
+<li>行向量是词，列向量是上下文，context 可以是词、短语、句子、段落、章节、文档等更多可能性</li>
+<li>上下文可以参考 Sahlgren’s (2006) thesis</li>
+<li>矩阵相似的行向量代表相似的词！但是主要的上下文通常是其他词！</li>
+<li>共现频率 Weaver (1955) co-occurrence frequency，用来消歧意</li>
+</ul>
+<blockquote>
+<p>distributional hypothesis in linguistics is that words that occur in similar contexts tend to have similar meanings (Harris, 1954)</p>
+</blockquote>
+<h3 id="the-pairpattern-matrix">关系的相似性：The Pair–Pattern Matrix</h3>
+<ul>
+<li>行向量是词对，例如 mason:stone and carpenter : wood；列向量是词对出现的模式，例如 “X cuts Y ” and “X works with Y ”. Lin and Pantel (2001)，用来判定模式的相似性</li>
+<li>用来推理，一个句子是另一个句子的解释。</li>
+<li>行向量：词对的相似性，Turney et al. (2003)</li>
+</ul>
+<blockquote>
+<p><strong>extended distributional hypothesis</strong>, that patterns that co-occur with similar pairs tend to have similar meanings. Lin and Pantel (2001)</p>
+<p><strong>The latent relation hypothesis</strong> is that pairs of words that co-occur in similar patterns tend to have similar semantic relations (Turney, 2008a)</p>
+</blockquote>
+<p>关系的相似性不能消减为属性的相似性（word-context matrix)</p>
+<ul>
+<li>高阶张量：<ul>
+<li>term–document–language third-order tensor：多语言信息检索</li>
+<li>word–word–pattern tensor：词相似性</li>
+<li>verb–subject–object tensor：</li>
+</ul>
+</li>
+</ul>
+<h3 id="types-and-tokens">Types and Tokens</h3>
+<p>token-document matrix，里面相同的词但是出现在不同地方的词作为不同的token；
+type-duocument matrix，则把相同词合并了。</p>
+<p>前者可以用在词消歧义上，一词多义！</p>
+<p>问题，这种token-document matrix完全看不出有什么意义啊</p>
+<h3 id="_4">五个假设</h3>
+<ul>
+<li>Statistical semantics hypothesis：词的统计模式可以用来表明含义</li>
+<li>Bag of words hypothesis</li>
+<li>Distributional hypothesis</li>
+<li>Extended distributional hypothesis</li>
+<li>Latent relation hypothesis</li>
+</ul>
+<h2 id="linguistic-processing-for-vsm">Linguistic Processing for VSM</h2>
+<p>对数据的预处理：tokenize，normalize（将词不同的形式归一化），annotate the raw text（将相同的形式标记为不同的含义：eg 动词，名词）</p>
+<p>Grefenstette (1994)：三步走：tokenization, surface syntactic analysis, and syntactic attribute extraction.</p>
+<h3 id="tokenization">Tokenization</h3>
+<p>英语等西班牙语系可以通过天然的分割符空格进行分割！
+而汉语等非西班牙语系则不同！</p>
+<p>精确的Tokenizer还需要处理标点符号！连字符，multi-word terms（e.g., Barack Obama and ice hockey）。
+停止词，高频却无意义的词，代词等。停止词表：SMART system (Salton, 1971)</p>
+<h3 id="normalization">Normalization</h3>
+<ul>
+<li>case folding</li>
+<li>stemming</li>
+</ul>
+<p>一般而言，归一化将导致精确度降低，召回率提高。
+如果数据量少，一定要用归一化，提高召回率；
+但如果数据量很大，精确度更重要，可以不归一化！</p>
+<h3 id="annotation">Annotation</h3>
+<ul>
+<li>part-of-speech tagging</li>
+<li>word sense tagging</li>
+<li>parsing</li>
+</ul>
+<p>降低召回率，提高精确度！</p>
+<h2 id="mathematical-processing-for-vector-space-models">Mathematical Processing for Vector Space Models</h2>
+<p>Lowe (2001) 4步走：1、统计频率，2、频率变换（加权），3、平滑，4、计算相似性。</p>
+<h3 id="_5">频率统计</h3>
+<p>关键技术：Hash Table；数据库；搜索引擎索引。</p>
+<h3 id="_6">加权频率变换</h3>
+<ul>
+<li>TF-IDF 用倒文档频率作为权值</li>
+<li>文档长度：因为相同的情况下，长文档更容易被匹配到！因为词多！</li>
+<li>term 的权重，两个很相近的词同时出现在一个文档中，除了可以将他们归一化到同一个词，也可以减少他们的权重！</li>
+<li>特征选择也可以看做一种加权手段：Forman (2003)</li>
+<li>Pointwise Mutual Information（PMI，Church &amp; Hanks, 1989; Turney, 2001）</li>
+<li>Positive PMI（PPMI）：将PMI小于0的值置0！当用word-context矩阵度量语义相似性地时候，效果更好！</li>
+</ul>
+<p>假设word-context 矩阵 F，行向量$(f_i)$，列向量$(f_{:j})$。新矩阵 X 是PPMI矩阵，定义为</p>
+<p>$$
+p_{ij} = \frac{f_{ij}}{\sum_i \sum_j f_{ij}}    \\
+p_{i<em>} = \frac{\sum_j f_{ij}}{\sum_i \sum_j f_{ij}}    \\
+p_{</em> j} = \frac{\sum_i f_{ij}}{\sum_i \sum_j f_{ij}}    \\
+pmi_{ij} = \log\left( \frac{p_{ij}}{p_{i<em>} p_{</em> j}}  \right)    \\
+x_{ij} = \begin{cases}
+    pmi_{ij} &amp; if pmi_{ij} &gt; 0 \\
+    0    &amp;  \text{otherwise}
+\end{cases}
+$$</p>
+<p>PMI 的问题，对小概率事件有偏！特例：当i和j统计依赖，$(p_{ij} = p_{i<em>} = p_{</em> j})$，
+那么PMI变为 $(\log(1/p_{i*}))$。</p>
+<p>一种解决方案是（Pantel &amp; Lin, 2002a），对$(f_{ij}, f_{i<em>}, f_{</em> j})$进行平滑处理</p>
+<p>$$
+\delta_{ij} = \frac{f_{ij}}{f_{ij} + 1} \frac{\min(f_{<em> j}, f_{i</em>})}{\min(f_{<em> j}, f_{i</em>}) + 1}  \
+newpmi_{ij} = \delta_{ij} pmi_{ij}
+$$</p>
+<p>另一种解决方案是对概率进行拉普拉斯平滑！即对每一个$(f_{ij} \rightarrow f_{ij} + k)$。</p>
+<h3 id="_7">平滑矩阵</h3>
+<ul>
+<li>限制向量成分：只保留PMI超过某个阈值的项，其他置0.</li>
+<li>truncated SVD：应用到document similarity就是 Latent Semantic Indexing (LSI)；应用到 word similarity 就是 Latent Semantic Analysis (LSA)</li>
+</ul>
+<p>rank-k 矩阵近似，最小化富比尼范数$(||X - \hat{X}||_F)$！(Golub&amp;VanLoan,1996)</p>
+<ul>
+<li>Latent Meaning: Deerwester et al. (1990) and Landauer and Dumais (1997) ，认为k个最大的奇异值是隐层语义，对应的两个矩阵分别代表term和document与不同隐变量的相关度。</li>
+<li>Noise reduction：是对矩阵X的平滑！Rapp (2003)</li>
+<li>High-order co-occurrence: Landauer and Dumais (1997)，Lemaire and Denhiere (2006)</li>
+<li>
+<p>Sparsity reduction：类似于矩阵补全！</p>
+</li>
+<li>
+<p>SVD实现：</p>
+<ul>
+<li>svdlibc:<a href="http://tedlab.mit.edu/~dr/svdlibc/">http://tedlab.mit.edu/~dr/svdlibc/</a>. Rohde</li>
+<li>Brand’s (2006)</li>
+<li>Gorrell’s (2006)</li>
+</ul>
+</li>
+<li>
+<p>高阶张量类似算法：parallel factor analysis，canonical decomposition，Tucker decomposition</p>
+</li>
+<li>其他平滑方法：<ul>
+<li>Nonnegative Matrix Factorization (NMF) (Lee &amp; Seung, 1999), Probabilistic Latent Semantic Indexing (PLSI) (Hofmann, 1999), Iter- ative Scaling (IS) (Ando, 2000), Kernel Principal Components Analysis (KPCA) (Scholkopf, Smola, &amp; Muller, 1997), Latent Dirichlet Allocation (LDA) (Blei et al., 2003), and Discrete Component Analysis (DCA) (Buntine &amp; Jakulin, 2006).</li>
+</ul>
+</li>
+<li>SVD 隐含地假设词频是高斯分布，然而并不是，PMI比PPMI更接近高斯分布！</li>
+</ul>
+<h3 id="_8">比较向量</h3>
+<ul>
+<li>向量夹角余弦值！</li>
+<li>距离的度量可以转换为相似度</li>
+<li>距离度量：欧式距离，曼哈顿距离，<strong>Hellinger, Bhattacharya,</strong> and <strong>Kullback-Leibler</strong></li>
+<li>在 Bullinaria and Levy (2007) 试验中，余弦相似度效果最好！</li>
+<li>其他度量：Dice and Jaccard coe cients (Manning et al., 2008).</li>
+</ul>
+<p>三类：Weeds et al. (2004)</p>
+<ol>
+<li>high-frequency sensitive measures (cosine, Jensen-Shannon, $(\alpha)$-skew, recall),</li>
+<li>low-frequency sensitive measures (precision), and</li>
+<li>similar-frequency sensitive methods (Jaccard, Jaccard+MI, Lin, harmonic mean).</li>
+</ol>
+<h3 id="_9">有效的比较</h3>
+<ul>
+<li>稀疏矩阵乘法优化</li>
+<li>将低于阈值的项减为0，也可以极大的减少计算量</li>
+<li>分布式实现：MapReduce，Elsayed, Lin, and Oard (2008)</li>
+<li>随机算法.</li>
 </ul>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-09-14 </span></div>
