@@ -83,7 +83,14 @@ $$</p>
 f(x) = l(x) + C \xi^T x.
 $$</p>
 <p>将这个函数扩展到整个空间得到扩展函数$(f_{\xi})$，对于这个函数，可以用拟牛顿法求解。</p>
-<p>伪梯度：其实就是将某个方向不可微点的梯度在该方向的分量置0.</p>
+<p>伪梯度：其实就是将某个方向不可微点的梯度在该方向的分量置为搜索方向的方向梯度；或置0（xi=0点），或正梯度或负梯度.</p>
+<p>$$
+\Diamond_i f(x) = \begin{cases}
+                \partial_i^+ f(x) &amp; \partial_i^+ f(x) &lt; 0  \\
+                \partial_i^- f(x)   &amp; \partial_i^- f(x) &gt;0  \\
+                0     &amp;  \text{otherwise}
+                \end{cases}
+$$</p>
 <p><img src="/wiki/static/images/owlqn-algo.png" style="width:500px; " /></p>
 <p>与正常L-BFGS算法的改动地方。</p>
 <ul>
