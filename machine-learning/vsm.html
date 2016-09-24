@@ -65,6 +65,11 @@
 <li><a href="#_9">有效的比较</a></li>
 </ul>
 </li>
+<li><a href="#3vsm">3个开源VSM系统</a></li>
+<li><a href="#_10">应用</a></li>
+<li><a href="#to">其他方法 to 语义分析</a></li>
+<li><a href="#vsm">VSM的未来</a></li>
+<li><a href="#_11">问题</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -204,19 +209,19 @@ type-duocument matrix，则把相同词合并了。</p>
 <p>假设word-context 矩阵 F，行向量$(f_i)$，列向量$(f_{:j})$。新矩阵 X 是PPMI矩阵，定义为</p>
 <p>$$
 p_{ij} = \frac{f_{ij}}{\sum_i \sum_j f_{ij}}    \\
-p_{i<em>} = \frac{\sum_j f_{ij}}{\sum_i \sum_j f_{ij}}    \\
-p_{</em> j} = \frac{\sum_i f_{ij}}{\sum_i \sum_j f_{ij}}    \\
-pmi_{ij} = \log\left( \frac{p_{ij}}{p_{i<em>} p_{</em> j}}  \right)    \\
+p_{i*} = \frac{\sum_j f_{ij}}{\sum_i \sum_j f_{ij}}    \\
+p_{* j} = \frac{\sum_i f_{ij}}{\sum_i \sum_j f_{ij}}    \\
+pmi_{ij} = \log\left( \frac{p_{ij}}{p_{i*} p_{* j}}  \right)    \\
 x_{ij} = \begin{cases}
     pmi_{ij} &amp; if pmi_{ij} &gt; 0 \\
     0    &amp;  \text{otherwise}
 \end{cases}
 $$</p>
-<p>PMI 的问题，对小概率事件有偏！特例：当i和j统计依赖，$(p_{ij} = p_{i<em>} = p_{</em> j})$，
+<p>PMI 的问题，对小概率事件有偏！特例：当i和j统计依赖，$(p_{ij} = p_{i*} = p_{* j})$，
 那么PMI变为 $(\log(1/p_{i*}))$。</p>
-<p>一种解决方案是（Pantel &amp; Lin, 2002a），对$(f_{ij}, f_{i<em>}, f_{</em> j})$进行平滑处理</p>
+<p>一种解决方案是（Pantel &amp; Lin, 2002a），对$(f_{ij}, f_{i*}, f_{* j})$进行平滑处理</p>
 <p>$$
-\delta_{ij} = \frac{f_{ij}}{f_{ij} + 1} \frac{\min(f_{<em> j}, f_{i</em>})}{\min(f_{<em> j}, f_{i</em>}) + 1}  \
+\delta_{ij} = \frac{f_{ij}}{f_{ij} + 1} \frac{\min(f_{* j}, f_{i*})}{\min(f_{* j}, f_{i*}) + 1}  \
 newpmi_{ij} = \delta_{ij} pmi_{ij}
 $$</p>
 <p>另一种解决方案是对概率进行拉普拉斯平滑！即对每一个$(f_{ij} \rightarrow f_{ij} + k)$。</p>
@@ -269,7 +274,73 @@ $$</p>
 <li>稀疏矩阵乘法优化</li>
 <li>将低于阈值的项减为0，也可以极大的减少计算量</li>
 <li>分布式实现：MapReduce，Elsayed, Lin, and Oard (2008)</li>
-<li>随机算法.</li>
+<li>随机算法：<ul>
+<li>random indexing</li>
+<li>Locality sensitive hashing（LSH）</li>
+</ul>
+</li>
+</ul>
+<h2 id="3vsm">3个开源VSM系统</h2>
+<ul>
+<li>
+<p>Term-Document Matrix： Lucene. 结合 Nutch，Solr可以做一个搜索系统了！</p>
+</li>
+<li>
+<p>Word–Context Matrix: Semantic Vectors</p>
+</li>
+<li>
+<p>Pair–Pattern Matrix: Latent Relational Analysis in S-Space</p>
+</li>
+</ul>
+<h2 id="_10">应用</h2>
+<ul>
+<li>Term–Document Matrices：<ul>
+<li>文档检索，跨语言检索：截断SVD可以提高精度和召回！！！问题在于要解决大规模问题的计算量！其他技巧有协同过滤和PageRank</li>
+<li>文档聚类</li>
+<li>文档分类：主题，语义，垃圾邮件</li>
+<li>文章自动打分</li>
+<li>文档分割：将文档分割为几个不同的主题</li>
+<li>QA 问答系统</li>
+<li>Call routing，客服？</li>
+</ul>
+</li>
+<li>Word–Context Matrices：<ul>
+<li>词相似性：TOEFL</li>
+<li>词聚类</li>
+<li>词分类</li>
+<li>词典自动生成</li>
+<li>词消歧义</li>
+<li>上下文评写纠错</li>
+<li>查询扩展：搜索引擎扩展查询词为相近的词：使用 session 上下文和click 上下文</li>
+<li>文本广告：点击付费广告：bidterm 扩展</li>
+<li>信息提取（<strong>I</strong> nformation <strong>E</strong> xtraction): 名字实体识别（NER），relation extraction, event extraction, and fact extraction</li>
+</ul>
+</li>
+<li>Pair–Pattern Matrices<ul>
+<li>关系相似性</li>
+<li>模式相似性</li>
+<li>关系聚类</li>
+<li>关系分类</li>
+<li>关系搜索</li>
+<li>自动词典生成</li>
+<li>Analogical mapping：SAT测试 a:b::c:d</li>
+</ul>
+</li>
+</ul>
+<h2 id="to">其他方法 to 语义分析</h2>
+<ul>
+<li>概率语言模型</li>
+<li>词典：图</li>
+</ul>
+<h2 id="vsm">VSM的未来</h2>
+<ul>
+<li>批评：没有考虑词的顺序</li>
+<li>80%的含义来自于词！！？Landauer (2002)</li>
+</ul>
+<h2 id="_11">问题</h2>
+<ul>
+<li><strong>随机投影</strong></li>
+<li><strong>LSH</strong> SIMIHash等</li>
 </ul>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-09-14 </span></div>

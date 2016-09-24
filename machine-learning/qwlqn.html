@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>OWL-QN: Scalable Training of L1-Regularized Log-Linear Models - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;OWL-QN: Scalable Training of L1-Regularized Log-Linear Models</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">OWL-QN: Scalable Training of L1-Regularized Log-Linear Models</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">问题</a></li>
+<li><a href="#_3">记号</a></li>
+<li><a href="#owl-qn">OWL-QN 算法</a></li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>论文导读：Scalable Training of L1-Regularized Log-Linear Models, Galen Andrew, Jianfeng Gao <strong>Microsoft Research</strong>, 2007.</p>
+<h2 id="_2">问题</h2>
+<p>优化问题：</p>
+<p>$$
+f (x) = l(x) + r(x) \\
+r(x) = \sum |x_i| <br />
+$$</p>
+<p>l1 范数优化，在0处不可导。</p>
+<h2 id="_3">记号</h2>
+<p>左右偏导</p>
+<p>$$
+\partial_i^+ f(x) = \lim_{\alpha \rightarrow 0^+} \frac{f(x + \alpha e_i) - f(x)}{\alpha}
+$$</p>
+<ul>
+<li>方向导数 $(f'(x; d))$ 表示在方向d 对应的方向。</li>
+<li>符号函数 $(\sigma(x))$</li>
+<li>投影函数</li>
+</ul>
+<p>$$
+\pi_i(x; y) = \begin{cases}
+                x_i &amp; if \sigma(x_i) = \sigma(y_i)  \\
+                0   &amp; \text{otherwise}
+                \end{cases}
+$$</p>
+<h2 id="owl-qn">OWL-QN 算法</h2>
+<p>在一个象限中，二阶近似是成立的，且二阶梯度矩阵与正则项无关。</p>
+<p>对任意符号向量 $(\xi \in \{-1, 0, 1 \}^n)$，定义</p>
+<p>$$
+\Omega_{\xi} = \{ x \in R^n | \pi(x, \xi) = x \}
+$$</p>
+<p>在象限$(\Omega_{\xi})$中，目标函数可以写为</p>
+<p>$$
+f(x) = l(x) + C \xi^T x.
+$$</p>
+<p>将这个函数扩展到整个空间得到扩展函数$(f_{\xi})$，对于这个函数，可以用拟牛顿法求解。</p>
+<p>伪梯度：其实就是将某个方向不可微点的梯度在该方向的分量置0.</p>
+<p><img src="/wiki/static/images/owlqn-algo.png" style="width:500px; " /></p>
+<p>与正常L-BFGS算法的改动地方。</p>
+<ul>
+<li>用伪梯度替代梯度</li>
+<li>下降方向投影到伪梯度子空间，即和伪梯度不同符号的分量全部置0</li>
+<li>采用约束线性搜索，以保证搜索不会超过该象限</li>
+<li>计算向量y只需要损失函数就可以，不用正则项</li>
+</ul>
+<p>约束线性搜索：在非0值，约束在原来的象限和0值搜索；在0值约束在负梯度方向！</p>
+<p>$$
+\xi_i = \begin{cases}
+                \sigma(x_i^k) &amp; x_i^k \neq 0  \\
+                \sigma(- \Diamond_i f(x^k))   &amp; x_i^k =0
+                \end{cases}   \\
+p^k = \pi(d^k; \xi_k)  \\
+x^{k+1} = \pi(x^k + \alpha p^k; x^k)  \\
+$$</p>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2016-08-19 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2016 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+    </body>
+</html>
