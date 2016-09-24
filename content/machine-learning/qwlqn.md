@@ -54,7 +54,15 @@ $$
 
 将这个函数扩展到整个空间得到扩展函数$(f_{\xi})$，对于这个函数，可以用拟牛顿法求解。
 
-伪梯度：其实就是将某个方向不可微点的梯度在该方向的分量置0.
+伪梯度：其实就是将某个方向不可微点的梯度在该方向的分量置为搜索方向的方向梯度；或置0（xi=0点），或正梯度或负梯度.
+
+$$
+\Diamond_i f(x) = \begin{cases}
+                \partial_i^+ f(x) & \partial_i^+ f(x) < 0  \\\\
+                \partial_i^- f(x)   & \partial_i^- f(x) >0  \\\\
+                0     &  \text{otherwise}
+                \end{cases}
+$$
 
 <img src="/wiki/static/images/owlqn-algo.png" style="width:500px; " />
 
