@@ -486,3 +486,21 @@ $$
 
 而这个score可以通过模型学习$(s(d) = f(x(q, d)))$，通常取为线性模型$(w^T x)$。
 **ListNet Cao et al. 2007**
+
+
+## Latent linear models
+### 因子分析
+实值隐变量 $(z_i \in \mathbb{R}^L)$，其先验分布假设为高斯（后面会假设为其他分布）
+
+$$
+p(z_i) = \mathcal{N}(z_i | \mu_0, \Sigma_0)
+$$
+
+观测变量 $(x_i \in \mathbb{R}^D)$，假设其服从高斯分布，其均值是隐变量的线性函数！
+
+$$
+p(x_i | z_i, \theta) = \mathbb{N}(W z_i + \mu, \Phi)
+$$
+
+W 被称为 factor loading matrix， 而应变量称为因子，被强制要求为能够解释观测变量之间的相关性，此时$(\Phi)$是对角的！
+一个特例是$(\Phi = \sigma^2 I)$，为 Probabilistic Principal Components Analysis。

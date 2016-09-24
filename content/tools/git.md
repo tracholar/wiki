@@ -154,3 +154,7 @@ fast-forward模式：如果其中当前分支是另一个分支的上游，那�
 - 查看所有分支最后一次提交：`git branch -v`,`--merged,--no-merged`参数可以指定显示合并分支和未合并分支！
 
 ### 远程分支
+
+
+## Hook
+在 `.git/hooks/` 目录下的可执行脚本，支持`bash, ruby, python`等。

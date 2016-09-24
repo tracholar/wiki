@@ -138,22 +138,22 @@ Lowe (2001) 4步走：1、统计频率，2、频率变换（加权），3、平�
 
 $$
 p_{ij} = \frac{f_{ij}}{\sum_i \sum_j f_{ij}}    \\\\
-p_{i*} = \frac{\sum_j f_{ij}}{\sum_i \sum_j f_{ij}}    \\\\
-p_{* j} = \frac{\sum_i f_{ij}}{\sum_i \sum_j f_{ij}}    \\\\
-pmi_{ij} = \log\left( \frac{p_{ij}}{p_{i*} p_{* j}}  \right)    \\\\
+p_{i\*} = \frac{\sum_j f_{ij}}{\sum_i \sum_j f_{ij}}    \\\\
+p_{\* j} = \frac{\sum_i f_{ij}}{\sum_i \sum_j f_{ij}}    \\\\
+pmi_{ij} = \log\left( \frac{p_{ij}}{p_{i\*} p_{\* j}}  \right)    \\\\
 x_{ij} = \begin{cases}
     pmi_{ij} & if pmi_{ij} > 0 \\\\
     0    &  \text{otherwise}
 \end{cases}
 $$
 
-PMI 的问题，对小概率事件有偏！特例：当i和j统计依赖，$(p_{ij} = p_{i*} = p_{* j})$，
-那么PMI变为 $(\log(1/p_{i*}))$。
+PMI 的问题，对小概率事件有偏！特例：当i和j统计依赖，$(p_{ij} = p_{i\*} = p_{\* j})$，
+那么PMI变为 $(\log(1/p_{i\*}))$。
 
-一种解决方案是（Pantel & Lin, 2002a），对$(f_{ij}, f_{i*}, f_{* j})$进行平滑处理
+一种解决方案是（Pantel & Lin, 2002a），对$(f_{ij}, f_{i\*}, f_{\* j})$进行平滑处理
 
 $$
-\delta_{ij} = \frac{f_{ij}}{f_{ij} + 1} \frac{\min(f_{* j}, f_{i*})}{\min(f_{* j}, f_{i*}) + 1}  \\
+\delta_{ij} = \frac{f_{ij}}{f_{ij} + 1} \frac{\min(f_{\* j}, f_{i\*})}{\min(f_{\* j}, f_{i\*}) + 1}  \\
 newpmi_{ij} = \delta_{ij} pmi_{ij}
 $$
 
@@ -198,4 +198,55 @@ rank-k 矩阵近似，最小化富比尼范数$(||X - \hat{X}||\_F)$！(Golub&Va
 - 稀疏矩阵乘法优化
 - 将低于阈值的项减为0，也可以极大的减少计算量
 - 分布式实现：MapReduce，Elsayed, Lin, and Oard (2008)
-- 随机算法.
+- 随机算法：
+    - random indexing
+    - Locality sensitive hashing（LSH）
+
+## 3个开源VSM系统
+
+- Term-Document Matrix： Lucene. 结合 Nutch，Solr可以做一个搜索系统了！
+
+- Word–Context Matrix: Semantic Vectors
+
+- Pair–Pattern Matrix: Latent Relational Analysis in S-Space
+
+## 应用
+- Term–Document Matrices：
+    - 文档检索，跨语言检索：截断SVD可以提高精度和召回！！！问题在于要解决大规模问题的计算量！其他技巧有协同过滤和PageRank
+    - 文档聚类
+    - 文档分类：主题，语义，垃圾邮件
+    - 文章自动打分
+    - 文档分割：将文档分割为几个不同的主题
+    - QA 问答系统
+    - Call routing，客服？
+- Word–Context Matrices：
+    - 词相似性：TOEFL
+    - 词聚类
+    - 词分类
+    - 词典自动生成
+    - 词消歧义
+    - 上下文评写纠错
+    - 查询扩展：搜索引擎扩展查询词为相近的词：使用 session 上下文和click 上下文
+    - 文本广告：点击付费广告：bidterm 扩展
+    - 信息提取（**I** nformation **E** xtraction): 名字实体识别（NER），relation extraction, event extraction, and fact extraction
+- Pair–Pattern Matrices
+    - 关系相似性
+    - 模式相似性
+    - 关系聚类
+    - 关系分类
+    - 关系搜索
+    - 自动词典生成
+    - Analogical mapping：SAT测试 a:b::c:d
+
+## 其他方法 to 语义分析
+- 概率语言模型
+- 词典：图
+
+## VSM的未来
+- 批评：没有考虑词的顺序
+- 80%的含义来自于词！！？Landauer (2002)
+
+
+## 问题
+- **随机投影**
+- **LSH** SIMIHash等
