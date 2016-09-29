@@ -142,6 +142,9 @@ watch -n 1 -d 'pstree|grep http'
 - `tar zxf file.tar.gz` 解压包
 
 
+### 网络命令
+- `netstat` 查看网络状态
+- `iptables`
 
 ## VIM
 ### 三种模式

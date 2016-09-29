@@ -504,3 +504,93 @@ $$
 
 W 被称为 factor loading matrix， 而应变量称为因子，被强制要求为能够解释观测变量之间的相关性，此时$(\Phi)$是对角的！
 一个特例是$(\Phi = \sigma^2 I)$，为 Probabilistic Principal Components Analysis。
+
+- 因子分析作为协方差的低秩矩阵分解
+
+边际分布
+
+$$
+p(x_i | \theta) = \mathbb{N}(x_i | W\mu_0 + \mu,\Phi + W\Sigma_0 W^T)
+$$
+
+不是一般性，可以假设$(\mu_0 = 0, \Sigma_0 = 1)$，一般情况可以作变量代换得到这种形式，即要求隐变量z是标准正态分布，且独立同分布。
+因此可得协方差矩阵为
+
+$$
+\text{Cov}(x) = W W^T + \Phi
+$$
+
+从上式可以看到，因子分析只使用了 O(LD + D)个参数，$(\Phi)$ 是对角的！
+
+因子分析的目的是为了通过隐变量z得到有用的信息，其后验分布为
+
+$$
+p(z_i| x_i, \theta) = \mathcal{N}(z_i | m_i, \Sigma_i)  \\\\
+\Sigma_i = (\Sigma_0 + W^T \Phi^{-1} W)^{-1}   \\\\
+m_i = \Sigma_i(W^T \Phi^{-1} (x_i - \mu) + \Sigma_0^{-1} \mu_0)
+$$
+
+m 被称作隐因子 or latent score.
+
+**W不是唯一的！！** 例如可以通过做一个正交变换R，RW 仍然是有效的！解决方法，增加约束。
+
+- 要求W是正交的，然后按照 latent factor 的方差排序： PCA
+- 要求W是下三角，即每个观测变量只与前面的因子有关
+- 稀疏约束：l1 regularization (Zou et al. 2006), ARD (Bishop 1999; Archambeau and Bach 2008), or spike-and-slab priors (Rattray et al. 2009).
+- Choosing an informative rotation matrix. varimax
+- 非高斯先验 for 隐变量：ICA
+
+
+因子旋转： <http://www.cis.pku.edu.cn/faculty/vision/zlin/Courses/DA/DA-Class7.pdf>
+
+
+### 混合因子分析 (Hinton et al. 1997)
+因子模型假设数据是嵌入在低维线性流形之中！而实际上大多数时候是曲线流形！
+曲线流形可以通过分片线性流行近似。
+
+<img src="/wiki/static/images/mfa.png" style="float:left; width:400px;" />
+
+有K个FA模型，对应维度为$(L_k)$，参数$(W_k)$，
+隐变量 $(q_i \in \\{1,2,...,K\\})$。
+
+$$
+p(x_i| z_i, q_i = k, \theta) = \mathcal{N}(x_i | \mu_k + W_k z_i, \Phi) \\\\
+p(z_i| \theta) = \mathcal{N}(z_i| 0, I) \\\\
+p(q_i| \theta) = \text{Cat}(q_i| \pi)
+$$
+
+
+### 因子分析的EM算法
+在E步，根据当前的参数，对每一个数据计算它来自cat c的概率：
+
+$$
+r_{ic} = p(q_i=c| x_i, \theta) \propto \pi_{c} \mathcal{N}(x_i|\mu_c, W_cW_c^T + \Phi) \\\\
+$$
+
+在M步，利用E步估计的c，可以分别计算出每个cat的参数$(\mu_c, W_c)$，以及新的$(\pi_{c})$。
+
+
+## PCA
+(Tipping and Bishop 1999): 当 $(\Phi = \sigma^2 I)$ 并且 W 矩阵是正交的，随着$(\sigma^2 \rightarrow 0)$，
+模型就变为principal components analysis（PCA， KL变化）了！$(sigma^2 >0 )$的版本成为概率PCA（PPCA）。
+
+### Classical PCA
+最小化重构误差
+
+$$
+\min J(W, Z) = \sum_{i=1}^N || x_i - \hat{x_i}||^2 = || X - WZ^T ||^2_F \\\\
+s.t. W^T W = I_L .
+$$
+
+F表示Frobenius范数。
+
+### SVD
+略：truncated SVD
+
+### PPCA (Tipping and Bishop 1999)
+因子模型中，当 $(\Phi = \sigma^2 I)$，并且W为正交阵，那么观测数据的对数似然函数为
+
+$$
+\log p(X| W, \sigma^2) &= - \frac{N}{2} \log |C| - \frac{1}{2} \sum_{i=1}^N x_i^T C^{-1} x_i \\\\
+ &=  - \frac{N}{2} \log |C| - \frac{1}{2}
+$$
