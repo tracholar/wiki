@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>Beyes optimization - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;Beyes optimization</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">Beyes optimization</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">导论</a></li>
+<li><a href="#bayesian-optimization-with-gaussian-process-priors">Bayesian Optimization with Gaussian Process Priors</a><ul>
+<li><a href="#_3">高斯过程</a></li>
+<li><a href="#acquisition-functions">Acquisition Functions</a></li>
+</ul>
+</li>
+<li><a href="#in-action">In Action</a><ul>
+<li><a href="#covariance-functions-and-treatment-of-covariance-hyperparameters">Covariance Functions and Treatment of Covariance Hyperparameters</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>贝叶斯优化用来调参！
+论文：Practical Bayesian Optimization of Machine Learning Algorithms, Jasper Snoek, Hugo Larochelle, Ryan P. Adams.</p>
+<h2 id="_2">导论</h2>
+<ul>
+<li>关键词：高斯过程（Gaussian Process）</li>
+<li>关键要素：type of kernel，treatment of its hyperparameters</li>
+<li>贝叶斯优化原始文献：<ul>
+<li>Jonas Mockus, Vytautas Tiesis, and Antanas Zilinskas. The application of Bayesian methods for seeking the extremum. Towards Global Optimization, 2:117–129, 1978.</li>
+<li>D.R. Jones. A taxonomy of global optimization methods based on response surfaces. Journal of Global Optimization, 21(4):345–383, 2001.</li>
+<li>Niranjan Srinivas, Andreas Krause, Sham Kakade, and Matthias Seeger. Gaussian process optimization in the bandit setting: No regret and experimental design. In Proceedings of the 27th International Conference on Machine Learning, 2010.</li>
+<li>Adam D. Bull. Convergence rates of efficient global optimization algorithms. Journal of Machine Learning Research, (3-4):2879–2904, 2011.</li>
+</ul>
+</li>
+<li>假定连续函数采样自高斯过程，并保存一个后验概率，根据观测值来调整。</li>
+<li>
+<p>expected improvement (EI)； Gaussian process upper confidence bound (UCB)</p>
+</li>
+<li>
+<p>random search is beter than grid search: James Bergstra and Yoshua <strong>Bengio</strong>. Randomsearch for hyper-parameter optimization. Journal of Machine Learning Research, 13:281–305, 2012.</p>
+</li>
+</ul>
+<h2 id="bayesian-optimization-with-gaussian-process-priors">Bayesian Optimization with Gaussian Process Priors</h2>
+<ul>
+<li>优化函数 $(f(x), x \in \mathcal{X})$，$(\mathcal{X})$ 是 $(\mathbb{R}^n)$ 上的闭集。</li>
+<li>贝叶斯优化基本思想：为函数 $(f(x))$ 建立概率模型，然后根据贝叶斯法则决定下一个搜索点！</li>
+<li>贝叶斯优化 <strong>综述</strong>：Eric Brochu, Vlad M. Cora, and Nando de Freitas. A tutorial on Bayesian optimization of ex- pensive cost functions, with application to active user modeling and hierarchical reinforcement learning. pre-print, 2010. arXiv:1012.2599.</li>
+</ul>
+<h3 id="_3">高斯过程</h3>
+<ul>
+<li>在有限集 $(\{ x_n \in \mathcal{X}  \}_{n=1}^N)$，第n个点的值为 $(f(x_n))$。</li>
+<li>均值函数 $(m: \mathcal{X} \rightarrow \mathbb{R})$</li>
+<li>正定协方差函数（covariance function） $(K: \mathcal{X} \times \mathcal{X} \rightarrow \mathbb{R})$</li>
+<li>高斯过程综述：Carl E. Rasmussenand Christopher Williams. Gaussian Processes for Machine Learning. MIT Press, 2006.</li>
+</ul>
+<h3 id="acquisition-functions">Acquisition Functions</h3>
+<ul>
+<li>假定函数 $(f(x))$ 来自高斯先验，观测量 $(\{x_n, y_n \}_{n=1}^N, y_n \sim \mathcal{N}(f(x_n), v))$，v是观测噪声。</li>
+<li>Acquisition function: $(a: \mathcal{X} \right \mathbb{R}^+)$，下一个最优搜索点通过该函数得到：$(x_{next} = \arg\max_x a(x))$。跟之前的观测值有关，也写作 $(a(x; \{x_n, y_n \}, \theta))$， $(\theta)$是超参数。</li>
+</ul>
+<h2 id="in-action">In Action</h2>
+<h3 id="covariance-functions-and-treatment-of-covariance-hyperparameters">Covariance Functions and Treatment of Covariance Hyperparameters</h3>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2016-09-27 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2016 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+    </body>
+</html>
