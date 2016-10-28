@@ -5,7 +5,7 @@
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>FFM - tracholar's personal knowledge wiki</title>
+        <title>DNC: Hybrid computing using a neural network with dynamic external memory - tracholar's personal knowledge wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -35,40 +35,20 @@
         <div id="container">
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;FFM</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;DNC: Hybrid computing using a neural network with dynamic external memory</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">FFM</div>
+<div id="title">DNC: Hybrid computing using a neural network with dynamic external memory</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">关于</a></li>
-<li><a href="#_2">原理</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
-<p>相比于逻辑回归，FM是一个二阶模型。</p>
-<h2 id="_2">原理</h2>
-<p>线性模型：逻辑回归</p>
-<p>$$
-\phi(w, x) = w^T x \\
-y = sigmoid(\phi(w, x))
-$$</p>
-<p>考虑所有二阶组合</p>
-<p>$$
-\phi(w, x) = x^T W x
-$$</p>
-<p>上式计算量为O(n^2)，通过将交叉项变换为平方差，然后合并同类项，可以将计算量减少到O(n)线性时间复杂度。</p>
-<p>FM：将 W 分解为两个低秩矩阵的乘积！</p>
-<p>$$
-\phi(w, x) = x^T W^T W x, W \in \mathbb{R}^{k \times n} \\
-W = (w_1, w_2, ..., w_n), w_i \in \mathbb{R}^{k}
-$$</p>
-<p>FFM：对每一个特征，将它划分到某个feild，一个特征和不同field的特征交叉时，使用不同的 $(w)$。</p>
-<p>$$
-W_{i,j} = w_{i, f_j}^T w_{j, f_i}
-$$</p>
+<p>论文：Hybrid computing using a neural network with dynamic external memory</p>
+<p>Google Deepmind在nature上的一篇文章。</p>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2016-09-27 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2016-10-14 </span></div>
 
         </div>
         <div id="footer">
