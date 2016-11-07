@@ -5,7 +5,7 @@
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>Deeplearning4j - tracholar's personal knowledge wiki</title>
+        <title>Optimization Methods for Large-Scale Machine Learning - tracholar's personal knowledge wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -35,23 +35,22 @@
         <div id="container">
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;Deeplearning4j</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;Optimization Methods for Large-Scale Machine Learning</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">Deeplearning4j</div>
+<div id="title">Optimization Methods for Large-Scale Machine Learning</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">分布式训练</a></li>
+<li><a href="#_1">关于</a></li>
 </ul>
 </div>
-<h2 id="_1">分布式训练</h2>
-<p>DL4J 支持分布式训练，加快训练速度，目前仅支持数据并行，参数平均方式的训练！</p>
-<div class="hlcode"><pre><span class="n">TrainingMaster</span> <span class="n">tm</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ParameterAveragingTrainingMaster</span><span class="o">.</span><span class="na">Builder</span><span class="o">(</span><span class="kt">int</span> <span class="n">dataSetObjectSize</span><span class="o">)</span>
-            <span class="o">...</span> <span class="o">(</span><span class="n">your</span> <span class="n">configuration</span> <span class="n">here</span><span class="o">)</span>
-            <span class="o">.</span><span class="na">build</span><span class="o">();</span>
-</pre></div>
+<h2 id="_1">关于</h2>
+<p>了解分布式梯度优化方法，来源于综述文章：
+Leon Bottou, Frank E Curtis, Jorge Nocedal, Optimization Methods for Large-Scale Machine Learning, 2016，
+发表于 ICML2016。</p>
+<h2></h2>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2016-09-27 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2016-11-05 </span></div>
 
         </div>
         <div id="footer">
