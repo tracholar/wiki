@@ -263,3 +263,75 @@ Gated Feedback Recurrent Neural	Networks, Chung	et	al, Bengio.	2015
 ## Reference
 1. <http://cs224d.stanford.edu/syllabus.html>
 2. An	Improved	Model	of	Seman4c	Similarity	Based	on	Lexical	Co-Occurrence Rohde	et	al.	2005
+
+
+## NLP 综述
+论文： Natural Language Processing (almost) from Scratch
+
+文章提出一种统一的神经网络结构，可以用在很多自然语言处理任务当中：POS tagging，chunking，NER，semantic role labeling。
+这种方案可以不用针对特定任务进行特征工程和先验知识。
+
+### POS tagging：数据集：Wall Street Journal (WSJ) data
+- Toutanova et al. (2003） 最大熵 + bidirectional dependency network => 97.24%
+- Gim ́enez and Marquez (2004) SVM + 双向维特比译码 => 97.16%
+- Shen et al. (2007) 双向序列分类 => 97.33%
+
+### Chunking
+句法成分标记
+
+- Kudoh and Matsumoto (2000)： 93.48%
+- (Sha and Pereira, 2003; McDonald et al., 2005; Sun et al., 2008)：random fields
+
+
+### Named Entity Recognition
+- Florian et al. (2003)： F1 => 88.76%
+- Ando and Zhang (2005): 89.31%
+
+### Semantic Role Labeling
+[John]ARG0 [ate]REL [the apple]ARG1
+
+预测关系词？
+
+### 神经网络方法
+1. 将词映射到特征向量
+2. 在一个窗口中，将词对应的特征向量拼接成一个大的向量，作为下一层的输入
+3. 一个正常的神经网络，线性层+非线性层 的多次堆叠！
+
+#### Transforming Words into Feature Vectors
+将词 embedding 到一个低维的词向量，也可以理解为一个查找表 W，输入词的索引 idx，输出W(:, idx)，
+而参数 W 通过BP算法学习！
+
+如果加入其它离散特征，把每一个特征做同样的 embedding 操作，每一个特征都有一个查找表 $(W_k)$，这些参数都要通过后续学习。
+最终输出的特征向量是这些离散特征 embedding 后的特征拼接而成！
+
+经过这一层后，每一个词输出为一个 $(d_{wrd})$ 维的向量。
+
+#### Extracting Higher Level Features from Word Feature Vectors
+- Window Approach： 加窗，只使用词的邻居词，将窗内的词对应的向量拼接起来，成为一个大的向量，设窗口为 $(k_{sz})$，
+那么，加窗后的向量长度为 $(d_{wrd} \times k_{sz})$。将这个固定长度的向量输入到一个正常的多层全连接神经网络。
+
+边界效应：对于句子起始和结束的词，在前后补充半个窗口的特殊词“PADDING”，这个词对应的词向量也是通过学习得到的。等价于学习序列的开始和结束！
+
+- Sentence Approach：利用时间一维卷积层 Waibel et al. (1989) ，Time Delay Neural Networks (TDNNs)。
+卷积层可以学习局部特征
+
+卷积层，Max pooling层。最后得到的固定长度的特征向量进入一个标准的全连接神经网络。
+边界通过相同的 PADDING 方法解决不同长度的问题！
+
+### 训练
+#### Word-Level Log-Likelihood
+每一个词是独立的，最大化极大似然函数等价于最小化交叉熵损失函数。
+
+#### Sentence-Level Log-Likelihood
+词的标注之间是不独立的！从一个TAG到另一个TAG可能是不允许的。
+设TAG之间转移用score矩阵 A 表示，最终对一个句子$([x]\_1^T)$ 标注序列$([i]\_1^T)$ 的score是
+标注序列转移score和神经网络输出的score之和！
+
+$$
+s([x]\_1^T, [i]\_1^T, \hat{\theta}) = \sum_{t=1}^T ([A]\_{[i]\_{t-1}, [i]\_t} + [f_{\theta}]\_{[i]\_t,t}) \\\\
+\hat{\theta} = \theta \union \{A_{ij}, \forall i,j \}
+$$
+
+最后输出的是score对所有路径的softmax归一化后的值，解释为路径的条件概率。
+因为路径数目随句子长度字数增长，所以分母上的求和项也有指数个。
+幸运的是，可以在线性时间复杂度内求得。

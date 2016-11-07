@@ -2,4 +2,8 @@
 output
 .DS_Store
 .ipynb_checkpoints/
+*.o
+*.proj
+*.iml
+.idea/
 

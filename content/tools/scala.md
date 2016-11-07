@@ -9,6 +9,9 @@ date: 2016-07-05
 学习scala后，发现scala就是灵活版的java，他通过引入函数式编程的一些概念来达到这个目的，
 并且由于基于JVM，能够复用所有的java库！！如果你嫌java臃肿，不妨试试scala。
 
+- 相关链接：
+    - scala API <http://www.scala-lang.org/>
+    - Twitter教程 <https://twitter.github.io/scala_school/zh_cn/index.html>
 ## 基础语法
 - 不变量`val`，变量`var`
 - 基础类型：
@@ -799,3 +802,37 @@ private implicit def arrayToArrayWritable[T <% Writable: ClassTag](arr: Traversa
 
 ## Test
 包 `http://www.scalatest.org/`
+
+build.sbt 引入测试包
+
+```scala
+libraryDependencies += "org.scalatest" % "scalatest_2.10" % "2.2.6" % "test"
+```
+
+### FlatSpec
+"X should Y," "A must B,"
+
+- assert
+- assertResult
+- assertThrows
+
+Achieving success
+
+### FunSuit
+
+```scala
+import org.scalatest.FunSuite
+
+class SetSuite extends FunSuite {
+
+  test("An empty Set should have size 0") {
+    assert(Set.empty.size == 0)
+  }
+
+  test("Invoking head on an empty Set should produce NoSuchElementException") {
+    assertThrows[NoSuchElementException] {
+      Set.empty.head
+    }
+  }
+}
+```
