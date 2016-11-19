@@ -335,3 +335,230 @@ $$
 最后输出的是score对所有路径的softmax归一化后的值，解释为路径的条件概率。
 因为路径数目随句子长度字数增长，所以分母上的求和项也有指数个。
 幸运的是，可以在线性时间复杂度内求得。
+
+优化算法：动态规划，Viterbi algorithm ！
+
+- 其他方法：
+	- Graph Transformer Networks
+	- Conditional Random Fields
+
+#### Stochastic Gradient
+stochastic gradient (Bottou, 1991)
+
+目标函数的可微性，因为 max 层的引入，导致在某些点不可微，但是随机梯度下降仍然可以找到极小值点！
+
+### 结果
+很不幸，神经网络的结果都不如 baseline！无监督学习加入可能有用？！
+
+### 更多的未标注数据
+利用更多未标注数据，学习词向量，然后初始化 embedding 权重！
+
+- 数据集：
+	- English Wikipedia
+	- Reuters RCV1 (Lewis et al., 2004) dataset
+
+- 排序准则和熵准则
+
+### Training Language Models
+训练一系列词典增大的神经网络，每一个网络用之前的网络初始化 embedding 层！(Bengio et al., 2009)
+
+
+## Sequence to Sequence Learning with Neural Networks
+序列到序列学习！经典文献。来自 Google。
+
+DNN 只能对固定长度的输入，进行建模，但是很多时候需要实现序列到序列的学习：语音识别，机器翻译！
+
+序列学习的方法：用一个RNN（通常是LSTM）将一个序列编码成一个大的固定长度的向量（Encoder），
+然后再用一个RNN将该向量解码成一个新的序列（Decoder）。
+译码方案：Beam-search decoder。
+
+评估指标：BLEU？
+
+一个 trick： 将序列（句子）反序后，加入训练集。？
+
+### 模型
+标准的RNN需要将输入和输出对齐才能用。
+利用标准的 RNN 做编码和译码的方案： Cho et al. [5]
+这种方案的问题在于标准的RNN难以学到长期依赖。
+
+LSTM可以学到长期依赖，编码器将输入序列编码到一个固定长度的向量，解码器是一个标准的 LSTM-LM 形式的解码结构，
+用上述向量初始化该结构的初始隐层状态！解码序列直到输出 **结束标记** 才停止。
+
+- 这篇文章的创新点：
+	- 编码器和解码器采用不同的 LSTM，参数不同，同时学习两种序列的结构
+	- 深层 LSTM 比浅层好，用了4层
+	- 将输入反序而输出不反序，再进行训练， LSTM学得更好！
+
+### 实验
+WMT’14 English to French MT task
+
+解码通过一个从左到右的简单 beam search 方案，每次保存 B 个最可能的前缀！
+每次将这B个前缀扩展，然后再保存最可能的 B 个新的前缀，直到都碰到结束符！
+B=1 就很好了！增加B的值，收益不是很大！？
+
+将输入反序进行训练带来的收益很大！
+
+- 正序：1,2,3 => a,b,c
+- 反序：3,2,1 => a,b,c
+
+> the LSTM’s test perplexity dropped from 5.8 to 4.7, and the test BLEU scores of its decoded translations increased from 25.9 to 30.6
+
+作者给了一个简单的解释：不反序，第一个词..... 没看懂
+
+比 baseline 好，但比最好的结果还是稍微差点。
+baseline：phrase-based SMT system？
+
+H. Schwenk. University le mans. http://www-lium.univ-lemans.fr/~schwenk/cslm_joint_paper/,
+2014. [Online; accessed 03-September-2014]
+
+## RNN for QA
+- 一般的 RNN 应用: 词序列（句子） => 连续值或者有限的离散值
+- QA： 词序列（句子） =>  富文本
+
+### Matching Text to Entities: Quiz Bowl
+对同一个结果，需要有冗余的样本进行学习。
+
+模型：dependency-tree rnn (dt-rnn)，对语法变化具有鲁棒性，同时训练问题和答案，映射到同一个向量空间。
+
+问题：词之间的这个树结构怎么得到的？！De Marneffe et al., 2006
+
+- 每一个关系的终止节点（词）通过矩阵 $(W_v \in \mathbb{R}^{d \times d})$ 映射到隐层。
+- 中间节点也关联一个词，通过下式将该词和子节点映射到隐层。
+
+$$
+h_n = (W_v w_n +b + \sum_{k \in K(n)} W_{R(n, k)} h_k)
+$$
+
+权重 $(W_{R(n, k)})$ 描述当前词n与子节点隐层 $(h_k)$ 之间的组合关系。
+
+设S是所有的节点，给定一个句子，设词c是正确结果，Z是所有不正确的结果集合。那么对这一个样本，损失函数为
+
+$$
+C(S, \theta) = \sum_{s \in S} \sum_{z \in Z} L(rank(c, s, Z)) \max(0, 1- x_c h_s + x_z h_s) \\\\
+L(r) = \sum_{i=1}^r 1/i
+$$
+
+## Image retrieval by Sentences
+论文：Grounded Compositional Semantics for Finding and Describing Images with Sentences, 2013, Richard Socher, **Andrej Karpathy**, Quoc V. Le*, Christopher D. Manning, **Andrew Y. Ng**
+
+DT—RNN：CT-RNN, Recurrent NN
+
+将图像和句子映射到同一个空间，这样就可以用一个来查另外一个了。
+
+zero shot learning
+
+最简单的将词向量变成句子或短语的方式是，简单地线性平均这些词向量，（词向量中的 bag of word）。
+RNN 的方法就没有这些问题。
+
+句子 parsed by the dependency parser of de Marneffe et al. (2006)
+
+每一个句子被表达为一个词，词向量序列， $(s = ( (w_1, x_{w_1}), (w_2, x_{w_2}), ..., (w_n, x_{w_n}) ))$。
+parse后得到树状结构，可以用(孩子，父亲)对来表示 $(d(s) = \{ (i, j) \})$。
+最后输入 DT-RNN 的样本是两者组成的 (s, d)
+
+图像特征提取是用 DNN(Le et al., 2012)，利用未标注的web图片和标注的 ImageNet 训练学出来的，dim=4096。
+输入：200x200，使用了三个层：滤波（CNN），pooling(L2)，local contrast normalization.
+
+local contrast normalization: 将输入的子图块（文章中5x5）减去均值，除以方差进行归一化。 有点像 layer nomalize.
+
+- Multimodal Mappings
+	- 固定图片特征4096维
+	- 联合训练图片特征向量映射到联合空间矩阵和DT-RNN参数。
+
+损失函数：大间隔损失函数，略。
+
+
+## Deep Visual-Semantic Alignments for Generating Image Descriptions
+论文：Deep Visual-Semantic Alignments for Generating Image Descriptions, **Andrej Karpathy**, **Li Fei-Fei**
+
+- 图像特征： RCNN
+- 文本特征： 双向RNN
+
+将文本特征和图像特征映射到同一个空间，并学习图像块和文本的对齐向量。
+
+
+## RNN语言模型
+Recurrent neural network based language model
+
+动态模型：在训练的时候，每个样本在多个epoch出现，测试的时候，也更新模型，不过一个样本只出现在一个epoch中
+
+cache techiques。
+
+### 优化技巧
+1. 将出现频率低于某个阈值的词映射为同一个词，称作rare token。条件概率变为：
+
+$$
+p(w_i(t+1)| w(t), s(t-1)) = \begin{cases}
+							y_{rare}(t)/C_{rare}, w_i(t+1) is rare. \\\\
+							y_i(t), otherwise
+							\end{cases}
+$$
+
+s 是隐层，即上下文向量。因为 rare 是多个词概率之和，所以对某个词来说，它的概率就要把 rare 的概率除以rare词的数目。
+对这些词来说，概率都是一样的。
+
+RNN LM： 6小时； Bengio：几天，24小时 sampling
+
+## A Neural Probabilistic Language Model
+Yoshua Bengio，2003.
+
+传统的 n-gram 模型的问题，维数灾难。随着n增大，测试集中的 n-gram 是训练集中没有的概率越来越大。
+解决之道：神经网络模型，词的分布式表达。
+
+1. 学习到了词的分布是表达
+2. 基于这种词的表达的条件概率模型，语言模型
+
+
+维数灾难：建模离散随机变量的联合分布时，10个变量就有 |V|^10 个可能的状态（参数）。
+而建模连续变量就容易一些，可以用神经网络，等等。（连续函数一般具有局部光滑，即局部可微）。
+
+传统n-gram的问题：考虑的近邻词数目太少，最好的结果也就是trigram；
+没有考虑到词之间的相似性。
+
+维数灾难解决办法：词的分布式表达。
+
+n-gram 语言模型，也会通过所有的gram进行平滑。
+
+perplexity， 条件概率的倒数的集合平均值！
+
+impotance sampling: Quick training of probabilistic neural nets by importance sampling， Bengio, 2003.
+
+## EXTENSIONS OF RECURRENT NEURAL NETWORK LANGUAGE MODEL
+Toma ́sˇ Mikolov。问题，计算复杂度太高。要计算 softmax
+
+BPTT， 4-5步就可以达到不错的精度了。
+
+将输出层分解，减少计算量？？？
+
+## Opinion Mining with Deep Recurrent Neural Networks
+将观点挖掘作为序列标注的问题。
+
+- BIO tagging scheme：
+	- B，表达观点的开始位置
+	- I，表达观点的词中
+	- O，词外
+
+3-4层后，性能也上不去了！
+
+## Gated Feedback Recurrent Neural Networks
+1. 多层 RNN（简单RNN， LSTM， GRU都可以）
+2. 不同层RNN互相连接，通过全局 rest 门控制不同层之间的交互
+
+其中，第i层到第j层的全局 reset 门，由当前时刻第 j-1 层的输入（对于第一层，是x），
+以及上一时刻所有的隐层共同决定，如下式：
+
+$$
+g^{i \rightarrow j} = \sigma(w_g^{i \rightarrow j} h_t^{j-1} + u_g^{i \rightarrow j} h_{t-1}^{\*})
+$$
+
+隐层的更新，将单层隐态更新方程中上一时刻隐层项，变成对所有隐层通过全局 reset 门的组合。
+所有类型的 RNN如LSTM，GRU都适用，详细见论文。
+
+- 试验任务：
+	- character-level 语言模型，评估指标 bits-per-character
+	- python 程序结果预测：输入一段python程序，要求预测输出结果。every input script ends with a print statement。 属于 sequence to sequence 的问题。通过调节程序的难度，可以在不同难度上评估不同模型的优劣。
+
+## Recursive Deep Models for Semantic Compositionality Over a Sentiment Treebank
+作者：Richard Socher, Alex Perelygin, Jean Y. Wu, Jason Chuang, Christopher D. Manning, **Andrew Y. Ng** and Christopher Potts
+
+Semantic vector spaces：？

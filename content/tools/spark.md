@@ -580,6 +580,7 @@ val log = Logger.getLogger(getClass.getName)
 log.info("info")
 ```
 
+- 如果对RDD操作里面有随机的因素在里面，那么每次操作会不一样！！
 
 1. Spark in Action [BOOK] <https://zhangyi.gitbooks.io/spark-in-action>
 2. Spark Programming Guide <https://spark.apache.org/docs/latest/programming-guide.html>

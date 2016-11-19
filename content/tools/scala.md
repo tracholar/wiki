@@ -127,7 +127,7 @@ object Timer {
 Timer.currentCount()
 ```
 - 函数即对象.
-函数是一些特质的集合。具体来说，具有一个参数的函数是Function1特质的一个实例。这个特征定义了apply()语法糖，让你调用一个对象时就像你在调用一个函数。
+函数是一些特质的集合。具体来说，具有一个参数的函数是Function1特质的一个实例。这个特征定义了`apply()`语法糖，让你调用一个对象时就像你在调用一个函数。
 
 ```scala
 object addOne extends Function1[Int, Int] {
@@ -150,6 +150,7 @@ times match {
     case _ => "some others"
 }
 
+// 守卫匹配
 times match {
     case i if i == 1 => "one"
     case i if i == 2 => "two"
@@ -336,7 +337,12 @@ scala> partial(0)
 res28: String = something else
 ```
 
+模式匹配其实是一个偏函数！偏函数是函数的子类，所以所有在使用函数的地方都可以使用偏函数，即模式匹配！
+
 ## 类型，静态类型
+随着类型系统表达能力的提高，我们可以生产更可靠的代码。
+所有的类型信息会在编译时被删去，因为它已不再需要。这就是所谓的擦除。
+
 - 参数化多态，秩1多态性rank-one。下面是一个错误的例子，将会报编译错误。
 
 ```scala
@@ -461,7 +467,7 @@ HI
 HI
 ```
 
-
+可以利用 Scala.math 库 Numeric 对数字类型变量进行限制
 
 
 
@@ -836,3 +842,5 @@ class SetSuite extends FunSuite {
   }
 }
 ```
+
+现在用的是3.0， intellij 好像支持得不好。最好还是用 2.2.6吧！
