@@ -88,10 +88,34 @@
 <li><a href="#_9">训练</a><ul>
 <li><a href="#word-level-log-likelihood">Word-Level Log-Likelihood</a></li>
 <li><a href="#sentence-level-log-likelihood">Sentence-Level Log-Likelihood</a></li>
+<li><a href="#stochastic-gradient">Stochastic Gradient</a></li>
 </ul>
 </li>
+<li><a href="#_10">结果</a></li>
+<li><a href="#_11">更多的未标注数据</a></li>
+<li><a href="#training-language-models">Training Language Models</a></li>
 </ul>
 </li>
+<li><a href="#sequence-to-sequence-learning-with-neural-networks">Sequence to Sequence Learning with Neural Networks</a><ul>
+<li><a href="#_12">模型</a></li>
+<li><a href="#_13">实验</a></li>
+</ul>
+</li>
+<li><a href="#rnn-for-qa">RNN for QA</a><ul>
+<li><a href="#matching-text-to-entities-quiz-bowl">Matching Text to Entities: Quiz Bowl</a></li>
+</ul>
+</li>
+<li><a href="#image-retrieval-by-sentences">Image retrieval by Sentences</a></li>
+<li><a href="#deep-visual-semantic-alignments-for-generating-image-descriptions">Deep Visual-Semantic Alignments for Generating Image Descriptions</a></li>
+<li><a href="#rnn_2">RNN语言模型</a><ul>
+<li><a href="#_14">优化技巧</a></li>
+</ul>
+</li>
+<li><a href="#a-neural-probabilistic-language-model">A Neural Probabilistic Language Model</a></li>
+<li><a href="#extensions-of-recurrent-neural-network-language-model">EXTENSIONS OF RECURRENT NEURAL NETWORK LANGUAGE MODEL</a></li>
+<li><a href="#opinion-mining-with-deep-recurrent-neural-networks">Opinion Mining with Deep Recurrent Neural Networks</a></li>
+<li><a href="#gated-feedback-recurrent-neural-networks">Gated Feedback Recurrent Neural Networks</a></li>
+<li><a href="#recursive-deep-models-for-semantic-compositionality-over-a-sentiment-treebank">Recursive Deep Models for Semantic Compositionality Over a Sentiment Treebank</a></li>
 </ul>
 </li>
 </ul>
@@ -436,6 +460,196 @@ $$</p>
 <p>最后输出的是score对所有路径的softmax归一化后的值，解释为路径的条件概率。
 因为路径数目随句子长度字数增长，所以分母上的求和项也有指数个。
 幸运的是，可以在线性时间复杂度内求得。</p>
+<p>优化算法：动态规划，Viterbi algorithm ！</p>
+<ul>
+<li>其他方法：<ul>
+<li>Graph Transformer Networks</li>
+<li>Conditional Random Fields</li>
+</ul>
+</li>
+</ul>
+<h4 id="stochastic-gradient">Stochastic Gradient</h4>
+<p>stochastic gradient (Bottou, 1991)</p>
+<p>目标函数的可微性，因为 max 层的引入，导致在某些点不可微，但是随机梯度下降仍然可以找到极小值点！</p>
+<h3 id="_10">结果</h3>
+<p>很不幸，神经网络的结果都不如 baseline！无监督学习加入可能有用？！</p>
+<h3 id="_11">更多的未标注数据</h3>
+<p>利用更多未标注数据，学习词向量，然后初始化 embedding 权重！</p>
+<ul>
+<li>
+<p>数据集：</p>
+<ul>
+<li>English Wikipedia</li>
+<li>Reuters RCV1 (Lewis et al., 2004) dataset</li>
+</ul>
+</li>
+<li>
+<p>排序准则和熵准则</p>
+</li>
+</ul>
+<h3 id="training-language-models">Training Language Models</h3>
+<p>训练一系列词典增大的神经网络，每一个网络用之前的网络初始化 embedding 层！(Bengio et al., 2009)</p>
+<h2 id="sequence-to-sequence-learning-with-neural-networks">Sequence to Sequence Learning with Neural Networks</h2>
+<p>序列到序列学习！经典文献。来自 Google。</p>
+<p>DNN 只能对固定长度的输入，进行建模，但是很多时候需要实现序列到序列的学习：语音识别，机器翻译！</p>
+<p>序列学习的方法：用一个RNN（通常是LSTM）将一个序列编码成一个大的固定长度的向量（Encoder），
+然后再用一个RNN将该向量解码成一个新的序列（Decoder）。
+译码方案：Beam-search decoder。</p>
+<p>评估指标：BLEU？</p>
+<p>一个 trick： 将序列（句子）反序后，加入训练集。？</p>
+<h3 id="_12">模型</h3>
+<p>标准的RNN需要将输入和输出对齐才能用。
+利用标准的 RNN 做编码和译码的方案： Cho et al. [5]
+这种方案的问题在于标准的RNN难以学到长期依赖。</p>
+<p>LSTM可以学到长期依赖，编码器将输入序列编码到一个固定长度的向量，解码器是一个标准的 LSTM-LM 形式的解码结构，
+用上述向量初始化该结构的初始隐层状态！解码序列直到输出 <strong>结束标记</strong> 才停止。</p>
+<ul>
+<li>这篇文章的创新点：<ul>
+<li>编码器和解码器采用不同的 LSTM，参数不同，同时学习两种序列的结构</li>
+<li>深层 LSTM 比浅层好，用了4层</li>
+<li>将输入反序而输出不反序，再进行训练， LSTM学得更好！</li>
+</ul>
+</li>
+</ul>
+<h3 id="_13">实验</h3>
+<p>WMT’14 English to French MT task</p>
+<p>解码通过一个从左到右的简单 beam search 方案，每次保存 B 个最可能的前缀！
+每次将这B个前缀扩展，然后再保存最可能的 B 个新的前缀，直到都碰到结束符！
+B=1 就很好了！增加B的值，收益不是很大！？</p>
+<p>将输入反序进行训练带来的收益很大！</p>
+<ul>
+<li>正序：1,2,3 =&gt; a,b,c</li>
+<li>反序：3,2,1 =&gt; a,b,c</li>
+</ul>
+<blockquote>
+<p>the LSTM’s test perplexity dropped from 5.8 to 4.7, and the test BLEU scores of its decoded translations increased from 25.9 to 30.6</p>
+</blockquote>
+<p>作者给了一个简单的解释：不反序，第一个词..... 没看懂</p>
+<p>比 baseline 好，但比最好的结果还是稍微差点。
+baseline：phrase-based SMT system？</p>
+<p>H. Schwenk. University le mans. http://www-lium.univ-lemans.fr/~schwenk/cslm_joint_paper/,
+2014. [Online; accessed 03-September-2014]</p>
+<h2 id="rnn-for-qa">RNN for QA</h2>
+<ul>
+<li>一般的 RNN 应用: 词序列（句子） =&gt; 连续值或者有限的离散值</li>
+<li>QA： 词序列（句子） =&gt;  富文本</li>
+</ul>
+<h3 id="matching-text-to-entities-quiz-bowl">Matching Text to Entities: Quiz Bowl</h3>
+<p>对同一个结果，需要有冗余的样本进行学习。</p>
+<p>模型：dependency-tree rnn (dt-rnn)，对语法变化具有鲁棒性，同时训练问题和答案，映射到同一个向量空间。</p>
+<p>问题：词之间的这个树结构怎么得到的？！De Marneffe et al., 2006</p>
+<ul>
+<li>每一个关系的终止节点（词）通过矩阵 $(W_v \in \mathbb{R}^{d \times d})$ 映射到隐层。</li>
+<li>中间节点也关联一个词，通过下式将该词和子节点映射到隐层。</li>
+</ul>
+<p>$$
+h_n = (W_v w_n +b + \sum_{k \in K(n)} W_{R(n, k)} h_k)
+$$</p>
+<p>权重 $(W_{R(n, k)})$ 描述当前词n与子节点隐层 $(h_k)$ 之间的组合关系。</p>
+<p>设S是所有的节点，给定一个句子，设词c是正确结果，Z是所有不正确的结果集合。那么对这一个样本，损失函数为</p>
+<p>$$
+C(S, \theta) = \sum_{s \in S} \sum_{z \in Z} L(rank(c, s, Z)) \max(0, 1- x_c h_s + x_z h_s) \\
+L(r) = \sum_{i=1}^r 1/i
+$$</p>
+<h2 id="image-retrieval-by-sentences">Image retrieval by Sentences</h2>
+<p>论文：Grounded Compositional Semantics for Finding and Describing Images with Sentences, 2013, Richard Socher, <strong>Andrej Karpathy</strong>, Quoc V. Le*, Christopher D. Manning, <strong>Andrew Y. Ng</strong></p>
+<p>DT—RNN：CT-RNN, Recurrent NN</p>
+<p>将图像和句子映射到同一个空间，这样就可以用一个来查另外一个了。</p>
+<p>zero shot learning</p>
+<p>最简单的将词向量变成句子或短语的方式是，简单地线性平均这些词向量，（词向量中的 bag of word）。
+RNN 的方法就没有这些问题。</p>
+<p>句子 parsed by the dependency parser of de Marneffe et al. (2006)</p>
+<p>每一个句子被表达为一个词，词向量序列， $(s = ( (w_1, x_{w_1}), (w_2, x_{w_2}), ..., (w_n, x_{w_n}) ))$。
+parse后得到树状结构，可以用(孩子，父亲)对来表示 $(d(s) = { (i, j) })$。
+最后输入 DT-RNN 的样本是两者组成的 (s, d)</p>
+<p>图像特征提取是用 DNN(Le et al., 2012)，利用未标注的web图片和标注的 ImageNet 训练学出来的，dim=4096。
+输入：200x200，使用了三个层：滤波（CNN），pooling(L2)，local contrast normalization.</p>
+<p>local contrast normalization: 将输入的子图块（文章中5x5）减去均值，除以方差进行归一化。 有点像 layer nomalize.</p>
+<ul>
+<li>Multimodal Mappings
+    - 固定图片特征4096维<ul>
+<li>联合训练图片特征向量映射到联合空间矩阵和DT-RNN参数。</li>
+</ul>
+</li>
+</ul>
+<p>损失函数：大间隔损失函数，略。</p>
+<h2 id="deep-visual-semantic-alignments-for-generating-image-descriptions">Deep Visual-Semantic Alignments for Generating Image Descriptions</h2>
+<p>论文：Deep Visual-Semantic Alignments for Generating Image Descriptions, <strong>Andrej Karpathy</strong>, <strong>Li Fei-Fei</strong></p>
+<ul>
+<li>图像特征： RCNN</li>
+<li>文本特征： 双向RNN</li>
+</ul>
+<p>将文本特征和图像特征映射到同一个空间，并学习图像块和文本的对齐向量。</p>
+<h2 id="rnn_2">RNN语言模型</h2>
+<p>Recurrent neural network based language model</p>
+<p>动态模型：在训练的时候，每个样本在多个epoch出现，测试的时候，也更新模型，不过一个样本只出现在一个epoch中</p>
+<p>cache techiques。</p>
+<h3 id="_14">优化技巧</h3>
+<ol>
+<li>将出现频率低于某个阈值的词映射为同一个词，称作rare token。条件概率变为：</li>
+</ol>
+<p>$$
+p(w_i(t+1)| w(t), s(t-1)) = \begin{cases}
+                            y_{rare}(t)/C_{rare}, w_i(t+1) is rare. \\
+                            y_i(t), otherwise
+                            \end{cases}
+$$</p>
+<p>s 是隐层，即上下文向量。因为 rare 是多个词概率之和，所以对某个词来说，它的概率就要把 rare 的概率除以rare词的数目。
+对这些词来说，概率都是一样的。</p>
+<p>RNN LM： 6小时； Bengio：几天，24小时 sampling</p>
+<h2 id="a-neural-probabilistic-language-model">A Neural Probabilistic Language Model</h2>
+<p>Yoshua Bengio，2003.</p>
+<p>传统的 n-gram 模型的问题，维数灾难。随着n增大，测试集中的 n-gram 是训练集中没有的概率越来越大。
+解决之道：神经网络模型，词的分布式表达。</p>
+<ol>
+<li>学习到了词的分布是表达</li>
+<li>基于这种词的表达的条件概率模型，语言模型</li>
+</ol>
+<p>维数灾难：建模离散随机变量的联合分布时，10个变量就有 |V|^10 个可能的状态（参数）。
+而建模连续变量就容易一些，可以用神经网络，等等。（连续函数一般具有局部光滑，即局部可微）。</p>
+<p>传统n-gram的问题：考虑的近邻词数目太少，最好的结果也就是trigram；
+没有考虑到词之间的相似性。</p>
+<p>维数灾难解决办法：词的分布式表达。</p>
+<p>n-gram 语言模型，也会通过所有的gram进行平滑。</p>
+<p>perplexity， 条件概率的倒数的集合平均值！</p>
+<p>impotance sampling: Quick training of probabilistic neural nets by importance sampling， Bengio, 2003.</p>
+<h2 id="extensions-of-recurrent-neural-network-language-model">EXTENSIONS OF RECURRENT NEURAL NETWORK LANGUAGE MODEL</h2>
+<p>Toma ́sˇ Mikolov。问题，计算复杂度太高。要计算 softmax</p>
+<p>BPTT， 4-5步就可以达到不错的精度了。</p>
+<p>将输出层分解，减少计算量？？？</p>
+<h2 id="opinion-mining-with-deep-recurrent-neural-networks">Opinion Mining with Deep Recurrent Neural Networks</h2>
+<p>将观点挖掘作为序列标注的问题。</p>
+<ul>
+<li>BIO tagging scheme：<ul>
+<li>B，表达观点的开始位置</li>
+<li>I，表达观点的词中</li>
+<li>O，词外</li>
+</ul>
+</li>
+</ul>
+<p>3-4层后，性能也上不去了！</p>
+<h2 id="gated-feedback-recurrent-neural-networks">Gated Feedback Recurrent Neural Networks</h2>
+<ol>
+<li>多层 RNN（简单RNN， LSTM， GRU都可以）</li>
+<li>不同层RNN互相连接，通过全局 rest 门控制不同层之间的交互</li>
+</ol>
+<p>其中，第i层到第j层的全局 reset 门，由当前时刻第 j-1 层的输入（对于第一层，是x），
+以及上一时刻所有的隐层共同决定，如下式：</p>
+<p>$$
+g^{i \rightarrow j} = \sigma(w_g^{i \rightarrow j} h_t^{j-1} + u_g^{i \rightarrow j} h_{t-1}^{*})
+$$</p>
+<p>隐层的更新，将单层隐态更新方程中上一时刻隐层项，变成对所有隐层通过全局 reset 门的组合。
+所有类型的 RNN如LSTM，GRU都适用，详细见论文。</p>
+<ul>
+<li>试验任务：<ul>
+<li>character-level 语言模型，评估指标 bits-per-character</li>
+<li>python 程序结果预测：输入一段python程序，要求预测输出结果。every input script ends with a print statement。 属于 sequence to sequence 的问题。通过调节程序的难度，可以在不同难度上评估不同模型的优劣。</li>
+</ul>
+</li>
+</ul>
+<h2 id="recursive-deep-models-for-semantic-compositionality-over-a-sentiment-treebank">Recursive Deep Models for Semantic Compositionality Over a Sentiment Treebank</h2>
+<p>作者：Richard Socher, Alex Perelygin, Jean Y. Wu, Jason Chuang, Christopher D. Manning, <strong>Andrew Y. Ng</strong> and Christopher Potts</p>
+<p>Semantic vector spaces：？</p>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-06-28 </span></div>
 
