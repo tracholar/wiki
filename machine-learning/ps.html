@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>Parameter Server for Distributed Machine Learning - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;Parameter Server for Distributed Machine Learning</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">Parameter Server for Distributed Machine Learning</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">一个优化问题</a></li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>论文：Parameter Server for Distributed Machine Learning，NIPS2014。</p>
+<h2 id="_2">一个优化问题</h2>
+<p>近似梯度法：</p>
+<p>最小化下述问题</p>
+<p>$$
+f(w) + h(w)
+$$</p>
+<p>定义近似操作：</p>
+<p>$$
+\text{Prox}_{\gamma}(x) = \arg \min_{y \in \mathbb{X}} h(y) + \frac{1}{2 \gamma} || x - y ||^2
+$$</p>
+<p>f是可微的，h有可能不可微，那么，对于学习率 $(\gamma_t &gt; 0)$ 迭代方程是：？</p>
+<p>$$
+w(t + 1) = \text{Prox}_{\gamma_t} [w(t) - \gamma_t \nabla f(w(t))]  \text{for } t \in \mathbb{N}
+$$</p>
+<p>一个博客： <a href="http://blog.csdn.net/lanyanchenxi/article/details/50448640">http://blog.csdn.net/lanyanchenxi/article/details/50448640</a></p>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2016-11-21 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2016 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+    </body>
+</html>
