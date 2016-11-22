@@ -562,3 +562,5 @@ $$
 作者：Richard Socher, Alex Perelygin, Jean Y. Wu, Jason Chuang, Christopher D. Manning, **Andrew Y. Ng** and Christopher Potts
 
 Semantic vector spaces：？
+
+在合并子节点的时候，除了传统RNN的二阶张量线性项，还增加了三阶张量线性项，对短句子建模更有效？！
