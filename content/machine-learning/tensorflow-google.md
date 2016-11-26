@@ -5,7 +5,51 @@ date: 2016-07-01
 ---
 [TOC]
 
-## TensorFlow
+## TensorFlow 白皮书
+第一代分布式机器学习框架： DistBelief。
+第二代：TensorFlow，通用的计算框架！
+
+### 基本概念
+- TensorFlow 的计算被表达为一个有向图(graph)——计算图，它由很多节点(Node)构成
+- 每一个节点有0个或者多个输入，0个或者多个输出，表达了一个计算操作实例
+- 正常边上流动的值被称作张量(tensor)
+- 特殊边：control dependencies：没有数据流过这些边，用来控制依赖关系的
+- 操作（Operation）：对计算的抽象，例如矩阵乘法，加法等。操作可以有属性，所有的属性必须被指定，或者在图构建的时候能够推断出来
+- 内核（Kernel）：操作的一种特殊实现，能够在特定的设备（如CPU，GPU）上运行
+- 会话（Session）：client程序与 TensorFlow 系统交互的方式， 一般创建一次，然后调用 `run` 方法执行计算图的计算操作
+- 变量（Variable）：大多数 tensor 在一次计算后就不存在了，变量在整个计算图计算过程中，可以一直保持在内存。Variable 操作返回一个句柄，指向该类型的可变张量。对这些数据的操作可以通过返回的句柄进行，例如 assign, assignadd操作。一般用来保存模型参数！
+- 实现：单机，分布式。client 通过 session 提交计算任务，master通过 worker 执行计算操作
+
+<img src="/wiki/static/images/tf.png" style="float:left;" width="500" />
+
+- 设备：device，如CPU或者GPU；每一个 worker 关联一个或多个设备。每个设备都一个一个类型，和一个名字，如 `/job:localhost/device:cpu:0`
+或者 `/job:worker/task:17/device:gpu:3`。其他设备类型可以通过注册的机制加入！
+
+
+- 单机执行
+- 多机执行：多机通信方式：TCP or RDMA
+- 容错：一旦检测到错误，就重新开始；变量（Variable）会定期的保存 chekpoint。
+- 梯度计算：会创建一个子图，计算梯度
+- 控制流：支持 条件跳转，switch，以及循环
+- 输入节点：client通过feed灌入数据，或者直接定义输入节点直接访问文件（效率更好）
+- 队列：让子图异步执行的特性！FIFO队列，shuffle 队列
+- 容器（container）：用于存长期可变状态，例如变量
+
+### 优化
+- Common Subexpression Elimination，公共子表达式消除
+- 通过控制流，延迟recevier节点的通信，减少不必要的通信资源消耗
+- 异步 kernel
+- 采用深度优化的库：BLAS，cuBLAS，convolutional，Eigen（已扩展到支持任意维度的张量）
+- 有损压缩，通信的时候采用有损压缩传递数据
+- 数据并行，模型并行！
+
+### 工具
+- TensorBoard：训练过程可视化，计算图结构的可视化
+
+
+
+
+
 
 ## 核心图数据结构
 class tf.Graph

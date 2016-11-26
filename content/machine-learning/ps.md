@@ -30,3 +30,6 @@ w(t + 1) = \text{Prox}\_{\gamma_t} [w(t) - \gamma_t \nabla f(w(t))]  \text{for }
 $$
 
 一个博客： <http://blog.csdn.net/lanyanchenxi/article/details/50448640>
+
+
+- 异步更新，机器学习算法具有容错能力
