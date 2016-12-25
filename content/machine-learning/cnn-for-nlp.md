@@ -166,3 +166,48 @@ s 是时间窗长度，首先将字符embedding到16维的向量！
 > Exploring the impact of the depth of temporal
 > convolutional models on categorization tasks with hundreds or thousands of classes would be an
 > interesting challenge and is left for future research.
+
+
+## CNN 句子建模
+A Convolutional Neural Network for Modelling Sentences，2014.
+
+Dynamic Convolutional Neural Network (DCNN): 采用Dynamic k-Max Pooling，即pooling的时候，选取最大的k个值，而不是一个最大值。
+采用多个滤波器，提取多个特征。
+
+
+- Neural Bag-of-Words (NBoW) models：
+    - 投影层：将 word, sub-word, n-gram 映射到高维 embedding 向量。
+    - 组合：将这些向量组合（求和，均值，加权和等）
+    - 将组合后的向量作为句子的特征表达，传入全连接神经网络进行监督学习。
+- Recursive Neural Network (RecNN）：利用一个额外的 parse tree。
+    - 递归地组合叶子节点
+    - 将根节点的向量作为句子的特征表达，传入全连接神经网络进行监督学习。
+- RNN：最为RecNN 的一个特例，即线性地组合相邻的向量，把最后节点对应的向量作为句子的特征向量。
+- TDNN：Time delay，利用卷积。
+
+一维卷积，即只对时间维度进行卷积。 TDNN对时间维度是卷积，对另一个维度（每个词都对应一个向量）则是全连接，并且采用窄版的卷积。
+Max-TDNN解决可变长度问题：每一个滤波器，最终只得到一个特征，即对卷积后的序列只取一个最大值。最终有几个卷积核，特征的维度就是几。
+最后得到的特征传入全连接神经网络进行监督学习。整个过程是联合优化的。
+
+- 特点：对词序不敏感；不需要额外的语言特征（dependency tree，parse tree)。
+- 缺点：首先于卷积的长度，相当于只考虑 m-gram 的词特征，长距离的词关联无法学到。一个 max-pooling 导致的问题：抹去了顺序的信息。
+
+解决的办法：Dynamic k-max pooling
+
+最后一层的k是固定的，保证最后一层的输出特征数目是定长的，但是中间的k是动态的。
+
+$$
+k_l = \max (k_{top}, \ceil{\frac{L - l}{L} s})
+$$
+
+L 是所有的卷积层数目，l是当前层的序号，s是句子长度，实际上是为了使得pooling是平滑的线性降低维度。
+
+## CNN句子分类
+Convolutional Neural Networks for Sentence Classification，Kim 2014.
+
+- 要点：
+    - 双通道，一个词向量通道可变，用于学习与目标有关的词向量（情感相关），另一个通道不可变，防止过拟合。
+这个很关键，可以参看论文，解决 word2vec 反义词的问题。
+    - 时间卷积，在另一个维度求和
+    - max-over-time pooling
+    - dropout
