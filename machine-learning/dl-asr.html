@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>Deep Neural Networks for Acoustic Modeling in Speech Recognition - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;Deep Neural Networks for Acoustic Modeling in Speech Recognition</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">Deep Neural Networks for Acoustic Modeling in Speech Recognition</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">语音识别现状</a></li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>深度学习在语音识别中的应用。参考文献</p>
+<ul>
+<li><strong>Hinton G E</strong>, Deng L, <strong>Yu D</strong>, et al. Deep Neural Networks for Acoustic Modeling in Speech Recognition[J]. IEEE Signal Processing Magazine, 2012, 29(6).</li>
+</ul>
+<h2 id="_2">语音识别现状</h2>
+<ul>
+<li>GMM-HMM</li>
+<li>GMM 表达 HMM 态之间的关系；</li>
+<li>输入的表达：MFCC（Mel-frequency cepstral coefficients），PLPs（perceptual linear predictive coefficients）；
+以及一阶和二阶时域差分；</li>
+</ul>
+<p><img src="/wiki/static/images/gmm-hmm.png" style="width:300px; float:left;" /></p>
+<ul>
+<li>每一个音节（？）用一个态 s 表示，输入特征 x 到态s的建模 $(P(x | s))$ 采用高斯混合模型 GMM，这是一个生成模型。（利用EM算法，很容易拟合数据）</li>
+<li>用隐马尔科夫模型建模态转移</li>
+<li>DNN 替换 GMM：GMM不能很好的建模低维非线性流形。DNN直接建模条件概率 $(P (s | x))$，然后通过贝叶斯法则得到 $(P(x|s) = P(s|x) * P(x) / P(s))。态的标注通过基本的 HMM-GMM 得到？</li>
+<li>
+<p>TIMIT database； LVCSR</p>
+</li>
+<li>
+<p>逐层的训练 RBM，第一层隐层保持二进制（硬判决的noise可以作为正则防止过拟合），其他层隐层都用实值的概率值。</p>
+</li>
+<li>实值数据（MFCC）建模：高斯贝努力 RBM（Gaussian–Bernoulli RBM (GRBM)），能量函数为：</li>
+</ul>
+<p>$$
+E(v, h) = \sum_{i \in vis} \frac{(v_i - a_i)^2}{2 \sigma_i^2} - \sum_{j \in hid} b_j h_j - \sum_{i,j} \frac{v_i}{\sigma_i} h_j w_{ij}
+$$</p>
+<p>两个条件分布为：</p>
+<p>$$
+p(h_j|v) = \text{logistic}(b_j + \sum_i \frac{v_i}{\sigma_i} w_{ij})  \\
+p(v_i|h) = \mathcal{N}(a_i + \sigma_i \sum_j h_j w_{ij}; \sigma_i^2)
+$$</p>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2016-12-11 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2016 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+    </body>
+</html>

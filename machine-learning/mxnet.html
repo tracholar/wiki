@@ -5,7 +5,7 @@
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>尚未解决的问题集 - tracholar's personal knowledge wiki</title>
+        <title>MXNET学习 - tracholar's personal knowledge wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -35,28 +35,35 @@
         <div id="container">
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;尚未解决的问题集</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;MXNET学习</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">尚未解决的问题集</div>
+<div id="title">MXNET学习</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">关于</a></li>
-<li><a href="#_2">问题列表</a></li>
+<li><a href="#rabit">Rabit</a><ul>
+<li><a href="#checkpoint">checkpoint</a></li>
+<li><a href="#allreduce-and-lazy-preparation">Allreduce and Lazy Preparation</a></li>
+</ul>
+</li>
 </ul>
 </div>
-<h2 id="_1">关于</h2>
-<p>记录尚未解决的问题，带解决。</p>
-<h2 id="_2">问题列表</h2>
-<ul>
-<li>论文：Natural Language Processing (almost) from Scratch，page 15, 求和的递推公式</li>
-<li>评估指标：BLEU？</li>
-<li>Beam-search decoder  ✅</li>
-<li>2014-QA：Dependency tree，问题：词之间的这个树结构怎么得到的？</li>
-<li>WER词错误率，CTC</li>
-</ul>
+<h2 id="rabit">Rabit</h2>
+<p>教程地址：<a href="https://github.com/dmlc/rabit/tree/dev/guide">https://github.com/dmlc/rabit/tree/dev/guide</a></p>
+<p>RABIT：Reliable Allreduce and Broadcast Interface</p>
+<p>两个关键的操作：Allreduce 和 Broadcast</p>
+<p><strong>Allreduce</strong>: 和不同的reduce不同，以 max 操作为例，reduce将很多个节点的值变成一个最大的值，
+而 allreduce 将每一个节点都变成最大值；这在机器学习操作中经常用到，比如LBFGS同步所有节点
+的梯度为全局梯度！</p>
+<p><strong>Broadcast</strong>：和 Spark 的broadcast一样，将一个节点的值广播到所有的节点！</p>
+<p>参考 KMEANS 的例子，了解这两个操作：<a href="https://github.com/dmlc/wormhole/blob/master/learn/kmeans/kmeans.cc">https://github.com/dmlc/wormhole/blob/master/learn/kmeans/kmeans.cc</a></p>
+<h3 id="checkpoint">checkpoint</h3>
+<p>用于每一次迭代保存模型，以此保证容错能力，API：<code>LoadCheckPoint</code>, <code>CheckPoint</code></p>
+<h3 id="allreduce-and-lazy-preparation">Allreduce and Lazy Preparation</h3>
+<div class="hlcode"><pre><span class="n">Allreduce</span><span class="o">&lt;</span><span class="k">operator</span><span class="o">&gt;</span><span class="p">(</span><span class="n">pointer_of_data</span><span class="p">,</span> <span class="n">size_of_data</span><span class="p">);</span>
+</pre></div>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2016-11-07 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2016-12-24 </span></div>
 
         </div>
         <div id="footer">
