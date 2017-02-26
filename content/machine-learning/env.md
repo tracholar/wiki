@@ -4,7 +4,7 @@ layout: page
 date: 2016-06-30 00:00
 ---
 
-## 关于 
+## 关于
 暂时记录了windows和mac系统下遇到的问题。
 
 
@@ -23,8 +23,14 @@ date: 2016-06-30 00:00
 
 ## tensorflow
 
+linux 安装pip可能找不到对应的版本，需要从tensor的github提供的带 non 的whl包安装。
+可能安装后，import会报glibc版本找不到，需要下载 gnu/glibc 对应的版本，编译并安装！
 
+glibc 安装，在一个方便的镜像下载glibc源码，安装
 
-
-
-
+```bash
+mkdir build
+cd build
+../configure --prefix=path-to-install
+make & make install
+```

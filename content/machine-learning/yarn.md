@@ -68,6 +68,7 @@ appContext.setApplicationName(appName);
 
 ApplicationMaster 通过 AMRMClientAsync.CallbackHandler 处理资源相关事件，通常在 onContainersAllocated 事件启动任务。
 
+本地文件可以通过 Client 上传到 HDFS，然后 ContainerLaunchContext.setLocalResources 创建为本地资源，进行调用！
 
 ## 参考
 1. IBM博客 <https://www.ibm.com/developerworks/cn/data/library/bd-hadoopyarn/index.html>
