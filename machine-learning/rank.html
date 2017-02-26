@@ -5,7 +5,7 @@
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>atom使用技巧 - tracholar's personal knowledge wiki</title>
+        <title>Rank 常用方法和模型 - tracholar's personal knowledge wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -35,15 +35,30 @@
         <div id="container">
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tools">tools</a>&nbsp;»&nbsp;atom使用技巧</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;Rank 常用方法和模型</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">atom使用技巧</div>
+<div id="title">Rank 常用方法和模型</div>
 <div id="content">
-  <div class="toc"><span class="toctitle">Table of Contents</span><ul></ul>
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">逻辑回归</a></li>
+<li><a href="#ranksvm">rankSVM</a></li>
+<li><a href="#lambda-rank">lambda rank</a></li>
+</ul>
 </div>
+<h2 id="_1">关于</h2>
+<p>排序是机器学习算法在业界用得比较多的场景，很多问题也可以转化为排序的问题。</p>
+<h2 id="_2">逻辑回归</h2>
+<p>例如点击率预估，用户偏好等。排序问题被当做二分类预测问题，用概率值进行排序，一般会关注 AUC 指标。</p>
+<h2 id="ranksvm">rankSVM</h2>
+<p>直接优化 AUC，并借鉴 SVM 大间隔的思想，构造 rank loss:</p>
+<p>$$
+loss =
+$$</p>
+<h2 id="lambda-rank">lambda rank</h2>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2016-07-21 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2016-08-19 </span></div>
 
         </div>
         <div id="footer">

@@ -42,7 +42,8 @@
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">关于</a></li>
-<li><a href="#_2">数据结构</a><ul>
+<li><a href="#_2">安装</a></li>
+<li><a href="#_3">数据结构</a><ul>
 <li><a href="#list">List</a></li>
 </ul>
 </li>
@@ -52,7 +53,14 @@
 <p>深感需要一门语言作为个人核心语言，python 很不错，所以打算深入学习这门语言。
 于是，刷一遍python官方文档很有必要！
 <a href="https://docs.python.org/2/tutorial/index.html">官方文档地址</a></p>
-<h2 id="_2">数据结构</h2>
+<h2 id="_2">安装</h2>
+<p>WINDOW平台直接安装编译好的二进制码就行，按照正常软件安装流程安装。</p>
+<p>MAC 可以先安装 brew, 然后 <code>brew install python</code> 一般系统自带 python</p>
+<p>Linux 安装，一般自带python。这里介绍一个local模式。</p>
+<p>首先下载 python 对应版本的源代码，然后编译。编译时指定 <code>--prefix=你要安装的目录</code>
+通过将编译后的bin目录加到环境变量<code>PATH</code>最前面的方式，覆盖系统路径中的python。
+在.bashrc中加入代码 <code>export PATH=/path-to-local-python/bin/:$PATH</code></p>
+<h2 id="_3">数据结构</h2>
 <h3 id="list">List</h3>
 <ul>
 <li>可以用来做stack，使用 <code>append</code>, <code>pop</code> 方法！</li>
@@ -64,7 +72,7 @@
         </div>
         <div id="footer">
             <span>
-                Copyright © 2016 tracholar.
+                Copyright © 2017 tracholar.
                 Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
                 Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
             </span>

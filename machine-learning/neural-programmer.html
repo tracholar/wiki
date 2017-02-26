@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>神经程序员 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;神经程序员</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">神经程序员</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">摘要</a></li>
+<li><a href="#_3">模型</a></li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>用神经网络做编程！！</p>
+<ol>
+<li>Neural Programmer: Inducing Latent Programs with Gradient Descent, Arvind Neelakantan, Quoc V Le, Ilya Sutskever, ICLR 2016</li>
+</ol>
+<h2 id="_2">摘要</h2>
+<p>神经网络虽然在很多领域如语音识别，图像识别etc等领域取得了巨大的成功，但是在基本的算术和逻辑代数运算上，
+神经网络的精确学习却很困难！ Neural Programmer 增加了一部分基本的算术和逻辑操作，解决了这一点。</p>
+<blockquote>
+<p>A major limitation of these models is in their inability to learn even simple arithmetic and logic operations.
+recurrent neural networks (RNNs) fail at the task of adding two binary numbers even when the result has less than 10 bits</p>
+</blockquote>
+<p>往梯度中增加高斯噪声，可以提升训练效果，增加泛化能力。</p>
+<h2 id="_3">模型</h2>
+<p>Neural Programmer 由3个部分构成：</p>
+<ol>
+<li>question Recurrent Neural Network (RNN) 处理用自然语言输入的问题</li>
+<li>selector 生成两个概率分布，用于（soft select）选择数据分片和操作</li>
+<li>history RNN 记住历史选择的数据分片和操作</li>
+</ol>
+<p><img src="/wiki/static/images/neural-programmer.png" style="width:500px; float:left" /></p>
+<p>除了操作列表，其他的都可以通过梯度下降，由数据 (question, data source, answer) 三元组样本训练得到！</p>
+<p>data source 以表格形式存在 $(table \in \mathbb{R}^{M \times C})$</p>
+<p>QUESTION MODULE 是一个简单的 RNN 模块，将输入的词序列（分布是表达）编码成一个 d 维的向量q。
+如果问题包含长句子，采用一个双向 RNN。</p>
+<p>预处理将数字单独拿出来，放到一个列表中。</p>
+<p>SELECTOR 生成两个分布，一个是operator的概率分布，一个是数据列的概率分布（问题：数据列是变动的，怎么办？）
+输入是问题的编码向量q（d维)和输入历史的向量h[t]（d维）。</p>
+<p>每一个 operator 编码为一个d维向量！所有的 operator 构成一个矩阵 U。 operator 选择表达式为：</p>
+<p>$$
+\alpha_t^{op} = softmax(U tanh(W^{op} [q; h_t]))
+$$</p>
+<p>数据列名采用问题编码RNN中的词向量表达！或者 RNN phrase embedding。
+所有的列名构成一个矩阵 P！列选择表达为</p>
+<p>$$
+\alpha_t^{col} = softmax(P tanh(W^{col} [q; h_t]))
+$$</p>
+<p>将出现的数字单独拿出来，对于比较操作，需要知道比较的列，即 pivot，</p>
+<p>$$
+\beta_{op} = softmax(Z U(op))  \\
+pivot_{op} = \sum_{i=1}^N \beta(i) qn_i
+$$</p>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2016-12-25 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2017 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+    </body>
+</html>

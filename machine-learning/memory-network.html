@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>Memory Network - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;Memory Network</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">Memory Network</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#memory-network">Memory Network</a></li>
+<li><a href="#a-memorynn-implement-for-text">A MemoryNN Implement for Text</a><ul>
+<li><a href="#_2">基本模型</a></li>
+<li><a href="#_3">训练</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>RNN相当于给神经网络加了记忆单元，做个类比，普通的前馈神经网络（DNN，CNN）就好像是组合逻辑电路；
+而增加了记忆单元的 RNN (LSTM etc)就好像是时序逻辑电路。有了记忆单元的神经网络就能够像图灵机
+一样记忆、推断等高级能力，而不仅仅是像组合逻辑那样只能学一个数学函数！</p>
+<h2 id="memory-network">Memory Network</h2>
+<p>[1] Memory Network, Jason Weston, Sumit Chopra &amp; Antoine Bordes, Facebook AI Research 2015.
+[2] End-To-End Memory Networks, Sainbayar Sukhbaatar, Arthur Szlam, Jason Weston, Rob Fergus 2015.</p>
+<p>RNN 的缺点在于记忆单元太小，所以记忆能力很弱，比如最简单的问题：输入一串单词，输出刚看到的单词，RNN都难以实现(Zaremba &amp; Sutskever, 2014)</p>
+<p>结构：一个记忆单元集合 $(   m = (m_1,m_2, ...)   )$，4个模块：</p>
+<ol>
+<li>I : input feature map, 将输入转换为中间特征表达。</li>
+<li>G : generalization, 根据新的输入更新存储单元的内容。</li>
+<li>O : output feature map, 根据当前的输入和存储单元内容，生成输出结果的特征空间表达。</li>
+<li>R : response, 将输出的特征空间表达转换为目标形式，例如一个文本，或者一个动作。</li>
+</ol>
+<p>给定一个输入 x,例如一个句子，一个视频，</p>
+<ol>
+<li>首先将输入转换为中间表达 $( I(x) )$</li>
+<li>对新的输入x，更新内存 $(m_i = G(m_i, I(x), m), \forall i)$</li>
+<li>对新的输入x 和内存m，计算输出向量 $( o = O(I(x), m) )$</li>
+<li>最后解码输出序列 r = R(o)</li>
+</ol>
+<h2 id="a-memorynn-implement-for-text">A MemoryNN Implement for Text</h2>
+<p>如果上述四个组件是用神经网络来实现，就称作 Memory NN，这些组件可以用任何机器学习的方法！</p>
+<h3 id="_2">基本模型</h3>
+<p>输入是一个句子(I)，文本被存在下一个空的记忆单元，不做任何处理(G)，O 模块根据输入 x 找到k个有关的记忆单元，</p>
+<p>$$
+o_j = O_j(x, m) = \arg\max_{i=1,...,N} s_O([x, m_{o_1}...,m_{o_{i-1}}], m_i)
+$$</p>
+<p>最终输出给 R 的是 $( [x, m_{o_1},..,m_{o_k}]  )$，在这个例子中，R根据这些记忆单元和输入，
+输出一个最匹配的单词</p>
+<p>$$
+r = \arg\max_{w \in W} s_R([x, m_{o_1},..,m_{o_k}], w)
+$$</p>
+<p>这个任务可以用来实现单个单词的问答问题。
+两个匹配函数$(s_O, s_R)$都可以用下列方式建模</p>
+<p>$$
+s(x, y) = \phi_x(x)^T U^T T \phi_y(y)
+$$</p>
+<p>U 是要学习的参数，$(\phi)$是对输入的 embedding 函数。</p>
+<h3 id="_3">训练</h3>
+<p>学习最优的参数 $(U_O, U_R)$ 最小化损失函数，损失函数包含2部分(k=2)，</p>
+<ol>
+<li>选择最匹配的记忆单元带来的风险</li>
+<li>选择最佳response带来的风险，如果用RNN就直接用RNN的损失函数就行</li>
+</ol>
+<p>上述风险都用大间隔损失函数来刻画！</p>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2017-02-22 00:00 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2017 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+    </body>
+</html>
