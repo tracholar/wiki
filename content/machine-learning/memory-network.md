@@ -113,12 +113,12 @@ $$
 
 
 ### 结果
-<img src="/wiki/images/memnn.jpg"  style="width:600px;" />
+<img src="/wiki/static/images/memnn.png"  style="width:600px;" />
 
 - 可以看出 只用 embedding 特征和之前最好结果差不多，稍低，但是加上 BOW 特征，效果马上就提升了9个点。
 - 不同hash策略的影响，word hash 实现了1000倍的加速但是精度减少很明显，cluster hash 在精度只减少1个点的情况下，实现了80倍的加速。
 
-<img src="/wiki/images/memnnqa.jpg"  style="width:600px;" />
+<img src="/wiki/static/images/memnnqa.png"  style="width:600px;" />
 
 - 可以看到时间特征对提升非常显著
 - 输出选取的内存个数k对效果提升也非常显著
