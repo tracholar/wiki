@@ -125,3 +125,8 @@ $$
 - MemNN 完胜 RNN，LSTM
 
 ## End-To-End Memory Networks
+
+
+## Neural Turing Machine
+图灵机三个基本机制：元素操作（算数计算），逻辑流控制（分支），外部存储。
+现代机器学习模型侧重建模复杂数据，缺乏流控制和存储。
