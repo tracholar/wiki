@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>语音识别技术 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;语音识别技术</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">语音识别技术</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#hmm">基于HMM的语音识别技术</a></li>
+<li><a href="#_1">参考</a></li>
+</ul>
+</div>
+<h2 id="hmm">基于HMM的语音识别技术</h2>
+<p>主要参考文献[1]</p>
+<p><img src="/wiki/static/images/hmm-speech-recognition-01.png" style="width:400px;" /></p>
+<p>首先，语音信号被分帧(一般10ms)提取特征，比如 MFCC 特征，得到一系列的特征向量序列 $(Y_{1:T} = y_1,...,y_T)$,这里$(y_i)$都代表一帧的语音特征。语音识别器寻找一个最佳词序列 $(w_{1:L} = w_1,...,w_L)$进行解码，即最大化后验概率 $(P(w|Y))$。
+后验概率建模通常比较困难（现在可以直接用深度学习建模啦），所以 HMM 的语音识别通过条件概率建模，</p>
+<h2 id="_1">参考</h2>
+<ol>
+<li>The Application of Hidden Markov Models in Speech Recognition, Mark Gales, Steve Young, Cambridge University, 2008</li>
+</ol>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2017-03-08 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2017 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+    </body>
+</html>

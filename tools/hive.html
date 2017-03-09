@@ -350,6 +350,13 @@
 <p>略</p>
 <h2 id="udf">UDF</h2>
 <p>UDF，UDAF，UDTF</p>
+<p>HIVE数据类型与 java 数据类型对应关系：</p>
+<div class="hlcode"><pre><span class="nx">hive</span>   <span class="nx">java</span>
+<span class="nx">map</span>    <span class="nx">HashMap</span>
+<span class="nx">array</span>  <span class="nx">ArrayList</span><span class="cp">&lt;?</span><span class="o">&gt;</span>
+</pre></div>
+
+
 <h2 id="join">JOIN</h2>
 <ul>
 <li>多表 JOIN 的时候，当JOIN条件都包含同一个Key的时候，会用同一个 Map/Reduce 处理，例如</li>
