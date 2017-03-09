@@ -130,3 +130,27 @@ $$
 ## Neural Turing Machine
 图灵机三个基本机制：元素操作（算数计算），逻辑流控制（分支），外部存储。
 现代机器学习模型侧重建模复杂数据，缺乏流控制和存储。
+
+RNN 是图灵完备的，即可以实现图灵机的所有操作，即可用图灵机完成的事情，RNN有这种潜能可以解决！
+
+NTM之于RNN，就如图灵机之于有限状态机！最大的区别在于前者有接近无限的存储空间！
+
+NTM 通过 attention 机制实现内存的读取和写入操作。
+
+## 基础研究
+这一部分主要是从心理学、神经科学、语言学等角度阐述 working memory 和 NTM 的相关原理和解释！
+总之一句话：memory是非常重要的。
+
+working memory 在心理学中用于解释短期信息处理能力
+
+1. Baddeley, A., Eysenck, M., and Anderson, M. (2009). Memory. Psychology Press.
+2. Miller, G. A. (1956). The magical number seven, plus or minus two: some limits on our capacity for processing information. Psychological review, 63(2):81.
+
+
+## Recurrent Neural Networks
+与隐马尔科夫模型比较，前者只有有限个离散的状态，而 RNN 的状态是 distributed，具有无限个状态，具有更大的计算能力！
+
+- state：隐马尔科夫模型具有有限个离散状态；RNN具有无限个分布式状态
+- 状态转移概率：隐马尔科夫模型通过转移概率矩阵建模，依赖于当前状态和当前的输入；RNN通过隐层建模，可以是简单的RNN隐层单元，LSTM单元，GRU，甚至更复杂的多层结构，依赖于当前状态和当前的输入。
+- 输出：只依赖于当前的状态，通常用生成模型建模这个条件概率；RNN则用（单层或多层）神经网络建模这个条件概率。
+- 模型训练：隐马尔科夫模型根据输出的结果，用维特比算法解码出状态，转移概率和条件概率通过EM算法优化得到（参考语音识别）；RNN则是端到端用梯度下降联合优化所有参数得到。

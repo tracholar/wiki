@@ -250,7 +250,13 @@ LOAD DATA LOCAL INPATH '/tmp/weblogs/20090603-access.log.gz' INTO TABLE raw;
 ## UDF
 UDF，UDAF，UDTF
 
+HIVE数据类型与 java 数据类型对应关系：
 
+```
+hive   java
+map    HashMap
+array  ArrayList<?>
+```
 ## JOIN
 - 多表 JOIN 的时候，当JOIN条件都包含同一个Key的时候，会用同一个 Map/Reduce 处理，例如
 
