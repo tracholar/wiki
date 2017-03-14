@@ -137,7 +137,7 @@ NTM之于RNN，就如图灵机之于有限状态机！最大的区别在于前�
 
 NTM 通过 attention 机制实现内存的读取和写入操作。
 
-## 基础研究
+### 基础研究
 这一部分主要是从心理学、神经科学、语言学等角度阐述 working memory 和 NTM 的相关原理和解释！
 总之一句话：memory是非常重要的。
 
@@ -147,10 +147,86 @@ working memory 在心理学中用于解释短期信息处理能力
 2. Miller, G. A. (1956). The magical number seven, plus or minus two: some limits on our capacity for processing information. Psychological review, 63(2):81.
 
 
-## Recurrent Neural Networks
+### Recurrent Neural Networks
 与隐马尔科夫模型比较，前者只有有限个离散的状态，而 RNN 的状态是 distributed，具有无限个状态，具有更大的计算能力！
 
 - state：隐马尔科夫模型具有有限个离散状态；RNN具有无限个分布式状态
 - 状态转移概率：隐马尔科夫模型通过转移概率矩阵建模，依赖于当前状态和当前的输入；RNN通过隐层建模，可以是简单的RNN隐层单元，LSTM单元，GRU，甚至更复杂的多层结构，依赖于当前状态和当前的输入。
 - 输出：只依赖于当前的状态，通常用生成模型建模这个条件概率；RNN则用（单层或多层）神经网络建模这个条件概率。
 - 模型训练：隐马尔科夫模型根据输出的结果，用维特比算法解码出状态，转移概率和条件概率通过EM算法优化得到（参考语音识别）；RNN则是端到端用梯度下降联合优化所有参数得到。
+- LSTM 解决RNN梯度消失和爆炸的问题是通过嵌入一个理想积分器？
+
+
+- RNN 的一些应用场景：
+    - 语音识别
+        - Graves, A., Mohamed, A., and Hinton, G. (2013). Speech recognition with deep recurrent neural networks. In Acoustics, Speech and Signal Processing (ICASSP), 2013 IEEE International Conference on, pages 6645–6649. IEEE.
+        - Graves, A. and Jaitly, N. (2014). Towards end-to-end speech recognition with recurrent neural networks. In Proceedings of the 31st International Conference on Machine Learn- ing (ICML-14), pages 1764–1772.
+
+### 神经图灵机结构
+![ntm](/wiki/static/images/ntm.png)
+
+神经图灵机包括两个基础结构：神经网络控制器 controller，memory bank.
+控制器通过输入向量和输出向量和外界交互，和一般的神经网络不同的是，他还会选择性地和内存交互。
+和内存交互的部件成为 head，读写头。读写头通过 attention 机制，对不同的内存读取的值赋予不同的权重！
+
+读写头要读所有的内存岂不是很慢，如何实现稀疏的读和写？
+几个参数：
+
+- $( \mathbf{M}_t )$ $(N \times M)$ 尺寸的内存矩阵，M是每个内存向量的尺寸，N是内存向量的个数
+- $( \mathbf{w}_t )$ 是读头给出的每个内存的权重向量，他应该满足概率约束条件，非负，和为1.
+- 读头读内存后返回的结果为
+
+$$
+\mathbf{r}_t = \sum_i w_t(i) \mathbf{M}_t(i)
+$$
+
+$( \mathbf{M}_t(i) )$ 是行向量，也就是一个内存单元。
+
+写入过程：借鉴了 LSTM 的设计，写过程包括两个部分，forget 和 add.
+
+- 擦除向量 $(\mathbf{e}_t)$ M 个元素全为0-1之间，设写入权重为$(w_t(i))$内存更新方程为
+
+$$
+\tilde{\mathbf{M}}\_t(i) = \mathbf{M}_{t-1}(i)[\mathbf{1} - w_t(i)\mathbf{e}\_t]
+$$
+
+- add 向量 $(\mathbf{a}_t)$，用add 向量更新擦出后的内存
+
+$$
+\mathbf{M}_t(i) = \tilde{\mathbf{M}}_t(i) + w_t(i) \mathbf{a}_t
+$$
+
+- 擦除向量和add向量每一维都是独立的。
+
+### 寻址机制
+即确定读写权重$(w_t)$
+
+<img src="/wiki/static/images/ntm-addressing.png" />
+
+- 两种基本机制：
+    1. 基于内容的寻址：找和控制器发出的值最相似的位置，Hopfield networks 1982：简单、可以获取内存的精确值；不适合算术问题，例如计算 $(x+y)$，寻址跟内容无关
+    2. 基于位置的寻址，可以看做基于内容的寻址的特例，因为位置也可以看做内容的一部分
+
+- 基于内容的寻址原理：每一个 head（读或者写）先生成一个长度为 $(M)$ 的 key vector $(\mathbf{k}_t)$，通过这个向量和内存中的所有向量进行比较，计算相似度 $(K[·, ·])$，相似度在所有的内存上归一化，$(\beta_t)$ 是缩放因子。论文中相似度度量采用向量的余弦相似度
+
+$$
+w_t^c(i) = \frac{\exp\left(\beta_t K[\mathbf{k}_t, \mathbf{M}_t(i)]\right)}{\sum_j \exp\left(\beta_t K[\mathbf{k}_t, \mathbf{M}_t(j)]\right)}
+$$
+
+- 基于位置的寻址：每一个 head 生成一个标量 interpolation gate $(g_t \in (0, 1) )$，利用这个门去控制当前权重向量$(\mathbf{w}_t^c)$ 和历史权重$(\mathbf{w}_{t-1})$混合生成门限权重
+
+$$
+\mathbf{w}\_{t}^g = g_t \mathbf{w}\_t^c + (1 - g_t) \mathbf{w}_{t-1}
+$$
+
+经过插值后，head生成一个shift weighting $(\mathbf{s}_t)$，它是一个向量，刻画了移动的所有可能的整数上的一个分布。这个权重可以通过一个 softmax 层近似，也可以输出单个标量，例如6.7代表$(s_t(6) = 0.3, s_t(7) = 0.7)$，其他都为0. 利用这个向量对插值后的向量加权，可以表达为一个循环卷积
+
+$$
+\tilde{w}\_t(i) = \sum_{j=0}^{N-1} w_t^g(j) s(i - j)
+$$
+
+为了让寻址更加sharp，head 还生成一个变量 $(\gamma_t \ge 1)$，对卷积后的权重做变换得到最终的权重
+
+$$
+w_t(i) = \frac{\tilde{w}\_t(i)^{\gamma_t}}{\sum_j \tilde{w}\_t(j)^{\gamma_t}}
+$$
