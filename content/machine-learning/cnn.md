@@ -81,3 +81,33 @@ $$
 - 通过梯度下降最大化某个神经元的输出，从而找出最优激励图像（BP to Image）**Dumitru Erhan, Yoshua Bengio, Aaron Courville, and Pascal Vincent，Visualizing higher-layer features of a deep network，2009**，没有解释神经元的不变性！？
 - 计算在最优点处的 Hessian 矩阵，理解这种不变性？
 - 解卷积是无监督学习，相当于一个探针，探测一个已经学好的网络
+
+<img src="/wiki/static/images/zfnet-deconv.png" />
+
+- 解卷积过程：将同一层的其他神经元置0，将该层作为解卷积的输入，依次经历了(i) unpool, (ii) rectify and (iii) filter
+- Unpooling: Max-pooling 不可逆，为了解决这个问题，在做 Max-pooling 的时候，用一个 switch 变量记录最大值的位置。*问题，可视化的时候，没有正向卷积过程，这个 switch 变量从哪来？*
+- Rectification：直接将重构信号通过 ReLU？
+- Filtering：将卷积核做水平、垂直翻转后，再进行卷积。这就可以解卷积了？不应该要做个逆滤波？
+
+> 解卷积解释：设原始信号为 $(f)$，卷积核为$(k)$，解卷积核为$(k')$，那么经过卷积和解卷积，信号变为
+> $(f * k * k')$，利用卷积运算的结合律，也可以表达为 $( f * (k * k') )$，如果要使得解卷积后的信号
+> 和原始信号一致，那么需要 $( k * k' = \delta )$，即两个卷积核的卷积为单位冲击函数，也就是
+> $( \sum_{x',y'} k(x - x', y - y') k'(x', y') = \delta(x, y))$，即只有在$(x=0,y=0)$时为1，
+> 其他情况为0。这里将卷积核水平和垂直翻转后，相当于 $( \sum_{x',y'} k(x - x', y - y') k(-x', -y'))$
+> 可以看到，当x和y都为0时取得最大值（达到匹配），其他情况虽然不为0，但小于匹配的时候的值，所以可以看做逆滤波的一种近似实现. 不过简单试验结果表明，这种近似太粗糙了。
+
+- CNN 训练的输入是[-128,128]，居然没有归一化？！初始化是随机取的，幅度为$(10^{-2})$
+
+### 卷积网络可视化
+![zfnet-res](/wiki/static/images/zfnet-res.png)
+
+- 特征可视化：选取TOP9
+- 结构选择：11x11滤波器改为7x7，stride减少到2，从而使得第1，2层滤波器提取到更多有用的信息。？？
+- 遮挡敏感性：测试分类器是否真的检测到了图片中的目标，还是只是用周围的信息。
+- 选取第5层最强的 feature map 的响应值之和，随着遮挡的位置的变化。可视化的结果如图(b)。
+
+![zfnet-res2](/wiki/static/images/zfnet-res2.png)
+
+### 特征泛化能力
+- 利用 ImageNet 学出来的模型，应用到其他任务，例如：Caltech
+- 只改变最后一层，前面的层都固定不变。
