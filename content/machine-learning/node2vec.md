@@ -75,6 +75,7 @@ $$
             \frac{1}{p}, d_{tx} = 0, \\\\
             1, d_{tx}=1,\\\\
             \frac{1}{q}, d_{tx}=2.
+\end{cases}
 $$
 
 $(d_{tx})$是两个节点的距离，p是return参数，q是in-out参数。
