@@ -58,7 +58,7 @@ $$
 - 条件概率为：
 
 $$
-P(c_i=x|c{i-1}=v) = \begin{cases}
+P(c_i=x|c_{i-1}=v) = \begin{cases}
     \frac{\pi_{vx}}{Z}, if (v,x) \in E. \\\\
     0, otherwise
 \end{cases}
@@ -71,7 +71,7 @@ $(\pi_{vx} = w_{vx})$。
 t是上一个节点，v是当前节点，x是下一个可能的节点，系数
 
 $$
-\alpha_{pq}(t, x) = \begin{cases} 
+\alpha_{pq}(t, x) = \begin{cases}
             \frac{1}{p}, d_{tx} = 0, \\\\
             1, d_{tx}=1,\\\\
             \frac{1}{q}, d_{tx}=2.

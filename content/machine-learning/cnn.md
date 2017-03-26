@@ -111,3 +111,19 @@ $$
 ### 特征泛化能力
 - 利用 ImageNet 学出来的模型，应用到其他任务，例如：Caltech
 - 只改变最后一层，前面的层都固定不变。
+
+### 问题
+- 解卷积可视化具体是怎么样做的？
+
+## VGG net
+- 论文：VERY DEEP CONVOLUTIONAL NETWORKS FOR LARGE-SCALE IMAGE RECOGNITION, Simonyan and Zisserman, 2014 @ICLR 2015
+- 重要贡献：通过非常小的卷积核 3x3，提升模型的深度！
+- 1x1 卷积核的使用！
+- 卷积的 stride 保持为1，保证卷积层后空间分辨率是不变的。
+- pooling层保持为 2x2 大小的窗，stride=2.
+- 没有使用 AlexNet 的 Local Response Normalisation 层！没有明显收益！
+
+<img src="/wiki/static/images/vggnet01.png" style="float:left;width:400px;" />
+
+- 用两层3x3的卷积层代替一层5x5卷积层；3层3x3的卷积侧代替一层7x7卷积层；这种方法可以在不减少卷积核的覆盖范围情况下，增加非线性变换次数并减少参数！
+- 1x1卷积层在不影响空间变换情况下，增加非线性变幻的次数！
