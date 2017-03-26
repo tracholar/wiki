@@ -106,7 +106,7 @@ $$</p>
 <li>条件概率为：</li>
 </ul>
 <p>$$
-P(c_i=x|c{i-1}=v) = \begin{cases}
+P(c_i=x|c_{i-1}=v) = \begin{cases}
     \frac{\pi_{vx}}{Z}, if (v,x) \in E. \\
     0, otherwise
 \end{cases}
@@ -116,7 +116,7 @@ $(\pi_{vx} = w_{vx})$。</p>
 <p>对于2阶 random walk，未归一化概率和权重之间的关系为：$(\pi_{vx} = \alpha_{pq}(t,x)w_{vx})$
 t是上一个节点，v是当前节点，x是下一个可能的节点，系数</p>
 <p>$$
-\alpha_{pq}(t, x) = \begin{cases} 
+\alpha_{pq}(t, x) = \begin{cases}
             \frac{1}{p}, d_{tx} = 0, \\
             1, d_{tx}=1,\\
             \frac{1}{q}, d_{tx}=2.

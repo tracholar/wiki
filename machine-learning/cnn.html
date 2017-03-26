@@ -51,8 +51,10 @@
 <li><a href="#zfnet">ZFNet</a><ul>
 <li><a href="#_5">卷积网络可视化</a></li>
 <li><a href="#_6">特征泛化能力</a></li>
+<li><a href="#_7">问题</a></li>
 </ul>
 </li>
+<li><a href="#vgg-net">VGG net</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -165,6 +167,24 @@ $( \sum_{x',y'} k(x - x', y - y') k'(x', y') = \delta(x, y))$，即只有在$(x=
 <ul>
 <li>利用 ImageNet 学出来的模型，应用到其他任务，例如：Caltech</li>
 <li>只改变最后一层，前面的层都固定不变。</li>
+</ul>
+<h3 id="_7">问题</h3>
+<ul>
+<li>解卷积可视化具体是怎么样做的？</li>
+</ul>
+<h2 id="vgg-net">VGG net</h2>
+<ul>
+<li>论文：VERY DEEP CONVOLUTIONAL NETWORKS FOR LARGE-SCALE IMAGE RECOGNITION, Simonyan and Zisserman, 2014 @ICLR 2015</li>
+<li>重要贡献：通过非常小的卷积核 3x3，提升模型的深度！</li>
+<li>1x1 卷积核的使用！</li>
+<li>卷积的 stride 保持为1，保证卷积层后空间分辨率是不变的。</li>
+<li>pooling层保持为 2x2 大小的窗，stride=2.</li>
+<li>没有使用 AlexNet 的 Local Response Normalisation 层！没有明显收益！</li>
+</ul>
+<p><img src="/wiki/static/images/vggnet01.png" style="float:left;width:400px;" /></p>
+<ul>
+<li>用两层3x3的卷积层代替一层5x5卷积层；3层3x3的卷积侧代替一层7x7卷积层；这种方法可以在不减少卷积核的覆盖范围情况下，增加非线性变换次数并减少参数！</li>
+<li>1x1卷积层在不影响空间变换情况下，增加非线性变幻的次数！</li>
 </ul>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2017-03-16 </span></div>
