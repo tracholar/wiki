@@ -1,0 +1,190 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>文本摘要相关算法汇总 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;文本摘要相关算法汇总</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">文本摘要相关算法汇总</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#review">关键短语提取：review</a></li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>汇总文本摘要相关的模型、算法即评估指标</p>
+<h2 id="review">关键短语提取：review</h2>
+<p>论文：Automatic Keyphrase Extraction: A Survey of the State of the Art，Kazi Saidul Hasan and Vincent Ng</p>
+<ul>
+<li>
+<p>定义：自动选择出文档中的重要的、表达主题的短语！确定文档中最有表达能力的少量关键词！</p>
+<ul>
+<li>Peter Turney. 2000. Learning algorithms for keyphrase extraction. Information Retrieval, 2:303–336.</li>
+<li>Takashi Tomokiyo and Matthew Hurst. 2003. A lan- guage model approach to keyphrase extraction. In Proceedings of the ACL Workshop on Multiword Ex- pressions, pages 33–40.</li>
+<li>Zhiyuan Liu, Peng Li, Yabin Zheng, and Maosong Sun. 2009b. Clustering to find exemplar terms for keyphrase extraction. In Proceedings of the 2009 Conference on Empirical Methods in Natural Lan- guage Processing, pages 257–266.</li>
+<li>Zhuoye Ding, Qi Zhang, and Xuanjing Huang. 2011. Keyphrase extraction from online news using binary integer programming. In Proceedings of the 5th In- ternational Joint Conference on Natural Language Processing, pages 165–173.</li>
+<li>Xin Zhao, Jing Jiang, Jing He, Yang Song, Palakorn Achanauparp, Ee-Peng Lim, and Xiaoming Li. 2011. Topical keyphrase extraction from Twitter. In Proceedings of the 49th Annual Meeting of the Association for Computational Linguistics: Human Language Technologies, pages 379–388.</li>
+<li>Zhiyuan Liu, Wenyi Huang, Yabin Zheng, and Maosong Sun. 2010. Automatic keyphrase extrac- tion via topic decomposition. In Proceedings of the 2010 Conference on Empirical Methods in Natural Language Processing, pages 366–376.</li>
+</ul>
+</li>
+<li>
+<p>应用：文档快速、高精度的检索；提升自然语言处理的其他任务：文本摘要，文本分类，观点挖掘，文档索引；</p>
+<ul>
+<li>Yongzheng Zhang, Nur Zincir-Heywood, and Evangelos Milios. 2004. World Wide Web site summariza- tion. Web Intelligence and Agent Systems, 2:39–53.</li>
+<li>Ga ́bor Berend. 2011. Opinion expression mining by exploiting keyphrase extraction. In Proceedings of the 5th International Joint Conference on Natural Language Processing, pages 1162–1170.</li>
+</ul>
+</li>
+<li>
+<p>影响关键词提取的几个主要因素：</p>
+<ul>
+<li>长度：长文档的候选词更多</li>
+<li>结构一致性：科技文档的结构非常一致，可以利用abstract提取关键词！</li>
+<li>主题的变化：科技文档的主题在同一个文档中基本不变，但是对话则经常随时间变化！</li>
+<li>主题想关心：非正式文档的多个主题可能并不相关。</li>
+</ul>
+</li>
+<li>
+<p>关键词提取方法：</p>
+<ul>
+<li>利用一些启发式方法提取一个关键词列表</li>
+<li>利用监督或者无监督学习确定一个关键词是否是正确的关键词</li>
+</ul>
+</li>
+<li>
+<p>候选词选择：</p>
+<ul>
+<li>启发式的规则，减少候选词数目</li>
+<li>停止词列表：移除停止词</li>
+<li>保留特定词性的词：名词、形容词、动词etc</li>
+<li>利用其它信息：允许维基百科词条的 n-gram</li>
+<li>保留满足特定词法模式的 n-gram</li>
+<li>其它减枝技术</li>
+</ul>
+</li>
+<li>监督学习方法：Task Reformulation，feature design</li>
+<li>Task Reformulation：<ul>
+<li>二分类标注：给定一个关键词和文档，预测该关键词是否是该文档的关键词；缺点是不能确定哪些词更有表达能力！<ul>
+<li>Peter Turney. 1999. Learning to extract keyphrases from text. National Research Council Canada, In- stitute for Information Technology, Technical Report ERB-1057.</li>
+<li>Peter Turney. 2000. Learning algorithms for keyphrase extraction. Information Retrieval, 2:303–336.</li>
+<li>Ian H. Witten, Gordon W. Paynter, Eibe Frank, Carl Gutwin, and Craig G. Nevill-Manning. 1999. <strong>KEA</strong>: Practical automatic keyphrase extraction. In Pro- ceedings of the 4th ACM Conference on Digital Li- braries, pages 254–255.</li>
+</ul>
+</li>
+<li>排序方法：pairwise的排序方法效果明显优于二分类的方法 <strong>KEA</strong>！<ul>
+<li>Xin Jiang, Yunhua Hu, and Hang Li. 2009. A ranking approach to keyphrase extraction. In Proceed- ings of the 32nd International ACM SIGIR Confer- ence on Research and Development in Information Retrieval, pages 756–757.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>特征设计：1. 文档内特征；2. 文档外特征</p>
+<ul>
+<li>统计特征：<ol>
+<li>tf*idf,不解释</li>
+<li>第一次出现的位置距文档开头的归一化距离；通常关键词出现在文档的头部</li>
+<li>短语在训练集中作为关键词的次数</li>
+<li>其他统计信息：短语长度，短语跨度（第一次出现和最后一次出现的距离）</li>
+</ol>
+</li>
+<li>结构特征：短语出现在科技文档不同章节的频率，出现在网页metadata的频率etc</li>
+<li>句法特征：当有其他特征时，这类特征没啥用<ul>
+<li>将短语编码为 POS 序列，例如编码为 动词-名词；形容词-名词 etc</li>
+<li>词法后缀序列，貌似只有拉丁语系才有， full-tion, less-tion etc</li>
+</ul>
+</li>
+<li>维基百科类特征：是否作为维基百科词条？etc</li>
+<li>是否作为搜索关键词？</li>
+<li>两个候选词的语义相关性特征！</li>
+</ul>
+</li>
+<li>
+<p>无监督学习方法：</p>
+<ul>
+<li>Graph-Based Ranking:<ul>
+<li>一个词是重要的：1，与大量其他候选词是相关的；2，候选词是重要的！</li>
+<li>词的关系通过共生矩阵来描述（实际上现在可用过词向量来描述啦）</li>
+<li>一个文档的词用一个图来描述，图的节点是词，边的权重是词的关系。一个节点的score由他的邻居的score决定！选出TOP个节点即可！</li>
+<li>TextRank：Rada Mihalcea and Paul Tarau. 2004. TextRank: Bringing order into texts. In Proceedings of the 2004 Conference on Empirical Methods in Natural Language Processing, pages 404–411.</li>
+<li>缺点在于选取的词无法覆盖文档的全部主要信息！</li>
+</ul>
+</li>
+<li>Topic-Based Clustering<ul>
+<li>将候选词按主题聚类</li>
+<li>KeyCluster: 利用维基百科和共生矩阵聚类相似的词，对每一个类（主题）选出最靠近中心的词！缺点在于并不是所有的主题都重要！这种方法给每一个主题相同的权重！</li>
+<li>Topical PageRank：利用textrank对每个主题内的词排序，词的最终score是在各个主题中的score的加权和，权重是该主题在文档中的概率！</li>
+<li>CommunityCluster：保留重要主题下的所有候选词！</li>
+</ul>
+</li>
+<li>Simultaneous Learning</li>
+<li>Language Modeling</li>
+</ul>
+</li>
+<li>评估<ul>
+<li>典型方法：<ol>
+<li>to create a mapping between the keyphrases in the gold standard and those in the system output using exact match</li>
+<li>score the output using evaluation metrics such as precision (P), recall (R), and F-score (F).</li>
+</ol>
+</li>
+<li>BLEU，METEOR, NIST, and ROUGE 解决精确匹配的问题</li>
+<li>R-precision</li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2017-03-27 </span></div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2017 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+    </body>
+</html>
