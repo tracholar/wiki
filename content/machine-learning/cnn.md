@@ -126,4 +126,41 @@ $$
 <img src="/wiki/static/images/vggnet01.png" style="float:left;width:400px;" />
 
 - 用两层3x3的卷积层代替一层5x5卷积层；3层3x3的卷积侧代替一层7x7卷积层；这种方法可以在不减少卷积核的覆盖范围情况下，增加非线性变换次数并减少参数！
-- 1x1卷积层在不影响空间变换情况下，增加非线性变幻的次数！
+- 1x1卷积层在不影响空间变换情况下，增加非线性变幻的次数！Network in network.
+- 训练参数细节：
+    - mini-batch sgd, momentum = 0.9, batch size=256
+    - L2 正则参数5e-4
+    - dropout 0.5，最前面两侧全连接层
+    - 学习率初始值1e-2，当验证集不降低时除以10
+    - 74 epoch
+- 训练图像尺寸：CNN输入块大小是224x224，图像被rescale尺寸为S。S可以是固定大小，也可以是多个分辨率。
+    - 固定尺寸：256，384（用256的权重初始化网络）
+    - 可变尺寸，在[256,512]之间随机变动S，scale jittering.
+- testing:将全连接层变成全卷积层：将最后一层的通道作为class通道，然后在空间上平均得到不同位置的分类概率的平均值！这样就不用切割原始图像为多个块了！只要简答的rescale为固定的Q值即可。
+- 对于固定resclae，取Q=S，对于scale jittering，取Q为S的平均值！
+
+
+<img src="/wiki/static/images/vggnet02.png" style="float:left;width:400px;" />
+<img src="/wiki/static/images/vggnet03.png" style="float:left;width:400px;" />
+<img src="/wiki/static/images/vggnet04.png" style="float:left;width:400px;" />
+
+
+- 单个scale的评估：Q的取值策略如上；试验表明，scale jittering帮助提升效果！
+- 多个scale的评估：Q取值策略，对固定S值，取S-32,S,S+32;对变动S值，取S_min,S_avg,S_max三个值。可以看到，比单个scale效果要好！
+- 多个crop的评估：略
+- 卷积网络融合：将每一个网络输出的多类概率平均。
+- D模型参数数目分析：138M参数！大约是Alex的两倍！
+- 参数主要集中在FC层，而内存消耗主要集中在前面几层！
+
+
+## GoogleLeNet
+- 论文：Going Deeper with Convolutions，CVPR2015
+- 最大创新：增加网络的深度和宽度，但是保持计算代价不变！22层网络！
+- 参数数目只有Alexnet的1/12.
+- Inception结构，借鉴自 network in network.
+- Hebbian principle: neurons that fire together, wire together
+
+> if the probability distribution of the dataset is representable by a large, very sparse deep neural network, then the optimal network topology can be constructed layer after layer by analyzing the correlation statistics of the pre- ceding layer activations and clustering neurons with highly correlated outputs
+
+- 将稀疏矩阵乘法通过聚集后变成 dense matrix 乘法，可以充分利用计算资源。
+- non-uniform deeplearning architectures
