@@ -34,7 +34,6 @@ created in <span class="create-date date"> {{ page.date }} </span>
 | updated in <span class="update-date date"> {{ page.updated }} </span>
 {%- endif -%}
 </div>
-{% endblock %}
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
 <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
@@ -56,3 +55,4 @@ gitment.render('comments')
 // or
 // document.body.appendChild(gitment.render())
 </script>
+{% endblock %}
