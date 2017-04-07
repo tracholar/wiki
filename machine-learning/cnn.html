@@ -226,7 +226,13 @@ $( \sum_{x',y'} k(x - x', y - y') k'(x', y') = \delta(x, y))$，即只有在$(x=
 </blockquote>
 <ul>
 <li>将稀疏矩阵乘法通过聚集后变成 dense matrix 乘法，可以充分利用计算资源。</li>
-<li>non-uniform deeplearning architectures</li>
+<li>non-uniform deep-learning architectures</li>
+</ul>
+<p><img src="/wiki/static/images/inception.png" style="float:left;width:300px;" /></p>
+<ul>
+<li>通过多个不同的滤波器，实现多尺度的抽取；通过1x1滤波器实现降维，减少大尺寸滤波器计算复杂度，也减少了参数！</li>
+<li>22层，为了减少梯度消失效应，增加了中间的输出，以期望中间的特征也有一定的区分度！提供一种正则。
+训练的时候，将这些低层分类的损失函数加到最终损失函数中，作为正则项！结果显示，这种效果不明显。</li>
 </ul>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2017-03-16 </span></div>
