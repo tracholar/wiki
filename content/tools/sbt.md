@@ -296,5 +296,41 @@ base filter ClasspathUtilities.isArchive
 addSbtPlugin("com.typesafe.sbt" % "sbt-site" % "0.7.0")
 ```
 
+- assembly 打包插件，以及shade例子：
+
+```scala
+assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
+
+val jarStartWith = Seq("pmml-","guava-","jpmml-", "json4s-")
+assemblyExcludedJars in assembly := {
+    val cp = (fullClasspath in assembly).value
+
+    val filtered = cp filterNot {f =>
+        jarStartWith.map(s => f.data.getName.startsWith(s)).foldLeft(false)((a,b) => a || b)
+    }
+    cp.foreach{c =>
+        val tag = if(filtered.contains(c)) "  Excluded" else "+ Included"
+        println(s"$tag : ${c.data.getName}")
+    }
+    filtered
+}
+
+val shadedRootPackage = "com.tracholar"
+assemblyShadeRules in assembly := Seq(
+    ShadeRule.rename("com.google.common.**" -> s"$shadedRootPackage.@0").inAll,
+    ShadeRule.rename("org.jpmml.**" -> s"$shadedRootPackage.@0").inAll,
+    ShadeRule.rename("org.dmg.pmml.**" -> s"$shadedRootPackage.@0").inAll
+)
+
+assemblyMergeStrategy in assembly := {
+    case PathList("org","dmg", "pmml", xs @ _*) => MergeStrategy.first
+    case PathList("org","jpmml",  xs @ _*) => MergeStrategy.first
+    case PathList("com","google", xs @ _*) => MergeStrategy.first
+    case PathList("com","tracholar", "spark", xs @ _*) => MergeStrategy.first
+    case x => (assemblyMergeStrategy in assembly).value(x)
+}
+logLevel in assembly := Level.Debug
+```
+
 ## 调试
 传入 `-jvm-debug <port>  Turn on JVM debugging, open at the given port.`参数即可远程调试，例如 `sbt -jvm-debug 5005 run`

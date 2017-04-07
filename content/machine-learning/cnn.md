@@ -163,4 +163,10 @@ $$
 > if the probability distribution of the dataset is representable by a large, very sparse deep neural network, then the optimal network topology can be constructed layer after layer by analyzing the correlation statistics of the pre- ceding layer activations and clustering neurons with highly correlated outputs
 
 - 将稀疏矩阵乘法通过聚集后变成 dense matrix 乘法，可以充分利用计算资源。
-- non-uniform deeplearning architectures
+- non-uniform deep-learning architectures
+
+<img src="/wiki/static/images/inception.png" style="float:left;width:300px;" />
+
+- 通过多个不同的滤波器，实现多尺度的抽取；通过1x1滤波器实现降维，减少大尺寸滤波器计算复杂度，也减少了参数！
+- 22层，为了减少梯度消失效应，增加了中间的输出，以期望中间的特征也有一定的区分度！提供一种正则。
+训练的时候，将这些低层分类的损失函数加到最终损失函数中，作为正则项！结果显示，这种效果不明显。
