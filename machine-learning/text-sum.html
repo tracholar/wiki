@@ -43,6 +43,10 @@
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">关于</a></li>
 <li><a href="#review">关键短语提取：review</a></li>
+<li><a href="#keyword-extraction-from-a-single-document-using-word-co-occurrence-statistical-information">Keyword Extraction from a Single Document using Word Co-occurrence Statistical Information</a></li>
+<li><a href="#textrank">TextRank</a></li>
+<li><a href="#keycluster">KeyCluster</a></li>
+<li><a href="#topical-pagerank">Topical PageRank</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -163,6 +167,74 @@
 </ul>
 </li>
 </ul>
+<h2 id="keyword-extraction-from-a-single-document-using-word-co-occurrence-statistical-information">Keyword Extraction from a Single Document using Word Co-occurrence Statistical Information</h2>
+<p>论文：Keyword Extraction from a Single Document using Word Co-occurrence Statistical Information，Y. MATSUO，M. Ishizuka，2003</p>
+<p>基本思想：只需要单个文档（长文档），首先提取高频词，如果一个词与高频词的共现关系通过卡方检验，就认为是可能的关键词。</p>
+<p>TFIDF：在该文档经常出现，但是在整个语料中出现得不那么频繁的词！</p>
+<ul>
+<li>automatic term recognition，automatic indexing，automatic keyword extraction</li>
+<li>本文的方法只需要一篇文档，不需要语料<ol>
+<li>选出高频词，统计高频词出现的频率</li>
+<li>统计词与高频词的共现矩阵</li>
+</ol>
+</li>
+<li>如果一个词经常与一个高频词子集共现，那么这个词就有高的概率是关键词！这种偏差用卡方统计量来度量</li>
+<li>如果一个词w跟高频词的任何子集都没有特殊的共现关系，那么共现矩阵中w的分布期望值应该就是高频词本身的分布。
+反之，则实际分布与这种期望分布存在较大偏差，可以用卡方统计量度量这种偏差。</li>
+</ul>
+<p>$$
+\chi^2(w) = \sum_{g \in G} \frac{(freq(w, g) - n_w p_g)^2}{n_w p_g}
+$$</p>
+<p>这里w是某个待检验的词，$(g \in G)$ 是高频词，G是高频词组成的集合。$(n_w)$是w在共现矩阵中出现的总数，
+$(p_g)$是高频词g在高频词中的归一化频率。</p>
+<ul>
+<li>优化：<ul>
+<li>针对长短句不同带来的共现偏差，重新定义$(p_g)$为 g出现的句子中词的数目/文档的总词数目; $(n_w)$定义为w出现过的句子中的总词数目！</li>
+<li>增加鲁棒性，防止某个词只跟某一个特定的高频词高度共现，方法是减去这个高度共现的部分，即最大值。</li>
+</ul>
+</li>
+</ul>
+<p>$$
+\chi'^2(w) = \chi^2(w) - \max_{g \in G} \frac{(freq(w, g) - n_w p_g)^2}{n_w p_g}
+$$</p>
+<ul>
+<li>词聚类：将高频词相似的词聚类！词的相似度基于 <a href="https://en.wikipedia.org/wiki/Jensen%E2%80%93Shannon_divergence">Jensen-Shannon divergence</a> 度量！然后采用pairwise聚类，利用交互信息量度量。</li>
+</ul>
+<h2 id="textrank">TextRank</h2>
+<p>论文：TextRank: Bringing Order into Texts，Rada Mihalcea and Paul Tarau，2004</p>
+<p>带权 PageRank</p>
+<p>$$
+WS(V_i) = (1-d) + d \sum_{V_j \in IN(V_i)} \frac{w_{ji}}{\sum_{V_k \in OUT(V_j)} w_{jk}} WS(V_j)
+$$</p>
+<p>WS 是定点的 PageRank score。随机初始化，然后迭代收敛！</p>
+<ul>
+<li>将文本作为一个图：每一个词做顶点，如果两个词出现在同一个上下文窗（大小认为设定，试验中窗大小为2比较好），那么就有一条边。只使用形容词和名词！</li>
+<li>多个词通过后处理得到，例如两个词A，B都在TOPN中，并且这两个词相邻，那么AB就是一个新的关键词</li>
+<li>关键词评估指标，P，R，F1</li>
+<li>句子的相似性通过公共词数目定义，评估指标 ROUGE</li>
+</ul>
+<p>$$
+similarity(S_i, S_j) = \frac{|\{w_k| w_k \in S_i , w_k \in S_j \}|}{\log{|S_i|} + \log{|S_j|}}
+$$</p>
+<h2 id="keycluster">KeyCluster</h2>
+<p>论文：Clustering to Find Exemplar Terms for Keyphrase Extraction，Zhiyuan Liu, Wenyi Huang, Yabin Zheng and Maosong Sun</p>
+<ul>
+<li>关键词的几个目标：可解释性；相关性；对主题的覆盖率</li>
+<li>无监督聚类方法：<ul>
+<li>首先将文档的 term 按照语义聚类，每一类用一个代表 term 表达，每一个类的中心 term</li>
+</ul>
+</li>
+<li>算法流程：<ul>
+<li>候选词选择：过滤停止词等无意义词</li>
+<li>计算 term 间的语义相关性度量：Wikipedia的tfidf，pmi，ngd</li>
+<li>基于相关性将term聚类：Hierarchical Clustering，Spectral Clustering，Affinity Propagation</li>
+<li>使用每个类的代表词提取关键词：选出 代表词 的组合短语作为关键词</li>
+</ul>
+</li>
+</ul>
+<h2 id="topical-pagerank">Topical PageRank</h2>
+<p>论文：Automatic Keyphrase Extraction via Topic Decomposition</p>
+<p>基本思想，pagerank的时候，只关注某一个主题，求出每个term在该主题先的rank后，然后按照文档的主题分布加权得到最终的rank。</p>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2017-03-27 </span></div>
 <div id="comments"></div>
@@ -170,6 +242,7 @@
 <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
 <script type="text/javascript">
 const gitment = new Gitment({
+  title: '文本摘要相关算法汇总',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
