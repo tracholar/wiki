@@ -170,3 +170,67 @@ $$
 - 通过多个不同的滤波器，实现多尺度的抽取；通过1x1滤波器实现降维，减少大尺寸滤波器计算复杂度，也减少了参数！
 - 22层，为了减少梯度消失效应，增加了中间的输出，以期望中间的特征也有一定的区分度！提供一种正则。
 训练的时候，将这些低层分类的损失函数加到最终损失函数中，作为正则项！结果显示，这种效果不明显。
+
+<img src="/wiki/static/images/googlenet.png" />
+
+<img src="/wiki/static/images/googlenet2.png" style="float:right;width:200px;"/>
+
+- GoogLeNet 的网络结构参数如表所示，其中#1x1,#3x3,#5x5分别代表对应的滤波器数目，而 #3×3 reduce 和 #5x5 reduce 分别代表 inception 中3x3滤波器和5x5滤波器前面用作降维的1x1滤波器数目，pool proj代表inception中Pool层后面的1x1滤波器数目！
+- 完全移除了全连接层，取而代之的是 avg pool 层（top-1准确率提高了0.6%）！但是保留了dropout！
+- 为了减少梯度消失的问题，在中间加了两个输出抽头！抽头的结构如下：
+    - 5x5 avg pooling, stride=3，分别将图片降维至 4x4x512, 4x4x528！
+    - 1x1滤波器降维至128维
+    - 全连接层1024的神经元
+    - 70% dropout
+- 训练方法：用的是 DistBelief 分布式训练！模型并行和数据并行训练。CPU集群
+    - 异步 SGD， momenton=0.9
+    - 固定学习率策略，每8个poch减少4%
+    - Polyak averaging：B. T. Polyak and A. B. Juditsky. Acceleration of stochastic approximation by averaging. SIAM J. Con- trol Optim., 30(4):838–855, July 1992.
+    - 采样不同尺寸不同位置的patch
+    - photometric distortions：A. G. Howard. Some improvements on deep con- volutional neural network based image classification. CoRR, abs/1312.5402, 2013.
+
+- 参赛配置：
+    - 没有额外的训练数据
+    - 训练了7个不同的版本，然后做融合：相同的初始权重，学习率，只在采用方法和图片的随机顺序不同
+    - testing阶段每个图片采样了不同尺寸不同位置不同镜像的多个块进行预测。
+
+## ResNet
+参考WIKI[残差网络](residual-network.html)
+
+## 定位与检测
+- 简单回归问题：
+    - 将定位作为一个回归问题，输出定位的坐标和尺寸4个数字，用L2损失函数，简单！
+    - 直接从分类模型最后一层的feature map引出一个回归抽头！
+- 滑动窗：
+    - 在高分辨率图片中的不同尺寸和不同位置运行 分类+回归 网络
+    - 融合所有尺寸的分类+回归结果作为最终的输出
+
+## OverFeat
+论文：OverFeat:Integrated Recognition, Localization and Detection
+using Convolutional Networks，Pierre Sermanet, David Eigen,
+Xiang Zhang, Michael Mathieu, Rob Fergus, **Yann LeCun**，2014.
+
+- classification, localization and detection 的CNN集成框架
+- multiscale 和 sliding window 技术
+- ILSVRC2013 目标识别冠军
+
+> combining many localization predictions, detection can be performed without training on background samples and that it is possible to avoid the time-consuming and complicated bootstrapping training passes
+
+- 在不同位置和不同scale使用CNN：大量的窗只包含目标的一部分，分类效果好，但是定位和检测效果不好。
+- 每一个window不但输出不同类别的预测概率分布，还输出目标相对window的位置和大小！
+- 累积每一个类别的每一个window的预测结果！
+
+- 文本检测：M.DelakisandC.Garcia.Textdetectionwithconvolutionalneuralnetworks.InInternationalConference on Computer Vision Theory and Applications (VISAPP 2008), 2008.
+- 人脸识别： C. Garcia and M. Delakis. Convolutional face finder: A neural architecture for fast and robust face detection. IEEE Transactions on Pattern Analysis and Machine Intelligence, 2004.
+- 人脸检测：M. Osadchy, Y. LeCun, and M. Miller. Synergistic face detection and pose estimation with energy-based models. Journal of Machine Learning Research, 8:1197–1215, May 2007.
+- 行人检测：P. Sermanet, K. Kavukcuoglu, S. Chintala, and Y. LeCun. Pedestrian detection with unsupervised multi- stage feature learning. In Proc. International Conference on Computer Vision and Pattern Recognition (CVPR’13). IEEE, June 2013.
+
+- 预测的box和groundtruth的box至少相交50%（IOU）才认为是对的。
+
+> IOU的定义：label框为A，groundtruth框为B，$(IOU = \frac{ area(A \bigcap B)}{ area(A \bigcup B)} )$
+
+- 通过滑动窗，产生多个块，得到多个块预测结果，然后平均。滑动窗可以自底向上计算，不用每个滑动窗计算一个结果，减少计算量！
+- 不同尺寸和位置检测得到的box融合成一个高可信的box，实现定位！
+
+## 目标检测 HOG
+论文：Histograms of Oriented Gradients for Human Detection，Navneet Dalal and Bill Triggs，2005.

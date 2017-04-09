@@ -82,3 +82,72 @@ date: 2017-03-27
         2. score the output using evaluation metrics such as precision (P), recall (R), and F-score (F).
     - BLEU，METEOR, NIST, and ROUGE 解决精确匹配的问题
     - R-precision
+
+## Keyword Extraction from a Single Document using Word Co-occurrence Statistical Information
+论文：Keyword Extraction from a Single Document using Word Co-occurrence Statistical Information，Y. MATSUO，M. Ishizuka，2003
+
+基本思想：只需要单个文档（长文档），首先提取高频词，如果一个词与高频词的共现关系通过卡方检验，就认为是可能的关键词。
+
+TFIDF：在该文档经常出现，但是在整个语料中出现得不那么频繁的词！
+
+- automatic term recognition，automatic indexing，automatic keyword extraction
+- 本文的方法只需要一篇文档，不需要语料
+    1. 选出高频词，统计高频词出现的频率
+    2. 统计词与高频词的共现矩阵
+- 如果一个词经常与一个高频词子集共现，那么这个词就有高的概率是关键词！这种偏差用卡方统计量来度量
+- 如果一个词w跟高频词的任何子集都没有特殊的共现关系，那么共现矩阵中w的分布期望值应该就是高频词本身的分布。
+反之，则实际分布与这种期望分布存在较大偏差，可以用卡方统计量度量这种偏差。
+
+$$
+\chi^2(w) = \sum_{g \in G} \frac{(freq(w, g) - n_w p_g)^2}{n_w p_g}
+$$
+
+这里w是某个待检验的词，$(g \in G)$ 是高频词，G是高频词组成的集合。$(n_w)$是w在共现矩阵中出现的总数，
+$(p_g)$是高频词g在高频词中的归一化频率。
+
+- 优化：
+    - 针对长短句不同带来的共现偏差，重新定义$(p_g)$为 g出现的句子中词的数目/文档的总词数目; $(n_w)$定义为w出现过的句子中的总词数目！
+    - 增加鲁棒性，防止某个词只跟某一个特定的高频词高度共现，方法是减去这个高度共现的部分，即最大值。
+
+$$
+\chi'^2(w) = \chi^2(w) - \max_{g \in G} \frac{(freq(w, g) - n_w p_g)^2}{n_w p_g}
+$$
+
+- 词聚类：将高频词相似的词聚类！词的相似度基于 [Jensen-Shannon divergence](https://en.wikipedia.org/wiki/Jensen%E2%80%93Shannon_divergence) 度量！然后采用pairwise聚类，利用交互信息量度量。
+
+## TextRank
+论文：TextRank: Bringing Order into Texts，Rada Mihalcea and Paul Tarau，2004
+
+带权 PageRank
+
+$$
+WS(V_i) = (1-d) + d \sum_{V_j \in IN(V_i)} \frac{w_{ji}}{\sum_{V_k \in OUT(V_j)} w_{jk}} WS(V_j)
+$$
+
+WS 是定点的 PageRank score。随机初始化，然后迭代收敛！
+
+- 将文本作为一个图：每一个词做顶点，如果两个词出现在同一个上下文窗（大小认为设定，试验中窗大小为2比较好），那么就有一条边。只使用形容词和名词！
+- 多个词通过后处理得到，例如两个词A，B都在TOPN中，并且这两个词相邻，那么AB就是一个新的关键词
+- 关键词评估指标，P，R，F1
+- 句子的相似性通过公共词数目定义，评估指标 ROUGE
+
+$$
+similarity(S_i, S_j) = \frac{|\\{w_k| w_k \in S_i , w_k \in S_j \\}|}{\log{|S_i|} + \log{|S_j|}}
+$$
+
+## KeyCluster
+论文：Clustering to Find Exemplar Terms for Keyphrase Extraction，Zhiyuan Liu, Wenyi Huang, Yabin Zheng and Maosong Sun
+
+- 关键词的几个目标：可解释性；相关性；对主题的覆盖率
+- 无监督聚类方法：
+    - 首先将文档的 term 按照语义聚类，每一类用一个代表 term 表达，每一个类的中心 term
+- 算法流程：
+    - 候选词选择：过滤停止词等无意义词
+    - 计算 term 间的语义相关性度量：Wikipedia的tfidf，pmi，ngd
+    - 基于相关性将term聚类：Hierarchical Clustering，Spectral Clustering，Affinity Propagation
+    - 使用每个类的代表词提取关键词：选出 代表词 的组合短语作为关键词
+
+## Topical PageRank
+论文：Automatic Keyphrase Extraction via Topic Decomposition
+
+基本思想，pagerank的时候，只关注某一个主题，求出每个term在该主题先的rank后，然后按照文档的主题分布加权得到最终的rank。
