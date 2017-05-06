@@ -234,3 +234,117 @@ Xiang Zhang, Michael Mathieu, Rob Fergus, **Yann LeCun**，2014.
 
 ## 目标检测 HOG
 论文：Histograms of Oriented Gradients for Human Detection，Navneet Dalal and Bill Triggs，2005.
+
+
+## RCNN
+论文：Rich feature hierarchies for accurate object detection and semantic segmentation
+
+![RCNN](/wiki/static/images/rcnn.png)
+
+### Region proposals
+- objectness: B. Alexe, T. Deselaers, and V. Ferrari. Measuring the objectness of image windows. TPAMI, 2012.
+- **selective search**: J.Uijlings,K.vandeSande,T.Gevers,andA.Smeulders.Selective search for object recognition. IJCV, 2013.
+- category-independent object proposals: I. Endres and D. Hoiem. Category independent object proposals. In ECCV, 2010.
+- constrained parametric min-cuts (CPMC): J. Carreira and C. Sminchisescu. CPMC: Automatic object segmentation using constrained parametric min-cuts. TPAMI, 2012.
+- multi-scale combinatorial grouping: P.Arbelaez,J.Pont-Tuset,J.Barron,F.Marques,andJ.Malik.Multiscale combinatorial grouping. In CVPR, 2014.
+- CNN: D.Cires ̧an,A.Giusti,L.Gambardella,andJ.Schmidhuber.Mitosis detection in breast cancer histology images with deep neural networks. In MICCAI, 2013.
+
+### Feature extraction
+- 利用一个训练好的CNN网络（如 AlexNet 网络），对每个区域提取特征。
+- 将每个区域补全和变形到标准的输入尺寸， alex net 要求输入时 227x227
+
+
+### Test-time detection
+1. 利用选择性搜索选出近2000个候选区域
+2. 用 CNN 提取每一个区域的特征向量，对每一个类别，使用对应的 SVM 分类器对特征打分
+3. 采用贪心的非最大值抑制方法（greedy non-maximum suppression， 每一个类是独立的）：如果一个区域和另一个得分更高的区域 IoU 重叠度高于某个阈值，那么就拒绝这个得分低的区域。阈值是学习到的阈值？
+
+- 性能对比（10K个类被）：DPM+Hashing，5min/image; RCNN, 1min/image. T. Dean, M. A. Ruzon, M. Segal, J. Shlens, S. Vijayanarasimhan, and J. Yagnik. Fast, accurate detection of 100,000 object classes on a single machine. In CVPR, 2013.
+
+### Train
+- 将在ImageNet上训练好的CNN最后一层替换成多个SVM（每一个类别一个，背景一个，SVM参数随机初始化），CNN参数也通过SGD调优
+- 将于ground-truth重叠度IoU超过50%的区域作为该类的正样本，其他的作为负样本
+- CNN调优的学习率降低10倍
+- 每一个SGD的minbatch中，均匀采样32个正例和96个负例
+- hard negative mining method：将分值较高的负例放到样本中重新训练
+- pool5的特征就很好的，全连接层可以不要！
+- bbox regression：为每个区域训练一个回归模型，用相同的特征，只改变最后一层，预测目标的相对偏移。
+
+
+- 最大的问题：慢，需要对每一个区域用CNN提特征！
+
+
+## Fast R-CNN
+- 先用CNN对整个图片进行特征抽取（pool5特征，有空间维度的特征），在选取的RoI区域，用一个RoI Pooling层将特征尺寸变成固定的空间尺寸HxW，（空间尺寸固定了，整个特征的尺寸也固定了），然后为每一个区域中建立分类和回归模型。
+- RoI还是通过预先的 region proposal 方法得到，这个部分是 Fast R-CNN 计算的瓶颈。
+- 由于ROI将近2000个，计算最后的全连接层是计算瓶颈，可以通过 Truncated SVD 优化，其效果相当于用两层线性网络替换。
+- 优点：只需要计算一次CNN即可！
+- 优点：将回归和分类损失函数加到一起，优化一个目标，multi-task loss，端到端学习！
+- 相比 R-CNN，训练时间加速8.8倍，预测时间加速146倍！每张图片的预测时间降低到0.32s，之前在分钟量级！效果也稍好；但是加上区域搜索时间（大约2s）后，只有25倍速度提升，搜索时间是瓶颈！
+- 关键层： RoI pooling layer
+
+![fast rcnn](/wiki/static/images/fast-rcnn.png)
+
+## Faster R-CNN
+用CNN做 region proposal，关键技术： Region Proposal Networks
+
+
+
+## CNN可视化
+- R-CNN 计算所有的区域对某个神经元激活值，按照激活值从大到小排序，选取TOP区域可视化。
+
+![RCNN可视化](/wiki/static/images/rcnn-visual.png)
+
+- 直接可视化权重：只能可视化第一层
+
+- 可视化特征表达，例如用 t-SNE 可视化 AlexNet 最后一层的4096维特征
+
+<http://cs.stanford.edu/people/karpathy/cnnembed/>
+
+- 遮挡试验：分类概率与遮挡位置的函数关系！ZFNet
+
+- 解卷积方法
+
+BP to Image 方法：
+
+可视化某个神经元的响应对输入图片的梯度（BP to Image），将该层所有神经元的梯度置0，将要可视化的那个神经元梯度置1！
+然后运用BP算法，求出梯度。
+
+$$
+\frac{\Delta active}{\Delta I}
+$$
+
+由于高级特征具有不变性，不是针对某一个图片的，直接解卷积可视化得到的效果不好。
+可以对于特定的图片，用这个图片做引导，通过 guided bp 得到条件梯度。
+
+![Guided BP](/wiki/static/images/guided-bp.png)
+![Guided BP2](/wiki/static/images/guided-bp2.png)
+
+
+ZF 解卷积方法
+
+- Deep Inside Convolutional Networks: Visualising Image Classification Models and Saliency Maps
+
+寻找图像I使得在类c上的score $(S_c(I))$ 最大！
+
+$$
+\arg \max_I S_c(I) - \lambda ||I|| _ 2^2
+$$
+
+利用 BP 算法优化，固定权重，优化输入！输入初始化为0值图片！ Sc 是未归一化的score，优化归一化的score（即概率）效果反而不明显。
+
+
+给定图像$(I_0)$，根据输入像素对某个类的score影响效果排序，影响效果通过梯度刻画
+
+$$
+w = \frac{\partial S_c}{\partial I} | _ {I_0}
+$$
+
+
+- 给定一个图片的code，寻找最接近这个code的图片
+
+$$
+x*  = \arg \min _ x l(\Phi(x) - \Phi(x_0)) + \lambda R(x)
+$$
+
+- DeepDream：从一个初始图片开始，每次梯度沿着正反馈方向下降 dx = x!!
