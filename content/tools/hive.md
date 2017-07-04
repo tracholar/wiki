@@ -636,3 +636,5 @@ from (
 
 条件
 - `SET hive.exec.parallel=true;` 让不同job并发执行！
+- skew join 优化： `set hive.optimize.skewjoin=true;`将一个join操作变为两个，第一个会将同一个key分散到不同的reduce
+- skew groupby 优化：`set hive.groupby.skewindata= true ;`
