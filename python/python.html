@@ -55,7 +55,7 @@
 <ul>
 <li><code>*args</code>，将列表<code>args</code>展开为参数列表，<code>**kwargs</code>，将字典<code>kwargs</code>展开成kv形式的参数列表。</li>
 </ul>
-<p>参考 <a href="https://stackoverflow.com/questions/2921847/what-does-the-star-operator-mean-in-python">https://stackoverflow.com/questions/2921847/what-does-the-star-operator-mean-in-python</a>
+<p>参考 <a href="https://stackoverflow.com/questions/2921847/what-does-the-star-operator-mean-in-python">https://stackoverflow.com/questions/2921847/what-does-the-star-operator-mean-in-python</a><br />
 和 <a href="https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists">https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists</a></p>
 <ul>
 <li>整数除法，在python2.x中<code>/</code>代表整数除法（除非左右操作数有一个是浮点数），而在python3.x中，代表浮点数除法，python3.x用<code>//</code>代表整数除法。</li>
@@ -210,7 +210,7 @@
 
 
 <p>这里<code>@</code> 相当于实现 <code>my_function = super_secret_function(my_function)</code></p>
-<p>装饰器类：<code>__call__</code> 方法进行装饰。如果需要装饰成员方法，需要指定<code>__get__</code>方法！
+<p>装饰器类：<code>__call__</code> 方法进行装饰。如果需要装饰成员方法，需要指定<code>__get__</code>方法！<br />
 装饰器可以使用参数，只要在函数内部定义一个类，然后返回即可。</p>
 <div class="hlcode"><pre><span class="k">class</span> <span class="nc">Decorator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Simple decorator class.&quot;&quot;&quot;</span>
@@ -247,7 +247,7 @@
 </ul>
 <h2 id="_6">各种坑</h2>
 <ul>
-<li>不要用可变对象作为函数默认值。字典,集合,列表等等对象是不适合作为函数默认值的.
+<li>不要用可变对象作为函数默认值。字典,集合,列表等等对象是不适合作为函数默认值的.<br />
   因为这个默认值是在函数建立的时候就生成了, 每次调用都是用了这个对象的”缓存”.</li>
 </ul>
 <div class="hlcode"><pre><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="k">def</span> <span class="nf">append_to_list</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">def_list</span><span class="o">=</span><span class="p">[]):</span>

@@ -68,7 +68,7 @@
 </ul>
 <h3 id="metric-tree-spill-tree">Metric Tree， Spill Tree</h3>
 <ol>
-<li>metric tree 将样本按照二叉树结构保存，根节点代表所有的样本，它的两个子节点将样本分割成不想交的两部分；
+<li>metric tree 将样本按照二叉树结构保存，根节点代表所有的样本，它的两个子节点将样本分割成不想交的两部分；<br />
 用 v 代表节点，N(v)代表v节点的样本，左右子节点用 v.lc v.rc 表示</li>
 <li>分割：对于节点v，找到两个 pivot 点 v.lpv v.rpv，使得这两个节点的距离是集合的距离，即 $(||v.lpv - v.rpv|| = \max_{p1,p2 \in N(v)} ||p1 - p2||)$，最优 pivot 寻找是二次复杂度，可以近似用线性复杂度找 pivot：<ol>
 <li>先随机找一个点p</li>

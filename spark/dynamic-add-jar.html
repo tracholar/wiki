@@ -45,8 +45,8 @@
 </ul>
 </div>
 <h2 id="_1">问题</h2>
-<p>在开发Spark程序时，有时候需要动态加载jar包到系统的 classpath 。
-例如，file:///xxx.jar 包中存在一个类A的子类AA，A类在当前Spark
+<p>在开发Spark程序时，有时候需要动态加载jar包到系统的 classpath 。<br />
+例如，file:///xxx.jar 包中存在一个类A的子类AA，A类在当前Spark<br />
 程序中存在，但是没有子类AA，</p>
 <div class="hlcode"><pre><span class="k">val</span> <span class="n">jarPath</span> <span class="k">=</span> <span class="n">lines</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
 <span class="k">val</span> <span class="n">myJar</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">(</span><span class="k">new</span> <span class="nc">Path</span><span class="o">(</span><span class="n">jarPath</span><span class="o">).</span><span class="n">toUri</span><span class="o">.</span><span class="n">toURL</span><span class="o">)</span>
@@ -59,7 +59,7 @@
 </pre></div>
 
 
-<p>如果AA操作要用到SparkContext，那么将会报错 <code>java.lang.ClassNotFoundException</code>。
+<p>如果AA操作要用到SparkContext，那么将会报错 <code>java.lang.ClassNotFoundException</code>。<br />
 可以通过将jar包增加到上下文中，解决此问题！</p>
 <div class="hlcode"><pre><span class="n">sc</span><span class="o">.</span><span class="n">addJar</span><span class="o">(</span><span class="n">jarPath</span><span class="o">)</span>
 </pre></div>

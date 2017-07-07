@@ -53,12 +53,12 @@
 </ul>
 </div>
 <h2 id="_1">关于</h2>
-<p>sklearn是python的机器学习库，来源于Google summer 的一个项目，个人认为是一个设计地非常好的软件，
-对模型的抽象很不错。另一方面，在学习理论的同时，自己写代码是一个加深理解的好方式，而阅读源码也是
+<p>sklearn是python的机器学习库，来源于Google summer 的一个项目，个人认为是一个设计地非常好的软件，<br />
+对模型的抽象很不错。另一方面，在学习理论的同时，自己写代码是一个加深理解的好方式，而阅读源码也是<br />
 一种很好的方式，而且还能学习别人的实现和优化技巧。</p>
 <p>这个源码阅读计划可能持续较长，内容会总结在wiki中，最后形成文章在我的博客中出现。</p>
 <h2 id="basepy">基础类 base.py</h2>
-<p>sklearn使用5个基础类，对模型的功能进行抽象。用户可以基于这些类实现自己的模型，使得可以像操作sklearn
+<p>sklearn使用5个基础类，对模型的功能进行抽象。用户可以基于这些类实现自己的模型，使得可以像操作sklearn<br />
 里面的其他模型那样调用。基础类放在包<code>sklearn.base</code>中</p>
 <ul>
 <li>BaseEstimator，要求构造方法能够设置模型参数，并且实现 <code>get_params</code> 和 <code>set_params</code> 两个方法。</li>
@@ -79,7 +79,7 @@
 <ul>
 <li>继承 <code>BaseEstimator</code>，提供抽象方法 <code>fit</code> 需要子类实现。</li>
 <li>它实现了 <code>predict</code> 方法，用来预测，该方法直接输出 <code>_decision_function</code> 的结果！</li>
-<li>它的核心就是这个 <code>_decision_function</code>，代码很简单 <code>safe_sparse_dot(X, self.coef_.T, dense_output=True) + self.intercept_</code>。
+<li>它的核心就是这个 <code>_decision_function</code>，代码很简单 <code>safe_sparse_dot(X, self.coef_.T, dense_output=True) + self.intercept_</code>。<br />
 就是对特征向量<code>X</code>做一个仿射变换 <code>y = W X + b</code>。此外，还有一个 <code>_set_intercept</code> 用来设置偏置$(b = \bar{y} - w \bar{x})$。</li>
 <li>在实现的时候，会对数据做中心化处理，有一个私有的中心化函数 <code>_conter_data</code>。</li>
 </ul>
@@ -88,7 +88,7 @@
 <p><code>LinearClassifierMixin</code> 线性分类器 Mixin，只处理预测</p>
 <ul>
 <li>核心的函数是 <code>decision_function</code> 返回样本到超平面的有向距离，和上面的函数一样（？为什么分开写）。</li>
-<li><code>predict</code> 如果是两分类，返回 <code>(scores &gt; 0).astype(np.int)</code>，多分类则返回距离最大的那个index <code>scores.argmax(axis=1)</code>，
+<li><code>predict</code> 如果是两分类，返回 <code>(scores &gt; 0).astype(np.int)</code>，多分类则返回距离最大的那个index <code>scores.argmax(axis=1)</code>，<br />
 最后会将结果映射会label标签的值。</li>
 <li><code>_predict_proba_lr</code> LR的私有方法，输出概率！代码采用 inplaced 优化空间，可以看<a href="https://github.com/scikit-learn/scikit-learn/blob/51a765acfa4c5d1ec05fc4b406968ad233c75162/sklearn/linear_model/base.py#L284">这个代码</a></li>
 </ul>
@@ -104,7 +104,7 @@
 <p><code>LinearRegression</code> 线性回归模型，继承 <code>LinearModel, RegressorMixin</code>。</p>
 <ul>
 <li><code>residues_</code> 采用 <code>@property</code> 修饰实现只读属性！0.19要废弃这个属性</li>
-<li><a href="https://github.com/scikit-learn/scikit-learn/blob/51a765acfa4c5d1ec05fc4b406968ad233c75162/sklearn/linear_model/base.py#L440"><code>fit</code> 方法</a>
+<li><a href="https://github.com/scikit-learn/scikit-learn/blob/51a765acfa4c5d1ec05fc4b406968ad233c75162/sklearn/linear_model/base.py#L440"><code>fit</code> 方法</a><br />
 是核心。对于稀疏数据，</li>
 </ul>
 </li>

@@ -1,0 +1,146 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>用神经网络做风格迁移 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;用神经网络做风格迁移</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">用神经网络做风格迁移</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">神经网络风格迁移</a></li>
+<li><a href="#_3">实时风格迁移</a></li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>风格迁移就是将图片变成某种风格的图片，例如为你的照片加上梵高的画的风格。</p>
+<h2 id="_2">神经网络风格迁移</h2>
+<p>用神经网络做风格迁移的方法最早由 Leon A. Gatys 提出： Image Style Transfer Using Convolutional Neural Networks，2016</p>
+<p><img alt="风格迁移" src="/wiki/static/images/nnstyle01.png" /></p>
+<p>基本思想是用一个神经网络，对于原始照片 p ，用神经网络中的某一层特征 $(F_{ij}^l)$ (这里第一个下标表示特征通道，第二个下标表示空间维度，将二维空间压缩为一维便于表述，下同)作为内容的表达，<br />
+对于生成的照片 x，用神经网络中的同一层特征表达生成的图片的内容 $(P_{ij}^l)$，要求新生成的照片内容和原始照片内容接近，<br />
+即损失函数</p>
+<p>$$<br />
+L_{content}(p, x, l) = \frac{1}{2} \sum_{ij}(F_{ij}^l P_{ij}^l)^2<br />
+$$</p>
+<p>较小。</p>
+<p>另一方面，需要生成的照片的风格和图片 a 相似，风格可以通过特征空间的 Gram 矩阵来表达。</p>
+<p>$$<br />
+G_{ij}^l = \sum_{k} F_{ik}^l F_{jk}^l<br />
+$$</p>
+<p>通过图片x不同层的Gram矩阵和图片 a 相似，实现风格的相似。</p>
+<p>$$<br />
+E_l = \frac{1}{4N_l^2M_l^2} \sum_{ij} (G_{ij}^l - A_{ij}^l)^2 \\<br />
+L_{style}(a, x) = \sum_{l=1}^L w_l E_l.<br />
+$$</p>
+<p>$(N_l, M_l)$分别是第l层特征数目和空间维度！</p>
+<p>通过内容和风格损失函数最小化，实现内容和风格的 tradeoff。</p>
+<p>$$<br />
+L = \alpha L_{content}(p, x) + \beta L_{style}(a, x)<br />
+$$</p>
+<p>注意上述两个损失函数的特征都是做了max-pooling后的特征。</p>
+<ul>
+<li>一些讨论：<ul>
+<li>内容匹配如果选用约高层的表征，保留的细节越少，感受约平滑</li>
+<li>太慢了：用 K40 GPU，一张512x512图片的风格迁移也需要1小时！</li>
+</ul>
+</li>
+</ul>
+<p><img alt="风格迁移" src="/wiki/static/images/nnstyle02.png" /></p>
+<h2 id="_3">实时风格迁移</h2>
+<p>论文：Perceptual Losses for Real-Time Style Transfer and Super-Resolution，Justin Johnson, Alexandre Alahi, and Li Fei-Fei，2016.</p>
+<p>特点： perceptual loss functions， three orders of magnitude faster，real-time</p>
+<ul>
+<li>超分辨 pixel loss function：不能很好的刻画语义的不同（例如两个只是平移了一点点的图片，像素的差异很大，但是语义差异较小）</li>
+<li>解决之道：利用训练好的深度神经网络的高层语义空间的特征表达！</li>
+</ul>
+<p><img alt="实时风格迁移模型架构" src="/wiki/static/images/nnstyle03.png" /></p>
+<ul>
+<li>解决风格迁移test速度慢的方法是，用一个神经网络建模这种变换关系，目标用前者的损失函数！</li>
+<li>包含两个网络： image trans- formation network $(f_W)$ ， loss network $(\phi)$；前者是一个深度残差网络，后者是一个预训练的 VGG 网络。</li>
+</ul>
+<p>$$<br />
+W^* = \arg \min _ W \mathbf{E} _ {x, { y_i }} \sum_{i} \lambda _ i l _ i (f_W (x), y_i)<br />
+$$</p>
+<p>损失函数和 Gatys 一样！ TV 范数正则化！</p>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2017-05-05 </span></div>
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  title: '用神经网络做风格迁移',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2017 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+    </body>
+</html>

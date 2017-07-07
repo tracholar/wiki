@@ -41,10 +41,10 @@
 <div id="title">在github pages中使用simiki指南</div>
 <div id="content">
   <h1 id="_1">起因</h1>
-<p>开始使用simiki是因为一篇博客——<a href="http://blog.jobbole.com/101321/">程序员的知识管理</a>，
-这篇博客对我启发很大。是的，程序员或者一般的工程师经常需要配置一些开发环境之类的
-工作，如果能够将这些过程记录下来，日后再配置的时候会减少很多不必要的时间浪费。
-此外，如果能将平常一些琐碎的知识记录下来也是不错的。使用simiki可以将这些工作通过
+<p>开始使用simiki是因为一篇博客——<a href="http://blog.jobbole.com/101321/">程序员的知识管理</a>，<br />
+这篇博客对我启发很大。是的，程序员或者一般的工程师经常需要配置一些开发环境之类的<br />
+工作，如果能够将这些过程记录下来，日后再配置的时候会减少很多不必要的时间浪费。<br />
+此外，如果能将平常一些琐碎的知识记录下来也是不错的。使用simiki可以将这些工作通过<br />
 wiki来实现，并且可以将数据保存在本地，不用担心数据丢失之类的风险。</p>
 <h1 id="_2">工具准备</h1>
 <p>为了使用simiki，需要准备好基本环境。</p>
@@ -56,7 +56,7 @@ wiki来实现，并且可以将数据保存在本地，不用担心数据丢失�
 <p>安装simiki库及其依赖库，我使用pip进行安装，只需要一条命令<code>pip install simiki</code>即可。</p>
 </li>
 <li>
-<p>注册github账户，并且创建<code>&lt;username&gt;.github.io</code>代码项目。完成之后，你应该可以通过该
+<p>注册github账户，并且创建<code>&lt;username&gt;.github.io</code>代码项目。完成之后，你应该可以通过该<br />
    子域名访问到自己的page页面，具体细节请参考<a href="https://pages.github.com/">官方文档</a>。</p>
 </li>
 </ol>
@@ -77,14 +77,14 @@ wiki来实现，并且可以将数据保存在本地，不用担心数据丢失�
 
 <h1 id="_4">部署</h1>
 <h2 id="windows">windows中的部署</h2>
-<p>为了部署方便，在master分钟中将output目录过滤掉，
+<p>为了部署方便，在master分钟中将output目录过滤掉，<br />
 在.gitignore文件中添加一行</p>
 <div class="hlcode"><pre><span class="n">output</span>
 </pre></div>
 
 
-<p>即可。此外，需要将output目录push到gh-pages分支，可以利用我写的一个
-批处理脚本<a href="https://github.com/tracholar/wiki/blob/master/deploy.bat">deploy.bat</a>。
+<p>即可。此外，需要将output目录push到gh-pages分支，可以利用我写的一个<br />
+批处理脚本<a href="https://github.com/tracholar/wiki/blob/master/deploy.bat">deploy.bat</a>。<br />
 这个脚本提供两个功能，初始化和部署。</p>
 <div class="hlcode"><pre><span class="n">deploy</span> <span class="p">[</span><span class="n">option</span><span class="p">]</span>
     <span class="o">-</span><span class="n">i</span>  <span class="err">初始化</span>
@@ -92,7 +92,7 @@ wiki来实现，并且可以将数据保存在本地，不用担心数据丢失�
 </pre></div>
 
 
-<p>如果你要使用请把脚本中库的URL改成你的URL。
+<p>如果你要使用请把脚本中库的URL改成你的URL。<br />
 初始化之前请删除前面生成的output目录，然后执行以下命令。</p>
 <div class="hlcode"><pre><span class="n">deploy</span> <span class="o">-</span><span class="n">i</span>
 </pre></div>
@@ -105,14 +105,14 @@ wiki来实现，并且可以将数据保存在本地，不用担心数据丢失�
 
 <p>然后就可以在你的项目页面中看到wiki了，对我来说是 tracholar.github.io/wiki。</p>
 <blockquote>
-<p>Tips: 注意文件夹和文件命名统一用小写，否则你会后悔，因为windows不区分大小写
+<p>Tips: 注意文件夹和文件命名统一用小写，否则你会后悔，因为windows不区分大小写<br />
 而linux是区分的。</p>
 </blockquote>
 <h2 id="linuxmac">linux/MAC 中的部署</h2>
-<p>还没试过，等试过之后再写，你可以参考<a href="http://simiki.org/docs/deploy.html">官方指南</a>
+<p>还没试过，等试过之后再写，你可以参考<a href="http://simiki.org/docs/deploy.html">官方指南</a><br />
 使用<code>ghp-import</code>部署，更方便，只是不支持windows。</p>
-<p>公司发了mac，我又写了个bash脚本<a href="https://github.com/tracholar/wiki/blob/master/deploy.sh">deploy.sh</a>。
-使用方法跟windows上的一样，不过要<code>chmod +x deploy.sh</code>给脚本增加执行权限。
+<p>公司发了mac，我又写了个bash脚本<a href="https://github.com/tracholar/wiki/blob/master/deploy.sh">deploy.sh</a>。<br />
+使用方法跟windows上的一样，不过要<code>chmod +x deploy.sh</code>给脚本增加执行权限。<br />
 当然，你也需要把git仓库的地址改成你自己的地址。</p>
 <h1 id="_5">我的效果</h1>
 <p>请访问<a href="https://tracholar.github.io/wiki">https://tracholar.github.io/wiki</a>观看。</p>

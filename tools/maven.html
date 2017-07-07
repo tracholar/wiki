@@ -61,7 +61,7 @@
 </ul>
 </div>
 <h2 id="_1">关于</h2>
-<p>Maven 是一个项目管理和构建自动化工具。但是对于我们程序员来说，我们最关心的是它的项目构建功能。
+<p>Maven 是一个项目管理和构建自动化工具。但是对于我们程序员来说，我们最关心的是它的项目构建功能。<br />
 所以这里我们介绍的就是怎样用 maven 来满足我们项目的日常需要。</p>
 <h2 id="_2">流程</h2>
 <h3 id="maven">创建maven项目</h3>
@@ -69,7 +69,7 @@
 </pre></div>
 
 
-<p>archetype:generate 目标会列出一系列的 archetype 让你选择。 Archetype 可以理解成项目的模型。 Maven 为我们提供了很多种的项目模型，包括从简单的 Swing 到复杂的 Web 应用。我们选择默认的 maven-archetype-quickstart ，是编号 #807，不同版本这个值会不同，不过都会是默认值，
+<p>archetype:generate 目标会列出一系列的 archetype 让你选择。 Archetype 可以理解成项目的模型。 Maven 为我们提供了很多种的项目模型，包括从简单的 Swing 到复杂的 Web 应用。我们选择默认的 maven-archetype-quickstart ，是编号 #807，不同版本这个值会不同，不过都会是默认值，<br />
 所以按回车就好了。</p>
 <p>创建的配置属性对应的意义参考pom文件说明，这些属性是我们在命令行中用 -D 选项指定的。该选项使用 -Dname=value 的格式。</p>
 <h3 id="_3">构建项目</h3>
@@ -88,21 +88,21 @@ mvn package
 
 <h2 id="_5">核心概念</h2>
 <h3 id="pom-project-object-model">Pom, project object Model.</h3>
-<p>配置文件，maven根据该文件构建项目，可以继承。各节点的含义
-- project：顶级元素
-- modelVersion：object model版本，强制
-- groupId：项目创建团体或组织的唯一标识，通常是域名倒写，例如 org.apache.maven.plugins
-- artifactId ：是项目artifact唯一的基地址名
-- packaging ：artifact打包的方式，如jar、war、ear等等。默认为jar。这个不仅表示项目最终产生何种后缀的文件，
-  也表示build过程使用什么样的lifecycle。
-- version ：artifact的版本，通常能看见为类似0.0.1-SNAPSHOT，其中SNAPSHOT表示项目开发中，为开发版本
-- name： 表示项目的展现名，在maven生成的文档中使用
-- url：表示项目的地址，在maven生成的文档中使用
-- description： 表示项目的描述，在maven生成的文档中使用
-- dependencies： 表示依赖，在子节点dependencies中添加具体依赖的groupId artifactId和version
-- build： 表示build配置
+<p>配置文件，maven根据该文件构建项目，可以继承。各节点的含义<br />
+- project：顶级元素<br />
+- modelVersion：object model版本，强制<br />
+- groupId：项目创建团体或组织的唯一标识，通常是域名倒写，例如 org.apache.maven.plugins<br />
+- artifactId ：是项目artifact唯一的基地址名<br />
+- packaging ：artifact打包的方式，如jar、war、ear等等。默认为jar。这个不仅表示项目最终产生何种后缀的文件，<br />
+  也表示build过程使用什么样的lifecycle。<br />
+- version ：artifact的版本，通常能看见为类似0.0.1-SNAPSHOT，其中SNAPSHOT表示项目开发中，为开发版本<br />
+- name： 表示项目的展现名，在maven生成的文档中使用<br />
+- url：表示项目的地址，在maven生成的文档中使用<br />
+- description： 表示项目的描述，在maven生成的文档中使用<br />
+- dependencies： 表示依赖，在子节点dependencies中添加具体依赖的groupId artifactId和version<br />
+- build： 表示build配置<br />
 - parent： 表示父pom</p>
-<p>在 POM 中，groupId, artifactId, packaging, version 叫作 maven 坐标，它能唯一的确定一个项目。有了 maven 坐标，我们就可以用它来指定我们的项目所依赖的其他项目，插件，或者父项目。一般 maven 坐标写成如下的格式：<code>groupId:artifactId:packaging:version</code>。
+<p>在 POM 中，groupId, artifactId, packaging, version 叫作 maven 坐标，它能唯一的确定一个项目。有了 maven 坐标，我们就可以用它来指定我们的项目所依赖的其他项目，插件，或者父项目。一般 maven 坐标写成如下的格式：<code>groupId:artifactId:packaging:version</code>。<br />
 像我们的例子就会写成：<code>com.mycompany.helloworld: helloworld: jar: 1.0-SNAPSHOT</code>.</p>
 <p>我们的 helloworld 示例很简单，但是大项目一般会分成几个子项目。在这种情况下，每个子项目就会有自己的 POM 文件，然后它们会有一个共同的父项目。这样只要构建父项目就能够构建所有的子项目了。子项目的 POM 会继承父项目的 POM。另外，所有的 POM都继承了一个 Super-POM。Super-POM 设置了一些默认值，它遵循了惯例优于配置的原则。所以尽管我们的这个 POM 很简单，但是这只是你看得见的一部分。运行时候的 POM 要复杂的多。 如果你想看到运行时候的 POM 的全部内容的话，可以运行下面的命令：<code>mvn help:effective-pom</code>.</p>
 <h3 id="maven_1">Maven 插件</h3>
@@ -112,14 +112,14 @@ mvn package
 <h3 id="maven_2">Maven 生命周期</h3>
 <p>我们用的第二个命令是：mvn package。这里的 package 是一个maven的生命周期阶段 (lifecycle phase )。生命周期指项目的构建过程，它包含了一系列的有序的阶段 (phase)，而一个阶段就是构建过程中的一个步骤。</p>
 <p>那么生命周期阶段和上面说的插件目标之间是什么关系呢？插件目标可以绑定到生命周期阶段上。一个生命周期阶段可以绑定多个插件目标。当 maven 在构建过程中逐步的通过每个阶段时，会执行该阶段所有的插件目标。</p>
-<p>maven 能支持不同的生命周期，但是最常用的是默认的Maven生命周期 (default Maven lifecycle )。如果你没有对它进行任何的插件配置或者定制的话，那么上面的命令 mvn package 会依次执行默认生命周期中直到包括 package 阶段前的所有阶段的插件目标：
-- process-resources 阶段：resources:resources
-- compile 阶段：compiler:compile
-- process-classes 阶段：(默认无目标)
-- process-test-resources 阶段：resources:testResources
-- test-compile 阶段：compiler:testCompile
-- test 阶段：surefire:test
-- prepare-package 阶段：(默认无目标)
+<p>maven 能支持不同的生命周期，但是最常用的是默认的Maven生命周期 (default Maven lifecycle )。如果你没有对它进行任何的插件配置或者定制的话，那么上面的命令 mvn package 会依次执行默认生命周期中直到包括 package 阶段前的所有阶段的插件目标：<br />
+- process-resources 阶段：resources:resources<br />
+- compile 阶段：compiler:compile<br />
+- process-classes 阶段：(默认无目标)<br />
+- process-test-resources 阶段：resources:testResources<br />
+- test-compile 阶段：compiler:testCompile<br />
+- test 阶段：surefire:test<br />
+- prepare-package 阶段：(默认无目标)<br />
 - package 阶段：jar:jar</p>
 <h3 id="maven_3">Maven 依赖管理</h3>
 <p>之前我们说过，maven 坐标能够确定一个项目。换句话说，我们可以用它来解决依赖关系。在 POM 中，依赖关系是在 dependencies 部分中定义的。在上面的 POM 例子中，我们用 dependencies 定义了对于 junit 的依赖：</p>

@@ -47,17 +47,17 @@
 </ul>
 </div>
 <h2 id="_1">关于</h2>
-<p>YARN 是HADOOP2代，相比第一代产品，可以开发除了 MAPREDUCE 外更复杂的分布式程序，
+<p>YARN 是HADOOP2代，相比第一代产品，可以开发除了 MAPREDUCE 外更复杂的分布式程序，<br />
 XGBoost on yarn 就是一个例子！</p>
 <h2 id="_2">开发指南</h2>
 <p><img src="/wiki/static/images/yarn-structure.png" style="float:left;width:500px" /></p>
-<p>YARN 用 ResourceManager 来分配资源，NodeManager 来管理计算节点！
-ApplicationMaster 用于跟踪任务，管理每一个在YARN上运行的程序实例，
+<p>YARN 用 ResourceManager 来分配资源，NodeManager 来管理计算节点！<br />
+ApplicationMaster 用于跟踪任务，管理每一个在YARN上运行的程序实例，<br />
 通过调用 ResourceManager 和 NodeManager 进行管理。</p>
 <p>要使用一个 YARN 集群，首先需要来自包含一个应用程序的客户的请求。ResourceManager 协商一个容器的必要资源，启动一个 ApplicationMaster 来表示已提交的应用程序。通过使用一个资源请求协议，ApplicationMaster 协商每个节点上供应用程序使用的资源容器。执行应用程序时，ApplicationMaster 监视容器直到完成。当应用程序完成时，ApplicationMaster 从 ResourceManager 注销其容器，执行周期就完成了。</p>
 <p>具体而言，就是要创建一个 ApplicationMaster类，例如<a href="https://github.com/dmlc/dmlc-core/blob/master/tracker/yarn/src/main/java/org/apache/hadoop/yarn/dmlc/ApplicationMaster.java">XGBoost的例子</a>。</p>
-<p>创建一个 <a href="https://github.com/dmlc/dmlc-core/blob/master/tracker/yarn/src/main/java/org/apache/hadoop/yarn/dmlc/Client.java">application submission client</a>，
-提交应用给 YARN 的 ResourceManager(RM)。
+<p>创建一个 <a href="https://github.com/dmlc/dmlc-core/blob/master/tracker/yarn/src/main/java/org/apache/hadoop/yarn/dmlc/Client.java">application submission client</a>，<br />
+提交应用给 YARN 的 ResourceManager(RM)。<br />
 这个步骤通过创建一个 YarnClient 实例实现！</p>
 <p>Following are the important interfaces:</p>
 <ul>

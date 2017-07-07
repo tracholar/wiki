@@ -1,0 +1,184 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>知识图谱 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;知识图谱</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">知识图谱</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#aaai-tutorial">AAAI tutorial</a><ul>
+<li><a href="#_1">知识图谱简介</a></li>
+<li><a href="#nlp">NLP基础</a></li>
+</ul>
+</li>
+<li><a href="#_2">跨语言知识图谱构建：李涓子</a></li>
+</ul>
+</div>
+<h2 id="aaai-tutorial">AAAI tutorial</h2>
+<h3 id="_1">知识图谱简介</h3>
+<ul>
+<li>知识图谱：将知识表达为图的形式</li>
+<li>获取实体、属性、关系</li>
+<li>
+<p>图的顶点代表实体</p>
+</li>
+<li>
+<p>应用：QA，决策</p>
+</li>
+<li>
+<p>工业界产品：</p>
+<ul>
+<li>Google Knowledge Vault</li>
+<li>Amazon Product Graph</li>
+</ul>
+</li>
+<li>
+<p>数据来源：结构数据和非结构化数据，图片、视频？</p>
+</li>
+<li>知识表达：<ul>
+<li>RDF：<rdf:subject, rdf:predicate, rdf:object> : r(s,p,o)</li>
+<li>ABox (assertions) versus TBox (terminology)</li>
+<li>Common ontological primitives<ul>
+<li>rdfs:domain, rdfs:range, rdf:type, rdfs:subClassOf, rdfs:subPropertyOf, ...</li>
+<li>owl:inverseOf, owl:TransitiveProperty, owl:FunctionalProperty, ...</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>语义网</li>
+<li>
+<p>从文本中获取知识的方法</p>
+<ul>
+<li>chunking</li>
+<li>polysemy/word sense disambiguation 消歧义</li>
+<li>entity coreference 实体共止：通过判定两个实体是否存在共指关系？如“IBM”和“IBM Inc.”</li>
+<li>relational extraction：关系抽取</li>
+</ul>
+</li>
+<li>
+<p>基本问题</p>
+<ul>
+<li>实体识别</li>
+<li>实体的属性和标签</li>
+<li>实体关系</li>
+</ul>
+</li>
+</ul>
+<h3 id="nlp">NLP基础</h3>
+<ul>
+<li>Entity resolution</li>
+<li>Entity linking</li>
+<li>Relation extraction</li>
+<li>Coreference Resolution</li>
+<li>Dependency Parsing</li>
+<li>Part of speech tagging</li>
+<li>
+<p>Named entity recognition</p>
+</li>
+<li>
+<p>抽取方法：</p>
+<ul>
+<li>规则：高精度低召回</li>
+<li>监督学习</li>
+</ul>
+</li>
+<li>
+<p>定义 domain</p>
+</li>
+</ul>
+<p>论文：Toward an Architecture for Never-Ending Language Learning，</p>
+<h2 id="_2">跨语言知识图谱构建：李涓子</h2>
+<ul>
+<li>语义搜索 Semantic Search</li>
+<li>RDF ： 资源描述框架 W3C 标准<ul>
+<li>要素：资源、属性和属性值</li>
+<li>RDF陈述：主体、谓语和客体</li>
+</ul>
+</li>
+<li>语义网：数据用一个 directed labeled graph 描述，每一个顶点对应一个资源，每一个边标注了一个属性类型。</li>
+<li>语义网描述：RDF，RFDS</li>
+<li>语义网查询：SOAP</li>
+<li></li>
+</ul>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2017-05-07 </span></div>
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  title: '知识图谱',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2017 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+    </body>
+</html>

@@ -74,8 +74,8 @@
 <li>采样策略$(S)$生成的节点$(u)$的网络邻居 $(N_S(u) \in V)$</li>
 <li>极大似然估计：</li>
 </ul>
-<p>$$
-\max_f \sum_{u \in V} \log Pr(N_S(u)| f(u) )
+<p>$$<br />
+\max_f \sum_{u \in V} \log Pr(N_S(u)| f(u) )<br />
 $$</p>
 <ul>
 <li>几个假设：<ul>
@@ -84,8 +84,8 @@ $$</p>
 </ul>
 </li>
 </ul>
-<p>$$
-Pr(n_i|f(u)) = \frac{\exp(f(n_i) \dot f(u))}{\sum_{v\in V} f(v) \dot f(u)}
+<p>$$<br />
+Pr(n_i|f(u)) = \frac{\exp(f(n_i) \dot f(u))}{\sum_{v\in V} f(v) \dot f(u)}<br />
 $$</p>
 <p>和 word2vec 一样，可以通过负采样来优化分母的计算量！</p>
 <ul>
@@ -105,22 +105,22 @@ $$</p>
 <li>对于源节点$(u)$，通过 random walk (马尔科夫链) 采样 l 长度的邻居节点 $(c_i, c_0=u)$</li>
 <li>条件概率为：</li>
 </ul>
-<p>$$
-P(c_i=x|c_{i-1}=v) = \begin{cases}
-    \frac{\pi_{vx}}{Z}, if (v,x) \in E. \\
-    0, otherwise
-\end{cases}
+<p>$$<br />
+P(c_i=x|c_{i-1}=v) = \begin{cases}<br />
+    \frac{\pi_{vx}}{Z}, if (v,x) \in E. \\<br />
+    0, otherwise<br />
+\end{cases}<br />
 $$</p>
-<p>其中$(\pi_{vx})$是未归一化的概率，Z是归一化常数。对于最简单的情况，可以用边的权重作为未归一化概率
+<p>其中$(\pi_{vx})$是未归一化的概率，Z是归一化常数。对于最简单的情况，可以用边的权重作为未归一化概率<br />
 $(\pi_{vx} = w_{vx})$。</p>
-<p>对于2阶 random walk，未归一化概率和权重之间的关系为：$(\pi_{vx} = \alpha_{pq}(t,x)w_{vx})$
+<p>对于2阶 random walk，未归一化概率和权重之间的关系为：$(\pi_{vx} = \alpha_{pq}(t,x)w_{vx})$<br />
 t是上一个节点，v是当前节点，x是下一个可能的节点，系数</p>
-<p>$$
-\alpha_{pq}(t, x) = \begin{cases}
-            \frac{1}{p}, d_{tx} = 0, \\
-            1, d_{tx}=1,\\
-            \frac{1}{q}, d_{tx}=2.
-\end{cases}
+<p>$$<br />
+\alpha_{pq}(t, x) = \begin{cases}<br />
+            \frac{1}{p}, d_{tx} = 0, \\<br />
+            1, d_{tx}=1,\\<br />
+            \frac{1}{q}, d_{tx}=2.<br />
+\end{cases}<br />
 $$</p>
 <p>$(d_{tx})$是两个节点的距离，p是return参数，q是in-out参数。</p>
 <ul>

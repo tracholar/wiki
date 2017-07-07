@@ -55,8 +55,8 @@
 <li>极大似然估计，来自样本的认为是正例，来自生成模型的认为是负例</li>
 <li>minmax value function $(V(D, G))$</li>
 </ul>
-<p>$$
-\min_G \max_D V(D, G) = \mathbf{E} _ {x \in p_{data}(x)}[\log D(x)] + \mathbf{E} _ {x \in p_{z}(z)}[\log(1-D(G(z)))]
+<p>$$<br />
+\min_G \max_D V(D, G) = \mathbf{E} _ {x \in p_{data}(x)}[\log D(x)] + \mathbf{E} _ {x \in p_{z}(z)}[\log(1-D(G(z)))]<br />
 $$</p>
 <p>训练算法：</p>
 <p><img src="/wiki/static/images/gan-algo.png" alt="GAN-GLAORITHM"/></p>
@@ -65,17 +65,17 @@ $$</p>
 <li>全局最优：$(p_g = p_{data})$</li>
 <li>对固定的G，</li>
 </ul>
-<p>$$
-V(G,D) = \int_x dx p_{data}(x) \log(D(x)) + p_g(x) \log(1 - D(x))
+<p>$$<br />
+V(G,D) = \int_x dx p_{data}(x) \log(D(x)) + p_g(x) \log(1 - D(x))<br />
 $$</p>
 <p>容易验证，最优的D满足</p>
-<p>$$
-D^* _ G(x) = \frac{p_{data}(x)}{p_{data}(x) + p_g(x)}
+<p>$$<br />
+D^* _ G(x) = \frac{p_{data}(x)}{p_{data}(x) + p_g(x)}<br />
 $$</p>
 <p>最优 value function为</p>
-<p>$$
-C(G) = \mathbf{E} _ {x \in p_{data}(x)}[\log \frac{p_{data}(x)}{p_{data}(x) + p_g(x)}] + \mathbf{E} _ {x \in p_{z}(z)}[\log(\frac{p_{g}(x)}{p_{data}(x) + p_g(x)})] \\
-= - \log 4 + 2 JSD(p_{data} || p_g)
+<p>$$<br />
+C(G) = \mathbf{E} _ {x \in p_{data}(x)}[\log \frac{p_{data}(x)}{p_{data}(x) + p_g(x)}] + \mathbf{E} _ {x \in p_{z}(z)}[\log(\frac{p_{g}(x)}{p_{data}(x) + p_g(x)})] \\<br />
+= - \log 4 + 2 JSD(p_{data} || p_g)<br />
 $$</p>
 <p>JSD 是 Jensen–Shannon divergence. 上式最优的结果是 $(-\log4)$，当 $(p_g = p_{data})$ 取得。</p>
 <ul>

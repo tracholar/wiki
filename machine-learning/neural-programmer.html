@@ -52,10 +52,10 @@
 <li>Neural Programmer: Inducing Latent Programs with Gradient Descent, Arvind Neelakantan, Quoc V Le, Ilya Sutskever, ICLR 2016</li>
 </ol>
 <h2 id="_2">摘要</h2>
-<p>神经网络虽然在很多领域如语音识别，图像识别etc等领域取得了巨大的成功，但是在基本的算术和逻辑代数运算上，
+<p>神经网络虽然在很多领域如语音识别，图像识别etc等领域取得了巨大的成功，但是在基本的算术和逻辑代数运算上，<br />
 神经网络的精确学习却很困难！ Neural Programmer 增加了一部分基本的算术和逻辑操作，解决了这一点。</p>
 <blockquote>
-<p>A major limitation of these models is in their inability to learn even simple arithmetic and logic operations.
+<p>A major limitation of these models is in their inability to learn even simple arithmetic and logic operations.<br />
 recurrent neural networks (RNNs) fail at the task of adding two binary numbers even when the result has less than 10 bits</p>
 </blockquote>
 <p>往梯度中增加高斯噪声，可以提升训练效果，增加泛化能力。</p>
@@ -69,24 +69,24 @@ recurrent neural networks (RNNs) fail at the task of adding two binary numbers e
 <p><img src="/wiki/static/images/neural-programmer.png" style="width:500px; float:left" /></p>
 <p>除了操作列表，其他的都可以通过梯度下降，由数据 (question, data source, answer) 三元组样本训练得到！</p>
 <p>data source 以表格形式存在 $(table \in \mathbb{R}^{M \times C})$</p>
-<p>QUESTION MODULE 是一个简单的 RNN 模块，将输入的词序列（分布是表达）编码成一个 d 维的向量q。
+<p>QUESTION MODULE 是一个简单的 RNN 模块，将输入的词序列（分布是表达）编码成一个 d 维的向量q。<br />
 如果问题包含长句子，采用一个双向 RNN。</p>
 <p>预处理将数字单独拿出来，放到一个列表中。</p>
-<p>SELECTOR 生成两个分布，一个是operator的概率分布，一个是数据列的概率分布（问题：数据列是变动的，怎么办？）
+<p>SELECTOR 生成两个分布，一个是operator的概率分布，一个是数据列的概率分布（问题：数据列是变动的，怎么办？）<br />
 输入是问题的编码向量q（d维)和输入历史的向量h[t]（d维）。</p>
 <p>每一个 operator 编码为一个d维向量！所有的 operator 构成一个矩阵 U。 operator 选择表达式为：</p>
-<p>$$
-\alpha_t^{op} = softmax(U tanh(W^{op} [q; h_t]))
+<p>$$<br />
+\alpha_t^{op} = softmax(U tanh(W^{op} [q; h_t]))<br />
 $$</p>
-<p>数据列名采用问题编码RNN中的词向量表达！或者 RNN phrase embedding。
+<p>数据列名采用问题编码RNN中的词向量表达！或者 RNN phrase embedding。<br />
 所有的列名构成一个矩阵 P！列选择表达为</p>
-<p>$$
-\alpha_t^{col} = softmax(P tanh(W^{col} [q; h_t]))
+<p>$$<br />
+\alpha_t^{col} = softmax(P tanh(W^{col} [q; h_t]))<br />
 $$</p>
 <p>将出现的数字单独拿出来，对于比较操作，需要知道比较的列，即 pivot，</p>
-<p>$$
-\beta_{op} = softmax(Z U(op))  \\
-pivot_{op} = \sum_{i=1}^N \beta(i) qn_i
+<p>$$<br />
+\beta_{op} = softmax(Z U(op))  \\<br />
+pivot_{op} = \sum_{i=1}^N \beta(i) qn_i<br />
 $$</p>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-12-25 </span></div>

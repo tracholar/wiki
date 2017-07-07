@@ -52,8 +52,8 @@
 <p>教程地址：<a href="https://github.com/dmlc/rabit/tree/dev/guide">https://github.com/dmlc/rabit/tree/dev/guide</a></p>
 <p>RABIT：Reliable Allreduce and Broadcast Interface</p>
 <p>两个关键的操作：Allreduce 和 Broadcast</p>
-<p><strong>Allreduce</strong>: 和不同的reduce不同，以 max 操作为例，reduce将很多个节点的值变成一个最大的值，
-而 allreduce 将每一个节点都变成最大值；这在机器学习操作中经常用到，比如LBFGS同步所有节点
+<p><strong>Allreduce</strong>: 和不同的reduce不同，以 max 操作为例，reduce将很多个节点的值变成一个最大的值，<br />
+而 allreduce 将每一个节点都变成最大值；这在机器学习操作中经常用到，比如LBFGS同步所有节点<br />
 的梯度为全局梯度！</p>
 <p><strong>Broadcast</strong>：和 Spark 的broadcast一样，将一个节点的值广播到所有的节点！</p>
 <p>参考 KMEANS 的例子，了解这两个操作：<a href="https://github.com/dmlc/wormhole/blob/master/learn/kmeans/kmeans.cc">https://github.com/dmlc/wormhole/blob/master/learn/kmeans/kmeans.cc</a></p>

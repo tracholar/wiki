@@ -66,7 +66,7 @@
 <li><code>.map()</code>，参数可以是一个函数，也可以是一个字典（或Series），此时就是一个转换表。</li>
 </ul>
 <h2 id="dataframe-index">DataFrame 的<code>index</code>操作</h2>
-<p>索引操作多而杂，现总结如下。
+<p>索引操作多而杂，现总结如下。<br />
 参考 <a href="http://pandas.pydata.org/pandas-docs/stable/indexing.html">Indexing and Selecting Data</a>。</p>
 <ul>
 <li><code>.loc</code>基于label(如果只有一个索引则为行的index，行优先)的索引。<ul>
@@ -178,7 +178,7 @@
 
 
 <ul>
-<li><code>.dt</code>， 对Datetime类型的Series可以通过这个对象访问<code>hour, second, day</code>等值。
+<li><code>.dt</code>， 对Datetime类型的Series可以通过这个对象访问<code>hour, second, day</code>等值。<br />
   还可以通过<code>strftime</code>格式化时间</li>
 </ul>
 <div class="hlcode"><pre><span class="n">s</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s">&#39;20130101 09:10:12&#39;</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
@@ -195,7 +195,7 @@
 </li>
 </ul>
 <h3 id="string">向量化string操作</h3>
-<p>通过访问Series的<code>.str</code>属性，例如<code>s.str.lower()</code>可以将每一个元素变成小写。可以在<code>.str</code>属性上使用
+<p>通过访问Series的<code>.str</code>属性，例如<code>s.str.lower()</code>可以将每一个元素变成小写。可以在<code>.str</code>属性上使用<br />
 所有的字符串函数，就相当于每一个元素使用那样。</p>
 <h2 id="dataframe">DataFrame的修改</h2>
 <ul>
@@ -213,19 +213,19 @@
 <h2 id="category">category 类型数据处理</h2>
 <ul>
 <li>转换为category, <code>Series.astype('category')</code></li>
-<li><code>Series.cat</code> 是category类型的cat对象，可以通过 <code>cat.rename_categories([obj])</code>重命名类型，也可以直接
+<li><code>Series.cat</code> 是category类型的cat对象，可以通过 <code>cat.rename_categories([obj])</code>重命名类型，也可以直接<br />
   赋值<code>cat.categories</code>改变他们的名字。</li>
 </ul>
 <h2 id="io">IO操作</h2>
 <h3 id="read_csv">read_csv</h3>
 <p>最常用的文本文件读取函数。一些重要的参数如下：        <br />
-- <code>sep</code> 字段分隔符，默认为<code>,</code>，有些文件用<code>\t</code>
-- <code>header</code> 头部用来做index的行序号，None表示没有
-- <code>names</code> 用来指定行的label，一个list
-- <code>index_col</code> 是否使用index列，默认false
-- <code>nrows</code> 读取的行数
-- <code>true_values, false_values</code> 真假值字符串替换
-- <code>na_values</code> NAN值列表，默认作为NAN的值为<code>'-1.#IND', '1.#QNAN', '1.#IND', '-1.#QNAN', '#N/A N/A', '#N/A', 'N/A', 'NA', '#NA', 'NULL', 'NaN', '-NaN', 'nan', '-nan', ''</code>
+- <code>sep</code> 字段分隔符，默认为<code>,</code>，有些文件用<code>\t</code><br />
+- <code>header</code> 头部用来做index的行序号，None表示没有<br />
+- <code>names</code> 用来指定行的label，一个list<br />
+- <code>index_col</code> 是否使用index列，默认false<br />
+- <code>nrows</code> 读取的行数<br />
+- <code>true_values, false_values</code> 真假值字符串替换<br />
+- <code>na_values</code> NAN值列表，默认作为NAN的值为<code>'-1.#IND', '1.#QNAN', '1.#IND', '-1.#QNAN', '#N/A N/A', '#N/A', 'N/A', 'NA', '#NA', 'NULL', 'NaN', '-NaN', 'nan', '-nan', ''</code><br />
 - <code>iterator</code> 默认false，指定为true用来迭代地读大文件，可以用<code>chunksize</code>指定每次读取的行数。</p>
 <h2 id="plot">可视化plot</h2>
 <h2 id="tips">TIPS</h2>

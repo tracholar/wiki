@@ -69,7 +69,7 @@
 <p>自编码模型常用做深度神经网络预训练。</p>
 <h2 id="_2">历史</h2>
 <h2 id="_3">神经网络预训练方案</h2>
-<p>多层神经网络直接训练会因为局部最优问题，导致初值敏感，所以随机初始化效果不好。
+<p>多层神经网络直接训练会因为局部最优问题，导致初值敏感，所以随机初始化效果不好。<br />
 可以采用局部无监督准则进行逐层初始化预训练，使得后续训练更大可能跳出局部最优。</p>
 <ul>
 <li>RBM：Hinton et al., 2006; Hinton and Salakhutdinov, 2006; Lee et al., 2008</li>
@@ -77,9 +77,9 @@
 <li>semi-supervised embedding：Weston et al.,2008</li>
 <li>kernel PCA：Cho and Saul, 2010</li>
 </ul>
-<p>RBM 和 自编码 模型函数形式很像，但是训练和解释都不同。一个很大不同是，确定性的自编码可以用实数值作为隐层的表达，
-而随机的RBM采用二进制表达隐层。但是在实际上，应用在深度网络中的RBM还是用实数均值作为表达。
-autoencoder 的重构误差可以看做 RBM 的 log-likelihood gradient 一种近似。
+<p>RBM 和 自编码 模型函数形式很像，但是训练和解释都不同。一个很大不同是，确定性的自编码可以用实数值作为隐层的表达，<br />
+而随机的RBM采用二进制表达隐层。但是在实际上，应用在深度网络中的RBM还是用实数均值作为表达。<br />
+autoencoder 的重构误差可以看做 RBM 的 log-likelihood gradient 一种近似。<br />
 RBM 中的 Contrastive Divergence 更新。</p>
 <p>如何构造一个好的表达！？采用无监督学习，学出输入中的重要模式！</p>
 <h2 id="_4">好的特征表达： 交互信息 到 自编码</h2>
@@ -87,54 +87,54 @@ RBM 中的 Contrastive Divergence 更新。</p>
 <blockquote>
 <p>A good representation is one that will yield a better performing classifier</p>
 </blockquote>
-<p>实验表明，一个无监督准则的初始化，可以帮助分类任务得到明显地提升。
+<p>实验表明，一个无监督准则的初始化，可以帮助分类任务得到明显地提升。<br />
 人类能够快速地学习新的东西一个重要的原因是已经获得了这个任务的一些先验知识。</p>
 <p>学习一个输入$(X)$ 的表达$(Y)$，实际上是学习条件概率$(q(Y|X) = q(Y|X; \theta))$。$(\theta)$是要学习的参数。</p>
 <p>一个基本要求是要尽可能保留输入的信息，在信息论里面可以表达为最大化交互信息 $(\mathbb{I}(X; Y))$： Linsker (1989)</p>
 <h3 id="icabell-and-sejnowski-1995">独立成分分析（ICA）：Bell and Sejnowski (1995)</h3>
-<p>$$
-\arg \max_{\theta} \mathbb{I}(X; Y) = \arg \max_{\theta} - \mathbb{H}(X|Y) \\
-    = \arg \max_{\theta} \mathbb{E}_{q(X, Y)} [\log q(X|Y)]
+<p>$$<br />
+\arg \max_{\theta} \mathbb{I}(X; Y) = \arg \max_{\theta} - \mathbb{H}(X|Y) \\<br />
+    = \arg \max_{\theta} \mathbb{E}_{q(X, Y)} [\log q(X|Y)]<br />
 $$</p>
 <p>对于任意分布 $(p(X, Y))$，利用 KL 距离的性质可知：</p>
-<p>$$
-\mathbb{E}_{q(X, Y)} [\log p(X|Y)] \le - \mathbb{H}(X|Y)
+<p>$$<br />
+\mathbb{E}_{q(X, Y)} [\log p(X|Y)] \le - \mathbb{H}(X|Y)<br />
 $$</p>
 <p>设这个分布通过参数$(\theta')$刻画，那么优化下面这个式子相当于优化条件熵的下界：</p>
-<p>$$
-\max_{\theta, \theta'} \mathbb{E}_{q(X, Y; \theta)} [\log p(X|Y; \theta')]
+<p>$$<br />
+\max_{\theta, \theta'} \mathbb{E}_{q(X, Y; \theta)} [\log p(X|Y; \theta')]<br />
 $$</p>
-<p>当两个分布相同的时候，可以得到精确的交互信息。infomax ICA 中，特征映射为 $(Y = f_{\theta}(X))$。
+<p>当两个分布相同的时候，可以得到精确的交互信息。infomax ICA 中，特征映射为 $(Y = f_{\theta}(X))$。<br />
 那么$(q(X, Y;\theta) = q(X) \approx q^0(X))$，即用样本集的分布代替总体分布。优化问题变为：</p>
-<p>$$
-\max_{\theta, \theta'} \mathbb{E}_{q^0(X)} [\log p(X|Y=f_{\theta}(X); \theta')]
+<p>$$<br />
+\max_{\theta, \theta'} \mathbb{E}_{q^0(X)} [\log p(X|Y=f_{\theta}(X); \theta')]<br />
 $$</p>
-<p>UFLDL里面的<a href="http://deeplearning.stanford.edu/wiki/index.php/%E7%8B%AC%E7%AB%8B%E6%88%90%E5%88%86%E5%88%86%E6%9E%90">独立成分分析</a>：
-找到一组基向量使得变换后的特征是稀疏的。
+<p>UFLDL里面的<a href="http://deeplearning.stanford.edu/wiki/index.php/%E7%8B%AC%E7%AB%8B%E6%88%90%E5%88%86%E5%88%86%E6%9E%90">独立成分分析</a>：<br />
+找到一组基向量使得变换后的特征是稀疏的。<br />
 数据必须ZCA白化，标准正交基维数小于输入维度，是一组不完备基。</p>
-<p>$$
-\min || W x ||_1  \\
-s. t. WW^T = I
+<p>$$<br />
+\min || W x ||_1  \\<br />
+s. t. WW^T = I<br />
 $$</p>
 <p>优化方法：梯度下降 + 每一步增加投影。</p>
-<p>$$
-W = W - \alpha \nabla_W || W x ||_1 \\
-W = (WW^T)^{-1/2} W
+<p>$$<br />
+W = W - \alpha \nabla_W || W x ||_1 \\<br />
+W = (WW^T)^{-1/2} W<br />
 $$</p>
 <h3 id="_5">传统自编码</h3>
 <p>在传统 autoencoder(AE) 中，特征变换函数（Encoder）用sigmoid函数来近似：</p>
-<p>$$
-y = f_{\theta}(x) = s(Wx+b)   \\
-\theta = \{ W, b \}
+<p>$$<br />
+y = f_{\theta}(x) = s(Wx+b)   \\<br />
+\theta = \{ W, b \}<br />
 $$</p>
 <p>特征重构（Decoder）变换也用sigmoid函数</p>
-<p>$$
-z = g_{\theta'}(y) = s(W' y + b') \\
-\theta'  = \{ W', b' \}
+<p>$$<br />
+z = g_{\theta'}(y) = s(W' y + b') \\<br />
+\theta'  = \{ W', b' \}<br />
 $$</p>
 <p>损失函数为重构误差：</p>
-<p>$$
-L(x, z) = \varpropto - \log p(x | z)
+<p>$$<br />
+L(x, z) = \varpropto - \log p(x | z)<br />
 $$</p>
 <ol>
 <li>对于实数值$(x \in \mathbb{R}^d, X|z \sim \mathcal{N}(z, \sigma^2 I)$，那么重构误差对应于均方误差$(L(x, z) = C(\sigma^2)||x-z||^2)$。</li>
@@ -142,38 +142,38 @@ $$</p>
 </ol>
 <p>常用的两种形式：纺射+sigmoid Encoder；纺射 Decoder + 均方误差， 纺射+sigmoid Decoder + 交叉熵损失函数</p>
 <p>autoenoder 的训练最小化重构误差，即优化下列问题：</p>
-<p>$$
-\arg \min_{\theta, \theta'} \mathbb{E}_{q^0(X)} L(X, Z=g_{\theta'}(f_{\theta}(X)))
+<p>$$<br />
+\arg \min_{\theta, \theta'} \mathbb{E}_{q^0(X)} L(X, Z=g_{\theta'}(f_{\theta}(X)))<br />
 $$</p>
 <p>等价于</p>
-<p>$$
-\arg \max_{\theta, \theta'} \mathbb{E}_{q^0(X)} \log(p(X| Y=f_{\theta}(X); \theta'))
+<p>$$<br />
+\arg \max_{\theta, \theta'} \mathbb{E}_{q^0(X)} \log(p(X| Y=f_{\theta}(X); \theta'))<br />
 $$</p>
 <p>这表明，我们是在最大化X和Y的交互信息量的下界！</p>
 <blockquote>
-<p>training an autoencoder to minimize reconstruction error amounts
+<p>training an autoencoder to minimize reconstruction error amounts<br />
 to maximizing a lower bound on the mutual information between input X and learnt representation Y</p>
 </blockquote>
-<p>但是，简单地保留原有信息是不够的！比如简单地将Y设置为X，但是这个并没什么卵用！
-如果Y的维数不少于X，那么学一个单位映射就可以最大限度地保留X中的信息！
-传统的autoencoder方法采用不完备的表达$(d' &lt; d)$。
-降维后的Y相当于X的有损压缩表达。
-当采用纺射变换做编码和解码，而没有非线性变化，那么就是PCA！
+<p>但是，简单地保留原有信息是不够的！比如简单地将Y设置为X，但是这个并没什么卵用！<br />
+如果Y的维数不少于X，那么学一个单位映射就可以最大限度地保留X中的信息！<br />
+传统的autoencoder方法采用不完备的表达$(d' &lt; d)$。<br />
+降维后的Y相当于X的有损压缩表达。<br />
+当采用纺射变换做编码和解码，而没有非线性变化，那么就是PCA！<br />
 但是引入非线性变化后，将能够学到不一样的特征表达！</p>
 <blockquote>
-<p>The use of “tied weights” can also change the solution: forcing encoder and decoder matrices to
-be symmetric and thus have the same scale can make it harder for the encoder to stay in the linear
+<p>The use of “tied weights” can also change the solution: forcing encoder and decoder matrices to<br />
+be symmetric and thus have the same scale can make it harder for the encoder to stay in the linear<br />
 regime of its nonlinearity without paying a high price in reconstruction error.</p>
 </blockquote>
-<p>另外，也可以添加其他约束，而不是更低的维度。
+<p>另外，也可以添加其他约束，而不是更低的维度。<br />
 例如通过添加稀疏约束，可以采用过完备的维度，即比输入更大的维度。</p>
-<p>稀疏表达，稀疏编码：Olshausen and Field (1996) on sparse coding.
+<p>稀疏表达，稀疏编码：Olshausen and Field (1996) on sparse coding.<br />
 稀疏自编码（A sparse over-complete representations）：sparse representations (Ranzato et al., 2007, 2008).</p>
 <h3 id="denoise">Denoise 准则</h3>
 <p>目标：还原部分腐蚀的输入，即降噪！Denoising</p>
 <p>一个好的表达应该是能够鲁棒地表达腐蚀后的输入，可以帮助恢复任务！</p>
 <p>输入加入噪声：高斯噪声（连续变量），椒盐噪声，马赛克噪声。</p>
-<p>几何解释：
+<p>几何解释：<br />
 流形学习。</p>
 <h2 id="variational-autoencoders">Variational autoencoders 论文导读</h2>
 <p>论文：Auto-Encoding Variational Bayes, Diederik P. Kingma, Max Welling, 2014</p>
@@ -183,7 +183,7 @@ regime of its nonlinearity without paying a high price in reconstruction error.<
 <li>从先验分布$(p_{\theta^* }(z))$产生隐变量$(z)$。</li>
 <li>从条件概率$(p_{\theta^* }(x|z))$产生$(x)$。</li>
 </ol>
-<p>假定先验分布和条件分布无限可微！
+<p>假定先验分布和条件分布无限可微！<br />
 难点：</p>
 <ol>
 <li>边际分布$(p(x))$需要计算一个积分，对于神经网络等复杂模型，难以求导！EM 算法失效；</li>
@@ -195,54 +195,54 @@ regime of its nonlinearity without paying a high price in reconstruction error.<
 <li>给定x，推导z，有效的近似算法</li>
 <li>有效的估计x的边际分布</li>
 </ol>
-<p>建立识别模型$(q_{\phi}(z|x))$，近似$(p_{\theta}(z|x))$，编码角度来看，就是一个编码器！
+<p>建立识别模型$(q_{\phi}(z|x))$，近似$(p_{\theta}(z|x))$，编码角度来看，就是一个编码器！<br />
 而 $(p_{\theta}(x|z))$ 作为解码器！</p>
 <h3 id="variational-bound">变分界 variational bound</h3>
 <p>边际分布的对数似然函数为</p>
-<p>$$
-\log p(x^{(1)}, ..., x^{(N)}) = \sum_i \log p_{\theta} (x^{(i)})
+<p>$$<br />
+\log p(x^{(1)}, ..., x^{(N)}) = \sum_i \log p_{\theta} (x^{(i)})<br />
 $$</p>
 <p>而其中每一项可以改写为</p>
-<p>$$
-\log p_{\theta} (x^{(i)}) = D_{KL}(q_{\phi}(z|x^{(i)}) || p_{\theta} (x^{(i)})) \\
-    + \mathcal{L}(\theta, \phi; x^{(i)})      \\
-\mathcal{L}(\theta, \phi; x^{(i)})  = \mathbb{E}_{q_{\phi(z|x)}}[-\log q_{\phi}(z|x) + \log p_{\theta}(x, z)] \\
-    = - D_{KL}(q_{\phi}(z|x^{(i)}) || p_{\theta}(z)) + \mathbb{E}_{q_{\phi(z|x^{(i)}}} \left[ \log p_{\theta}(x^{(i)} | z) \right]}
+<p>$$<br />
+\log p_{\theta} (x^{(i)}) = D_{KL}(q_{\phi}(z|x^{(i)}) || p_{\theta} (x^{(i)})) \\<br />
+    + \mathcal{L}(\theta, \phi; x^{(i)})      \\<br />
+\mathcal{L}(\theta, \phi; x^{(i)})  = \mathbb{E}_{q_{\phi(z|x)}}[-\log q_{\phi}(z|x) + \log p_{\theta}(x, z)] \\<br />
+    = - D_{KL}(q_{\phi}(z|x^{(i)}) || p_{\theta}(z)) + \mathbb{E}_{q_{\phi(z|x^{(i)}}} \left[ \log p_{\theta}(x^{(i)} | z) \right]}<br />
 $$</p>
-<p>对数似然函数第一项是近似误差，第二项是近似之后的似然函数，或者数据i的边际对数似然函数下界！
-第二项可以写为一个KL距离和一个期望，前者可以通过解析积分计算，后者要采用近似估计！
+<p>对数似然函数第一项是近似误差，第二项是近似之后的似然函数，或者数据i的边际对数似然函数下界！<br />
+第二项可以写为一个KL距离和一个期望，前者可以通过解析积分计算，后者要采用近似估计！<br />
 而通常的 Monte Carlo 梯度估计在这个问题上方差太大，不适用与这里！</p>
 <h3 id="the-sgvb-estimator-and-aevb-algorithm">The SGVB estimator and AEVB algorithm</h3>
-<p>分布$(\tilde{z} \sim q_{\phi(z|x^{(i)}})$通过一个可微的变换$(g_{\phi}(\epsilon, x))$，
+<p>分布$(\tilde{z} \sim q_{\phi(z|x^{(i)}})$通过一个可微的变换$(g_{\phi}(\epsilon, x))$，<br />
 从一个noise变量$(\epsilon \sim p(\epsilon))$采样得到。</p>
-<p>$$
-\mathbb{E}_{q_{\phi}(z|x^{(i)})}[f(z)] \approx \frac{1}{L} \sum_{l=1}^L f(g_{\phi}(\epsilon^{(l)}, x^{(i)})), \\
-\epsilon^{(l)} \sim p(\epsilon)
+<p>$$<br />
+\mathbb{E}_{q_{\phi}(z|x^{(i)})}[f(z)] \approx \frac{1}{L} \sum_{l=1}^L f(g_{\phi}(\epsilon^{(l)}, x^{(i)})), \\<br />
+\epsilon^{(l)} \sim p(\epsilon)<br />
 $$</p>
 <p>mini-batch方法：</p>
-<p>$$
-\mathcal{L}(\theta, \phi; X) \approx \tilde{\mathcal{L}}^M(\theta, \phi; x^M) \\
-    = \frac{N}{M} \sum_{i=1}^M \tilde{\mathcal{L}}(\theta, \phi; x^{(i)})
+<p>$$<br />
+\mathcal{L}(\theta, \phi; X) \approx \tilde{\mathcal{L}}^M(\theta, \phi; x^M) \\<br />
+    = \frac{N}{M} \sum_{i=1}^M \tilde{\mathcal{L}}(\theta, \phi; x^{(i)})<br />
 $$</p>
 <p>$({X^M})$ 是随机从全部数据集采样的M个数据。</p>
 <p>auto-encoder角度：似然函数的第一项相当于正则，第二项是重构误差</p>
 <h3 id="_6">例子：变分自编码</h3>
-<p>用多层感知器从输入学习到两个参数向量$(\mu, \sigma)$，
+<p>用多层感知器从输入学习到两个参数向量$(\mu, \sigma)$，<br />
 隐变量通过随机采样得到$(z \sim \mathcal{N}(z; \mu, \sigma))$。</p>
-<p>解码器和编码器一样，从应变量z通过多层感知器学习到两个参数$(\mu', \sigma')$，
-重构变量$(x' \sim \mathcal{N}(x'; \mu', \sigma'))$得到。
+<p>解码器和编码器一样，从应变量z通过多层感知器学习到两个参数$(\mu', \sigma')$，<br />
+重构变量$(x' \sim \mathcal{N}(x'; \mu', \sigma'))$得到。<br />
 对于贝努利分布，参数只有一个均值。</p>
 <h2 id="stacked-what-where-auto-encoders">Stacked What-Where Auto-encoders</h2>
 <p>论文导读：Stacked What-Where Auto-encoders， Junbo Zhao, Michael Mathieu, Ross Goroshin, <strong>Yann LeCun</strong>, ICLR 2016.</p>
 <p>What: 就是polling后得到的max值，而where是最大值所在的位置信息，用来帮助解卷积器重构！</p>
-<p>文章的方法将编码器学习和监督学习进行联合训练学习，作者认为（深度比较深时？）用自编码初始化的参数所携带的信息，
-会在调优的时候丢失，导致预训练没啥乱用！而解决的方法就是进行联合训练。
-此时，重构误差相当于一种正则！
+<p>文章的方法将编码器学习和监督学习进行联合训练学习，作者认为（深度比较深时？）用自编码初始化的参数所携带的信息，<br />
+会在调优的时候丢失，导致预训练没啥乱用！而解决的方法就是进行联合训练。<br />
+此时，重构误差相当于一种正则！<br />
 目标函数为：</p>
-<p>$$
-L = L_{NLL} + \lambda_{L2rec} L_{L2rec} + \lambda_{L2M} L_{L2M}
+<p>$$<br />
+L = L_{NLL} + \lambda_{L2rec} L_{L2rec} + \lambda_{L2M} L_{L2M}<br />
 $$</p>
-<p>其中NLL代表监督学习的损失函数，负对数似然函数，对回归问题是L2损失，分类问题是交叉熵。
+<p>其中NLL代表监督学习的损失函数，负对数似然函数，对回归问题是L2损失，分类问题是交叉熵。<br />
 重构损失函数为L2损失函数。L2rec 代表输入和输出的重构样本的重构误差，L2M 代表中间编码器输入特征和解码器输出特征的重构误差。</p>
 <p><img src="/wiki/static/images/swwae.png" style="width:600px" /></p>
 <p>实现监督学习，无监督学习，半监督学习的统一框架！</p>
@@ -252,13 +252,13 @@ $$</p>
 <p>文章中，取$(\beta=100)$！</p>
 <h3 id="where">where的重要性</h3>
 <p><img src="/wiki/static/images/unpooling.png" style="width:600px; float:left;" /></p>
-<p>对比采用where信息做unpooling的重构结果和直接copy的upsampling的结果，可以看出where信息对重构输入至关重要！
+<p>对比采用where信息做unpooling的重构结果和直接copy的upsampling的结果，可以看出where信息对重构输入至关重要！<br />
 想想也能想到啊！肯定重要啊！</p>
 <p>what学习到的具有平移不变性！</p>
 <h3 id="_7">结论</h3>
 <p><img src="/wiki/static/images/swwae-performance.png" style="width:600px; float:left;" /></p>
-<p>从论文中的结果来看，添加重构误差项还是挺重要的！
-如果没有重构误差项，错误率会增加！
+<p>从论文中的结果来看，添加重构误差项还是挺重要的！<br />
+如果没有重构误差项，错误率会增加！<br />
 训练中也可以加入 droupout 正则化方法！</p>
 <h2 id="reference">Reference</h2>
 <ol>
@@ -267,8 +267,8 @@ $$</p>
 </ol>
 <p>近期进展</p>
 <ol>
-<li>Richard Socher, Jeffrey Pennington, Eric H. Huang, Andrew Y. Ng, and Christopher D. Manning.
-Semi-supervised recursive autoencoders for predicting sentiment distributions. In
+<li>Richard Socher, Jeffrey Pennington, Eric H. Huang, Andrew Y. Ng, and Christopher D. Manning.<br />
+Semi-supervised recursive autoencoders for predicting sentiment distributions. In<br />
 EMNLP, 2011.</li>
 <li>Variational autoencoders</li>
 </ol>

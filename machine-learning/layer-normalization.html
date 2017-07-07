@@ -55,7 +55,7 @@
 <h2 id="_1">关于</h2>
 <p>见论文 <a href="http://cn.arxiv.org/abs/1607.06450">http://cn.arxiv.org/abs/1607.06450</a></p>
 <h2 id="_2">摘要</h2>
-<p>Batch Normalization 难以应用在RNN，因为是基于输入的batch进行归一化，
+<p>Batch Normalization 难以应用在RNN，因为是基于输入的batch进行归一化，<br />
 而RNN输入每次都只有一个！</p>
 <h2 id="_3">导言</h2>
 <p>分布式神经网络：<strong>Jeffrey Dean</strong>, Greg Corrado, Rajat Monga, Kai Chen, Matthieu Devin, Mark Mao, Andrew Senior, Paul Tucker, Ke Yang, Quoc V Le, et al. Large scale distributed deep networks. In NIPS, 2012.</p>
@@ -67,20 +67,20 @@
 <li>BN：一个batch使用相同的均值和方差，但是不同神经元不同！对batch大小有要求，不能太小！对于RNN，需要在每一个时隙单独保存均值和方差参数！</li>
 <li>LN：同一层神经元使用相同的均值和方差，但是不同样本不同！对batch大小没有要求，适用于RNN，不需要单独保存参数，隐层数目不能太小吧</li>
 </ul>
-<p>$$
-\mu^l = \frac{1}{H} \sum_{i=1}^H a_i^l \\
-\sigma^l = \sqrt{\frac{1}{H} \sum_{i=1}^H (a_i^l-\mu^l)^2 }.
-$$
+<p>$$<br />
+\mu^l = \frac{1}{H} \sum_{i=1}^H a_i^l \\<br />
+\sigma^l = \sqrt{\frac{1}{H} \sum_{i=1}^H (a_i^l-\mu^l)^2 }.<br />
+$$<br />
 H代表该层的神经元个数！</p>
 <p>对于标准的RNN，$(a^t = W_{hh}h^{t-1} + W_{xh} x^t)$。</p>
-<p>$$
-h^t = f\left[\frac{g}{\sigma} \odot (a^t-\mu^t)+ b \right]
+<p>$$<br />
+h^t = f\left[\frac{g}{\sigma} \odot (a^t-\mu^t)+ b \right]<br />
 $$</p>
 <p>$(b, g)$ 是两个参数，需要学习，和BN中类似。</p>
 <h2 id="_4">不变性分析</h2>
 <p>BN，LN，WN(weight Normalization) 都可以用下述形式表示：</p>
-<p>$$
-h_i = f(\frac{g_i}{\sigma_i}(a_i-\mu_i) + b_i)
+<p>$$<br />
+h_i = f(\frac{g_i}{\sigma_i}(a_i-\mu_i) + b_i)<br />
 $$</p>
 <p>对于WN，$(\mu=0, \sigma = || w||_2)$</p>
 <p><img src="/wiki/static/images/bn-ln-wn.png" style="width:500px; float:left;" /></p>
@@ -92,25 +92,25 @@ $$</p>
 <h2 id="geometry-of-parameter-space-during-learning">Geometry of parameter space during learning</h2>
 <p>Under the KL divergence metric, the parameter space is a Riemannian manifold？！！</p>
 <p>KL距离下的黎曼度规可以用Fisher信息矩阵的二阶近似</p>
-<p>$$
-ds^2 = D_{KL}(P(y|x;\theta) || P(y|x; \theta + \delta)) \approx \frac{1}{2}\delta^T F(\theta) \delta \\
-F(\theta) = \mathbb{E}_{x\sim P(x), y\sim P(y|x)} \left[  \frac{\partial \log P(y|x;\theta)}{\partial \theta} \frac{\partial \log P(y|x;\theta)}{\partial \theta}^T \right]
+<p>$$<br />
+ds^2 = D_{KL}(P(y|x;\theta) || P(y|x; \theta + \delta)) \approx \frac{1}{2}\delta^T F(\theta) \delta \\<br />
+F(\theta) = \mathbb{E}_{x\sim P(x), y\sim P(y|x)} \left[  \frac{\partial \log P(y|x;\theta)}{\partial \theta} \frac{\partial \log P(y|x;\theta)}{\partial \theta}^T \right]<br />
 $$</p>
 <h3 id="glm">GLM 的几何分析</h3>
 <p>广义线性模型对数似然函数表示为LN的输入a的形式</p>
-<p>$$
-\log P(y|x;w,b) = \frac{(a+b) y - \eta(a + b)}{\phi} + c(y, \phi)  \\
-\mathbb{E}[y| x] = f(a+b)  =  f(w^T x + b), \\
-Var[y| x] = \phi f'(a+b)
+<p>$$<br />
+\log P(y|x;w,b) = \frac{(a+b) y - \eta(a + b)}{\phi} + c(y, \phi)  \\<br />
+\mathbb{E}[y| x] = f(a+b)  =  f(w^T x + b), \\<br />
+Var[y| x] = \phi f'(a+b)<br />
 $$</p>
-<p>这里 $(f)$ 是函数$(\eta')$，为GLM的均值函数。
-假设有多个独立的response变量，$(y = [y_1, ..., y_H])$，对应多分模型参数$(\theta = [w_1^T, b_1, ..., w_H^t, b_H^T]^T)$，
+<p>这里 $(f)$ 是函数$(\eta')$，为GLM的均值函数。<br />
+假设有多个独立的response变量，$(y = [y_1, ..., y_H])$，对应多分模型参数$(\theta = [w_1^T, b_1, ..., w_H^t, b_H^T]^T)$，<br />
 将对数似然函数代入Fisher信息矩阵，并对$(y)$求期望，可得</p>
-<p>$$
-F(\theta) = \mathbb{E}_{x\sim P(x)} \left[  \frac{Cov[y|x]}{\phi^2} \otimes \left[ \begin{matrix}
-            xx^T &amp; x \\
+<p>$$<br />
+F(\theta) = \mathbb{E}_{x\sim P(x)} \left[  \frac{Cov[y|x]}{\phi^2} \otimes \left[ \begin{matrix}<br />
+            xx^T &amp; x \\<br />
             x^T &amp; 1<br />
-        \end{matrix} \right] \right]
+        \end{matrix} \right] \right]<br />
 $$</p>
 <p>采用归一化方法后，将额外的参数g加到参数列表中，$(\theta = vec([W, \mathbf{b}, \mathbf{g}]^T))$</p>
 <p><img src="/wiki/static/images/ln-fisher-matrix.png" style="width:500px;" /></p>
@@ -121,14 +121,14 @@ $$</p>
 </blockquote>
 <p>归一化改变曲率？还学习到了输入幅度？！</p>
 <h2 id="_5">实验结果</h2>
-<p>在多个任务上进行试验：对RNN和全连接网络有效，可以加速收敛，但是CNN上的结果不如BN，作者认为CNN神经元之间的统计特性相差太大导致的，
+<p>在多个任务上进行试验：对RNN和全连接网络有效，可以加速收敛，但是CNN上的结果不如BN，作者认为CNN神经元之间的统计特性相差太大导致的，<br />
 因为每个神经元都只链接上一层一小块区域，从而导致同一层的神经元统计特性相差很大！但是作者没有报道具体结果，LN比BN差多少也不得而知。</p>
 <ul>
-<li>Order embeddings of images and language： Ivan Vendrov, Ryan Kiros, Sanja Fidler, and Raquel Urtasun. Order-embeddings of images and language.
+<li>Order embeddings of images and language： Ivan Vendrov, Ryan Kiros, Sanja Fidler, and Raquel Urtasun. Order-embeddings of images and language.<br />
 ICLR, 2016.</li>
-<li>Teaching machines to read and comprehend：Karl Moritz Hermann, Tomas Kocisky, Edward Grefenstette, Lasse Espeholt, Will Kay, Mustafa Suleyman,
+<li>Teaching machines to read and comprehend：Karl Moritz Hermann, Tomas Kocisky, Edward Grefenstette, Lasse Espeholt, Will Kay, Mustafa Suleyman,<br />
 and Phil Blunsom. Teaching machines to read and comprehend. In NIPS, 2015.</li>
-<li>Skip-thought vectors：Ryan Kiros, Yukun Zhu, Ruslan R Salakhutdinov, Richard Zemel, Raquel Urtasun, Antonio Torralba, and Sanja
+<li>Skip-thought vectors：Ryan Kiros, Yukun Zhu, Ruslan R Salakhutdinov, Richard Zemel, Raquel Urtasun, Antonio Torralba, and Sanja<br />
 Fidler. Skip-thought vectors. In NIPS, 2015.</li>
 <li>Modeling binarized MNIST using DRAW：K. Gregor, I. Danihelka, A. Graves, and D. Wierstra. DRAW: a recurrent neural network for image generation. arXiv:1502.04623, 2015.</li>
 <li>Handwriting sequence generation：Marcus Liwicki and Horst Bunke. Iam-ondb-an on-line english sentence database acquired from handwritten text on a whiteboard. In ICDAR, 2005.</li>

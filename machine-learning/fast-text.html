@@ -59,7 +59,7 @@
 </ul>
 </div>
 <h2 id="_1">关于</h2>
-<p>fast text 开源工具见<a href="https://github.com/facebookresearch/fastText">https://github.com/facebookresearch/fastText</a>。
+<p>fast text 开源工具见<a href="https://github.com/facebookresearch/fastText">https://github.com/facebookresearch/fastText</a>。<br />
 主要涉及的两篇文章是：</p>
 <ol>
 <li>P. Bojanowski, E. Grave*, A. Joulin, <strong>T. Mikolov</strong>, Enriching Word Vectors with Subword Information</li>
@@ -68,16 +68,16 @@
 <h2 id="_2">论文导读</h2>
 <h3 id="enriching-word-vectors-with-subword-information">Enriching Word Vectors with Subword Information</h3>
 <h4 id="_3">摘要</h4>
-<p>论文的基本思想：由于之前的词向量方法都是以词为单位进行学习，而通常一个词的有很多不同的形态！（不能用stem将形态标准化么？）
-为此，作者提出一种基于skip-gram结构的新方法，词被表达为多个 n-gram 字母的bag。
-对每一个n-gram学习一个向量，而词向量用这些n-gram的向量求和得到。
-这种方法非常快！作者在5种不同的语言中训练词向量，评估了在word similarity and analogy
+<p>论文的基本思想：由于之前的词向量方法都是以词为单位进行学习，而通常一个词的有很多不同的形态！（不能用stem将形态标准化么？）<br />
+为此，作者提出一种基于skip-gram结构的新方法，词被表达为多个 n-gram 字母的bag。<br />
+对每一个n-gram学习一个向量，而词向量用这些n-gram的向量求和得到。<br />
+这种方法非常快！作者在5种不同的语言中训练词向量，评估了在word similarity and analogy<br />
 tasks上的效果！</p>
 <h4 id="_4">导言</h4>
 <h4 id="subword">subword 模型</h4>
-<p>在skip-gram模型中，两个词之间相似度用两个词词向量的内基表示$(score = s(w,c) = w^T c)$。
-这个模型将一个词的n-gram g单独赋予一个向量$(z_g)$，而词向量用该词所有的n-gram向量之和来表示。
-不同词之间，共享n-gram向量！那么$(s(w,c) = \sum z_g^T v_c )$。
+<p>在skip-gram模型中，两个词之间相似度用两个词词向量的内基表示$(score = s(w,c) = w^T c)$。<br />
+这个模型将一个词的n-gram g单独赋予一个向量$(z_g)$，而词向量用该词所有的n-gram向量之和来表示。<br />
+不同词之间，共享n-gram向量！那么$(s(w,c) = \sum z_g^T v_c )$。<br />
 词本身也加到了n-gram集合中，并且 词向量和n-gram向量不同，比如as作为单词和作为paste的n-gram是不共享向量的！</p>
 <p>n-gram 词典的设计，论文只保留了长度为3-6的n-gram。为开始位置和结束位置添加特殊字符，用以区分前缀和后缀。</p>
 <p>限制内存：将n-gram hash 到 1 to K，论文中K取200W！</p>
@@ -87,25 +87,25 @@ tasks上的效果！</p>
 <p>实现性能比skip-gram baseline 慢1.5倍。105k words/second/thread VS 145k words/second/thread for the baseline。</p>
 <h3 id="bag-of-tricks-for-efficient-text-classification">Bag of Tricks for Efficient Text Classification</h3>
 <p>论文：Bag of Tricks for Efficient Text Classification, Armand Joulin, Edouard Grave, Piotr Bojanowski, <strong>Tomas Mikolov</strong></p>
-<p>fastText 在多核CPU上，训练超过10亿的单词，不到10分钟！
+<p>fastText 在多核CPU上，训练超过10亿的单词，不到10分钟！<br />
 分类50W句子，312K个类别，只需要不到1分钟！</p>
 <p>现有的神经网络建模句子的表达，速度慢：</p>
 <ol>
 <li>[Bengio et al.2003]</li>
-<li>Ronan Collobert and Jason
-Weston. 2008. A unified architecture for natural language
-processing: Deep neural networks with multitask
+<li>Ronan Collobert and Jason<br />
+Weston. 2008. A unified architecture for natural language<br />
+processing: Deep neural networks with multitask<br />
 learning. In ICML.</li>
 </ol>
-<p>线性模型建模，速度快： (Mikolov et al., 2013; Levy et al., 2015).
+<p>线性模型建模，速度快： (Mikolov et al., 2013; Levy et al., 2015).<br />
 通过加入n-gram 信息，可以将线性模型的性能提高到和深度模型接近，但是速度快几个量级！</p>
 <h4 id="_6">模型结构</h4>
-<p>baseline：将句子表达为bag of word，然后训练一个线性模型 LR or linearSVM。
+<p>baseline：将句子表达为bag of word，然后训练一个线性模型 LR or linearSVM。<br />
 线性模型不能共享权值，导致泛化能力不强。</p>
 <p><img src="/wiki/static/images/fasttext-model.png" alt="模型" style="float:left; width:300px;" /></p>
 <p>Hierarchical softmax 优化，略</p>
 <p>N-gram features：n-gram 特征加入会极大影响速度，采用 hash trick解决！</p>
-<p>trick方案论文：Strategies for training large scale neural network language
+<p>trick方案论文：Strategies for training large scale neural network language<br />
 models.</p>
 <p><img src="/wiki/static/images/fasttext-result.png" alt="结果" /></p>
 </div>

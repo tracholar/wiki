@@ -59,27 +59,27 @@
 <h3 id="_2">导言</h3>
 <p>Dropout 是 Hinton 2012 年提出的一种简单的方法， 模型平均？！</p>
 <blockquote>
-<p>We argue that rather than using dropout as a slight
-performance enhancement applied to arbitrary models,
-the best performance may be obtained by directly
-designing a model that enhances dropout’s abilities as
+<p>We argue that rather than using dropout as a slight<br />
+performance enhancement applied to arbitrary models,<br />
+the best performance may be obtained by directly<br />
+designing a model that enhances dropout’s abilities as<br />
 a model averaging technique</p>
 </blockquote>
 <h3 id="review-of-dropout">Review of Dropout</h3>
-<p>对于给定的输入向量$(v)$，预测输出$(y)$，一系列的隐层 $(\vec{h} = { h^{(1)}, ..., h^{(L)} })$。
-Dropout 用变量$(v, \vec{h})$ 的一部分变量，训练一组模型（这是随机置0的高级理解！！？）。
-这些模型采用同一个模型参数 $(\theta \in \mathcal{M})$，和一个二元 mask 变量 $(\mu)$。
-对于每一个样本，对不同的随机参数$(\mu)$，我们通过$(log p(y|v; \theta, \mu))$ 的梯度训练一个
+<p>对于给定的输入向量$(v)$，预测输出$(y)$，一系列的隐层 $(\vec{h} = { h^{(1)}, ..., h^{(L)} })$。<br />
+Dropout 用变量$(v, \vec{h})$ 的一部分变量，训练一组模型（这是随机置0的高级理解！！？）。<br />
+这些模型采用同一个模型参数 $(\theta \in \mathcal{M})$，和一个二元 mask 变量 $(\mu)$。<br />
+对于每一个样本，对不同的随机参数$(\mu)$，我们通过$(log p(y|v; \theta, \mu))$ 的梯度训练一个<br />
 子模型。</p>
-<p>Dropout 很像 bagging 的方法，在数据集的很多子集上训练一组模型。
-不同的是， Dropout 每一个模型只训练一步，并且不同模型共享一个参数。
+<p>Dropout 很像 bagging 的方法，在数据集的很多子集上训练一组模型。<br />
+不同的是， Dropout 每一个模型只训练一步，并且不同模型共享一个参数。<br />
 因此，在训练的时候，每一步需要比较大的影响（把步长调大？）。</p>
 <h3 id="maxout">Maxout 模型</h3>
-<p>Maxout 模型也是一个多层的前馈结构，它的基本单元是 Maxout unit。
+<p>Maxout 模型也是一个多层的前馈结构，它的基本单元是 Maxout unit。<br />
 对给定的 $(x \in \mathbb{R}^d)$，一个 maxout 隐层为：</p>
-<p>$$
-h_i(x) = \max_{j \in [1, k]} z_{i,j} \\
-z_{i, j} = x^T W_{.ij} + b_{ij}, W \in \mathbb{R}^{d \times m \times k}, b \in \mathbb{R}^{m\times k}
+<p>$$<br />
+h_i(x) = \max_{j \in [1, k]} z_{i,j} \\<br />
+z_{i, j} = x^T W_{.ij} + b_{ij}, W \in \mathbb{R}^{d \times m \times k}, b \in \mathbb{R}^{m\times k}<br />
 $$</p>
 <p>相当于$(k)$个常规的纺射变换（一个线性变化$(W)$ 加上平移 $(b)$），然后取每一个模型的最大值作为最终的输出。</p>
 <p>单个 Maxout 单元可以理解为，对凸的分片连续函数的近似。</p>

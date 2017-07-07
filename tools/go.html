@@ -49,7 +49,7 @@
 </ul>
 </div>
 <h2 id="_1">安装环境</h2>
-<p>只试过MAC OS环境，所以就说这个，不同环境应该差不多。
+<p>只试过MAC OS环境，所以就说这个，不同环境应该差不多。<br />
 安装GO运行环境，然后配置两个环境变量｀GOPATH｀和｀GOBIN｀</p>
 <h2 id="_2">基础</h2>
 <h3 id="_3">基础语法</h3>
@@ -86,9 +86,9 @@
 
 <ul>
 <li>赋值语法<code>a := "hello world."</code></li>
-<li>命名返回值：Go 的返回值可以被命名，并且就像在函数体开头声明的变量那样使用。
-  返回值的名称应当具有一定的意义，可以作为文档使用。
-  没有参数的 return 语句返回各个返回变量的当前值。这种用法被称作“裸”返回。
+<li>命名返回值：Go 的返回值可以被命名，并且就像在函数体开头声明的变量那样使用。<br />
+  返回值的名称应当具有一定的意义，可以作为文档使用。<br />
+  没有参数的 return 语句返回各个返回变量的当前值。这种用法被称作“裸”返回。<br />
   直接返回语句仅应当用在像下面这样的短函数中。在长的函数中它们会影响代码的可读性。</li>
 </ul>
 <div class="hlcode"><pre><span class="kd">func</span> <span class="nx">getsum</span><span class="p">(</span><span class="nx">sum</span> <span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">int</span><span class="p">){</span>
@@ -99,7 +99,7 @@
 
 
 <ul>
-<li>变量声明关键字<code>var</code>，类型放在最后。<code>=</code>用于初始化变量，初始化使用
+<li>变量声明关键字<code>var</code>，类型放在最后。<code>=</code>用于初始化变量，初始化使用<br />
   表达式可以省略类型。</li>
 </ul>
 <div class="hlcode"><pre><span class="kd">var</span> <span class="nx">c</span><span class="p">,</span> <span class="nx">python</span><span class="p">,</span> <span class="nx">java</span> <span class="kt">bool</span>
@@ -131,15 +131,15 @@
 
 
 <ul>
-<li>零值
-变量在定义时没有明确的初始化时会赋值为 零值 。
+<li>零值<br />
+变量在定义时没有明确的初始化时会赋值为 零值 。<br />
 零值是：<ul>
 <li>数值类型为 0 ，</li>
 <li>布尔类型为 false ，</li>
 <li>字符串为 "" （空字符串）。</li>
 </ul>
 </li>
-<li>表达式 T(v) 将值 v 转换为类型 T 。
+<li>表达式 T(v) 将值 v 转换为类型 T 。<br />
   与 C 不同的是 Go 的在不同类型之间的项目赋值时需要显式转换.</li>
 <li>GO类型推导，变量的类型由右值推导得出。</li>
 </ul>
@@ -194,13 +194,13 @@
 
 
 <blockquote>
-<p>GO 的循环条件和判断条件都不需要用小括号括起来，但是括起来也是可以的。
+<p>GO 的循环条件和判断条件都不需要用小括号括起来，但是括起来也是可以的。<br />
 亲测通过，另外for和if条件表达式中定义的变量的作用域仅在该语句块中有效。</p>
 </blockquote>
 <ul>
 <li>switch分支语句, switch 的条件从上到下的执行，当匹配成功的时候停止。不像C需要break语句</li>
-<li>没有条件的 switch
-  没有条件的 switch 同 switch true 一样。
+<li>没有条件的 switch<br />
+  没有条件的 switch 同 switch true 一样。<br />
   这一构造使得可以用更清晰的形式来编写长的 if-then-else 链。</li>
 </ul>
 <div class="hlcode"><pre>    <span class="k">switch</span> <span class="p">{</span>
@@ -215,11 +215,11 @@
 
 
 <ul>
-<li>defer 语句会延迟函数的执行直到上层函数返回。
+<li>defer 语句会延迟函数的执行直到上层函数返回。<br />
   延迟调用的参数会立刻生成，但是在上层函数返回前函数都不会被调用。</li>
 <li>defer栈：延迟的函数调用被压入一个栈中。当函数返回时， 会按照后进先出的顺序调用被延迟的函数调用。</li>
-<li>Go 具有指针。 指针保存了变量的内存地址。
-  类型 <code>*T</code> 是指向类型 <code>T</code> 的值的指针。其零值是 <code>nil</code> 。
+<li>Go 具有指针。 指针保存了变量的内存地址。<br />
+  类型 <code>*T</code> 是指向类型 <code>T</code> 的值的指针。其零值是 <code>nil</code> 。<br />
   Go指针和C指针的区别在于Go没有指针运算。</li>
 <li>结构体，和C差不多，利用关键字<code>type</code>定义声明。</li>
 </ul>
@@ -232,8 +232,8 @@
 
 <p>结构体也可以通过指针访问，还是用符号<code>.</code>访问成员</p>
 <ul>
-<li>结构体文法。 结构体文法表示通过结构体字段的值作为列表来新分配一个结构体。
-  使用 Name: 语法可以仅列出部分字段。（字段名的顺序无关。）
+<li>结构体文法。 结构体文法表示通过结构体字段的值作为列表来新分配一个结构体。<br />
+  使用 Name: 语法可以仅列出部分字段。（字段名的顺序无关。）<br />
   特殊的前缀 &amp; 返回一个指向结构体的指针。</li>
 </ul>
 <div class="hlcode"><pre><span class="kd">var</span> <span class="p">(</span>
@@ -302,7 +302,7 @@
 
 
 <ul>
-<li>map 映射键到值。 类似于python的字典
+<li>map 映射键到值。 类似于python的字典<br />
 map 在使用之前必须用 make 来创建；值为 nil 的 map 是空的，并且不能对其赋值。</li>
 </ul>
 <div class="hlcode"><pre><span class="nx">m</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span>
@@ -312,16 +312,16 @@ map 在使用之前必须用 make 来创建；值为 nil 的 map 是空的，并
 
 <ul>
 <li>
-<p>map 的操作
-在 map m 中插入或修改一个元素：
-<code>m[key] = elem</code>
-获得元素：
-<code>elem = m[key]</code>
-删除元素：
-<code>delete(m, key)</code>
-通过双赋值检测某个键存在：
-<code>elem, ok = m[key]</code>
-如果 key 在 m 中， ok 为 true。否则， ok 为 false，并且 elem 是 map 的元素类型的零值。
+<p>map 的操作<br />
+在 map m 中插入或修改一个元素：<br />
+<code>m[key] = elem</code><br />
+获得元素：<br />
+<code>elem = m[key]</code><br />
+删除元素：<br />
+<code>delete(m, key)</code><br />
+通过双赋值检测某个键存在：<br />
+<code>elem, ok = m[key]</code><br />
+如果 key 在 m 中， ok 为 true。否则， ok 为 false，并且 elem 是 map 的元素类型的零值。<br />
 同样的，当从 map 中读取某个不存在的键时，结果是 map 的元素类型的零值。</p>
 </li>
 <li>
@@ -343,7 +343,7 @@ map 在使用之前必须用 make 来创建；值为 nil 的 map 是空的，并
 
 
 <ul>
-<li>go没有类！！！然而，仍然可以在结构体类型上定义方法。
+<li>go没有类！！！然而，仍然可以在结构体类型上定义方法。<br />
 方法接收者 出现在 func 关键字和方法名之间的参数中。</li>
 </ul>
 <div class="hlcode"><pre><span class="kd">func</span> <span class="p">(</span><span class="nx">v</span> <span class="o">*</span><span class="nx">Vertex</span><span class="p">)</span> <span class="nx">Abs</span><span class="p">()</span> <span class="kt">float64</span> <span class="p">{</span>
@@ -354,7 +354,7 @@ map 在使用之前必须用 make 来创建；值为 nil 的 map 是空的，并
 
 
 <ul>
-<li>你可以对包中的 任意 类型定义任意方法，而不仅仅是针对结构体。
+<li>你可以对包中的 任意 类型定义任意方法，而不仅仅是针对结构体。<br />
 但是，不能对来自其他包的类型或基础类型定义方法。</li>
 </ul>
 <div class="hlcode"><pre><span class="kd">type</span> <span class="nx">MyFloat</span> <span class="kt">float64</span>
@@ -374,7 +374,7 @@ map 在使用之前必须用 make 来创建；值为 nil 的 map 是空的，并
 
 
 <ul>
-<li>指针作为函数接收者，有两个原因需要使用指针接收者。首先避免在每个方法调用中拷贝值（如果值类型是大的结构体的话会更有效率）。
+<li>指针作为函数接收者，有两个原因需要使用指针接收者。首先避免在每个方法调用中拷贝值（如果值类型是大的结构体的话会更有效率）。<br />
   其次，方法可以修改接收者指向的值。</li>
 <li>接口是由一组方法定义的集合。接口区分类型本身的方法和类型指针绑定的方法。</li>
 </ul>
@@ -386,7 +386,7 @@ map 在使用之前必须用 make 来创建；值为 nil 的 map 是空的，并
 
 <ul>
 <li>隐式接口？什么鬼东西</li>
-<li>Stringers
+<li>Stringers<br />
 一个普遍存在的接口是 fmt 包中定义的 Stringer。</li>
 </ul>
 <div class="hlcode"><pre><span class="kd">type</span> <span class="nx">Stringer</span> <span class="kd">interface</span> <span class="p">{</span>
@@ -395,7 +395,7 @@ map 在使用之前必须用 make 来创建；值为 nil 的 map 是空的，并
 </pre></div>
 
 
-<p>Stringer 是一个可以用字符串描述自己的类型。<code>fmt</code>包 （还有许多其他包）使用这个来进行输出。
+<p>Stringer 是一个可以用字符串描述自己的类型。<code>fmt</code>包 （还有许多其他包）使用这个来进行输出。<br />
 - 错误接口</p>
 <div class="hlcode"><pre><span class="kd">type</span> <span class="kt">error</span> <span class="kd">interface</span> <span class="p">{</span>
     <span class="nx">Error</span><span class="p">()</span> <span class="kt">string</span>

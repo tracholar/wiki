@@ -54,7 +54,7 @@
 <ul>
 <li>GMM-HMM</li>
 <li>GMM 表达 HMM 态之间的关系；</li>
-<li>输入的表达：MFCC（Mel-frequency cepstral coefficients），PLPs（perceptual linear predictive coefficients）；
+<li>输入的表达：MFCC（Mel-frequency cepstral coefficients），PLPs（perceptual linear predictive coefficients）；<br />
 以及一阶和二阶时域差分；</li>
 </ul>
 <p><img src="/wiki/static/images/gmm-hmm.png" style="width:300px; float:left;" /></p>
@@ -70,13 +70,13 @@
 </li>
 <li>实值数据（MFCC）建模：高斯贝努力 RBM（Gaussian–Bernoulli RBM (GRBM)），能量函数为：</li>
 </ul>
-<p>$$
-E(v, h) = \sum_{i \in vis} \frac{(v_i - a_i)^2}{2 \sigma_i^2} - \sum_{j \in hid} b_j h_j - \sum_{i,j} \frac{v_i}{\sigma_i} h_j w_{ij}
+<p>$$<br />
+E(v, h) = \sum_{i \in vis} \frac{(v_i - a_i)^2}{2 \sigma_i^2} - \sum_{j \in hid} b_j h_j - \sum_{i,j} \frac{v_i}{\sigma_i} h_j w_{ij}<br />
 $$</p>
 <p>两个条件分布为：</p>
-<p>$$
-p(h_j|v) = \text{logistic}(b_j + \sum_i \frac{v_i}{\sigma_i} w_{ij})  \\
-p(v_i|h) = \mathcal{N}(a_i + \sigma_i \sum_j h_j w_{ij}; \sigma_i^2)
+<p>$$<br />
+p(h_j|v) = \text{logistic}(b_j + \sum_i \frac{v_i}{\sigma_i} w_{ij})  \\<br />
+p(v_i|h) = \mathcal{N}(a_i + \sigma_i \sum_j h_j w_{ij}; \sigma_i^2)<br />
 $$</p>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-12-11 </span></div>

@@ -55,7 +55,7 @@
 </div>
 <h2 id="_1">预处理模块</h2>
 <h3 id="labelbinarizer"><code>LabelBinarizer</code></h3>
-<p>在one-vs-all里面经常用，将数值或者字符类型的label，转换为一个向量，向量每一维对应其中一个label值，
+<p>在one-vs-all里面经常用，将数值或者字符类型的label，转换为一个向量，向量每一维对应其中一个label值，<br />
 就像one-hot编码。</p>
 <div class="hlcode"><pre><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">preprocessing</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">lb</span> <span class="o">=</span> <span class="n">preprocessing</span><span class="o">.</span><span class="n">LabelBinarizer</span><span class="p">()</span>
@@ -87,8 +87,8 @@
 
 <h2 id="_2">决策树</h2>
 <h3 id="_3">树的可视化</h3>
-<p>利用<code>tree.export_graphviz</code>函数，可以将树导出为图文件。借助于<code>IPython</code>可以在notebook里面
-将树可视化显示出来。需要安装<code>graphviz</code>命令行工具，在mac里面可以通过brew安装，命令是<code>brew install graphviz</code>。
+<p>利用<code>tree.export_graphviz</code>函数，可以将树导出为图文件。借助于<code>IPython</code>可以在notebook里面<br />
+将树可视化显示出来。需要安装<code>graphviz</code>命令行工具，在mac里面可以通过brew安装，命令是<code>brew install graphviz</code>。<br />
 如果你在终端里面输入<code>dot</code>，没有提示找不到命令，那么就安装好了。</p>
 <div class="hlcode"><pre><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span>
 <span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
@@ -105,8 +105,8 @@
 
 
 <h2 id="_4">特征离散化</h2>
-<p>从scikit-learn 0.1.7版本开始可以通过树分类器的<code>.apply</code>
-方法，获取输出叶子节点的序号，然后利用<code>onehot</code>转换器转换为
+<p>从scikit-learn 0.1.7版本开始可以通过树分类器的<code>.apply</code><br />
+方法，获取输出叶子节点的序号，然后利用<code>onehot</code>转换器转换为<br />
 稀疏的离散特征。</p>
 <p>利用决策树分类器对特征进行离散化的例子</p>
 <div class="hlcode"><pre><span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">tree</span>

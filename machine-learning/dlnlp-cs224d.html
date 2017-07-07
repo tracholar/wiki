@@ -123,7 +123,7 @@
 <h1 id="_1">关于</h1>
 <p>cs224d这门课是将深度学习应用到自然语言处理上面的课程，十分推荐。</p>
 <h2 id="_2">一些疑惑</h2>
-<p><a href="https://www.quora.com/How-is-GloVe-different-from-word2vec">https://www.quora.com/How-is-GloVe-different-from-word2vec</a>
+<p><a href="https://www.quora.com/How-is-GloVe-different-from-word2vec">https://www.quora.com/How-is-GloVe-different-from-word2vec</a><br />
 对于word2vec与GloVe的比较的见解。</p>
 <h2 id="word2vec">word2vec</h2>
 <ul>
@@ -140,13 +140,13 @@
 </ul>
 </li>
 <li>不是直接统计共同发生的次数，而是预测每一个单词周围的单词；速度快，易于应用到新词和新文档</li>
-<li>目标函数
-$$
-J(\theta) = \frac{1}{T} \sum_{t=1}^T  \sum_{-m \le j \le m, j \neq 0} \log p(w_{t+j} | w_t)
-$$
-其中条件概率采用如下指数形式
-$$
-p(o|c) = \frac{\exp(u_o^T v_c)}{\sum_{w=1}^W \exp(u_w^T v_c)}
+<li>目标函数<br />
+$$<br />
+J(\theta) = \frac{1}{T} \sum_{t=1}^T  \sum_{-m \le j \le m, j \neq 0} \log p(w_{t+j} | w_t)<br />
+$$<br />
+其中条件概率采用如下指数形式<br />
+$$<br />
+p(o|c) = \frac{\exp(u_o^T v_c)}{\sum_{w=1}^W \exp(u_w^T v_c)}<br />
 $$</li>
 <li>每一个单词有两个向量$(u, v)$. 最终的词向量是 $(u+v)$?</li>
 <li>词向量的线性关系<ul>
@@ -155,34 +155,34 @@ $$</li>
 </li>
 </ul>
 <h3 id="_3">负采样近似</h3>
-<p>单个输入词向量与单个输出词向量的损失函数
-$$
-J(u_o, v_c, U) = - \log(\sigma(u_o^T v_c)) - \sum_{k \sim P} \log(\sigma(- u_k^T v_c)).
-$$
-其中求和是对总体的一个采样。实际上，负采样方法相当于将极大似然估计的问题，转化为多个二分类问题。
-正例是两个词出现在同一个上下文，负例是两个词没有出现在同一个上下文！
+<p>单个输入词向量与单个输出词向量的损失函数<br />
+$$<br />
+J(u_o, v_c, U) = - \log(\sigma(u_o^T v_c)) - \sum_{k \sim P} \log(\sigma(- u_k^T v_c)).<br />
+$$<br />
+其中求和是对总体的一个采样。实际上，负采样方法相当于将极大似然估计的问题，转化为多个二分类问题。<br />
+正例是两个词出现在同一个上下文，负例是两个词没有出现在同一个上下文！<br />
 且正例的概率为：</p>
-<p>$$
-\sigma(u_o^T v_c)
+<p>$$<br />
+\sigma(u_o^T v_c)<br />
 $$</p>
 <h3 id="skip-gram">skip-gram模型</h3>
-<p>设由$(w_c)$预测$(w_o)$的单个损失函数为$(F(w_o, w_c))$，那么skip-gram模型可以表示为
-由中心单词预测周围的单词，损失函数为
-$$
-J = \sum_{-m \le j \le, j \neq 0} F(w_{c+j}, v_c).
+<p>设由$(w_c)$预测$(w_o)$的单个损失函数为$(F(w_o, w_c))$，那么skip-gram模型可以表示为<br />
+由中心单词预测周围的单词，损失函数为<br />
+$$<br />
+J = \sum_{-m \le j \le, j \neq 0} F(w_{c+j}, v_c).<br />
 $$</p>
 <h3 id="cbow">CBOW模型</h3>
-<p>CBOW模型使用周围单词的词向量之和来预测中心单词$w_c$。
-$$
-\hat{v} = \sum_{-m \le j \le, j \neq 0} v_{c+j}
-$$
-他的损失函数为
-$$
-J = F(w_c, \hat{v})
+<p>CBOW模型使用周围单词的词向量之和来预测中心单词$w_c$。<br />
+$$<br />
+\hat{v} = \sum_{-m \le j \le, j \neq 0} v_{c+j}<br />
+$$<br />
+他的损失函数为<br />
+$$<br />
+J = F(w_c, \hat{v})<br />
 $$</p>
 <blockquote>
 <p>WHY？</p>
-<p>一般而言，这种方式上的区别使得CBOW模型更适合应用在小规模的数据集上，能够对很多的分布式信息进行平滑处理；而Skip-Gram模型则比较适合用于大规模的数据集上。
+<p>一般而言，这种方式上的区别使得CBOW模型更适合应用在小规模的数据集上，能够对很多的分布式信息进行平滑处理；而Skip-Gram模型则比较适合用于大规模的数据集上。<br />
 </p>
 </blockquote>
 <h2 id="_4">问题</h2>
@@ -191,7 +191,7 @@ $$</p>
 <li>一般的交叉熵能够理解为最大似然估计么？</li>
 </ul>
 <h2 id="multitask-learning">Multitask learning</h2>
-<p>共享网络前几层的权值，只针对不同任务改变最后一层的权值。
+<p>共享网络前几层的权值，只针对不同任务改变最后一层的权值。<br />
 总的代价函数是各代价函数（如交叉熵）之和。</p>
 <h2 id="tips">神经网络TIPS</h2>
 <ul>
@@ -203,64 +203,64 @@ $$</p>
 <li>tanh ： 对很多任务，比sigmoid好，初始值接近0，更快的收敛，与sigmoid一样容易求导</li>
 <li>hard tanh : -1, if &lt; -1; x, if -1 &lt;= x &lt;= 1; 1, if x &gt; 1.</li>
 <li>softsign(z) = z/(1 + |z|)</li>
-<li>rect(z) = max(0, z)
+<li>rect(z) = max(0, z)<br />
 ref: Glorot and Bengio, AISTATS 2011</li>
 </ul>
 </li>
 <li>
 <p>MaxOut network (Goodfellow et al. 2013)</p>
 </li>
-<li>梯度下降优化建议，大数据集采用SGD和mini-batch SGD，小数据集采用L-BFGS或者CG。
+<li>梯度下降优化建议，大数据集采用SGD和mini-batch SGD，小数据集采用L-BFGS或者CG。<br />
   大数据集L-BFGS Le et  al. ICML    2011。</li>
-<li>SGD的提升，动量
-$$
-v = \mu v - \alpha \nabla_{\theta} J_t(\theta)   \\
-\theta^{new} = \theta^{old} + v
+<li>SGD的提升，动量<br />
+$$<br />
+v = \mu v - \alpha \nabla_{\theta} J_t(\theta)   \\<br />
+\theta^{new} = \theta^{old} + v<br />
 $$</li>
 <li>学习率：adagrad， adam</li>
 <li>防止过拟合：<ul>
 <li>减少模型大小，隐藏节点数目等</li>
 <li>L1 or L2正则化</li>
 <li>提前停止，选择在验证集合上最好的结果</li>
-<li>隐藏节点的稀疏约束，参考UFLDL教程
-$$
-KL(1/N \sum_{n=1}^N a_i^{(n)|0.001})
+<li>隐藏节点的稀疏约束，参考UFLDL教程<br />
+$$<br />
+KL(1/N \sum_{n=1}^N a_i^{(n)|0.001})<br />
 $$</li>
 <li>dropout，输入以一定概率随机置0</li>
 <li>denoise</li>
 </ul>
 </li>
-<li>超参数的搜索：随即搜索。
-Y.  Bengio  (2012), “Practical  Recommendations for GradientBased
+<li>超参数的搜索：随即搜索。<br />
+Y.  Bengio  (2012), “Practical  Recommendations for GradientBased<br />
 Training    of  Deep    Architectures”      </li>
 <li>Xavier initialization 初始化策略</li>
 </ul>
 <h2 id="language-models">Language Models</h2>
 <p>所谓语言模型就是建立单词的联合概率模型$(P(w_1,...,w_T))$.</p>
 <h3 id="bengio-2003">神经网络语言模型 Bengio 2003</h3>
-<p>一个直接连接部分和一个非线性变换部分。输入为前n个词的词向量
-$$
-y = b + Wx + U tanh(d + Hx) .  \\
-P(w_t|w_{t-1},...,w_{t-n+1}) = \frac{e^{y_{w_t}}}{\sum_i e^{y_i}}.
-$$
+<p>一个直接连接部分和一个非线性变换部分。输入为前n个词的词向量<br />
+$$<br />
+y = b + Wx + U tanh(d + Hx) .  \\<br />
+P(w_t|w_{t-1},...,w_{t-n+1}) = \frac{e^{y_{w_t}}}{\sum_i e^{y_i}}.<br />
+$$<br />
 缺点是窗口是固定的。记忆能力有限？</p>
 <h3 id="_5">递归神经网络</h3>
 <p>基于之前见到的所有单词（理论上有无限长的时间窗）</p>
 <blockquote>
-<p>Condition the neural  network on  all previous
+<p>Condition the neural  network on  all previous<br />
 words and tie the weights at  each    time    step</p>
 </blockquote>
-<p>设词向量列表为 $(x_1, x_2, ..., x_t, ..., x_T)$。L矩阵中的列向量。
-$$
-h_t = \sigma(W^{(hh) h_{t-1}} + W^{hx} x_{t}). \\
-\hat{y}_t = softmax(W^{(S)} h_t). \\
-P(x_{t+1}=v_j|x_t, ..., x_1) = \hat{y}_{t, j}.
-$$
-所有时刻的权值都是相同的。损失函数为所有时刻交叉熵的平均值
-$$
-J^{(t)}(\theta) = -\sum_{j=1}^{|V|} y_{t,j} \log \hat{y}_{t,j}. \\
-J = - \frac{1}{T} \sum_t J^{(t)}
-$$
+<p>设词向量列表为 $(x_1, x_2, ..., x_t, ..., x_T)$。L矩阵中的列向量。<br />
+$$<br />
+h_t = \sigma(W^{(hh) h_{t-1}} + W^{hx} x_{t}). \\<br />
+\hat{y}_t = softmax(W^{(S)} h_t). \\<br />
+P(x_{t+1}=v_j|x_t, ..., x_1) = \hat{y}_{t, j}.<br />
+$$<br />
+所有时刻的权值都是相同的。损失函数为所有时刻交叉熵的平均值<br />
+$$<br />
+J^{(t)}(\theta) = -\sum_{j=1}^{|V|} y_{t,j} \log \hat{y}_{t,j}. \\<br />
+J = - \frac{1}{T} \sum_t J^{(t)}<br />
+$$<br />
 Perplexity ???</p>
 <ul>
 <li>训练困难，梯度容易衰减或者很大。Bengio et al  1994</li>
@@ -269,11 +269,11 @@ Perplexity ???</p>
 <ul>
 <li>$(W^{(hh)})$ 初始化为单位阵</li>
 <li>非线性函数用rect函数替换<blockquote>
-<p>Parsing   with    Compositional
+<p>Parsing   with    Compositional<br />
 Vector    Grammars,   Socher  et  al. 2013</p>
-<p>A Simple  Way to  Initialize  Recurrent   Networks    of  Rectified   Linear
+<p>A Simple  Way to  Initialize  Recurrent   Networks    of  Rectified   Linear<br />
 Units,    Le  et  al. 2015</p>
-<p>On    the difficulty   of training    Recurrent   Neural  Networks,   Pascanu et  al. 2013
+<p>On    the difficulty   of training    Recurrent   Neural  Networks,   Pascanu et  al. 2013<br />
 </p>
 </blockquote>
 </li>
@@ -295,10 +295,10 @@ Units,    Le  et  al. 2015</p>
 </ul>
 <h3 id="bidirectionl-rnns-rnn">bidirectionl RNNS 双向RNN</h3>
 <p>每一个隐层存在两个变量，$(h^L, h^R)$。</p>
-<p>$$
-h_t^R = f(W^R x_t + V^R h_{t-1}^R + b^R) \\
-h_t^L = f(W^L x_t + V^L h_{t+1}^L + b^L) \\
-y_t = g(U [h_t^R; h_t^L] + c)
+<p>$$<br />
+h_t^R = f(W^R x_t + V^R h_{t-1}^R + b^R) \\<br />
+h_t^L = f(W^L x_t + V^L h_{t+1}^L + b^L) \\<br />
+y_t = g(U [h_t^R; h_t^L] + c)<br />
 $$</p>
 <p>问题：$(h_{t+1}^L)$的值怎么来？</p>
 <p>数据集 MPQA    1.2 corpus</p>
@@ -325,7 +325,7 @@ $$</p>
 <ul>
 <li>Encoder：利用RNN将句子变成一个向量  $(h_t = f(W^{hh} h_{t-1} + W^{hx} x_t))$</li>
 <li>Decoder：将句子向量变成一句话  $(h_t = W^{hh} h_{t-1}, y_t = softmax(W^S h_t))$</li>
-<li>损失函数：最小化所有输出结果的交叉熵， $(\max_{\theta} \frac{1}{N} \sum_{n=1}^N \log p_{\theta} (y^{(n)}| x^{n}))$
+<li>损失函数：最小化所有输出结果的交叉熵， $(\max_{\theta} \frac{1}{N} \sum_{n=1}^N \log p_{\theta} (y^{(n)}| x^{n}))$<br />
 用句子向量作为中间桥梁。</li>
 </ul>
 </li>
@@ -349,13 +349,13 @@ $$</p>
 <li>重置门$(r_t)$，如果重置门接近于0，那么当前隐层状态将忘记之前的隐层状态，只依赖当前输入</li>
 <li>新的隐层$(\widetilde{h}_t)$，另外一个的隐层状态，最终的隐层状态是基于更新门组合这个新隐层和上一时刻的隐层</li>
 </ul>
-<p>$$
-z_t = \sigma(W^{(z)} x_t + U^{(z)} h_{t-1})  \\
-r_t = \sigma(W^{(r)} x_t + U^{(r)} h_{t-1})  \\
-\widetilde{h}_t = tanh(W x_t + r_t \circ U h_{t-1})    \\
-h_t = z_t \circ h_{t-1} + (1 - z_t) \circ \widetilde{h}_t
+<p>$$<br />
+z_t = \sigma(W^{(z)} x_t + U^{(z)} h_{t-1})  \\<br />
+r_t = \sigma(W^{(r)} x_t + U^{(r)} h_{t-1})  \\<br />
+\widetilde{h}_t = tanh(W x_t + r_t \circ U h_{t-1})    \\<br />
+h_t = z_t \circ h_{t-1} + (1 - z_t) \circ \widetilde{h}_t<br />
 $$</p>
-<p>当重置门接近0，允许模型忘记历史，实现短期依赖。
+<p>当重置门接近0，允许模型忘记历史，实现短期依赖。<br />
 当更新门接近1，简单复制上一时刻的隐层，导致更少的vanishing gradients，实现长期依赖。</p>
 <h3 id="lstm">LSTM</h3>
 <p>跟多的门，每一个门都是当前输入和上一时刻的隐层的函数，只是权值不同。</p>
@@ -405,7 +405,7 @@ $$</p>
 </ol>
 <h2 id="nlp">NLP 综述</h2>
 <p>论文： Natural Language Processing (almost) from Scratch</p>
-<p>文章提出一种统一的神经网络结构，可以用在很多自然语言处理任务当中：POS tagging，chunking，NER，semantic role labeling。
+<p>文章提出一种统一的神经网络结构，可以用在很多自然语言处理任务当中：POS tagging，chunking，NER，semantic role labeling。<br />
 这种方案可以不用针对特定任务进行特征工程和先验知识。</p>
 <h3 id="pos-taggingwall-street-journal-wsj-data">POS tagging：数据集：Wall Street Journal (WSJ) data</h3>
 <ul>
@@ -434,36 +434,36 @@ $$</p>
 <li>一个正常的神经网络，线性层+非线性层 的多次堆叠！</li>
 </ol>
 <h4 id="transforming-words-into-feature-vectors">Transforming Words into Feature Vectors</h4>
-<p>将词 embedding 到一个低维的词向量，也可以理解为一个查找表 W，输入词的索引 idx，输出W(:, idx)，
+<p>将词 embedding 到一个低维的词向量，也可以理解为一个查找表 W，输入词的索引 idx，输出W(:, idx)，<br />
 而参数 W 通过BP算法学习！</p>
-<p>如果加入其它离散特征，把每一个特征做同样的 embedding 操作，每一个特征都有一个查找表 $(W_k)$，这些参数都要通过后续学习。
+<p>如果加入其它离散特征，把每一个特征做同样的 embedding 操作，每一个特征都有一个查找表 $(W_k)$，这些参数都要通过后续学习。<br />
 最终输出的特征向量是这些离散特征 embedding 后的特征拼接而成！</p>
 <p>经过这一层后，每一个词输出为一个 $(d_{wrd})$ 维的向量。</p>
 <h4 id="extracting-higher-level-features-from-word-feature-vectors">Extracting Higher Level Features from Word Feature Vectors</h4>
 <ul>
-<li>Window Approach： 加窗，只使用词的邻居词，将窗内的词对应的向量拼接起来，成为一个大的向量，设窗口为 $(k_{sz})$，
+<li>Window Approach： 加窗，只使用词的邻居词，将窗内的词对应的向量拼接起来，成为一个大的向量，设窗口为 $(k_{sz})$，<br />
 那么，加窗后的向量长度为 $(d_{wrd} \times k_{sz})$。将这个固定长度的向量输入到一个正常的多层全连接神经网络。</li>
 </ul>
 <p>边界效应：对于句子起始和结束的词，在前后补充半个窗口的特殊词“PADDING”，这个词对应的词向量也是通过学习得到的。等价于学习序列的开始和结束！</p>
 <ul>
-<li>Sentence Approach：利用时间一维卷积层 Waibel et al. (1989) ，Time Delay Neural Networks (TDNNs)。
+<li>Sentence Approach：利用时间一维卷积层 Waibel et al. (1989) ，Time Delay Neural Networks (TDNNs)。<br />
 卷积层可以学习局部特征</li>
 </ul>
-<p>卷积层，Max pooling层。最后得到的固定长度的特征向量进入一个标准的全连接神经网络。
+<p>卷积层，Max pooling层。最后得到的固定长度的特征向量进入一个标准的全连接神经网络。<br />
 边界通过相同的 PADDING 方法解决不同长度的问题！</p>
 <h3 id="_9">训练</h3>
 <h4 id="word-level-log-likelihood">Word-Level Log-Likelihood</h4>
 <p>每一个词是独立的，最大化极大似然函数等价于最小化交叉熵损失函数。</p>
 <h4 id="sentence-level-log-likelihood">Sentence-Level Log-Likelihood</h4>
-<p>词的标注之间是不独立的！从一个TAG到另一个TAG可能是不允许的。
-设TAG之间转移用score矩阵 A 表示，最终对一个句子$([x]_1^T)$ 标注序列$([i]_1^T)$ 的score是
+<p>词的标注之间是不独立的！从一个TAG到另一个TAG可能是不允许的。<br />
+设TAG之间转移用score矩阵 A 表示，最终对一个句子$([x]_1^T)$ 标注序列$([i]_1^T)$ 的score是<br />
 标注序列转移score和神经网络输出的score之和！</p>
-<p>$$
-s([x]_1^T, [i]_1^T, \hat{\theta}) = \sum_{t=1}^T ([A]_{[i]_{t-1}, [i]_t} + [f_{\theta}]_{[i]_t,t}) \\
-\hat{\theta} = \theta \union {A_{ij}, \forall i,j }
+<p>$$<br />
+s([x]_1^T, [i]_1^T, \hat{\theta}) = \sum_{t=1}^T ([A]_{[i]_{t-1}, [i]_t} + [f_{\theta}]_{[i]_t,t}) \\<br />
+\hat{\theta} = \theta \union {A_{ij}, \forall i,j }<br />
 $$</p>
-<p>最后输出的是score对所有路径的softmax归一化后的值，解释为路径的条件概率。
-因为路径数目随句子长度字数增长，所以分母上的求和项也有指数个。
+<p>最后输出的是score对所有路径的softmax归一化后的值，解释为路径的条件概率。<br />
+因为路径数目随句子长度字数增长，所以分母上的求和项也有指数个。<br />
 幸运的是，可以在线性时间复杂度内求得。</p>
 <p>优化算法：动态规划，Viterbi algorithm ！</p>
 <ul>
@@ -497,16 +497,16 @@ $$</p>
 <h2 id="sequence-to-sequence-learning-with-neural-networks">Sequence to Sequence Learning with Neural Networks</h2>
 <p>序列到序列学习！经典文献。来自 Google。</p>
 <p>DNN 只能对固定长度的输入，进行建模，但是很多时候需要实现序列到序列的学习：语音识别，机器翻译！</p>
-<p>序列学习的方法：用一个RNN（通常是LSTM）将一个序列编码成一个大的固定长度的向量（Encoder），
-然后再用一个RNN将该向量解码成一个新的序列（Decoder）。
+<p>序列学习的方法：用一个RNN（通常是LSTM）将一个序列编码成一个大的固定长度的向量（Encoder），<br />
+然后再用一个RNN将该向量解码成一个新的序列（Decoder）。<br />
 译码方案：Beam-search decoder。</p>
 <p>评估指标：BLEU？</p>
 <p>一个 trick： 将序列（句子）反序后，加入训练集。？</p>
 <h3 id="_12">模型</h3>
-<p>标准的RNN需要将输入和输出对齐才能用。
-利用标准的 RNN 做编码和译码的方案： Cho et al. [5]
+<p>标准的RNN需要将输入和输出对齐才能用。<br />
+利用标准的 RNN 做编码和译码的方案： Cho et al. [5]<br />
 这种方案的问题在于标准的RNN难以学到长期依赖。</p>
-<p>LSTM可以学到长期依赖，编码器将输入序列编码到一个固定长度的向量，解码器是一个标准的 LSTM-LM 形式的解码结构，
+<p>LSTM可以学到长期依赖，编码器将输入序列编码到一个固定长度的向量，解码器是一个标准的 LSTM-LM 形式的解码结构，<br />
 用上述向量初始化该结构的初始隐层状态！解码序列直到输出 <strong>结束标记</strong> 才停止。</p>
 <ul>
 <li>这篇文章的创新点：<ul>
@@ -518,8 +518,8 @@ $$</p>
 </ul>
 <h3 id="_13">实验</h3>
 <p>WMT’14 English to French MT task</p>
-<p>解码通过一个从左到右的简单 beam search 方案，每次保存 B 个最可能的前缀！
-每次将这B个前缀扩展，然后再保存最可能的 B 个新的前缀，直到都碰到结束符！
+<p>解码通过一个从左到右的简单 beam search 方案，每次保存 B 个最可能的前缀！<br />
+每次将这B个前缀扩展，然后再保存最可能的 B 个新的前缀，直到都碰到结束符！<br />
 B=1 就很好了！增加B的值，收益不是很大！？</p>
 <p>将输入反序进行训练带来的收益很大！</p>
 <ul>
@@ -530,9 +530,9 @@ B=1 就很好了！增加B的值，收益不是很大！？</p>
 <p>the LSTM’s test perplexity dropped from 5.8 to 4.7, and the test BLEU scores of its decoded translations increased from 25.9 to 30.6</p>
 </blockquote>
 <p>作者给了一个简单的解释：不反序，第一个词..... 没看懂</p>
-<p>比 baseline 好，但比最好的结果还是稍微差点。
+<p>比 baseline 好，但比最好的结果还是稍微差点。<br />
 baseline：phrase-based SMT system？</p>
-<p>H. Schwenk. University le mans. http://www-lium.univ-lemans.fr/~schwenk/cslm_joint_paper/,
+<p>H. Schwenk. University le mans. http://www-lium.univ-lemans.fr/~schwenk/cslm_joint_paper/,<br />
 2014. [Online; accessed 03-September-2014]</p>
 <h2 id="rnn-for-qa">RNN for QA</h2>
 <ul>
@@ -547,31 +547,31 @@ baseline：phrase-based SMT system？</p>
 <li>每一个关系的终止节点（词）通过矩阵 $(W_v \in \mathbb{R}^{d \times d})$ 映射到隐层。</li>
 <li>中间节点也关联一个词，通过下式将该词和子节点映射到隐层。</li>
 </ul>
-<p>$$
-h_n = (W_v w_n +b + \sum_{k \in K(n)} W_{R(n, k)} h_k)
+<p>$$<br />
+h_n = (W_v w_n +b + \sum_{k \in K(n)} W_{R(n, k)} h_k)<br />
 $$</p>
 <p>权重 $(W_{R(n, k)})$ 描述当前词n与子节点隐层 $(h_k)$ 之间的组合关系。</p>
 <p>设S是所有的节点，给定一个句子，设词c是正确结果，Z是所有不正确的结果集合。那么对这一个样本，损失函数为</p>
-<p>$$
-C(S, \theta) = \sum_{s \in S} \sum_{z \in Z} L(rank(c, s, Z)) \max(0, 1- x_c h_s + x_z h_s) \\
-L(r) = \sum_{i=1}^r 1/i
+<p>$$<br />
+C(S, \theta) = \sum_{s \in S} \sum_{z \in Z} L(rank(c, s, Z)) \max(0, 1- x_c h_s + x_z h_s) \\<br />
+L(r) = \sum_{i=1}^r 1/i<br />
 $$</p>
 <h2 id="image-retrieval-by-sentences">Image retrieval by Sentences</h2>
 <p>论文：Grounded Compositional Semantics for Finding and Describing Images with Sentences, 2013, Richard Socher, <strong>Andrej Karpathy</strong>, Quoc V. Le*, Christopher D. Manning, <strong>Andrew Y. Ng</strong></p>
 <p>DT—RNN：CT-RNN, Recurrent NN</p>
 <p>将图像和句子映射到同一个空间，这样就可以用一个来查另外一个了。</p>
 <p>zero shot learning</p>
-<p>最简单的将词向量变成句子或短语的方式是，简单地线性平均这些词向量，（词向量中的 bag of word）。
+<p>最简单的将词向量变成句子或短语的方式是，简单地线性平均这些词向量，（词向量中的 bag of word）。<br />
 RNN 的方法就没有这些问题。</p>
 <p>句子 parsed by the dependency parser of de Marneffe et al. (2006)</p>
-<p>每一个句子被表达为一个词，词向量序列， $(s = ( (w_1, x_{w_1}), (w_2, x_{w_2}), ..., (w_n, x_{w_n}) ))$。
-parse后得到树状结构，可以用(孩子，父亲)对来表示 $(d(s) = { (i, j) })$。
+<p>每一个句子被表达为一个词，词向量序列， $(s = ( (w_1, x_{w_1}), (w_2, x_{w_2}), ..., (w_n, x_{w_n}) ))$。<br />
+parse后得到树状结构，可以用(孩子，父亲)对来表示 $(d(s) = { (i, j) })$。<br />
 最后输入 DT-RNN 的样本是两者组成的 (s, d)</p>
-<p>图像特征提取是用 DNN(Le et al., 2012)，利用未标注的web图片和标注的 ImageNet 训练学出来的，dim=4096。
+<p>图像特征提取是用 DNN(Le et al., 2012)，利用未标注的web图片和标注的 ImageNet 训练学出来的，dim=4096。<br />
 输入：200x200，使用了三个层：滤波（CNN），pooling(L2)，local contrast normalization.</p>
 <p>local contrast normalization: 将输入的子图块（文章中5x5）减去均值，除以方差进行归一化。 有点像 layer nomalize.</p>
 <ul>
-<li>Multimodal Mappings
+<li>Multimodal Mappings<br />
     - 固定图片特征4096维<ul>
 <li>联合训练图片特征向量映射到联合空间矩阵和DT-RNN参数。</li>
 </ul>
@@ -593,26 +593,26 @@ parse后得到树状结构，可以用(孩子，父亲)对来表示 $(d(s) = { (
 <ol>
 <li>将出现频率低于某个阈值的词映射为同一个词，称作rare token。条件概率变为：</li>
 </ol>
-<p>$$
-p(w_i(t+1)| w(t), s(t-1)) = \begin{cases}
-                            y_{rare}(t)/C_{rare}, w_i(t+1) is rare. \\
-                            y_i(t), otherwise
-                            \end{cases}
+<p>$$<br />
+p(w_i(t+1)| w(t), s(t-1)) = \begin{cases}<br />
+                            y_{rare}(t)/C_{rare}, w_i(t+1) is rare. \\<br />
+                            y_i(t), otherwise<br />
+                            \end{cases}<br />
 $$</p>
-<p>s 是隐层，即上下文向量。因为 rare 是多个词概率之和，所以对某个词来说，它的概率就要把 rare 的概率除以rare词的数目。
+<p>s 是隐层，即上下文向量。因为 rare 是多个词概率之和，所以对某个词来说，它的概率就要把 rare 的概率除以rare词的数目。<br />
 对这些词来说，概率都是一样的。</p>
 <p>RNN LM： 6小时； Bengio：几天，24小时 sampling</p>
 <h2 id="a-neural-probabilistic-language-model">A Neural Probabilistic Language Model</h2>
 <p>Yoshua Bengio，2003.</p>
-<p>传统的 n-gram 模型的问题，维数灾难。随着n增大，测试集中的 n-gram 是训练集中没有的概率越来越大。
+<p>传统的 n-gram 模型的问题，维数灾难。随着n增大，测试集中的 n-gram 是训练集中没有的概率越来越大。<br />
 解决之道：神经网络模型，词的分布式表达。</p>
 <ol>
 <li>学习到了词的分布是表达</li>
 <li>基于这种词的表达的条件概率模型，语言模型</li>
 </ol>
-<p>维数灾难：建模离散随机变量的联合分布时，10个变量就有 |V|^10 个可能的状态（参数）。
+<p>维数灾难：建模离散随机变量的联合分布时，10个变量就有 |V|^10 个可能的状态（参数）。<br />
 而建模连续变量就容易一些，可以用神经网络，等等。（连续函数一般具有局部光滑，即局部可微）。</p>
-<p>传统n-gram的问题：考虑的近邻词数目太少，最好的结果也就是trigram；
+<p>传统n-gram的问题：考虑的近邻词数目太少，最好的结果也就是trigram；<br />
 没有考虑到词之间的相似性。</p>
 <p>维数灾难解决办法：词的分布式表达。</p>
 <p>n-gram 语言模型，也会通过所有的gram进行平滑。</p>
@@ -638,12 +638,12 @@ $$</p>
 <li>多层 RNN（简单RNN， LSTM， GRU都可以）</li>
 <li>不同层RNN互相连接，通过全局 rest 门控制不同层之间的交互</li>
 </ol>
-<p>其中，第i层到第j层的全局 reset 门，由当前时刻第 j-1 层的输入（对于第一层，是x），
+<p>其中，第i层到第j层的全局 reset 门，由当前时刻第 j-1 层的输入（对于第一层，是x），<br />
 以及上一时刻所有的隐层共同决定，如下式：</p>
-<p>$$
-g^{i \rightarrow j} = \sigma(w_g^{i \rightarrow j} h_t^{j-1} + u_g^{i \rightarrow j} h_{t-1}^{*})
+<p>$$<br />
+g^{i \rightarrow j} = \sigma(w_g^{i \rightarrow j} h_t^{j-1} + u_g^{i \rightarrow j} h_{t-1}^{*})<br />
 $$</p>
-<p>隐层的更新，将单层隐态更新方程中上一时刻隐层项，变成对所有隐层通过全局 reset 门的组合。
+<p>隐层的更新，将单层隐态更新方程中上一时刻隐层项，变成对所有隐层通过全局 reset 门的组合。<br />
 所有类型的 RNN如LSTM，GRU都适用，详细见论文。</p>
 <ul>
 <li>试验任务：<ul>

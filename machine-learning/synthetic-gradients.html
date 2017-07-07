@@ -60,20 +60,20 @@
 <li>分布式模型</li>
 </ul>
 <p>本论文主要工作是移除了 Update Locking 依赖。权值更新方法：</p>
-<p>$$
-\frac{\partial L}{\partial \theta_i} = f_{Bprop}((h_i,x_i,y_i,\theta_i),(h_{i+1},x_{i+1},y_{i+1},\theta_{i+1}),...) \frac{\partial h_i}{\partial \theta_i} \\
-\approx \hat{f}_{Bprop}(h_i) \frac{\partial h_i}{\partial \theta_i}
+<p>$$<br />
+\frac{\partial L}{\partial \theta_i} = f_{Bprop}((h_i,x_i,y_i,\theta_i),(h_{i+1},x_{i+1},y_{i+1},\theta_{i+1}),...) \frac{\partial h_i}{\partial \theta_i} \\<br />
+\approx \hat{f}_{Bprop}(h_i) \frac{\partial h_i}{\partial \theta_i}<br />
 $$</p>
 <p>这里下标表示层数（或者模型序号），$(x, y)$表示输入和监督？h表示层的输出，该方法用一个神经网络对第一部分建模，而且只采用该层输出的局部信息！</p>
-<p>Decoupled Neural Interface (DNI). 预测误差仅依赖与该层的输出，因而一旦该层计算完毕，就可以马上得到BP误差！
-该梯度仅跟输出h有关，成为 synthetic gradients (合成梯度)，可以利用这个合成梯度立即更新该层网络权值！
+<p>Decoupled Neural Interface (DNI). 预测误差仅依赖与该层的输出，因而一旦该层计算完毕，就可以马上得到BP误差！<br />
+该梯度仅跟输出h有关，成为 synthetic gradients (合成梯度)，可以利用这个合成梯度立即更新该层网络权值！<br />
 从而移除了 Update Locking 和 Backwards Locking！</p>
 <p>利用同样思想，移除Forward Locking?预测输入？</p>
 <ol>
 <li>J. Baxter and P. L. Bartlett. Direct gradient-based reinforcement learning. In Circuits and Systems,</li>
-<li>Proceedings. ISCAS 2000 Geneva. The 2000 IEEE International Symposium on, volume 3, pages
+<li>Proceedings. ISCAS 2000 Geneva. The 2000 IEEE International Symposium on, volume 3, pages<br />
 271–274. IEEE, 2000.</li>
-<li><strong>Y. Bengio</strong>. How auto-encoders could provide credit assignment in deep networks via target propagation.
+<li><strong>Y. Bengio</strong>. How auto-encoders could provide credit assignment in deep networks via target propagation.<br />
 arXiv preprint arXiv:1407.7906, 2014.</li>
 </ol>
 </div>

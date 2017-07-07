@@ -93,7 +93,7 @@
 </ul>
 </div>
 <h2 id="_1">关于</h2>
-<p>学习scala后，发现scala就是灵活版的java，他通过引入函数式编程的一些概念来达到这个目的，
+<p>学习scala后，发现scala就是灵活版的java，他通过引入函数式编程的一些概念来达到这个目的，<br />
 并且由于基于JVM，能够复用所有的java库！！如果你嫌java臃肿，不妨试试scala。</p>
 <ul>
 <li>相关链接：<ul>
@@ -194,20 +194,20 @@
 
 <ul>
 <li>
-<p>Traits 特质
+<p>Traits 特质<br />
 很像接口，通过<code>with</code>关键字，一个类可以扩展多个特质。</p>
-<p>```scala
-trait Car {
-  val brand: String
+<p>```scala<br />
+trait Car {<br />
+  val brand: String<br />
 }</p>
-<p>trait Shiny {
-  val shineRefraction: Int
-}
-class BMW extends Car with Shiny {
-  val brand = "BMW"
-  val shineRefraction = 12
-}
-```
+<p>trait Shiny {<br />
+  val shineRefraction: Int<br />
+}<br />
+class BMW extends Car with Shiny {<br />
+  val brand = "BMW"<br />
+  val shineRefraction = 12<br />
+}<br />
+```<br />
 - 泛型，方法和trait都可以引入类型参数</p>
 </li>
 </ul>
@@ -249,7 +249,7 @@ class BMW extends Car with Shiny {
 
 
 <ul>
-<li>函数即对象.
+<li>函数即对象.<br />
 函数是一些特质的集合。具体来说，具有一个参数的函数是Function1特质的一个实例。这个特征定义了<code>apply()</code>语法糖，让你调用一个对象时就像你在调用一个函数。</li>
 </ul>
 <div class="hlcode"><pre><span class="k">object</span> <span class="nc">addOne</span> <span class="k">extends</span> <span class="nc">Function1</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">Int</span><span class="o">]</span> <span class="o">{</span>
@@ -263,7 +263,7 @@ class BMW extends Car with Shiny {
 
 <ul>
 <li>包，和Java的一样</li>
-<li>模式匹配
+<li>模式匹配<br />
 匹配值</li>
 </ul>
 <div class="hlcode"><pre><span class="k">val</span> <span class="n">times</span> <span class="k">=</span> <span class="mi">1</span>
@@ -313,7 +313,7 @@ class BMW extends Car with Shiny {
 </pre></div>
 
 
-<p>case classes are designed to be used with pattern matching. Let’s simplify our calculator classifier example from earlier.
+<p>case classes are designed to be used with pattern matching. Let’s simplify our calculator classifier example from earlier.<br />
 样本类就是被设计用在模式匹配中的。让我们简化之前的计算器分类器的例子。</p>
 <div class="hlcode"><pre><span class="k">def</span> <span class="n">calcType</span><span class="o">(</span><span class="n">calc</span><span class="k">:</span> <span class="kt">Calculator</span><span class="o">)</span> <span class="k">=</span> <span class="n">calc</span> <span class="k">match</span> <span class="o">{</span>
   <span class="k">case</span> <span class="nc">Calculator</span><span class="o">(</span><span class="s">&quot;hp&quot;</span><span class="o">,</span> <span class="s">&quot;20B&quot;</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="s">&quot;financial&quot;</span>
@@ -359,7 +359,7 @@ class BMW extends Car with Shiny {
 </pre></div>
 
 
-<p>与样本类不同，元组不能通过名称获取字段，而是使用位置下标来读取对象；而且这个下标基于1，而不是基于0。
+<p>与样本类不同，元组不能通过名称获取字段，而是使用位置下标来读取对象；而且这个下标基于1，而不是基于0。<br />
 在创建两个元素的元组时，可以使用特殊语法：<code>1 -&gt; 2</code>，见映射</p>
 <dl>
 <dt>unpack：<code>val (v1, v2) = (1,2)</code>, <a href="https://stackoverflow.com/questions/15034565/is-there-a-scala-equivalent-of-the-python-list-unpack-a-k-a-operator">函数参数unpack例子</a></dt>
@@ -386,10 +386,10 @@ class BMW extends Car with Shiny {
 </pre></div>
 
 
-<p><code>Map</code>中要获取键对应的值，需要使用<code>Map.get</code>方法。
-- 选项 Option
-Option 是一个表示有可能包含值的容器。
-Option 本身是泛型的，有两个子类 <code>Some[T]</code> 或 <code>None</code>。
+<p><code>Map</code>中要获取键对应的值，需要使用<code>Map.get</code>方法。<br />
+- 选项 Option<br />
+Option 是一个表示有可能包含值的容器。<br />
+Option 本身是泛型的，有两个子类 <code>Some[T]</code> 或 <code>None</code>。<br />
 在模式匹配中会用到。</p>
 <div class="hlcode"><pre><span class="k">val</span> <span class="n">result</span> <span class="k">=</span> <span class="n">res1</span> <span class="k">match</span> <span class="o">{</span>
     <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">n</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">n</span><span class="o">*</span><span class="mi">2</span>
@@ -407,14 +407,14 @@ Option 本身是泛型的，有两个子类 <code>Some[T]</code> 或 <code>None<
 </pre></div>
 
 
-<p>Option本身是泛型的，并且有两个子类： Some[T] 或 None。
-<code>Map.get</code>使用<code>Option</code>作为其返回值，表示这个方法也许不会
-返回你请求的值。
+<p>Option本身是泛型的，并且有两个子类： Some[T] 或 None。<br />
+<code>Map.get</code>使用<code>Option</code>作为其返回值，表示这个方法也许不会<br />
+返回你请求的值。<br />
 类似于Haskell的<code>Maybe</code>？</p>
 <h3 id="functional-combinators">函数组合子 Functional Combinators</h3>
 <ul>
-<li>map 组合子
-例子：<code>List(1,2,3,4) map {i:Int =&gt; i*i}</code>，
+<li>map 组合子<br />
+例子：<code>List(1,2,3,4) map {i:Int =&gt; i*i}</code>，<br />
 或者这样调用</li>
 </ul>
 <div class="hlcode"><pre><span class="n">numbers</span><span class="o">.</span><span class="n">map</span><span class="o">((</span><span class="n">i</span><span class="k">:</span><span class="kt">Int</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">2</span><span class="o">)</span>
@@ -439,7 +439,7 @@ Option 本身是泛型的，有两个子类 <code>Some[T]</code> 或 <code>None<
 <ul>
 <li><code>partition</code>, 使用给定的谓词函数（返回true和false的函数）分割列表，返回tuple</li>
 <li><code>find</code>，返回集合中第一个匹配谓词函数的元素</li>
-<li><code>drop</code> 和 <code>dropWile</code>，<code>drop</code>删除前i个元素，<code>dropWhile</code>将删除
+<li><code>drop</code> 和 <code>dropWile</code>，<code>drop</code>删除前i个元素，<code>dropWhile</code>将删除<br />
   元素直到不满足条件为止。</li>
 <li>foldLeft， 左折叠。需要传入一个初始值和一个二元函数</li>
 <li>foldRight，右折叠</li>
@@ -454,10 +454,10 @@ Option 本身是泛型的，有两个子类 <code>Some[T]</code> 或 <code>None<
 </pre></div>
 
 
-<p><code>println</code>是啥？为甚不能组合。
+<p><code>println</code>是啥？为甚不能组合。<br />
 - <code>andThen</code>，与<code>compose</code>很像，只是执行顺序相反，先执行第一个。</p>
 <h3 id="_5">偏函数</h3>
-<p>不是部分应用函数，篇函数是指只能接受该类型的某些特定的值。
+<p>不是部分应用函数，篇函数是指只能接受该类型的某些特定的值。<br />
 <code>isDefinedAt</code>用来确定该函数能否接受一个给定的参数。</p>
 <div class="hlcode"><pre><span class="k">val</span> <span class="n">one</span><span class="k">:</span> <span class="kt">PartialFunction</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span> <span class="k">case</span> <span class="mi">1</span> <span class="k">=&gt;</span> <span class="s">&quot;one&quot;</span> <span class="o">}</span>
 <span class="n">one</span><span class="o">.</span><span class="n">isDefinedAt</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>   <span class="c1">// true</span>
@@ -497,7 +497,7 @@ Option 本身是泛型的，有两个子类 <code>Some[T]</code> 或 <code>None<
 
 <p>模式匹配其实是一个偏函数！偏函数是函数的子类，所以所有在使用函数的地方都可以使用偏函数，即模式匹配！</p>
 <h2 id="_6">类型，静态类型</h2>
-<p>随着类型系统表达能力的提高，我们可以生产更可靠的代码。
+<p>随着类型系统表达能力的提高，我们可以生产更可靠的代码。<br />
 所有的类型信息会在编译时被删去，因为它已不再需要。这就是所谓的擦除。</p>
 <ul>
 <li>参数化多态，秩1多态性rank-one。下面是一个错误的例子，将会报编译错误。</li>
@@ -508,8 +508,8 @@ Option 本身是泛型的，有两个子类 <code>Some[T]</code> 或 <code>None<
 
 
 <ul>
-<li>类型推断
-Hindley Milner算法。 Scala编译器为我们做类型推断，
+<li>类型推断<br />
+Hindley Milner算法。 Scala编译器为我们做类型推断，<br />
 使得可以不明确指定返回类型。</li>
 </ul>
 <div class="hlcode"><pre><span class="k">def</span> <span class="n">id</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">x</span> <span class="k">:</span> <span class="kt">T</span><span class="o">)</span> <span class="k">=</span> <span class="n">x</span>
@@ -525,7 +525,7 @@ Hindley Milner算法。 Scala编译器为我们做类型推断，
 </ul>
 </li>
 </ul>
-<p>逆变的例子，函数特质。参数用父类，调用用子类，表明以父类为类型参数的函数
+<p>逆变的例子，函数特质。参数用父类，调用用子类，表明以父类为类型参数的函数<br />
 是以子类为类型参数的函数的子类。有点绕，理解一下。</p>
 <ul>
 <li>边界，指定泛型的大类型？<code>T &lt;: SomeType</code> 指定T是SomeType的子类。</li>
@@ -543,8 +543,8 @@ Hindley Milner算法。 Scala编译器为我们做类型推断，
 </pre></div>
 
 
-<p><code>T :&gt; SomeType</code> 指定T是SomeType的超类。
-List 同样 定义了<code>::[B &gt;: T](x: B)</code> 来返回一个List[B]，例如下面这个例子中，
+<p><code>T :&gt; SomeType</code> 指定T是SomeType的超类。<br />
+List 同样 定义了<code>::[B &gt;: T](x: B)</code> 来返回一个List[B]，例如下面这个例子中，<br />
 flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的是超类Animal的列表。</p>
 <div class="hlcode"><pre><span class="n">scala</span><span class="o">&gt;</span> <span class="k">new</span> <span class="nc">Animal</span> <span class="o">::</span> <span class="n">flock</span>
 <span class="n">res59</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Animal</span><span class="o">]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="nc">Animal</span><span class="k">@</span><span class="mi">11</span><span class="n">f8d3a8</span><span class="o">,</span> <span class="nc">Bird</span><span class="k">@</span><span class="mi">7</span><span class="n">e1ec70e</span><span class="o">,</span> <span class="nc">Bird</span><span class="k">@</span><span class="mi">169</span><span class="n">ea8d2</span><span class="o">)</span>
@@ -552,8 +552,8 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 
 
 <ul>
-<li>量化 Quantification。
-有时候，不关心类型变量时，可以用通配符取而代之，注意区分变量和类型变量。
+<li>量化 Quantification。<br />
+有时候，不关心类型变量时，可以用通配符取而代之，注意区分变量和类型变量。<br />
 个人理解：下面这个例子与类型无关，只与List的接口有关，所以不影响类型推导系统。</li>
 </ul>
 <p>可以为通配符指定边界。</p>
@@ -565,7 +565,7 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 
 
 <ul>
-<li>View bounds（type classes）， <code>&lt;%</code>.
+<li>View bounds（type classes）， <code>&lt;%</code>.<br />
 在隐式函数可以帮助满足类型推断时，它们允许按需的函数应用。</li>
 </ul>
 <div class="hlcode"><pre><span class="k">class</span> <span class="nc">Container</span><span class="o">[</span><span class="kt">A</span> <span class="k">&lt;%</span> <span class="kt">Int</span><span class="o">]</span> <span class="o">{</span> <span class="k">def</span> <span class="n">addIt</span><span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span> <span class="k">=</span> <span class="mi">123</span> <span class="o">+</span> <span class="n">x</span> <span class="o">}</span>
@@ -653,9 +653,9 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 <h2 id="-">字符串 - 核心数据结构</h2>
 <p>scala的字符串很多是直接借助于java的String类，但是还有一些scala的特性需要说明一下。</p>
 <h3 id="string-interpolationscala-210">字符串插值 String Interpolation，Scala 2.10.+</h3>
-<p>scala提供三种字符串插值方法，s, f and raw。
-- s支持局部变量和表达式。
-- f表明对变量进行格式化，类似于printf的功能。类型安全，如果不匹配，将会报错。<code>%s</code>是通用的？！
+<p>scala提供三种字符串插值方法，s, f and raw。<br />
+- s支持局部变量和表达式。<br />
+- f表明对变量进行格式化，类似于printf的功能。类型安全，如果不匹配，将会报错。<code>%s</code>是通用的？！<br />
 - raw字符串就是不会对转义字符转义。相当于python里面的r</p>
 <div class="hlcode"><pre><span class="c1">// 插入局部变量</span>
 <span class="k">val</span> <span class="n">name</span> <span class="k">=</span> <span class="s">&quot;James&quot;</span>
@@ -687,7 +687,7 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 <p><code>::</code>是将前面的数据prepend到后面的列表中，等同于<code>+:</code>。</p>
 <ul>
 <li>
-<p>连接集合， <code>L1 ++ L2</code>， 可以连接元素类型不同的集合，最终生成的集合类型是这两个
+<p>连接集合， <code>L1 ++ L2</code>， 可以连接元素类型不同的集合，最终生成的集合类型是这两个<br />
   集合元素类型的超集。和<code>:::</code>一样</p>
 </li>
 <li>
@@ -702,7 +702,7 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 </li>
 <li>内置的数学函数，<code>.max</code>, <code>.min</code>, <code>.sum</code>, <code>.product</code></li>
 <li>内置的基本属性，<code>.length</code>, <code>.size</code>, <code>.head</code>, <code>.last</code></li>
-<li><code>filter</code>, <code>flatMap</code>, <code>map</code>, <code>withFilter</code>, <code>zip</code>, <code>zipWithIndex</code>（相当于python的enumerater）。
+<li><code>filter</code>, <code>flatMap</code>, <code>map</code>, <code>withFilter</code>, <code>zip</code>, <code>zipWithIndex</code>（相当于python的enumerater）。<br />
   其中<code>flatMap = flatten . map</code>，因此穿进去的函数需要返回一个<code>GenTraversableOnce</code>，比如返回一个列表。</li>
 </ul>
 <h3 id="set">Set</h3>
@@ -799,9 +799,9 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 <li>HashSet: implements immutable sets using a <strong> hash trie </strong></li>
 <li>HashMap: implements immutable maps using a hash trie</li>
 <li>TreeMap 是SortedMap子类</li>
-<li>Vector 快速随机访问
+<li>Vector 快速随机访问<br />
     继承 <code>Seq</code>, <code>IndexedSeq</code>, <code>Iterable</code>, <code>Traversable</code></li>
-<li>Range 等间隔的Int有序序列。
+<li>Range 等间隔的Int有序序列。<br />
     继承 <code>traverable</code>, <code>Iterable</code>, <code>Seq</code>.</li>
 </ul>
 <div class="hlcode"><pre><span class="k">val</span> <span class="n">r0</span> <span class="k">=</span> <span class="mi">0</span> <span class="n">until</span> <span class="mi">10</span>
@@ -818,9 +818,9 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 <h3 id="vs">可变 vs 不可变</h3>
 <p>不可变</p>
 <p>优点</p>
-<p>在多线程中不会改变
+<p>在多线程中不会改变<br />
 缺点</p>
-<p>一点也不能改变
+<p>一点也不能改变<br />
 Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的可变性。这和var vs. val非常相似。我们总是先从val开始并在必要时回退为var。</p>
 <p>我们赞成使用不可改变的版本的集合，但如果性能使然，也可以切换到可变的。使用不可变集合意味着你在多线程不会意外地改变事物。</p>
 <h3 id="_12">可变集合</h3>
@@ -892,7 +892,7 @@ Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的
 
 
 <ul>
-<li>线程，Scala并发是建立在Java并发模型基础上的。在Sun JVM上，对IO密集的任务，我们可以在一台机器运行成千上万个线程。
+<li>线程，Scala并发是建立在Java并发模型基础上的。在Sun JVM上，对IO密集的任务，我们可以在一台机器运行成千上万个线程。<br />
   一个线程需要一个<code>Runnable</code>。你必须调用线程的 <code>start</code> 方法来运行Runnable。</li>
 </ul>
 <div class="hlcode"><pre><span class="k">val</span> <span class="n">hello</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Thread</span><span class="o">(</span><span class="k">new</span> <span class="nc">Runnable</span> <span class="o">{</span>
@@ -905,7 +905,7 @@ Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的
 </pre></div>
 
 
-<p>创建一个自己的线程步骤，首先创建一个实现Runnable接口的类，然后将该类的实例作为参数传给<code>new Thread()</code>即可，
+<p>创建一个自己的线程步骤，首先创建一个实现Runnable接口的类，然后将该类的实例作为参数传给<code>new Thread()</code>即可，<br />
 然后再调用创建的线程的<code>.start()</code>方法就可以运行了。</p>
 <p>也可以利用java的线程的执行服务构建一个线程池。<code>java.util.concurrent.{Executors, ExecutorService}</code></p>
 <div class="hlcode"><pre><span class="k">val</span> <span class="n">pool</span><span class="k">:</span> <span class="kt">ExecutorService</span> <span class="o">=</span> <span class="nc">Executors</span><span class="o">.</span><span class="n">newFixedThreadPool</span><span class="o">(</span><span class="n">poolSize</span><span class="o">)</span>

@@ -87,19 +87,19 @@
 </ul>
 <h3 id="the-skip-gram-model">The Skip-gram Model</h3>
 <p>用中间词预测周围的词，最大化对数似然函数</p>
-<p>$$
-\frac{1}{T} \sum_{t=1}^T \sum_{-c \le j \le c, j \neq 0} \log p(w_{t+j}| w_t) \\
-p(w_O| w_I) = \frac{\exp(v^'_{w_O}^T v_{w_I})}{\sum_{w=1}^W \exp(v^'_{w}^T v_{w_I}) }
+<p>$$<br />
+\frac{1}{T} \sum_{t=1}^T \sum_{-c \le j \le c, j \neq 0} \log p(w_{t+j}| w_t) \\<br />
+p(w_O| w_I) = \frac{\exp(v^'_{w_O}^T v_{w_I})}{\sum_{w=1}^W \exp(v^'_{w}^T v_{w_I}) }<br />
 $$</p>
 <p>计算代价正比于词典规模 W（10^5-10^7），因此很费时间。</p>
 <h4 id="hierarchical-softmax">Hierarchical Softmax</h4>
 <p>Frederic Morin and <strong>Yoshua Bengio</strong>. Hierarchical probabilistic neural network language model. In Pro- ceedings of the international workshop on artificial intelligence and statistics, pages 246–252, 2005.</p>
-<p>只需要计算$(\log_2W)$个节点！
-将条件概率的计算，变成多个分类概率的计算。可以用一个二叉树表示出来，叶子结点对应词，中间节点有一个参数！
-每一个内部节点可以看做一个二分类逻辑回归，其参数就是二分类参数。这个参数也要学习！
+<p>只需要计算$(\log_2W)$个节点！<br />
+将条件概率的计算，变成多个分类概率的计算。可以用一个二叉树表示出来，叶子结点对应词，中间节点有一个参数！<br />
+每一个内部节点可以看做一个二分类逻辑回归，其参数就是二分类参数。这个参数也要学习！<br />
 文中表示用哈夫曼树作为这个二叉树可以简单提升性能。</p>
-<p>$$
-p\left( w_O | w_I \right) = \prod_{j = 1}^{L(w) - 1} \sigma \left( [n(w,j+1) = ch(n(w,j))] \centerdot v_{n(w,j)}^{\top} v_{w_I} \right)
+<p>$$<br />
+p\left( w_O | w_I \right) = \prod_{j = 1}^{L(w) - 1} \sigma \left( [n(w,j+1) = ch(n(w,j))] \centerdot v_{n(w,j)}^{\top} v_{w_I} \right)<br />
 $$</p>
 <h4 id="negative-sampling">Negative Sampling</h4>
 <ul>
@@ -110,32 +110,32 @@ $$</p>
 </li>
 </ul>
 <p>负采样解释可以看2014年的文章：<a href="http://cn.arxiv.org/pdf/1402.3722v1.pdf">http://cn.arxiv.org/pdf/1402.3722v1.pdf</a></p>
-<p>可以将每一项理解为一个二元分类问题，正样本是词在中心词的上下文，而负样本是不在中心词上下文的词。
+<p>可以将每一项理解为一个二元分类问题，正样本是词在中心词的上下文，而负样本是不在中心词上下文的词。<br />
 目标函数相当于让正样本出现以及k各负样本不出现的联合概率最大化！</p>
-<p>$$
-\log \sigma(v_{w_O}'^T v_{w_I}) + \sum_{i=1}^k \mathbb{E}_{w_i \sim P_n(w)} \left[  \log(-\sigma(v_{w_i}'^T v_{w_I}')) \right]
+<p>$$<br />
+\log \sigma(v_{w_O}'^T v_{w_I}) + \sum_{i=1}^k \mathbb{E}_{w_i \sim P_n(w)} \left[  \log(-\sigma(v_{w_i}'^T v_{w_I}')) \right]<br />
 $$</p>
-<p>对于小数据集k取 5-20 即可；对于大数据集k可以取小点2-5.
+<p>对于小数据集k取 5-20 即可；对于大数据集k可以取小点2-5.<br />
 采样方法 P 取 unigram distribution $(U(w)^{3/4})$最好，即正比于词频的3/4次幂。</p>
 <h4 id="_3">高频词的负采样</h4>
 <p>以概率P丢弃！</p>
-<p>$$
-P(w_i) = 1 - \sqrt{\frac{t}{f(w_i)}}
+<p>$$<br />
+P(w_i) = 1 - \sqrt{\frac{t}{f(w_i)}}<br />
 $$</p>
-<p>t 是阈值，典型值为$(10^{-5})$，f是词频率！
+<p>t 是阈值，典型值为$(10^{-5})$，f是词频率！<br />
 这种方式不但可以加快速度，还能提高低频词的精度！（不是数据越多越好？！）</p>
 <h3 id="_4">测试数据</h3>
 <ul>
 <li>相似推理任务：<ul>
 <li>语法相似 syntactic analogies： “quick” : “quickly” :: “slow” : “slowly”</li>
-<li>语义相似 semantic analogies：“Germany” : “Berlin” :: “France” : ?
+<li>语义相似 semantic analogies：“Germany” : “Berlin” :: “France” : ?<br />
 结果如下图所示。</li>
 </ul>
 </li>
 </ul>
 <p><img src="/wiki/static/images/word2vec.png" style="width:600px; float:left;" /></p>
 <h3 id="_5">短语学习</h3>
-<p>将经常出现在一起的，而不经常在其他上下文出现的多个词作为一个token。例如：New York Times；
+<p>将经常出现在一起的，而不经常在其他上下文出现的多个词作为一个token。例如：New York Times；<br />
 但是：this is，没有作为一个token！</p>
 <h2 id="cbow">CBOW 论文</h2>
 <p><strong>Mikolov, T.</strong>, Chen, K., Corrado, G., &amp; Dean, J. (2013). Efficient estimation of word representations in vector space. arXiv preprint arXiv:1301.3781.</p>
@@ -146,24 +146,24 @@ $$</p>
 <li>square root type transformation in the form of Hellinger PCA (HPCA) (Lebret and Collobert, 2014)</li>
 <li>Mnih and Kavukcuoglu (2013) also proposed closely-related vector log-bilinear models, vLBL and ivLBL, and Levy et al. (2014) proposed explicit word embed- dings based on a PPMI metric.</li>
 </ul>
-<p>核心思想，直接建模共生矩阵！（skip-gram，CBOW是直接建模上下文！不能利用全局统计信息？）
+<p>核心思想，直接建模共生矩阵！（skip-gram，CBOW是直接建模上下文！不能利用全局统计信息？）<br />
 建模概率比率，而不是建模概率本身！</p>
-<p>$$
-F(w_i, w_j, \hat{w}_k) = \frac{P_{ik}}{P_{jk}}
+<p>$$<br />
+F(w_i, w_j, \hat{w}_k) = \frac{P_{ik}}{P_{jk}}<br />
 $$</p>
 <p>希望学习到线性关系？！</p>
-<p>$$
-F(w_i, w_j, \hat{w}_k) = F(w_i - w_j, \hat{w}_k) \\
- = F( (w_i - w_j)^T \hat{w}_k) = \frac{P_{ik}}{P_{jk}}
+<p>$$<br />
+F(w_i, w_j, \hat{w}_k) = F(w_i - w_j, \hat{w}_k) \\<br />
+ = F( (w_i - w_j)^T \hat{w}_k) = \frac{P_{ik}}{P_{jk}}<br />
 $$</p>
 <p>考虑对称性，即将共生矩阵行列对换，需要保持不变性！那么要F是群(R, +)到(R+, x)的同态映射</p>
-<p>$$
-F((w_i - w_j)^T \hat{w}_k) = \frac{F(w_i^T \hat{w}_k)}{F(w_j^T \hat{w}_k)}
+<p>$$<br />
+F((w_i - w_j)^T \hat{w}_k) = \frac{F(w_i^T \hat{w}_k)}{F(w_j^T \hat{w}_k)}<br />
 $$</p>
 <p>因此，F是指数函数！</p>
 <p>进而要求具有交换对称性，可以增加bias实现</p>
-<p>$$
-w_i^T \hat{w}_k + b_i + \hat{b}_k = \log(X_{ik})
+<p>$$<br />
+w_i^T \hat{w}_k + b_i + \hat{b}_k = \log(X_{ik})<br />
 $$</p>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-10-09 </span></div>

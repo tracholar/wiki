@@ -61,67 +61,67 @@
 <li>随机梯度下降 SGD</li>
 <li>mini-batch 梯度下降</li>
 </ul>
-<p>mini-batch梯度下降的问题
-- 学习率难以选择，过小收敛太慢，过大会导致震荡
-- 自动降低学习率需要预先指定条件，不是自适应的
-- 算法对所有的参数采用相同的学习率
+<p>mini-batch梯度下降的问题<br />
+- 学习率难以选择，过小收敛太慢，过大会导致震荡<br />
+- 自动降低学习率需要预先指定条件，不是自适应的<br />
+- 算法对所有的参数采用相同的学习率<br />
 - 难以跳出鞍点，这是致命的问题</p>
 <p>优化算法</p>
 <h3 id="_2">动量方法</h3>
-<p>可以加速相关方向的收敛和抑制不相关方向的震荡。动量实际上是对梯度的指数平滑
-$$
-v_t = \gamma v_{t-1} + (1-\gamma) \nabla_\theta J(\theta). \
-\theta = \theta - \eta v_t.
+<p>可以加速相关方向的收敛和抑制不相关方向的震荡。动量实际上是对梯度的指数平滑<br />
+$$<br />
+v_t = \gamma v_{t-1} + (1-\gamma) \nabla_\theta J(\theta). \<br />
+\theta = \theta - \eta v_t.<br />
 $$</p>
 <h3 id="nesterov-accelerated-gradient">Nesterov accelerated gradient</h3>
-<p>采用预测的点的梯度，而不是当前梯度。
-$$
-v_t = \gamma v_{t-1} + (1-\gamma) \nabla_\theta J(\theta - \gamma v_{t-1}). \
-\theta = \theta - \eta v_t.
+<p>采用预测的点的梯度，而不是当前梯度。<br />
+$$<br />
+v_t = \gamma v_{t-1} + (1-\gamma) \nabla_\theta J(\theta - \gamma v_{t-1}). \<br />
+\theta = \theta - \eta v_t.<br />
 $$</p>
 <h3 id="adagrad">Adagrad</h3>
-<p>解决了两个问题，自适应学习率 和 对不同频次特征采用不同的学习率，适应于稀疏特征 。
-更新权值的方程为
-$$
-\theta_{t+1} = \theta_t - \frac{\eta}{\sqrt{G_t + \epsilon}} \odot g_t.
-$$
+<p>解决了两个问题，自适应学习率 和 对不同频次特征采用不同的学习率，适应于稀疏特征 。<br />
+更新权值的方程为<br />
+$$<br />
+\theta_{t+1} = \theta_t - \frac{\eta}{\sqrt{G_t + \epsilon}} \odot g_t.<br />
+$$<br />
 $(G_t)$是对过去的梯度的平方的累积，因此学习率一直在减少。</p>
 <h3 id="adadelta-google-inc-new-york-univ-matthew-dzeiler">Adadelta (Google Inc, New York Univ, Matthew D.Zeiler)</h3>
-<p>改善Adagrad单调递减的学习率，它不是累计所有的梯度，而是设置了一个固定的时间窗$(w)$.
-平滑平方误差$(E[g^2]_t)$
-$$
-E[g^2]_t = \gamma E[g^2]_{t-1} + (1-\gamma) g_t^2. 
-$$
-权值更新方程为
-$$
-\Delta \theta_t = - \frac{\eta}{\sqrt{E[g^2]_t +\epsilon}} \odot g_t.
-$$
-平滑步长的平方
-$$
-E[\Delta \theta^2]_t = \gamma E[\Delta \theta^2]_{t-1} + (1-\gamma) \Delta \theta^2_t.
-$$
-利用这个重新设计学习率使得单位一致
-$$
-\Delta \theta_t = - \frac{\sqrt{E[\Delta \theta^2] + \epsilon}}{\sqrt{E[\theta^2]_t + \epsilon}} \odot g_t.
+<p>改善Adagrad单调递减的学习率，它不是累计所有的梯度，而是设置了一个固定的时间窗$(w)$.<br />
+平滑平方误差$(E[g^2]_t)$<br />
+$$<br />
+E[g^2]_t = \gamma E[g^2]_{t-1} + (1-\gamma) g_t^2. <br />
+$$<br />
+权值更新方程为<br />
+$$<br />
+\Delta \theta_t = - \frac{\eta}{\sqrt{E[g^2]_t +\epsilon}} \odot g_t.<br />
+$$<br />
+平滑步长的平方<br />
+$$<br />
+E[\Delta \theta^2]_t = \gamma E[\Delta \theta^2]_{t-1} + (1-\gamma) \Delta \theta^2_t.<br />
+$$<br />
+利用这个重新设计学习率使得单位一致<br />
+$$<br />
+\Delta \theta_t = - \frac{\sqrt{E[\Delta \theta^2] + \epsilon}}{\sqrt{E[\theta^2]_t + \epsilon}} \odot g_t.<br />
 $$</p>
 <h3 id="rmsprop-hinton">RMSprop (Hinton)</h3>
 <p>第一种Adadelta。</p>
 <h3 id="adam-adaptive-moment-estimation">Adam, adaptive moment estimation.</h3>
-<p>算法
-$$
-m_t = \beta_1 m_{t-1} + (1-\beta_1) g_t. \
-v_t = \beta_2 v_{t-1} + (1-\beta_2) g_t^2.
+<p>算法<br />
+$$<br />
+m_t = \beta_1 m_{t-1} + (1-\beta_1) g_t. \<br />
+v_t = \beta_2 v_{t-1} + (1-\beta_2) g_t^2.<br />
 $$</p>
-<p>$$
-\hat{m}_t = \frac{m_t}{1 - \beta_1^t}. \
-\hat{v}_t = \frac{v_t}{1 - \beta_2^t}.
+<p>$$<br />
+\hat{m}_t = \frac{m_t}{1 - \beta_1^t}. \<br />
+\hat{v}_t = \frac{v_t}{1 - \beta_2^t}.<br />
 $$</p>
-<p>更新方程
-$$
-\theta_{t+1} = \theta_t - \frac{\eta}{\sqrt{\hat{v}_t + \epsilon}} \hat{m}_t.
+<p>更新方程<br />
+$$<br />
+\theta_{t+1} = \theta_t - \frac{\eta}{\sqrt{\hat{v}_t + \epsilon}} \hat{m}_t.<br />
 $$</p>
 <h3 id="additional-strategies-for-optimizing-sgd">Additional strategies for optimizing SGD</h3>
-<p>每一次的循环都要打散数据的顺序。Zaremba and Sutskever训练LSTM的时候，
+<p>每一次的循环都要打散数据的顺序。Zaremba and Sutskever训练LSTM的时候，<br />
 发现按照一定顺序反而能提高性能？</p>
 <h3 id="batch-normalization">Batch normalization</h3>
 <ul>

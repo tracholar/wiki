@@ -116,7 +116,7 @@
 </li>
 </ul>
 <h2 id="reinforcement-learning">Reinforcement Learning</h2>
-<p>仍然是一个MDP过程，仍然寻找最优决策！
+<p>仍然是一个MDP过程，仍然寻找最优决策！<br />
 但是不知道状态转移函数T 和 回报函数 R！</p>
 <ul>
 <li>MDP：Offline</li>
@@ -142,24 +142,24 @@
 <p>使用深度学习建模值函数，策略和模型！</p>
 <h3 id="value-based-deep-rl">Value-Based Deep RL</h3>
 <p>Q-Networks</p>
-<p>$$
-Q(s, a, w) \approx Q^* (s, a)
+<p>$$<br />
+Q(s, a, w) \approx Q^* (s, a)<br />
 $$</p>
 <p>Q-Learning：</p>
 <p>最优 Q-value 应该遵循 Bellman 方程</p>
-<p>$$
-Q^<em> (s, a) = \mathbb{E}_{s'} \left[ r + \gamma \max_{a'} Q(s', a')^</em> |s, a  \right]
+<p>$$<br />
+Q^<em> (s, a) = \mathbb{E}_{s'} \left[ r + \gamma \max_{a'} Q(s', a')^</em> |s, a  \right]<br />
 $$</p>
-<p>其中 s 表示状态，a 表示agent对环境做出的 action！
-将方程右边当做目标，用神经网络学习！
+<p>其中 s 表示状态，a 表示agent对环境做出的 action！<br />
+将方程右边当做目标，用神经网络学习！<br />
 损失函数：</p>
-<p>$$
-l = (r + \gamma \max_{a'} Q(s', a', w) - Q(s, a, w) )^2
+<p>$$<br />
+l = (r + \gamma \max_{a'} Q(s', a', w) - Q(s, a, w) )^2<br />
 $$</p>
 <p>问题：1. 训练样本不是 iid； 2. 目标不稳定！</p>
 <p>DQN：利用 agent 自身经验构建样本！</p>
-<p>$$
-l = (r + \gamma \max_{a'} Q(s', a', w^-) - Q(s, a, w) )^2
+<p>$$<br />
+l = (r + \gamma \max_{a'} Q(s', a', w^-) - Q(s, a, w) )^2<br />
 $$</p>
 <p>$(w^-)$是固定的！</p>
 <p>Double DQN</p>
@@ -167,18 +167,18 @@ $$</p>
 <li>当前的 Q-network w 用来选择 action</li>
 <li>老的 Q-network w- 用来评估 action</li>
 </ul>
-<p>$$
-l = \left( r + \gamma Q( s', \arg\max_{a'} Q(s', a', w), w^- ) - Q(s, a, w)  \right)^2
+<p>$$<br />
+l = \left( r + \gamma Q( s', \arg\max_{a'} Q(s', a', w), w^- ) - Q(s, a, w)  \right)^2<br />
 $$</p>
 <p>Duelling network</p>
 <h3 id="deep-policy-networks">Deep Policy Networks</h3>
 <p>用神经网络建模策略函数</p>
-<p>$$
-a = \pi(a| s, \mathbf{u}) = \pi( s, \mathbf{u})
+<p>$$<br />
+a = \pi(a| s, \mathbf{u}) = \pi( s, \mathbf{u})<br />
 $$</p>
 <p>目标函数为total discounted reward</p>
-<p>$$
-L(u) = \mathbf{E}(r_1 + \gamma r_2 + \gamma^2 r_3 + ... | \pi(., u))
+<p>$$<br />
+L(u) = \mathbf{E}(r_1 + \gamma r_2 + \gamma^2 r_3 + ... | \pi(., u))<br />
 $$</p>
 <h2 id="_2">相关资料</h2>
 <ul>

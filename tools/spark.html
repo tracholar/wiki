@@ -102,7 +102,7 @@
 
 
 <p>其中IP和PORT可以在监控页面看到。</p>
-<p>关闭worker很简单，直接关闭worker运行的shell或者ctr + c中断即可。
+<p>关闭worker很简单，直接关闭worker运行的shell或者ctr + c中断即可。<br />
 关闭主机需要运行脚本</p>
 <div class="hlcode"><pre>./sbin/stop-master.sh
 </pre></div>
@@ -120,8 +120,8 @@
 
 
 <p>对了，目前spark只支持的scala版本是2.10.x，所以用2.11.x版本可能会出错。</p>
-<p>使用<code>sc.stop()</code>方法停止SparkContext。貌似不执行stop，本地用<code>sbt run</code>运行时会出现错误信息，
-但是提交jar方式运行没问题。
+<p>使用<code>sc.stop()</code>方法停止SparkContext。貌似不执行stop，本地用<code>sbt run</code>运行时会出现错误信息，<br />
+但是提交jar方式运行没问题。<br />
 参考<a href="https://stackoverflow.com/questions/28362341/error-utils-uncaught-exception-in-thread-sparklistenerbus">https://stackoverflow.com/questions/28362341/error-utils-uncaught-exception-in-thread-sparklistenerbus</a>.</p>
 <ul>
 <li>issue<ul>
@@ -146,13 +146,13 @@
 
 
 <ul>
-<li>从外部数据库创建，支持本地文件系统，HDFS，Cassandra， HBase， Amazon S3， 等。
-  支持的文件格式包括文本文件， SequenceFiles，其他Hadoop输入格式。
+<li>从外部数据库创建，支持本地文件系统，HDFS，Cassandra， HBase， Amazon S3， 等。<br />
+  支持的文件格式包括文本文件， SequenceFiles，其他Hadoop输入格式。<br />
   其中文本格式可以通过<code>SparkContext.textFile(URI [, partition_number])</code>方法创建RDD。<ul>
 <li>支持本地文件和网络文件的URI，"/home/user/path-to-file", "hdfs://path-to-file"</li>
 <li>支持文件夹，压缩文件，通配符等方式。例如"/path-to-file/*.gz", "/path-to-file/directory"</li>
 <li>指定分区数目，每一个分区是64MB，默认创建一个分区。</li>
-<li>也可以通过 <code>SparkContext.wholeTextFiles</code> 读取一个目录下的所有文本文件，返回的是 (filename, content)，
+<li>也可以通过 <code>SparkContext.wholeTextFiles</code> 读取一个目录下的所有文本文件，返回的是 (filename, content)，<br />
   而<code>textFile</code> 则返回所有的行</li>
 <li>其他Hadoop输入格式可以使用 <code>SparkContext.hadoopRDD</code> 方法。</li>
 <li>其他基于 <code>org.apache.hadoop.mapreduce</code> API 的输入格式可以通过  <code>SparkContext.newAPIHadoopRDD</code> 方法创建</li>
@@ -163,13 +163,13 @@
 <h3 id="rdd_1">RDD 操作</h3>
 <ul>
 <li>支持两种操作 map， reduce</li>
-<li>变换：从一个已经存在的数据创建新的数据，如 <code>map</code>, <code>reduce</code>, <code>reduceByKey</code>。所有的变换操作都是惰性求值，而且不保存
+<li>变换：从一个已经存在的数据创建新的数据，如 <code>map</code>, <code>reduce</code>, <code>reduceByKey</code>。所有的变换操作都是惰性求值，而且不保存<br />
   中间结果。如果重新计算，中间结果也会重新计算。如果需要保存中间结果可以通过<code>RDD.persist()</code>方法指明保存该RDD。</li>
 <li>传递函数给spark，不同的语言不同<ul>
 <li>scala中可以通过以下几种方式<ul>
 <li>匿名函数</li>
 <li>单例模式对象的一个静态方法</li>
-<li>一个类的实例对象的一个成员方法，这种情况需要传递整个对象过去。同样，如果函数应用了外部的对象的一个域，那么也需要传递整个对象。
+<li>一个类的实例对象的一个成员方法，这种情况需要传递整个对象过去。同样，如果函数应用了外部的对象的一个域，那么也需要传递整个对象。<br />
   为了避免这个问题，可以创建该域的一个本地拷贝。</li>
 </ul>
 </li>
@@ -195,7 +195,7 @@
 
 
 <ul>
-<li>重新分区，<code>repartition</code>会重新分配所有数据，如果是降低分区数目，可以用<code>coalesce</code>，它会避免移动所有数据，
+<li>重新分区，<code>repartition</code>会重新分配所有数据，如果是降低分区数目，可以用<code>coalesce</code>，它会避免移动所有数据，<br />
   而只是移动丢弃的分区的数据，参考<a href="https://stackoverflow.com/questions/31610971/spark-repartition-vs-coalesce">stackoverflow的讨论</a>。</li>
 </ul>
 <h3 id="rdd_2">RDD持久化</h3>
@@ -209,13 +209,13 @@
 <li>MEMORY_ONLY_2, MEMORY_AND_DISK_2, etc. ： 多保存一个备份</li>
 <li>OFF_HEAP (experimental) ： Store RDD in serialized format in Tachyon</li>
 </ul>
-<p>在python中都是用pickle序列化，只有这一种。
+<p>在python中都是用pickle序列化，只有这一种。<br />
 手动移除cache的方法是 <code>RDD.unpersist()</code>，如果不手动移除，Spark 也会自动处理cache的。</p>
 <h3 id="_2">理解闭包</h3>
 <ul>
-<li>在RDD的foreach中，对外部变量的引用实际上是复制了该对象到executor中，然后引用executor中的那个对像，所以不会改变本想引用的那个对象。
+<li>在RDD的foreach中，对外部变量的引用实际上是复制了该对象到executor中，然后引用executor中的那个对像，所以不会改变本想引用的那个对象。<br />
   可以使用<code>Accumulator</code>来实现改变主对象。</li>
-<li>输出RDD到stdout，同样存在一个问题，在foreach和map中的prinln是输出到executor的stdout。可以通过<code>RDD.collect().foreach(println)</code>方法实现，
+<li>输出RDD到stdout，同样存在一个问题，在foreach和map中的prinln是输出到executor的stdout。可以通过<code>RDD.collect().foreach(println)</code>方法实现，<br />
   如果该只是打印一部分，可以通过<code>RDD.take(100).foreach(println)</code> 来实现。</li>
 </ul>
 <h3 id="kv">KV值操作</h3>
@@ -250,7 +250,7 @@
 <li>cartesian 笛卡尔积？</li>
 <li>pipe</li>
 <li>coalesce</li>
-<li>repartition
+<li>repartition<br />
 略</li>
 </ul>
 <h3 id="action">Action</h3>
@@ -276,7 +276,7 @@
 </pre></div>
 
 
-<p>优点在于，不同于简单复制，可以采用P2P协议来提升在多个节点之间复制的性能！对于很大的共享对象，性能提升很明显！
+<p>优点在于，不同于简单复制，可以采用P2P协议来提升在多个节点之间复制的性能！对于很大的共享对象，性能提升很明显！<br />
 <a href="https://stackoverflow.com/questions/26884871/advantage-of-broadcast-variables">https://stackoverflow.com/questions/26884871/advantage-of-broadcast-variables</a></p>
 <ul>
 <li>Accumulator,</li>
@@ -319,7 +319,7 @@
 <p>For Python applications, simply pass a .py file in the place of <application-jar> instead of a JAR, and add Python .zip, .egg or .py files to the search path with --py-files.</p>
 </blockquote>
 <h2 id="spark-streaming">Spark Streaming</h2>
-<p>简单地说，就是用来从其他地方拉数据的。
+<p>简单地说，就是用来从其他地方拉数据的。<br />
 输入数据流 =&gt; Spark streaming =&gt; batches of input data =&gt; Spark engine =&gt; batches of processed data</p>
 <h2 id="spark-sqlcontext">Spark SQLContext，</h2>
 <ul>
@@ -354,7 +354,7 @@
 
 <p>-</p>
 <h3 id="dataframe">DataFrame</h3>
-<p>Spark DataFrame的设计灵感正是基于R与Pandas。
+<p>Spark DataFrame的设计灵感正是基于R与Pandas。<br />
 我们通过外部Json文件创建一个DataFrame：</p>
 <div class="hlcode"><pre><span class="k">val</span> <span class="n">dataFrame</span> <span class="k">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">load</span><span class="o">(</span><span class="s">&quot;/example/data.json&quot;</span><span class="o">,</span> <span class="s">&quot;json&quot;</span><span class="o">)</span>
 <span class="n">dataFrame</span><span class="o">.</span><span class="n">show</span><span class="o">()</span>
@@ -446,7 +446,7 @@
 </ul>
 </li>
 <li>
-<p>模型参数封装类 <code>Param</code>，他的一个常用子类是 <code>ParamMap</code>，实现了Map接口，可以通过 <code>get, put</code>进行操作。
+<p>模型参数封装类 <code>Param</code>，他的一个常用子类是 <code>ParamMap</code>，实现了Map接口，可以通过 <code>get, put</code>进行操作。<br />
 在2.0版本开始，Spark对Estimators和Transformers提供统一的参数API。</p>
 </li>
 </ul>
@@ -463,22 +463,22 @@
 
 
 <ul>
-<li><code>pipeline</code> 将不同模型（transform）堆叠起来，类似于sklearn里面的pipeline。
-pipeline保存了一个Array[PipelineStage]，可以通过<code>.setStage(Array[_ &lt;: PipelineStage])</code>函数进行设置。
+<li><code>pipeline</code> 将不同模型（transform）堆叠起来，类似于sklearn里面的pipeline。<br />
+pipeline保存了一个Array[PipelineStage]，可以通过<code>.setStage(Array[_ &lt;: PipelineStage])</code>函数进行设置。<br />
 pipeline实现了estimator的fit接口和transformer的transform接口。</li>
 <li>模型持久化 <code>save, load</code></li>
 <li><code>PipelineStage</code>抽象类，啥也没干？？？？？？？？！！！！！<code>transformer</code>还是它的子类！！</li>
 <li>
-<p><code>UnaryTransformer</code> 单列转换对象，是transformer的子抽象类，也实现了pipelinestage接口。
-  有两个变量<code>inputCol</code>和<code>outputCol</code>代表输入输出列的名字。
+<p><code>UnaryTransformer</code> 单列转换对象，是transformer的子抽象类，也实现了pipelinestage接口。<br />
+  有两个变量<code>inputCol</code>和<code>outputCol</code>代表输入输出列的名字。<br />
   有几个常用的实例，例如Tokenizer，HashingTF等。</p>
 </li>
 <li>
 <p>模型的保存和加载，利用类的静态方法<code>.load</code>加载(MLReader的实现)，而用实例的<code>.save</code>方法（MLWriter的实现）保存模型到文件。</p>
 </li>
 <li>
-<p>模型评估 <code>Evaluator</code>(实现<code>evaluate(dataFrame)</code>方法)， <code>RegressionEvaluator</code>回归， <code>BinaryClassificationEvaluator</code>二元分类，
-  <code>MulticlassClassificationEvaluator</code> 多元分类。</p>
+<p>模型评估 <code>Evaluator</code>(实现<code>evaluate(dataFrame)</code>方法)， <code>RegressionEvaluator</code>回归， <code>BinaryClassificationEvaluator</code>二元分类，<br />
+<code>MulticlassClassificationEvaluator</code> 多元分类。</p>
 <ul>
 <li><code>BinaryClassificationEvaluator</code> 除了<code>evaluate</code>方法之外，还有几个重要的属性和属性setter。标签列名<code>labelCol</code>，度量名称 <code>metricName</code> 默认为areaUnderROC，即AUC。<code>rawPredictionCol</code> 预测结果列名。以及相应的setter和getter。</li>
 <li><code>MulticlassClassificationEvaluator</code>，三个属性 <code>labelCol</code>，<code>metricName</code> （supports "f1" (default), "precision", "recall", "weightedPrecision", "weightedRecall"），<code>predictionCol</code></li>
@@ -491,8 +491,8 @@ pipeline实现了estimator的fit接口和transformer的transform接口。</li>
 <li><code>.setEstimator</code></li>
 <li><code>.setEvaluator</code></li>
 <li><code>.setEstimatorParamMaps(paramGrid)</code> 参数网络</li>
-<li><code>.setNumFolds(k)</code> k-fold交叉验证的参数k
-同是他也是一个estimator，调用它的<code>fit</code>方法训练模型，返回训练好的模型CrossValidatorModel或模型序列。
+<li><code>.setNumFolds(k)</code> k-fold交叉验证的参数k<br />
+同是他也是一个estimator，调用它的<code>fit</code>方法训练模型，返回训练好的模型CrossValidatorModel或模型序列。<br />
 他也是一个transformer，调用<code>transform</code>方法直接执行多个transform。</li>
 </ul>
 </li>
@@ -500,14 +500,14 @@ pipeline实现了estimator的fit接口和transformer的transform接口。</li>
 <p>训练集和测试集的分割 <code>TrainValidationSplit</code>与交叉验证类类似，取代<code>.setNumFolds</code>的是函数<code>.setTrainRatio(ratio)</code>。</p>
 </li>
 <li>
-<p>参数网格可以通过 <code>ParamGridBuilder</code>对象创建，他有三个方法，<code>addGrid(param, values:Array)</code>添加一个参数网格，
-  <code>baseOn(paramPair)</code>设置指定参数为固定值，<code>build()</code>方法返回一个<code>Array[ParamMap]</code>数组</p>
+<p>参数网格可以通过 <code>ParamGridBuilder</code>对象创建，他有三个方法，<code>addGrid(param, values:Array)</code>添加一个参数网格，<br />
+<code>baseOn(paramPair)</code>设置指定参数为固定值，<code>build()</code>方法返回一个<code>Array[ParamMap]</code>数组</p>
 </li>
 </ul>
 <h4 id="_6">特征提取</h4>
 <ul>
-<li>TF-IDF(HashingTF and IDF)，传统的词统计是通过维护一个查找的词典（hash表或者查找树实现），
-HashTF则是直接通过对特征计算hash函数映射到低维索引。还可以通过第二个hash函数确定是否存在冲突。
+<li>TF-IDF(HashingTF and IDF)，传统的词统计是通过维护一个查找的词典（hash表或者查找树实现），<br />
+HashTF则是直接通过对特征计算hash函数映射到低维索引。还可以通过第二个hash函数确定是否存在冲突。<br />
 有什么优势？？？使用的类<code>HashingTF, IDF, Tokenizer</code></li>
 <li>Word2Vec，低维词向量学习，对应的类：<code>Word2Vec</code></li>
 <li>CountVectorizer，直接统计：<code>CountVectorizer</code></li>
@@ -519,7 +519,7 @@ HashTF则是直接通过对特征计算hash函数映射到低维索引。还可�
 <li><code>RegexTokenizer</code> 正则式Tokenizer</li>
 </ul>
 </li>
-<li>StopWordsRemover：停止词的移除。<code>StopWordsRemover</code>，可以通过<code>setCaseSensitive</code>设置大小写敏感，
+<li>StopWordsRemover：停止词的移除。<code>StopWordsRemover</code>，可以通过<code>setCaseSensitive</code>设置大小写敏感，<br />
 和<code>setStopWords(value: Array[String])</code>设置停止词词典。</li>
 <li>n-gram：将输入的一串词转换为n-gram。<code>NGram</code></li>
 <li>Binarizer：通过阈值将数值特征变成二值特征。类<code>Binarizer</code>，主要方法：<code>setThreshold</code></li>
@@ -602,7 +602,7 @@ HashTF则是直接通过对特征计算hash函数映射到低维索引。还可�
 <li><code>ALS</code>：ALS算法，2.0才加到ml包里面，之前在mllib包。</li>
 </ul>
 <h4 id="dataframe_1">DataFrame</h4>
-<p>DataFrame相当于 RDD[Row]，而Row相当于一个可以包含各种不同数据的Seq。
+<p>DataFrame相当于 RDD[Row]，而Row相当于一个可以包含各种不同数据的Seq。<br />
 DataFrame通过collect函数之后就是Array[Row]</p>
 <p>通过工厂方法<code>SQLContext.createDataFrame</code>创建DataFrame，可以从一下几个数据源创建</p>
 <ul>

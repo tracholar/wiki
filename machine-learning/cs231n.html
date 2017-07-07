@@ -95,29 +95,29 @@
 <h3 id="bp_1">高效的BP算法</h3>
 <p>LeeCun 1998 的论文中给出了BP算法的一些trick：</p>
 <ul>
-<li>采用随机梯度下降，更快：考虑对样本的10次复制，随机梯度相当于训练了10次，而批量梯度下降只有1次！
-结果通常更好：可以跳出鞍点，也可以更大概率跳出局部最优。可以随时间进一步训练！online learning。
+<li>采用随机梯度下降，更快：考虑对样本的10次复制，随机梯度相当于训练了10次，而批量梯度下降只有1次！<br />
+结果通常更好：可以跳出鞍点，也可以更大概率跳出局部最优。可以随时间进一步训练！online learning。<br />
 对于SGD，理论上最优学习率随时间线性下降！</li>
 <li>每一次epoch重新打散样本！</li>
 <li>归一化输入，均值接近0通常收敛更快！同样，输出也尽可能是0均值。去相关，归一化方差，会加快收敛。</li>
 <li>基于上一个原则，tanh比sigmoid好。</li>
 <li>目标，匹配输出激活函数</li>
-<li>初始化权值，权值要使得激活函数工作在线性区，（这样才好学，否则梯度为0）目标是让输入输出的方差相同（都为1）。
+<li>初始化权值，权值要使得激活函数工作在线性区，（这样才好学，否则梯度为0）目标是让输入输出的方差相同（都为1）。<br />
 当输入方差为1的时候，输出方差为</li>
 </ul>
-<p>$$
-\sigma_{y_i} = (\sum_j w_{ij}^2)^{1/2}
+<p>$$<br />
+\sigma_{y_i} = (\sum_j w_{ij}^2)^{1/2}<br />
 $$</p>
 <p>为了保证输出方差也为1，那么</p>
-<p>$$
-\sigma_w = m^{-1/2}
+<p>$$<br />
+\sigma_w = m^{-1/2}<br />
 $$</p>
 <p>对于部分连接的网络（如CNN，DTNN），m应该是连接的节点个数。</p>
 <ul>
 <li>学习率，自动调整衰减。动量机制，减少震荡。</li>
 </ul>
-<p>$$
-\Delta w(t+1) = \eta \frac{\partial E_{t+1}}{\partial w} + \mu \Delta w(t)
+<p>$$<br />
+\Delta w(t+1) = \eta \frac{\partial E_{t+1}}{\partial w} + \mu \Delta w(t)<br />
 $$</p>
 <ul>
 <li>自适应学习率</li>
@@ -140,31 +140,31 @@ $$</p>
 <h2 id="_4">神经网络历史</h2>
 <h3 id="_5">感知器</h3>
 <p>Frank Rosenblatt 1957</p>
-<p>$$
-y = f(w x + b) \\
-f(z) = 1 when z&gt;0 else 0
+<p>$$<br />
+y = f(w x + b) \\<br />
+f(z) = 1 when z&gt;0 else 0<br />
 $$</p>
 <p>更新权值</p>
-<p>$$
-w_i(t+1) = w_i(t) + \alpha (d_j - y_j(t))x_{j, i}
+<p>$$<br />
+w_i(t+1) = w_i(t) + \alpha (d_j - y_j(t))x_{j, i}<br />
 $$</p>
 <p>相当于下述损失函数 + SGD优化（注意这里label是+1，-1和上面有区别，这里只是便于表达）</p>
-<p>$$
-\max(0, - d_j * y_j)
+<p>$$<br />
+\max(0, - d_j * y_j)<br />
 $$</p>
 <h3 id="_6">三层神经网络</h3>
 <p>Rumelhart et al. 1986，BP算法</p>
 <h3 id="rbm">RBM深度网络</h3>
 <p>Hinton 2006</p>
 <h3 id="_7">第一个强结果</h3>
-<p>Context-Dependent Pre-trained Deep Neural Networks for Large Vocabulary Speech Recognition George Dahl,
+<p>Context-Dependent Pre-trained Deep Neural Networks for Large Vocabulary Speech Recognition George Dahl,<br />
 Dong Yu, Li Deng, Alex Acero, 2010 MSR</p>
-<p>Imagenet classification with deep convolutional neural networks
+<p>Imagenet classification with deep convolutional neural networks<br />
 Alex Krizhevsky, Ilya Sutskever, <strong>Geoffrey E Hinton</strong>, 2012</p>
 <h3 id="_8">激活函数</h3>
 <ul>
 <li>
-<p>sigmoid: 将结果映射到[0,1]之间，有概率解释。问题在于饱和将梯度变为0了，非0均值。而非0均值，导致梯度被限制在各分量全为正或者全为负的区域。
+<p>sigmoid: 将结果映射到[0,1]之间，有概率解释。问题在于饱和将梯度变为0了，非0均值。而非0均值，导致梯度被限制在各分量全为正或者全为负的区域。<br />
 导致收敛变慢。<code>exp</code>函数计算复杂度较大。</p>
 </li>
 <li>
@@ -175,12 +175,12 @@ Alex Krizhevsky, Ilya Sutskever, <strong>Geoffrey E Hinton</strong>, 2012</p>
 <li>Maxout = max(w1 x + b1, w2 x + b2), 基本解决上述问题，但是参数变多了 double</li>
 <li>ELU</li>
 </ul>
-<p>$$
-x &gt; 0: x \\
-x &lt; 0: \alpha (\exp(x) - 1)
+<p>$$<br />
+x &gt; 0: x \\<br />
+x &lt; 0: \alpha (\exp(x) - 1)<br />
 $$</p>
 <p>中心化：减去图像均值（AlexNet），减去每个通道的均值（VGGNet）</p>
-<p>初始化：
+<p>初始化：<br />
 “Xavier initialization” [Glorot et al., 2010]： $(n_{in} Var(w) = 1)$</p>
 <p>对于 ReLU，因为一半恒为0，因此有一个0.5因子。$(\frac{1}{2} n_{in} Var(w) = 1)$ He et al., 2015</p>
 <p>论文：</p>
@@ -201,7 +201,7 @@ $$</p>
 </ol>
 <h2 id="_9">目标检测</h2>
 <p>任务：分类 + 定位</p>
-<p>Location as Regression: 输入图片，输出4个坐标！（非常简单）L2损失函数，作为回归问题处理。
+<p>Location as Regression: 输入图片，输出4个坐标！（非常简单）L2损失函数，作为回归问题处理。<br />
 分类 + 定位 作为多任务，共用同一个CNN做特征提取层。</p>
 <p>输入图像 =&gt; CNN =&gt; FC =&gt; softmax/Regression</p>
 <p>回归层连接的位置 ：在CNN层后面（Overfeat， VGG）； 在全连接层(FC)后面：DeepPose，R-CNN</p>
@@ -222,7 +222,7 @@ $$</p>
 <li>略，不懂</li>
 </ul>
 <h3 id="deformable-parts-model-dpm">Deformable Parts Model : DPM</h3>
-<p>Felzenszwalb et al, “Object Detection with Discriminatively
+<p>Felzenszwalb et al, “Object Detection with Discriminatively<br />
 Trained Part Based Models”, PAMI 2010</p>
 <p>DPM is CNN?</p>
 <p>Girschick et al, “Deformable Part Models are Convolutional Neural Networks”, CVPR 2015</p>
@@ -235,8 +235,8 @@ Trained Part Based Models”, PAMI 2010</p>
 <p>Uijlings et al, “Selective Search for Object Recognition”, IJCV 2013</p>
 <p>其他方法：EdgeBox？</p>
 <p>检测 Review：  Hosang et al, “What makes for effective detection proposals?”, PAMI 2015</p>
-<p>R-CNN！ Girschick et al, “Rich feature hierarchies for
-accurate object detection and semantic
+<p>R-CNN！ Girschick et al, “Rich feature hierarchies for<br />
+accurate object detection and semantic<br />
 segmentation”, CVPR 2014</p>
 <ul>
 <li>Step 1: Train (or download) a classification model for ImageNet (AlexNet)</li>
@@ -274,19 +274,19 @@ segmentation”, CVPR 2014</p>
 </ol>
 <p>训练加速8.8倍，测试加速146倍！</p>
 <p>问题：测试加速不包过 ROI 提取！？</p>
-<p>Faster RCNN：在最后一层卷积层加入一层Region Proposal
+<p>Faster RCNN：在最后一层卷积层加入一层Region Proposal<br />
 Network (RPN)</p>
-<p>Ren et al, “Faster R-CNN: Towards Real-Time Object
+<p>Ren et al, “Faster R-CNN: Towards Real-Time Object<br />
 Detection with Region Proposal Networks”, NIPS 2015</p>
 <p>进一步将test时间加速10倍！</p>
 <h2 id="_10">表达可视化</h2>
-<p>t-SNE visualization：two images are placed nearby if their CNN codes are close.
+<p>t-SNE visualization：two images are placed nearby if their CNN codes are close.<br />
 Laurens van der Maaten , <strong>Geoffrey Hinton</strong>, 2008.</p>
 <p>Deconv方法：选择某个CNN层，将该层的梯度全部置0，除了其中一个！然后BP到输入，得到Deconv图像！ BP to image.</p>
 <p>Visualizing and Understanding Convolutional Networks, Zeiler and Fergus 2013</p>
 <p>Optimization to Image 方法：寻找最大化某些类别的score！</p>
-<p>$$
-\arg \max_{I} S_c(I) - \lambda ||I||_2^2
+<p>$$<br />
+\arg \max_{I} S_c(I) - \lambda ||I||_2^2<br />
 $$</p>
 <ol>
 <li>将输入层置0，即输入全零图像。</li>
@@ -310,16 +310,16 @@ $$</p>
 <li>水平翻转</li>
 <li>随机裁剪和缩放</li>
 </ol>
-<p>Training: sample random crops / scales
+<p>Training: sample random crops / scales<br />
 ResNet:</p>
 <ol>
 <li>Pick random L in range [256, 480]</li>
 <li>Resize training image, short side = L</li>
 <li>Sample random 224 x 224 patch</li>
 </ol>
-<p>Testing: average a fixed set of crops
-ResNet:
-1. Resize image at 5 scales: {224, 256, 384, 480, 640}
+<p>Testing: average a fixed set of crops<br />
+ResNet:<br />
+1. Resize image at 5 scales: {224, 256, 384, 480, 640}<br />
 2. For each size, use 10 224 x 224 crops: 4 corners + center, + flips</p>
 <ol>
 <li>color jitter：色彩抖动？</li>
@@ -332,7 +332,7 @@ ResNet:
 </ul>
 </li>
 </ol>
-<p>加噪声！
+<p>加噪声！<br />
 训练：添加随机噪声； 测试：排除噪声！</p>
 <h3 id="transfer-learning">Transfer Learning 迁移学习</h3>
 <ol>
@@ -343,7 +343,7 @@ ResNet:
 <p>CNN Features off-the-shelf: an Astounding Baseline for Recognition，[Razavian et al, 2014]</p>
 <p>DeCAF: A Deep Convolutional Activation Feature for Generic Visual Recognition, 2014.</p>
 <h3 id="cnn_1">CNN 细节</h3>
-<p>多个小滤波器堆叠比一个大滤波器好！因为可以用较少的参数，得到相同的非线性！（用最后一层的神经元所能看到的输入像素个数来度量？）
+<p>多个小滤波器堆叠比一个大滤波器好！因为可以用较少的参数，得到相同的非线性！（用最后一层的神经元所能看到的输入像素个数来度量？）<br />
 并且计算量更小！</p>
 <p>1x1 大小的滤波器，用来降维！？GoogleNet！</p>
 <p>用两个1xN和Nx1的滤波器，代替一个NxN的滤波器？！！减少参数</p>
@@ -354,19 +354,19 @@ ResNet:
 <li>设图像特征map为 H<em>M</em>C 维，D个卷积滤波器维度为K<em>K</em>C 维。</li>
 <li>将图像reshape成 (K^2<em>C)*N维矩阵，而将滤波器变为(K^2</em>C)*D维矩阵，然后计算矩阵乘法，最后将D*N维结果再reshape为给定的大小。</li>
 </ol>
-<p>FFT实现：对于小的滤波器没有提升！
+<p>FFT实现：对于小的滤波器没有提升！<br />
 Vasilache et al, Fast Convolutional Nets With fbfft: A GPU Performance Evaluation</p>
-<p>Strassen’s 矩阵乘法算法！加速。
+<p>Strassen’s 矩阵乘法算法！加速。<br />
 Lavin and Gray, “Fast Algorithms for Convolutional Neural Networks”, 2015</p>
 <p>GPU：NVIDIA is much more common for deep learning</p>
-<p>CEO of NVIDIA: Jen-Hsun Huang
+<p>CEO of NVIDIA: Jen-Hsun Huang<br />
 (Stanford EE Masters 1992)</p>
-<p>CPU:
-Few, fast cores (1 - 16),
+<p>CPU:<br />
+Few, fast cores (1 - 16),<br />
 Good at sequential processing.</p>
-<p>GPU:
-Many, slower cores (thousands),
-Originally for graphics,
+<p>GPU:<br />
+Many, slower cores (thousands),<br />
+Originally for graphics,<br />
 Good at parallel computation</p>
 <p>GUDA vs OpenCL.</p>
 <p>Udacity: Intro to Parallel Programming</p>
@@ -387,8 +387,8 @@ Good at parallel computation</p>
 <li>GPU：forward/backward</li>
 </ul>
 <p>CPU - disk 瓶颈：磁盘 =&gt; SSD</p>
-<p>GPU memory 瓶颈：
-Titan X: 12 GB &lt;- currently the max。
+<p>GPU memory 瓶颈：<br />
+Titan X: 12 GB &lt;- currently the max。<br />
 GTX 980 Ti: 6 GB</p>
 <p>AlexNet: ~3GB needed with batch size 256</p>
 <h3 id="_12">浮点精度</h3>
@@ -397,10 +397,10 @@ GTX 980 Ti: 6 GB</p>
 <li>CNN：32bit 单精度</li>
 <li>16bit 半精度将成为新的标准！cuDNN 已经支持！</li>
 </ul>
-<p>最低精度能到多少？
+<p>最低精度能到多少？<br />
 16bit 定点 with 随机 round！</p>
 <p>Gupta et al, “Deep Learning with Limited Numerical Precision”, ICML 2015</p>
-<p>10bit 激活函数，12bit参数更新！
+<p>10bit 激活函数，12bit参数更新！<br />
 Courbariaux et al, “BinaryNet: Training Deep Neural Networks with Weights and Activations Constrained to +1 or -1”, arXiv 2016</p>
 <p>未来：binary network？</p>
 <h2 id="caffe-torch-theano-tensorflow">软件包 Caffe / Torch / Theano / TensorFlow</h2>
@@ -437,7 +437,7 @@ Courbariaux et al, “BinaryNet: Training Deep Neural Networks with Weights and 
 <li>High-level wrappers: <strong>Keras</strong>, Lasagne</li>
 </ul>
 <p>计算图！</p>
-<p>问题：每次更新权值需要将权值和梯度移到 CPU 计算！
+<p>问题：每次更新权值需要将权值和梯度移到 CPU 计算！<br />
 可以通过 shared_variable 得到解决！</p>
 <h3 id="tensorflow">TensorFlow</h3>
 <ul>
@@ -448,7 +448,7 @@ Courbariaux et al, “BinaryNet: Training Deep Neural Networks with Weights and 
 <h2 id="video">Video</h2>
 <p>feature based 方法（运动识别）：</p>
 <ul>
-<li>Dense trajectories and motion boundary descriptors for action recognition
+<li>Dense trajectories and motion boundary descriptors for action recognition<br />
 Wang et al., 2013<ol>
 <li>检测不同尺度的图像的特征点</li>
 <li>跟踪特征点 optical flow</li>
@@ -462,7 +462,7 @@ Wang et al., 2013<ol>
 </li>
 </ol>
 </li>
-<li>Action Recognition with Improved Trajectories
+<li>Action Recognition with Improved Trajectories<br />
 Wang and Schmid, 2013</li>
 <li>Spatio-Temporal Conv：<ul>
 <li>[3D Convolutional Neural Networks for Human Action Recognition, Ji et al., 2010]</li>
@@ -483,12 +483,12 @@ Wang and Schmid, 2013</li>
 </li>
 <li>loss function: L2</li>
 <li>使用Encoder初始化神经网络</li>
-<li>逐层训练：Greedy training：RBM 2006 <strong>Hinton</strong>。现在不再流行了，因为 ReLU, 合理的初始化，batchnorm, Adam etc easily train
+<li>逐层训练：Greedy training：RBM 2006 <strong>Hinton</strong>。现在不再流行了，因为 ReLU, 合理的初始化，batchnorm, Adam etc easily train<br />
 from scratch</li>
 <li>生成样本！</li>
 </ul>
 <h3 id="variational-autoencoder">Variational autoencoder</h3>
-<p>Kingma and Welling, “Auto-Encoding
+<p>Kingma and Welling, “Auto-Encoding<br />
 Variational Bayes”, ICLR 2014</p>
 <ul>
 <li>intuition：$(z)$以概率 $(p_{\theta*}(x|z))$产生图片样本$(x)$，z 可以使类别，属性等！</li>
@@ -497,7 +497,7 @@ Variational Bayes”, ICLR 2014</p>
 <li>condition：$(p(x|z))$是对角高斯分布！用神经网络预测均值和方差</li>
 </ul>
 <h3 id="generative-adversarial-nets">Generative adversarial nets</h3>
-<p>Goodfellow et al, “Generative
+<p>Goodfellow et al, “Generative<br />
 Adversarial Nets”, NIPS 2014</p>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-07-01 </span></div>

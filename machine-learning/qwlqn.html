@@ -51,45 +51,45 @@
 <p>论文导读：Scalable Training of L1-Regularized Log-Linear Models, Galen Andrew, Jianfeng Gao <strong>Microsoft Research</strong>, 2007.</p>
 <h2 id="_2">问题</h2>
 <p>优化问题：</p>
-<p>$$
-f (x) = l(x) + r(x) \\
+<p>$$<br />
+f (x) = l(x) + r(x) \\<br />
 r(x) = \sum |x_i| <br />
 $$</p>
 <p>l1 范数优化，在0处不可导。</p>
 <h2 id="_3">记号</h2>
 <p>左右偏导</p>
-<p>$$
-\partial_i^+ f(x) = \lim_{\alpha \rightarrow 0^+} \frac{f(x + \alpha e_i) - f(x)}{\alpha}
+<p>$$<br />
+\partial_i^+ f(x) = \lim_{\alpha \rightarrow 0^+} \frac{f(x + \alpha e_i) - f(x)}{\alpha}<br />
 $$</p>
 <ul>
 <li>方向导数 $(f'(x; d))$ 表示在方向d 对应的方向。</li>
 <li>符号函数 $(\sigma(x))$</li>
 <li>投影函数</li>
 </ul>
-<p>$$
-\pi_i(x; y) = \begin{cases}
-                x_i &amp; if \sigma(x_i) = \sigma(y_i)  \\
-                0   &amp; \text{otherwise}
-                \end{cases}
+<p>$$<br />
+\pi_i(x; y) = \begin{cases}<br />
+                x_i &amp; if \sigma(x_i) = \sigma(y_i)  \\<br />
+                0   &amp; \text{otherwise}<br />
+                \end{cases}<br />
 $$</p>
 <h2 id="owl-qn">OWL-QN 算法</h2>
 <p>在一个象限中，二阶近似是成立的，且二阶梯度矩阵与正则项无关。</p>
 <p>对任意符号向量 $(\xi \in \{-1, 0, 1 \}^n)$，定义</p>
-<p>$$
-\Omega_{\xi} = \{ x \in R^n | \pi(x, \xi) = x \}
+<p>$$<br />
+\Omega_{\xi} = \{ x \in R^n | \pi(x, \xi) = x \}<br />
 $$</p>
 <p>在象限$(\Omega_{\xi})$中，目标函数可以写为</p>
-<p>$$
-f(x) = l(x) + C \xi^T x.
+<p>$$<br />
+f(x) = l(x) + C \xi^T x.<br />
 $$</p>
 <p>将这个函数扩展到整个空间得到扩展函数$(f_{\xi})$，对于这个函数，可以用拟牛顿法求解。</p>
 <p>伪梯度：其实就是将某个方向不可微点的梯度在该方向的分量置为搜索方向的方向梯度；或置0（xi=0点），或正梯度或负梯度.</p>
-<p>$$
-\Diamond_i f(x) = \begin{cases}
-                \partial_i^+ f(x) &amp; \partial_i^+ f(x) &lt; 0  \\
-                \partial_i^- f(x)   &amp; \partial_i^- f(x) &gt;0  \\
-                0     &amp;  \text{otherwise}
-                \end{cases}
+<p>$$<br />
+\Diamond_i f(x) = \begin{cases}<br />
+                \partial_i^+ f(x) &amp; \partial_i^+ f(x) &lt; 0  \\<br />
+                \partial_i^- f(x)   &amp; \partial_i^- f(x) &gt;0  \\<br />
+                0     &amp;  \text{otherwise}<br />
+                \end{cases}<br />
 $$</p>
 <p><img src="/wiki/static/images/owlqn-algo.png" style="width:500px; " /></p>
 <p>与正常L-BFGS算法的改动地方。</p>
@@ -100,13 +100,13 @@ $$</p>
 <li>计算向量y只需要损失函数就可以，不用正则项</li>
 </ul>
 <p>约束线性搜索：在非0值，约束在原来的象限和0值搜索；在0值约束在负梯度方向！</p>
-<p>$$
-\xi_i = \begin{cases}
-                \sigma(x_i^k) &amp; x_i^k \neq 0  \\
-                \sigma(- \Diamond_i f(x^k))   &amp; x_i^k =0
-                \end{cases}   \\
-p^k = \pi(d^k; \xi_k)  \\
-x^{k+1} = \pi(x^k + \alpha p^k; x^k)  \\
+<p>$$<br />
+\xi_i = \begin{cases}<br />
+                \sigma(x_i^k) &amp; x_i^k \neq 0  \\<br />
+                \sigma(- \Diamond_i f(x^k))   &amp; x_i^k =0<br />
+                \end{cases}   \\<br />
+p^k = \pi(d^k; \xi_k)  \\<br />
+x^{k+1} = \pi(x^k + \alpha p^k; x^k)  \\<br />
 $$</p>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-08-19 </span></div>

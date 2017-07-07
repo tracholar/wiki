@@ -76,7 +76,7 @@
 <p>sbt是scala的交互式构建工具，类似于java的maven。</p>
 <h2 id="_2">构建项目</h2>
 <h3 id="_3">从单个文件构建</h3>
-<p>最简单的方式是从只包含一个scala源文件的目录构建项目。
+<p>最简单的方式是从只包含一个scala源文件的目录构建项目。<br />
 例如在目录<code>helloword</code>创建一个<code>HW.scala</code>文件</p>
 <div class="hlcode"><pre><span class="k">object</span> <span class="nc">Hi</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">main</span><span class="o">(</span><span class="n">args</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="k">=</span> <span class="n">println</span><span class="o">(</span><span class="s">&quot;Hi!&quot;</span><span class="o">)</span>
@@ -131,7 +131,7 @@
 <p>如果将依赖的库放在lib目录下，就不需要添加该依赖。</p>
 <h3 id="_4">目录结构</h3>
 <ul>
-<li>源码
+<li>源码<br />
 sbt的源码目录结构与maven一样。</li>
 </ul>
 <div class="hlcode"><pre><span class="n">src</span><span class="o">/</span>
@@ -154,7 +154,7 @@ sbt的源码目录结构与maven一样。</li>
 
 <ul>
 <li>
-<p>构建定义文件
+<p>构建定义文件<br />
 包含根目录的<code>build.sbt</code>，其他构建文件放在project目录下。</p>
 </li>
 <li>
@@ -162,9 +162,9 @@ sbt的源码目录结构与maven一样。</li>
 </li>
 </ul>
 <h2 id="_5">构建定义</h2>
-<p>一个构建定义是一个Project，拥有一个类型为 Setting[T] 的列表，Setting[T] 是会影响到 sbt 保存键值对的 map 的一种转换，T 是每一个 value 的类型。
+<p>一个构建定义是一个Project，拥有一个类型为 Setting[T] 的列表，Setting[T] 是会影响到 sbt 保存键值对的 map 的一种转换，T 是每一个 value 的类型。<br />
 参考前面的构建定义示例代码。</p>
-<p>每一项 Setting 都定义为一个 Scala 表达式。在 settings 中的表达式是相互独立的，而且它们仅仅是表达式，不是完整的 Scala 语句。????WHAT
+<p>每一项 Setting 都定义为一个 Scala 表达式。在 settings 中的表达式是相互独立的，而且它们仅仅是表达式，不是完整的 Scala 语句。????WHAT<br />
 这些表达式可以用 val，lazy val，def 声明。 build.sbt 不允许使用顶层的 object 和 class。它们必须写到 project/ 目录下作为完整的 Scala 源文件。</p>
 <h3 id="_6">键</h3>
 <p>有三种类型的 key：</p>
@@ -191,7 +191,7 @@ sbt的源码目录结构与maven一样。</li>
 
 
 <p>然后执行 <code>sbt hello</code> 就可以看到结果了。</p>
-<p>一个任务首先需要定义一个<code>taskKey[T]</code>，在这个例子中返回空类型，每一个任务是一个scala函数，可以
+<p>一个任务首先需要定义一个<code>taskKey[T]</code>，在这个例子中返回空类型，每一个任务是一个scala函数，可以<br />
 返回一个结果。可以在其他任务中通过<code>.value</code>属性访问另一个task的结果。</p>
 <h2 id="_7">两种构建模式</h2>
 <ul>
@@ -212,7 +212,7 @@ sbt的源码目录结构与maven一样。</li>
 
 <h2 id="dependencies">dependencies 依赖管理</h2>
 <h3 id="_8">手动管理</h3>
-<p>手动将库的jar包复制到lib目录下就可以了。如果要更改默认路径，需要修改<code>unmanagedBase</code>，
+<p>手动将库的jar包复制到lib目录下就可以了。如果要更改默认路径，需要修改<code>unmanagedBase</code>，<br />
 例如修改到<code>custom_lib/</code>目录可以用下述命令</p>
 <div class="hlcode"><pre><span class="n">unmanagedBase</span> <span class="o">:=</span> <span class="n">baseDirectory</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="s">&quot;custom_lib&quot;</span>
 </pre></div>
@@ -241,8 +241,8 @@ sbt的源码目录结构与maven一样。</li>
 <li>Maven POM files (dependency definitions only: no repositories)</li>
 <li>Ivy configuration and settings files</li>
 </ul>
-<p>可以通过下述语句声明依赖，其中configuration是可选的。
-多个依赖可以通过<code>Seq</code>将每一个依赖作为一个元素进行添加，注意链接操作符号的区别，
+<p>可以通过下述语句声明依赖，其中configuration是可选的。<br />
+多个依赖可以通过<code>Seq</code>将每一个依赖作为一个元素进行添加，注意链接操作符号的区别，<br />
 libraryDependencies是一个 Seq ?</p>
 <div class="hlcode"><pre><span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="n">groupID</span> <span class="o">%</span> <span class="n">artifactID</span> <span class="o">%</span> <span class="n">revision</span> <span class="o">%</span> <span class="n">configuration</span>
 <span class="n">libraryDependencies</span> <span class="o">++=</span> <span class="nc">Seq</span><span class="o">(</span>
@@ -258,7 +258,7 @@ libraryDependencies是一个 Seq ?</p>
 </blockquote>
 <p>revision除了可以使用常规的完整版本号外，还可以使用 "latest.integration", "2.9.+", or "[1.0,)"这种形式。</p>
 <h4 id="resolvers">resolvers</h4>
-<p>可以通过设置resolvers来添加依赖库获取的位置，格式是
+<p>可以通过设置resolvers来添加依赖库获取的位置，格式是<br />
 <code>resolvers += name at location</code>，location可以是合法的URI，例如</p>
 <div class="hlcode"><pre><span class="n">resolvers</span> <span class="o">+=</span> <span class="s">&quot;Sonatype OSS Snapshots&quot;</span> <span class="n">at</span> <span class="s">&quot;https://oss.sonatype.org/content/repositories/snapshots&quot;</span>
 <span class="n">resolvers</span> <span class="o">+=</span> <span class="s">&quot;Local Maven Repository&quot;</span> <span class="n">at</span> <span class="s">&quot;file://&quot;</span><span class="o">+</span><span class="nc">Path</span><span class="o">.</span><span class="n">userHome</span><span class="o">.</span><span class="n">absolutePath</span><span class="o">+</span><span class="s">&quot;/.m2/repository&quot;</span>
@@ -291,7 +291,7 @@ libraryDependencies是一个 Seq ?</p>
 
 <h3 id="_10">路径</h3>
 <h4 id="_11">创建文件和路径</h4>
-<p>sbt 0.10+ 使用<code>java.io.File</code> 文件类型。
+<p>sbt 0.10+ 使用<code>java.io.File</code> 文件类型。<br />
 创建文件方法</p>
 <div class="hlcode"><pre><span class="k">val</span> <span class="n">source</span><span class="k">:</span> <span class="kt">File</span> <span class="o">=</span> <span class="n">file</span><span class="o">(</span><span class="s">&quot;/home/user/code/A.scala&quot;</span><span class="o">)</span>
 <span class="k">def</span> <span class="n">readme</span><span class="o">(</span><span class="n">base</span><span class="k">:</span> <span class="kt">File</span><span class="o">)</span><span class="k">:</span> <span class="kt">File</span> <span class="o">=</span> <span class="n">base</span> <span class="o">/</span> <span class="s">&quot;README&quot;</span>
@@ -309,8 +309,8 @@ libraryDependencies是一个 Seq ?</p>
 </pre></div>
 
 
-<p>The <code>**</code> method accepts a <code>java.io.FileFilter</code> ，筛选目录及子目录下所有文件。
-如果只访问该目录可以使用 <code>*</code> 函数。
+<p>The <code>**</code> method accepts a <code>java.io.FileFilter</code> ，筛选目录及子目录下所有文件。<br />
+如果只访问该目录可以使用 <code>*</code> 函数。<br />
 惰性求值使得需要调用<code>.get</code>才能计算结果。</p>
 <p>name filter 使用 <code>*</code>表示0个或多个字符。用<code>||</code>表示多个filter的或，用<code>--</code>表示排除。</p>
 <div class="hlcode"><pre><span class="k">val</span> <span class="n">base</span> <span class="k">=</span> <span class="n">baseDirectory</span><span class="o">.</span><span class="n">value</span>
@@ -320,7 +320,7 @@ libraryDependencies是一个 Seq ?</p>
 </pre></div>
 
 
-<p>组合多个finder <code>+++</code>, 排除结果可以用 <code>---</code>。
+<p>组合多个finder <code>+++</code>, 排除结果可以用 <code>---</code>。<br />
 finder有一个filter方法，用于进一步筛选</p>
 <div class="hlcode"><pre><span class="o">(</span><span class="n">base</span> <span class="o">/</span> <span class="s">&quot;lib&quot;</span> <span class="o">+++</span> <span class="n">base</span> <span class="o">/</span> <span class="s">&quot;target&quot;</span><span class="o">)</span> <span class="o">*</span> <span class="s">&quot;*.jar&quot;</span>
 <span class="o">(</span> <span class="o">(</span><span class="n">base</span> <span class="o">/</span> <span class="s">&quot;src&quot;</span><span class="o">)</span> <span class="o">**</span> <span class="s">&quot;*.scala&quot;</span><span class="o">)</span> <span class="o">---</span> <span class="o">(</span> <span class="o">(</span><span class="n">base</span> <span class="o">/</span> <span class="s">&quot;src&quot;</span><span class="o">)</span> <span class="o">**</span> <span class="s">&quot;.svn&quot;</span> <span class="o">**</span> <span class="s">&quot;*.scala&quot;</span><span class="o">)</span>

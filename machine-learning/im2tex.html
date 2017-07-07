@@ -50,8 +50,8 @@
 <h2 id="_1">关于</h2>
 <p>论文：What You Get Is What You See: A Visual Markup Decompiler</p>
 <h2 id="_2">导言</h2>
-<p>OCR用来识别并提取结构信息：不仅仅要识别文字，还要提取语义。
-数学表达式OCR系统：INFTY系统。
+<p>OCR用来识别并提取结构信息：不仅仅要识别文字，还要提取语义。<br />
+数学表达式OCR系统：INFTY系统。<br />
 需要联合处理图片和文字信息。</p>
 <p>文章使用的模型是对模型 <strong>attention-based encoder-decoder model (Bahdanau, Cho, and Bengio 2014)</strong> 的简单扩展。</p>
 <blockquote>
@@ -78,7 +78,7 @@
 </ol>
 </li>
 </ul>
-<p>编码器使用RNN（LSTM）。隐层 feature grid $(\tilde{V}_{h,w} = \text{RNN}(\tilde{V}_{h,w-1}, V_{h, w}))$，
+<p>编码器使用RNN（LSTM）。隐层 feature grid $(\tilde{V}_{h,w} = \text{RNN}(\tilde{V}_{h,w-1}, V_{h, w}))$，<br />
 即按行顺序编码，对每一行的初始状态$(\tilde{V}_{h,0})$，也是通过学习得到（怎么训练？作为一个参数一起学？），叫做 position embedding，可以表达图像所在位置信息。</p>
 <ul>
 <li>解码器：优点复杂<ol>

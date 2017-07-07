@@ -48,13 +48,13 @@
 <h2 id="_1">关于</h2>
 <p>作为大数据工作者，怎能不懂hadoop。</p>
 <h2 id="hadoop-shell">Hadoop shell</h2>
-<p>利用hadoop shell 访问HDFS文件系统，官方文档见<a href="https://hadoop.apache.org/docs/r1.0.4/cn/hdfs_shell.html">https://hadoop.apache.org/docs/r1.0.4/cn/hdfs_shell.html</a>。
+<p>利用hadoop shell 访问HDFS文件系统，官方文档见<a href="https://hadoop.apache.org/docs/r1.0.4/cn/hdfs_shell.html">https://hadoop.apache.org/docs/r1.0.4/cn/hdfs_shell.html</a>。<br />
 这里记录一些常用命令和技巧。</p>
 <p>调用文件系统(FS)Shell命令应使用 <code>bin/hadoop fs &lt;args&gt;</code>的形式。 所有的的FS shell命令使用URI路径作为参数。URI格式是scheme://authority/path。对HDFS文件系统，scheme是hdfs，对本地文件系统，scheme是file。其中scheme和authority参数都是可选的，如果未加指定，就会使用配置中指定的默认scheme。一个HDFS文件或目录比如/parent/child可以表示成hdfs://namenode:namenodeport/parent/child，或者更简单的/parent/child（假设你配置文件中的默认值是namenode:namenodeport）。大多数FS Shell命令的行为和对应的Unix Shell命令类似，不同之处会在下面介绍各命令使用详情时指出。出错信息会输出到stderr，其他信息输出到stdout。</p>
 <ul>
 <li><args> 需要添加<code>-</code>号，例如<code>cat</code>命令调用形式为<code>hadoop fs -cat some-path</code></li>
-<li>与bash相同的命令有，<code>cat</code>, <code>chmod</code>, <code>chown</code>, <code>du</code>(显示文件大小), <code>ls</code>, <code>lsr</code>(ls -R), <code>mkdir</code> (mkdir -p 创建所有不存在的父目录),
-  <code>mv</code>, <code>rm</code>, <code>rmr</code> (rm -R), <code>stat</code>, <code>tail</code>, <code>test -[ezd]</code>，</li>
+<li>与bash相同的命令有，<code>cat</code>, <code>chmod</code>, <code>chown</code>, <code>du</code>(显示文件大小), <code>ls</code>, <code>lsr</code>(ls -R), <code>mkdir</code> (mkdir -p 创建所有不存在的父目录),<br />
+<code>mv</code>, <code>rm</code>, <code>rmr</code> (rm -R), <code>stat</code>, <code>tail</code>, <code>test -[ezd]</code>，</li>
 <li>特有的命令<ul>
 <li><code>dus</code>， 显示文件大小</li>
 <li><code>touchz</code>，创建一个0字节的空文件</li>

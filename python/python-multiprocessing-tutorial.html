@@ -78,20 +78,20 @@
 </ul>
 </div>
 <h2 id="_1">简介</h2>
-<p>早已进入多核时代的计算机，怎能不用多线程和多进程进行加速。
-我在使用python的过程中，用到过几次多线程和多进程加速，觉得
-充分利用CPU节省时间是一种很有“延长生命”的感觉。现将网络上看到的python的
+<p>早已进入多核时代的计算机，怎能不用多线程和多进程进行加速。<br />
+我在使用python的过程中，用到过几次多线程和多进程加速，觉得<br />
+充分利用CPU节省时间是一种很有“延长生命”的感觉。现将网络上看到的python的<br />
 多线程和多进程编程常用的知识点汇总在这里。</p>
 <h2 id="_2">线程与进程</h2>
-<p>线程与进程是操作系统里面的术语，简单来讲，每一个应用程序都有一个自己的进程。
-操作系统会为这些进程分配一些执行资源，例如内存空间等。
-在进程中，又可以创建一些线程，他们共享这些内存空间，并由操作系统调用，
+<p>线程与进程是操作系统里面的术语，简单来讲，每一个应用程序都有一个自己的进程。<br />
+操作系统会为这些进程分配一些执行资源，例如内存空间等。<br />
+在进程中，又可以创建一些线程，他们共享这些内存空间，并由操作系统调用，<br />
 以便并行计算。</p>
-<p>32位系统受限于总线宽度，单个进程最多能够访问的地址空间
-只有4G，利用<a href="https://en.wikipedia.org/wiki/Physical_Address_Extension">物理地址扩展(PAE)</a>
-技术，可以让CPU访问超过4G内存。但是在单个进程还是只能访问4G
-空间，PAE的优势是可以让不同进程累计使用的内存超过4G。
-在个人电脑上，还是建议使用64位系统，便于使用大内存
+<p>32位系统受限于总线宽度，单个进程最多能够访问的地址空间<br />
+只有4G，利用<a href="https://en.wikipedia.org/wiki/Physical_Address_Extension">物理地址扩展(PAE)</a><br />
+技术，可以让CPU访问超过4G内存。但是在单个进程还是只能访问4G<br />
+空间，PAE的优势是可以让不同进程累计使用的内存超过4G。<br />
+在个人电脑上，还是建议使用64位系统，便于使用大内存<br />
 提升程序的运行性能。</p>
 <h2 id="_3">多线程编程</h2>
 <h3 id="_4">线程的状态</h3>
@@ -112,12 +112,12 @@
 <li>前台线程</li>
 </ul>
 <h3 id="pythongil">python的GIL</h3>
-<p>GIL即全局解释器锁，它使得python的多线程无法充分利用
-多核的优势，但是对于I/O操作频繁的爬虫之类的程序，
-利用多线程带来的优势还是很明显的。
+<p>GIL即全局解释器锁，它使得python的多线程无法充分利用<br />
+多核的优势，但是对于I/O操作频繁的爬虫之类的程序，<br />
+利用多线程带来的优势还是很明显的。<br />
 如果要利用多核优势，还是用多进程吧。</p>
 <h3 id="_6">创建线程</h3>
-<p>Python提供两个模块进行多线程的操作，分别是<code>thread</code>和<code>threading</code>，
+<p>Python提供两个模块进行多线程的操作，分别是<code>thread</code>和<code>threading</code>，<br />
 前者是比较低级的模块，用于更底层的操作，一般应用级别的开发不常用。</p>
 <p>第一种方法是创建<code>threading.Thread</code>的子类，重写<code>run</code>方法。</p>
 <div class="hlcode"><pre><span class="kn">import</span> <span class="nn">time</span>
@@ -164,7 +164,7 @@
 
 
 <h3 id="join">线程合并（join方法）</h3>
-<p>主线程结束后，子线程还在运行，<code>join</code>方法使得主线程等到子线程结束
+<p>主线程结束后，子线程还在运行，<code>join</code>方法使得主线程等到子线程结束<br />
 时才退出。</p>
 <div class="hlcode"><pre><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="k">print</span> <span class="s">&quot;Start main threading&quot;</span>
@@ -183,8 +183,8 @@
 
 
 <h3 id="_7">线程同步与互斥锁</h3>
-<p>为了避免线程不同步造成是数据不同步，可以对资源进行加锁。
-也就是访问资源的线程需要获得锁，才能访问。
+<p>为了避免线程不同步造成是数据不同步，可以对资源进行加锁。<br />
+也就是访问资源的线程需要获得锁，才能访问。<br />
 <code>threading</code>模块正好提供了一个Lock功能</p>
 <div class="hlcode"><pre><span class="n">mutex</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
 </pre></div>
@@ -201,10 +201,10 @@
 
 
 <h3 id="_8">可重入锁</h3>
-<p>为了支持在同一线程中多次请求同一资源，
-python提供了可重入锁（RLock）。
-RLock内部维护着一个<code>Lock</code>和一个<code>counter</code>变量，
-<code>counter</code>记录了acquire的次数，从而使得资源可以被多次require。
+<p>为了支持在同一线程中多次请求同一资源，<br />
+python提供了可重入锁（RLock）。<br />
+RLock内部维护着一个<code>Lock</code>和一个<code>counter</code>变量，<br />
+<code>counter</code>记录了acquire的次数，从而使得资源可以被多次require。<br />
 直到一个线程所有的acquire都被release，其他的线程才能获得资源。</p>
 <p>创建RLock</p>
 <div class="hlcode"><pre><span class="n">mutex</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">RLock</span><span class="p">()</span>
@@ -268,7 +268,7 @@ RLock内部维护着一个<code>Lock</code>和一个<code>counter</code>变量�
 
 
 <h3 id="_10">队列</h3>
-<p>带锁的队列<code>Queue</code>。
+<p>带锁的队列<code>Queue</code>。<br />
 创建10个元素的队列</p>
 <div class="hlcode"><pre><span class="n">queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
@@ -276,9 +276,9 @@ RLock内部维护着一个<code>Lock</code>和一个<code>counter</code>变量�
 
 <p>队列通过<code>put</code>加入元素，通过<code>get</code>方法获取元素。</p>
 <h3 id="_11">线程通信</h3>
-<p>线程可以读取共享的内存，通过内存做一些数据处理。
-这就是线程通信的一种，python还提供了更加高级的线程通信接口。
-Event对象可以用来进行线程通信，调用event对象的wait方法，
+<p>线程可以读取共享的内存，通过内存做一些数据处理。<br />
+这就是线程通信的一种，python还提供了更加高级的线程通信接口。<br />
+Event对象可以用来进行线程通信，调用event对象的wait方法，<br />
 线程则会阻塞等待，直到别的线程set之后，才会被唤醒。</p>
 <div class="hlcode"><pre><span class="k">class</span> <span class="nc">MyThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
@@ -304,16 +304,16 @@ Event对象可以用来进行线程通信，调用event对象的wait方法，
 
 
 <h3 id="_12">后台线程</h3>
-<p>默认情况下，主线程退出之后，即使子线程没有join。那么主线程结束后，
-子线程也依然会继续执行。如果希望主线程退出后，
+<p>默认情况下，主线程退出之后，即使子线程没有join。那么主线程结束后，<br />
+子线程也依然会继续执行。如果希望主线程退出后，<br />
 其子线程也退出而不再执行，则需要设置子线程为后台线程。python提供了<code>setDeamon</code>方法。</p>
 <h2 id="_13">进程</h2>
 <p>python中的多线程其实并不是真正的多线程，如果想要充分地使用多核CPU的资源，在python中大部分情况需要使用多进程。Python提供了非常好用的多进程包multiprocessing，只需要定义一个函数，Python会完成其他所有事情。借助这个包，可以轻松完成从单进程到并发执行的转换。multiprocessing支持子进程、通信和共享数据、执行不同形式的同步，提供了Process、Queue、Pipe、Lock等组件。</p>
 <h3 id="process">类Process</h3>
 <ul>
 <li>
-<p>创建进程的类：<code>Process([group [, target [, name [, args [, kwargs]]]]])</code>，
-target表示调用对象，args表示调用对象的位置参数元组。
+<p>创建进程的类：<code>Process([group [, target [, name [, args [, kwargs]]]]])</code>，<br />
+target表示调用对象，args表示调用对象的位置参数元组。<br />
 kwargs表示调用对象的字典。name为别名。group实质上不使用。</p>
 </li>
 <li>
@@ -729,7 +729,7 @@ kwargs表示调用对象的字典。name为别名。group实质上不使用。</
 
 
 <h3 id="pool">Pool</h3>
-<p>在利用Python进行系统管理的时候，特别是同时操作多个文件目录，或者远程控制多台主机，并行操作可以节约大量的时间。当被操作对象数目不大时，可以直接利用multiprocessing中的Process动态成生多个进程，十几个还好，但如果是上百个，上千个目标，手动的去限制进程数量却又太过繁琐，此时可以发挥进程池的功效。
+<p>在利用Python进行系统管理的时候，特别是同时操作多个文件目录，或者远程控制多台主机，并行操作可以节约大量的时间。当被操作对象数目不大时，可以直接利用multiprocessing中的Process动态成生多个进程，十几个还好，但如果是上百个，上千个目标，手动的去限制进程数量却又太过繁琐，此时可以发挥进程池的功效。<br />
 Pool可以提供指定数量的进程，供用户调用，当有新的请求提交到pool中时，如果池还没有满，那么就会创建一个新的进程用来执行该请求；但如果池中的进程数已经达到规定最大值，那么该请求就会等待，直到池中有进程结束，才会创建新的进程来它。</p>
 <p>例：使用进程池</p>
 <div class="hlcode"><pre><span class="c">#coding: utf-8</span>

@@ -179,13 +179,13 @@
 </ol>
 </li>
 <li>如果一个词经常与一个高频词子集共现，那么这个词就有高的概率是关键词！这种偏差用卡方统计量来度量</li>
-<li>如果一个词w跟高频词的任何子集都没有特殊的共现关系，那么共现矩阵中w的分布期望值应该就是高频词本身的分布。
+<li>如果一个词w跟高频词的任何子集都没有特殊的共现关系，那么共现矩阵中w的分布期望值应该就是高频词本身的分布。<br />
 反之，则实际分布与这种期望分布存在较大偏差，可以用卡方统计量度量这种偏差。</li>
 </ul>
-<p>$$
-\chi^2(w) = \sum_{g \in G} \frac{(freq(w, g) - n_w p_g)^2}{n_w p_g}
+<p>$$<br />
+\chi^2(w) = \sum_{g \in G} \frac{(freq(w, g) - n_w p_g)^2}{n_w p_g}<br />
 $$</p>
-<p>这里w是某个待检验的词，$(g \in G)$ 是高频词，G是高频词组成的集合。$(n_w)$是w在共现矩阵中出现的总数，
+<p>这里w是某个待检验的词，$(g \in G)$ 是高频词，G是高频词组成的集合。$(n_w)$是w在共现矩阵中出现的总数，<br />
 $(p_g)$是高频词g在高频词中的归一化频率。</p>
 <ul>
 <li>优化：<ul>
@@ -194,8 +194,8 @@ $(p_g)$是高频词g在高频词中的归一化频率。</p>
 </ul>
 </li>
 </ul>
-<p>$$
-\chi'^2(w) = \chi^2(w) - \max_{g \in G} \frac{(freq(w, g) - n_w p_g)^2}{n_w p_g}
+<p>$$<br />
+\chi'^2(w) = \chi^2(w) - \max_{g \in G} \frac{(freq(w, g) - n_w p_g)^2}{n_w p_g}<br />
 $$</p>
 <ul>
 <li>词聚类：将高频词相似的词聚类！词的相似度基于 <a href="https://en.wikipedia.org/wiki/Jensen%E2%80%93Shannon_divergence">Jensen-Shannon divergence</a> 度量！然后采用pairwise聚类，利用交互信息量度量。</li>
@@ -203,8 +203,8 @@ $$</p>
 <h2 id="textrank">TextRank</h2>
 <p>论文：TextRank: Bringing Order into Texts，Rada Mihalcea and Paul Tarau，2004</p>
 <p>带权 PageRank</p>
-<p>$$
-WS(V_i) = (1-d) + d \sum_{V_j \in IN(V_i)} \frac{w_{ji}}{\sum_{V_k \in OUT(V_j)} w_{jk}} WS(V_j)
+<p>$$<br />
+WS(V_i) = (1-d) + d \sum_{V_j \in IN(V_i)} \frac{w_{ji}}{\sum_{V_k \in OUT(V_j)} w_{jk}} WS(V_j)<br />
 $$</p>
 <p>WS 是定点的 PageRank score。随机初始化，然后迭代收敛！</p>
 <ul>
@@ -213,8 +213,8 @@ $$</p>
 <li>关键词评估指标，P，R，F1</li>
 <li>句子的相似性通过公共词数目定义，评估指标 ROUGE</li>
 </ul>
-<p>$$
-similarity(S_i, S_j) = \frac{|\{w_k| w_k \in S_i , w_k \in S_j \}|}{\log{|S_i|} + \log{|S_j|}}
+<p>$$<br />
+similarity(S_i, S_j) = \frac{|\{w_k| w_k \in S_i , w_k \in S_j \}|}{\log{|S_i|} + \log{|S_j|}}<br />
 $$</p>
 <h2 id="keycluster">KeyCluster</h2>
 <p>论文：Clustering to Find Exemplar Terms for Keyphrase Extraction，Zhiyuan Liu, Wenyi Huang, Yabin Zheng and Maosong Sun</p>

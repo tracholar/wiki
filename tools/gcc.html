@@ -51,7 +51,7 @@
 <ul>
 <li>首先下载 gcc-6.3.0.tar.gz</li>
 <li>解压 <code>tar xzf gcc-6.3.0.tar.gz</code></li>
-<li>下载必须的依赖 <code>./contrib/download_prerequisites</code> ，会直接从 gnu 官网下载，国内可能很慢，
+<li>下载必须的依赖 <code>./contrib/download_prerequisites</code> ，会直接从 gnu 官网下载，国内可能很慢，<br />
 可以修改这个文件中的命令，使用镜像的源，推荐一个源挺快的 <code>https://ftp.mirrorservice.org/sites/sourceware.org/pub/gcc/infrastructure/</code>，也可以使用国内的其他源，比如 USTC, THU 的镜像。</li>
 <li>在gcc目录外键一个目标文件目录 <code>cd ..  &amp;  mkdir objdir</code></li>
 <li>配置gcc <code>../gcc-6.3.0/configure --prefix=$HOME/gcc-6.3.0</code> ，可以将 prefix参数修改为你想要的位置</li>
@@ -62,7 +62,7 @@
 <ul>
 <li>下载 Python-2.7.13.tgz</li>
 <li>解压 <code>tar xzf Python-2.7.13.tgz</code> 然后进入解压后目录 <code>cd Python-2.7.13</code></li>
-<li>配置 <code>./configure --prefix=$HOME/local/usr/Python-2.7.13  --enable-shared</code> 可以修改 prefix 指定安装目录，使能共享库；
+<li>配置 <code>./configure --prefix=$HOME/local/usr/Python-2.7.13  --enable-shared</code> 可以修改 prefix 指定安装目录，使能共享库；<br />
 如果要安装 TensorFlow，需要使能 ucs4 支持，增加参数 <code>--enable-unicode=ucs4</code> 即可。</li>
 <li>安装 <code>make -j4 &amp;&amp; make install</code></li>
 </ul>

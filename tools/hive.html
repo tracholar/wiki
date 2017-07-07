@@ -99,9 +99,9 @@
 <h2 id="_1">关于</h2>
 <p>学习Hive时的笔记</p>
 <h2 id="_2">配置</h2>
-<p>环境要求
-    - Hive 1.2 需要 java 1.7+， 0.14-1.1 可以工作在 java1.6 版本上。
-    - Hadoop 2.x
+<p>环境要求<br />
+    - Hive 1.2 需要 java 1.7+， 0.14-1.1 可以工作在 java1.6 版本上。<br />
+    - Hadoop 2.x<br />
     - 可以运行在 Linux 和 Windows 环境， Mac 通常用来做开发的！</p>
 <p>添加 <code>$HIVE_HOME</code> 环境变量，并将<code>$bin</code>目录添加到<code>$PATH</code>变量中。</p>
 <p><code>hive.metastore.warehouse.dir</code> 配置指明数据仓库的目录，默认是 <code>/user/hive/warehouse</code> 和 <code>/tmp</code>（临时文件目录）</p>
@@ -113,7 +113,7 @@
 <li>Database： 用来做名字空间，防止表名字冲突，也可以用于用户权限管理。</li>
 <li>Tables：表，就是传统数据库意义上的表</li>
 <li>Partitions：分区，一个表通常由多个分区组成。获取某个特定分区的数据比全表扫描快！每个分区一个目录！</li>
-<li>Buckets (or Clusters)：分桶或分簇，在一个分区里面，可以按照某些字段的hash值进行分桶，便于采样。例如PV表按照userid分桶
+<li>Buckets (or Clusters)：分桶或分簇，在一个分区里面，可以按照某些字段的hash值进行分桶，便于采样。例如PV表按照userid分桶<br />
 <code>clustered by (userid) into 100 buckets</code>。</li>
 </ul>
 <h2 id="_4">类型系统</h2>
@@ -154,7 +154,7 @@
 </ul>
 </li>
 </ul>
-<p>隐式类型转换，只能从低精度到高精度。也允许从 STRING 到 DOUBLE。
+<p>隐式类型转换，只能从低精度到高精度。也允许从 STRING 到 DOUBLE。<br />
 显示类型转化可以用内置函数实现。</p>
 <h3 id="_5">复杂类型</h3>
 <ul>
@@ -165,7 +165,7 @@
 <p>结构体类型的操作！怎么用？！</p>
 <h3 id="_6">操作</h3>
 <p>除了常规的比较操作，还支持正则式比较：</p>
-<p><code>A RLIKE B, A REGEXP B</code>，字符串A是否匹配Java正则式B。注意有个坑，正则式B中的<code>\</code>需要转义字符！！
+<p><code>A RLIKE B, A REGEXP B</code>，字符串A是否匹配Java正则式B。注意有个坑，正则式B中的<code>\</code>需要转义字符！！<br />
 例子：<code>lat rlike '\d+\.\d+'</code>是错误的，应该是 <code>lat rlike '\\d+\\.\\d+'</code></p>
 <h3 id="_7">内置函数</h3>
 <ul>
@@ -198,7 +198,7 @@
 <p><code>from_unixtime(t, 'yyyyMMdd')</code>, <code>unix_timestamp(str, 'yyyy-MM-dd')</code>这两个函数可以实现时间字符串格式转换</p>
 </li>
 <li>
-<p>JOIN：支持常规的内连接 inner join，外链接 outer join。还支持 left semi join，用来从左边表过滤出满足join条件的记录，
+<p>JOIN：支持常规的内连接 inner join，外链接 outer join。还支持 left semi join，用来从左边表过滤出满足join条件的记录，<br />
 相当于 where exists subquery 方式，也可以替代in，效率比 inner join高。（此时要不要将大表放右边？！哈哈）</p>
 </li>
 </ul>
@@ -264,7 +264,7 @@
 </pre></div>
 
 
-<p>相关UDAF函数<code>percentile_approx, histogram_numeric, collect_set, collect_list</code>
+<p>相关UDAF函数<code>percentile_approx, histogram_numeric, collect_set, collect_list</code><br />
 - Map 操作：</p>
 <ul>
 <li>Custom Map/Reduce Scripts： <code>MAP, REDUCE</code>（是<code>TRANSFORM</code>的语法糖而已），或者<code>TRANSFORM</code> 函数（是否只能实现UDF的功能，UDAF和UDTF呢？）</li>
@@ -305,9 +305,9 @@
 </ul>
 <h3 id="_8">优化排序</h3>
 <p>不要使用<code>order by</code> <a href="https://stackoverflow.com/questions/13715044/hive-cluster-by-vs-order-by-vs-sort-by">https://stackoverflow.com/questions/13715044/hive-cluster-by-vs-order-by-vs-sort-by</a>       <br />
-- <code>ORDER BY</code> 全局排序，但是只能使用一个reducer
-- <code>DISTRIBUTE BY</code> 采用Hash算法将map处理后的数据分发给reduce，它保证了相同的key是在同一个reducer
-- <code>SORT BY</code> 不是全局排序，而是在数据进入reduce之前完成排序，只能保证每个reducer的输出是有序的，不能保证全局有序。
+- <code>ORDER BY</code> 全局排序，但是只能使用一个reducer<br />
+- <code>DISTRIBUTE BY</code> 采用Hash算法将map处理后的数据分发给reduce，它保证了相同的key是在同一个reducer<br />
+- <code>SORT BY</code> 不是全局排序，而是在数据进入reduce之前完成排序，只能保证每个reducer的输出是有序的，不能保证全局有序。<br />
 - <code>CLUSTER BY</code> 相当于先 DISTRIBUTE 然后 sort。也不能保证全局有序。</p>
 <h2 id="hive_2">HIVE 命令</h2>
 <ul>
@@ -318,7 +318,7 @@
 <h3 id="avro">Avro 格式</h3>
 <ul>
 <li>要求：Hive 0.9.1+</li>
-<li>不同版本要求的语法还不同，具体参看<a href="https://cwiki.apache.org/confluence/display/Hive/AvroSerDe">https://cwiki.apache.org/confluence/display/Hive/AvroSerDe</a>。
+<li>不同版本要求的语法还不同，具体参看<a href="https://cwiki.apache.org/confluence/display/Hive/AvroSerDe">https://cwiki.apache.org/confluence/display/Hive/AvroSerDe</a>。<br />
 0.14 以后的版本可以在创建表的时候这样写：<code>STORED AS AVRO</code> 即可。</li>
 </ul>
 <h3 id="orc">ORC 格式</h3>
@@ -373,7 +373,7 @@
 <blockquote>
 <p>In every map/reduce stage of the join, the last table in the sequence is streamed through the reducers where as the others are buffered. Therefore, it helps to reduce the memory needed in the reducer for buffering the rows for a particular value of the join key by organizing the tables such that the largest tables appear last in the sequence.</p>
 </blockquote>
-<p>将大表放后面，大表会以streaming的方式进入reducer，而其他的一buffer的方式存在（内存？），可以减少内存的需求。
+<p>将大表放后面，大表会以streaming的方式进入reducer，而其他的一buffer的方式存在（内存？），可以减少内存的需求。<br />
 默认让最后的表以streaming方式进入reducer，也可以手动指定。</p>
 <div class="hlcode"><pre><span class="k">SELECT</span> <span class="cm">/*+ STREAMTABLE(a) */</span> <span class="n">a</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="k">c</span><span class="p">.</span><span class="n">val</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">b</span> <span class="k">ON</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key1</span><span class="p">)</span> <span class="k">JOIN</span> <span class="k">c</span> <span class="k">ON</span> <span class="p">(</span><span class="k">c</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key1</span><span class="p">)</span>
 </pre></div>
@@ -381,7 +381,7 @@
 
 <p>当存在这个hint的时候，会将表b，c缓存，而让a以流的方式进入reducer。不存在的时候，则会将最后的表以流的方式进入reducer。</p>
 <ul>
-<li>JOIN 逻辑发生在 WHERE 之前！对于 inner join，条件放在 ON 还是 WHERE 都是一样的，但是如果是其他 JOIN， 则会有区别。
+<li>JOIN 逻辑发生在 WHERE 之前！对于 inner join，条件放在 ON 还是 WHERE 都是一样的，但是如果是其他 JOIN， 则会有区别。<br />
 <a href="https://stackoverflow.com/questions/354070/sql-join-where-clause-vs-on-clause">https://stackoverflow.com/questions/354070/sql-join-where-clause-vs-on-clause</a></li>
 </ul>
 <p>但是在实现的时候，会先用WHERE里面的条件过滤吧？！否则性能不是很差！？</p>
@@ -409,7 +409,7 @@
 <p>The restriction is that a <strong>FULL/RIGHT OUTER JOIN</strong> b cannot be performed.</p>
 </blockquote>
 <ul>
-<li>如果在 JOIN 列上，进行分桶了，并且其中一个表的桶数目是另一个的倍数，那么就可以采用 MAPJOIN 优化了。
+<li>如果在 JOIN 列上，进行分桶了，并且其中一个表的桶数目是另一个的倍数，那么就可以采用 MAPJOIN 优化了。<br />
 在 MAP 的时候，左表的第一个桶只会去取右表的第一个桶，而不是所有的数据！这个行为不是默认的，需要设置参数：</li>
 </ul>
 <div class="hlcode"><pre><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">optimize</span><span class="p">.</span><span class="n">bucketmapjoin</span> <span class="o">=</span> <span class="k">true</span>
@@ -417,7 +417,7 @@
 
 
 <ul>
-<li>如果两个表 JOIN 的字段分桶且排序的，并且分桶数目相同，那么可以采用 sort-merge。例如满足上述条件的两个表的join可以
+<li>如果两个表 JOIN 的字段分桶且排序的，并且分桶数目相同，那么可以采用 sort-merge。例如满足上述条件的两个表的join可以<br />
 只需要 Map 阶段！</li>
 </ul>
 <div class="hlcode"><pre><span class="k">SELECT</span> <span class="cm">/*+ MAPJOIN(b) */</span> <span class="n">a</span><span class="p">.</span><span class="k">key</span><span class="p">,</span> <span class="n">a</span><span class="p">.</span><span class="n">value</span>
@@ -443,7 +443,7 @@
 </ul>
 </li>
 </ul>
-<p>可以设置 <code>hive.auto.convert.join=true</code> 让hive自动帮你转为 MAPJOIN。从 Hive 0.11.0  开始，默认值就是true。
+<p>可以设置 <code>hive.auto.convert.join=true</code> 让hive自动帮你转为 MAPJOIN。从 Hive 0.11.0  开始，默认值就是true。<br />
 MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+JoinOptimization">https://cwiki.apache.org/confluence/display/Hive/LanguageManual+JoinOptimization</a></p>
 <div class="hlcode"><pre><span class="n">Local</span> <span class="n">work</span><span class="o">:</span>
 <span class="n">read</span> <span class="n">records</span> <span class="n">via</span> <span class="n">standard</span> <span class="n">table</span> <span class="n">scan</span> <span class="p">(</span><span class="n">including</span> <span class="n">filters</span> <span class="n">and</span> <span class="n">projections</span><span class="p">)</span> <span class="n">from</span> <span class="n">source</span> <span class="n">on</span> <span class="n">local</span> <span class="n">machine</span>
@@ -536,7 +536,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 </pre></div>
 
 
-<p>FROM 语句里面可以包含多个 Lateral View。通过 <code>OUTER</code> 关键字可以让 <code>explode</code> 输出为NULL的时候，
+<p>FROM 语句里面可以包含多个 Lateral View。通过 <code>OUTER</code> 关键字可以让 <code>explode</code> 输出为NULL的时候，<br />
 记录至少存在一行！（没有这个关键字，结果中将不会出现记录）</p>
 <h2 id="_11">子查询</h2>
 <p>子查询放在 FROM 里面，在 0.13 版本后，可以放在 IN 和 EXISTS 之中，但是存在一些限制。</p>
@@ -551,8 +551,8 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 </pre></div>
 
 
-<p>colname 可以是非分区字段以外的字段 或者 <code>RAND()</code>。
-表采样是很慢的，如果建表的时候采用<code>CLUSTERED BY</code>创建，
+<p>colname 可以是非分区字段以外的字段 或者 <code>RAND()</code>。<br />
+表采样是很慢的，如果建表的时候采用<code>CLUSTERED BY</code>创建，<br />
 那么可以加快采样速度，因为只要简单地取出对应的BUCKET就可以了，而不用全表扫描。</p>
 <p>更多信息参考：<a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Sampling">https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Sampling</a></p>
 <p>block sampling @since(0.8)</p>
@@ -566,7 +566,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 </pre></div>
 
 
-<p>这个是在 HDFS block level 上进行的采样，
+<p>这个是在 HDFS block level 上进行的采样，<br />
 所以一些压缩格式表数据不支持这个特性。复现可以通过设置种子来实现<code>set hive.sample.seednumber=&lt;INTEGER&gt;;</code>。</p>
 <h2 id="_13">虚拟列</h2>
 <p><code>INPUT__FILE__NAME, BLOCK__OFFSET__INSIDE__FILE</code> 在 Mapper 里面分别指输入文件名 和 全局文件位置</p>
@@ -641,9 +641,9 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <p>Grouping__ID</p>
 </li>
 <li>
-<p>Cubes and Rollups
-<code>WITH CUBE/ROLLUP</code> 关键字，只能用在 <code>GROUP BY</code> 之中。
-<code>GROUP BY a, b, c WITH CUBE</code> 会组合所有的可能 <code>(a, b, c), (a, b), (b, c), (a, c), (a), (b), (c), ( )</code>。
+<p>Cubes and Rollups<br />
+<code>WITH CUBE/ROLLUP</code> 关键字，只能用在 <code>GROUP BY</code> 之中。<br />
+<code>GROUP BY a, b, c WITH CUBE</code> 会组合所有的可能 <code>(a, b, c), (a, b), (b, c), (a, c), (a), (b), (c), ( )</code>。<br />
 而 <code>GROUP BY a, b, c, WITH ROLLUP</code> 等价于  <code>GROUP BY a, b, c GROUPING SETS ( (a, b, c), (a, b), (a), ( ))</code>.</p>
 </li>
 </ul>
@@ -662,7 +662,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <li>Scala UDF及单元测试的例子：<a href="https://github.com/sharethrough/hive-udfs">https://github.com/sharethrough/hive-udfs</a></li>
 </ul>
 <h3 id="udf_3">UDF</h3>
-<p>实现普通函数 (v1, ...) -&gt; (w1, ...)。
+<p>实现普通函数 (v1, ...) -&gt; (w1, ...)。<br />
 需要继承<code>org.apache.hadoop.hive.ql.exec.UDF</code>这个类，并实现 <code>evaluate</code> 方法。</p>
 <p><a href="https://issues.apache.org/jira/secure/attachment/12542020/UDFTrim.java">UDFTrim 模板</a></p>
 <h2 id="mac-jdk">MAC 切换不同的JDK</h2>
@@ -690,7 +690,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <h2 id="tips">TIPS</h2>
 <ul>
 <li>
-<p>HIVE 中上传本地csv文件作为表格的简单方法：利用hive建表命令，创建一个表格，然后将本地csv文件通过 hadoop shell 上传到
+<p>HIVE 中上传本地csv文件作为表格的简单方法：利用hive建表命令，创建一个表格，然后将本地csv文件通过 hadoop shell 上传到<br />
 表对应的HDF文件夹即可！注意建表的时候要用文本格式，注意分隔符要匹配。</p>
 </li>
 <li>
@@ -706,9 +706,10 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 
 
 <ul>
+<li>设置每个reducer最大处理数据量 <code>set hive.exec.reducers.bytes.per.reducer=&lt;number&gt;</code></li>
 <li>用 <code>distribute by</code> 控制进入reducer的样本</li>
-<li>不要用 <code>count(distinct id)</code> 因为只能用一个reducer！可以用<code>sum(1) + group by id</code>，多一个job但是快很多，因为<code>group by</code>可以用多个reducer。
-一个数据，约3亿不同的id，第一种用时40分钟，其中reducer耗时35分钟！后一种5分钟！
+<li>不要用 <code>count(distinct id)</code> 因为只能用一个reducer！可以用<code>sum(1) + group by id</code>，多一个job但是快很多，因为<code>group by</code>可以用多个reducer。<br />
+一个数据，约3亿不同的id，第一种用时40分钟，其中reducer耗时35分钟！后一种5分钟！<br />
 <a href="https://stackoverflow.com/questions/19311193/why-is-countdistinct-slower-than-group-by-in-hive">https://stackoverflow.com/questions/19311193/why-is-countdistinct-slower-than-group-by-in-hive</a></li>
 </ul>
 <p>另一种去重的方法</p>
@@ -723,8 +724,14 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 </pre></div>
 
 
-<p>条件
-- <code>SET hive.exec.parallel=true;</code> 让不同job并发执行！</p>
+<p>条件<br />
+- <code>SET hive.exec.parallel=true;</code> 让不同job并发执行！<br />
+- skew join 优化： <code>set hive.optimize.skewjoin=true;</code>将一个join操作变为两个，第一个会将同一个key分散到不同的reduce<br />
+- skew groupby 优化：<code>set hive.groupby.skewindata= true ;</code><br />
+- 输入是否融合小文件：</p>
+<div class="hlcode"><pre><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="k">input</span><span class="p">.</span><span class="n">format</span><span class="o">=</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">HiveInputFormat</span><span class="p">;</span>   <span class="c1">--- 不融合</span>
+<span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="k">input</span><span class="p">.</span><span class="n">format</span><span class="o">=</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">CombineHiveInputFormat</span><span class="p">;</span>  <span class="c1">--- 融合</span>
+</pre></div>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-07-08 </span></div>
 <div id="comments"></div>

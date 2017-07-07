@@ -47,10 +47,10 @@
 </ul>
 </div>
 <h2 id="theanobroadcast">theano中的broadcast</h2>
-<p>theano和numpy中的broadcast不同，
-theano中需要对能够broadcast的变量进行编译前申明，
-默认情况下，theano中的<code>matrix/tensor</code>和所有的<code>shared variable</code>都不不可以
-broadcast的，<code>vector</code>和<code>matrix</code>进行计算时是可以进行broadcast的。
+<p>theano和numpy中的broadcast不同，<br />
+theano中需要对能够broadcast的变量进行编译前申明，<br />
+默认情况下，theano中的<code>matrix/tensor</code>和所有的<code>shared variable</code>都不不可以<br />
+broadcast的，<code>vector</code>和<code>matrix</code>进行计算时是可以进行broadcast的。<br />
 <code>shared variable</code>可以在创建的时候声明可以broadcast。</p>
 <div class="hlcode"><pre><span class="n">bval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">]])</span>
 <span class="n">bshared</span> <span class="o">=</span> <span class="n">theano</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span><span class="n">bval</span><span class="p">,</span> <span class="n">broadcastable</span><span class="o">=</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">))</span>

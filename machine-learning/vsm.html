@@ -115,8 +115,8 @@
 <h3 id="the-termdocument-matrixsalton-et-al-1975">文档的相似性：The Term–Document Matrix，Salton et al. (1975)</h3>
 <ul>
 <li>行向量对应于一个term，通常是一个词；列向量是一个document，例如一个网页！</li>
-<li><strong>bag</strong> 是指一个集合，不同的是可以有重复，但是元素的顺序没有意义，不同顺序是等价的！
-一个bag可以用一个向量来表示，向量每个元素表示对应的bag元素出现的次数，例如{a,a,b,c,c,c,}可以表示为&lt;2,1,3&gt;.
+<li><strong>bag</strong> 是指一个集合，不同的是可以有重复，但是元素的顺序没有意义，不同顺序是等价的！<br />
+一个bag可以用一个向量来表示，向量每个元素表示对应的bag元素出现的次数，例如{a,a,b,c,c,c,}可以表示为&lt;2,1,3&gt;.<br />
 一系列的bag可以用一个矩阵X表示，矩阵的一列对应于一个bag向量，而一行对应于一个唯一的元素，$(x_{ij})$为第j个bag中元素i出现的次数。</li>
 <li>term-document中，一个文档被表达为一个 bag of word，每一个列向量对应于bag的向量表达。</li>
 </ul>
@@ -158,7 +158,7 @@
 </li>
 </ul>
 <h3 id="types-and-tokens">Types and Tokens</h3>
-<p>token-document matrix，里面相同的词但是出现在不同地方的词作为不同的token；
+<p>token-document matrix，里面相同的词但是出现在不同地方的词作为不同的token；<br />
 type-duocument matrix，则把相同词合并了。</p>
 <p>前者可以用在词消歧义上，一词多义！</p>
 <p>问题，这种token-document matrix完全看不出有什么意义啊</p>
@@ -174,17 +174,17 @@ type-duocument matrix，则把相同词合并了。</p>
 <p>对数据的预处理：tokenize，normalize（将词不同的形式归一化），annotate the raw text（将相同的形式标记为不同的含义：eg 动词，名词）</p>
 <p>Grefenstette (1994)：三步走：tokenization, surface syntactic analysis, and syntactic attribute extraction.</p>
 <h3 id="tokenization">Tokenization</h3>
-<p>英语等西班牙语系可以通过天然的分割符空格进行分割！
+<p>英语等西班牙语系可以通过天然的分割符空格进行分割！<br />
 而汉语等非西班牙语系则不同！</p>
-<p>精确的Tokenizer还需要处理标点符号！连字符，multi-word terms（e.g., Barack Obama and ice hockey）。
+<p>精确的Tokenizer还需要处理标点符号！连字符，multi-word terms（e.g., Barack Obama and ice hockey）。<br />
 停止词，高频却无意义的词，代词等。停止词表：SMART system (Salton, 1971)</p>
 <h3 id="normalization">Normalization</h3>
 <ul>
 <li>case folding</li>
 <li>stemming</li>
 </ul>
-<p>一般而言，归一化将导致精确度降低，召回率提高。
-如果数据量少，一定要用归一化，提高召回率；
+<p>一般而言，归一化将导致精确度降低，召回率提高。<br />
+如果数据量少，一定要用归一化，提高召回率；<br />
 但如果数据量很大，精确度更重要，可以不归一化！</p>
 <h3 id="annotation">Annotation</h3>
 <ul>
@@ -207,22 +207,22 @@ type-duocument matrix，则把相同词合并了。</p>
 <li>Positive PMI（PPMI）：将PMI小于0的值置0！当用word-context矩阵度量语义相似性地时候，效果更好！</li>
 </ul>
 <p>假设word-context 矩阵 F，行向量$(f_i)$，列向量$(f_{:j})$。新矩阵 X 是PPMI矩阵，定义为</p>
-<p>$$
-p_{ij} = \frac{f_{ij}}{\sum_i \sum_j f_{ij}}    \\
-p_{i*} = \frac{\sum_j f_{ij}}{\sum_i \sum_j f_{ij}}    \\
-p_{* j} = \frac{\sum_i f_{ij}}{\sum_i \sum_j f_{ij}}    \\
-pmi_{ij} = \log\left( \frac{p_{ij}}{p_{i*} p_{* j}}  \right)    \\
-x_{ij} = \begin{cases}
-    pmi_{ij} &amp; if pmi_{ij} &gt; 0 \\
-    0    &amp;  \text{otherwise}
-\end{cases}
+<p>$$<br />
+p_{ij} = \frac{f_{ij}}{\sum_i \sum_j f_{ij}}    \\<br />
+p_{i*} = \frac{\sum_j f_{ij}}{\sum_i \sum_j f_{ij}}    \\<br />
+p_{* j} = \frac{\sum_i f_{ij}}{\sum_i \sum_j f_{ij}}    \\<br />
+pmi_{ij} = \log\left( \frac{p_{ij}}{p_{i*} p_{* j}}  \right)    \\<br />
+x_{ij} = \begin{cases}<br />
+    pmi_{ij} &amp; if pmi_{ij} &gt; 0 \\<br />
+    0    &amp;  \text{otherwise}<br />
+\end{cases}<br />
 $$</p>
-<p>PMI 的问题，对小概率事件有偏！特例：当i和j统计依赖，$(p_{ij} = p_{i*} = p_{* j})$，
+<p>PMI 的问题，对小概率事件有偏！特例：当i和j统计依赖，$(p_{ij} = p_{i*} = p_{* j})$，<br />
 那么PMI变为 $(\log(1/p_{i*}))$。</p>
 <p>一种解决方案是（Pantel &amp; Lin, 2002a），对$(f_{ij}, f_{i*}, f_{* j})$进行平滑处理</p>
-<p>$$
-\delta_{ij} = \frac{f_{ij}}{f_{ij} + 1} \frac{\min(f_{* j}, f_{i*})}{\min(f_{* j}, f_{i*}) + 1}  \
-newpmi_{ij} = \delta_{ij} pmi_{ij}
+<p>$$<br />
+\delta_{ij} = \frac{f_{ij}}{f_{ij} + 1} \frac{\min(f_{* j}, f_{i*})}{\min(f_{* j}, f_{i*}) + 1}  \<br />
+newpmi_{ij} = \delta_{ij} pmi_{ij}<br />
 $$</p>
 <p>另一种解决方案是对概率进行拉普拉斯平滑！即对每一个$(f_{ij} \rightarrow f_{ij} + k)$。</p>
 <h3 id="_7">平滑矩阵</h3>

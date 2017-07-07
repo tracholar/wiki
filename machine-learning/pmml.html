@@ -68,8 +68,8 @@
 </ul>
 </div>
 <h2 id="_1">关于</h2>
-<p>PMML是用XML来描述数据挖掘模型的一种通用可交换格式，利用PMML可以将各种工具生成的模型很方便的发布到生产环境！
-目前著名的 sklearn 和 R中的模型，都支持导出为PMML格式！
+<p>PMML是用XML来描述数据挖掘模型的一种通用可交换格式，利用PMML可以将各种工具生成的模型很方便的发布到生产环境！<br />
+目前著名的 sklearn 和 R中的模型，都支持导出为PMML格式！<br />
 <a href="http://dmg.org/pmml/">http://dmg.org/pmml/</a></p>
 <h2 id="_2">通用结构</h2>
 <ul>
@@ -86,7 +86,7 @@
 <li>一个PMML文件可以包含多个模型，一个应用系统可以通过名字选择模型，否则选择第一个模型</li>
 </ul>
 <h2 id="header">Header</h2>
-<p>可以包含 <code>copyright, description, Applilcation, name, version, Annotation</code>。
+<p>可以包含 <code>copyright, description, Applilcation, name, version, Annotation</code>。<br />
 例子：</p>
 <div class="hlcode"><pre><span class="nt">&lt;Header</span> <span class="na">copyright=</span><span class="s">&quot;www.tracholar.com&quot;</span><span class="nt">/&gt;</span>
 </pre></div>
@@ -95,7 +95,7 @@
 <h2 id="miningbuildtask">MiningBuildTask</h2>
 <p>包含任意XML值，描述训练模型的配置，不是 PMML 必须。</p>
 <h2 id="datadictionary">DataDictionary</h2>
-<p>定义用于模型输入的数据的类型，范围等。
+<p>定义用于模型输入的数据的类型，范围等。<br />
 可以用在多个模型当中。</p>
 <h3 id="datafield"><code>DataField</code></h3>
 <ul>
@@ -118,7 +118,7 @@
 <h2 id="model-element">MODEL-ELEMENT</h2>
 <h3 id="miningmodel">MiningModel</h3>
 <h4 id="functionname">functionName</h4>
-<p>PMML 定义了5中挖掘函数，每个模型可以有一个属性 <code>functionName</code> 用来指定functionName。
+<p>PMML 定义了5中挖掘函数，每个模型可以有一个属性 <code>functionName</code> 用来指定functionName。<br />
 可以取值为：</p>
 <ul>
 <li>associationRules</li>

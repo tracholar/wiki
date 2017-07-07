@@ -74,129 +74,129 @@
 <li>152层残差网络，是 VGG net的8倍，但是复杂度更低，效果更好。</li>
 <li>ImageNet 测试集错误率为 3.57%</li>
 <li>COCO object detection dataset 28% 相对提升</li>
-<li>ILSVRC &amp; COCO 2015 competitions 第一名，on the tasks of ImageNet detection, ImageNet localization,
+<li>ILSVRC &amp; COCO 2015 competitions 第一名，on the tasks of ImageNet detection, ImageNet localization,<br />
 COCO detection, and COCO segmentation</li>
 </ul>
 <h3 id="_3">导言</h3>
 <ul>
-<li>深度卷积网络（CNN）是图像分类问题的重大突破，
-它可以自动学习底层/中层/高层特征。
+<li>深度卷积网络（CNN）是图像分类问题的重大突破，<br />
+它可以自动学习底层/中层/高层特征。<br />
 特征的层级可以通过stack的方式（增加深度）得到提升。</li>
 </ul>
 <p>CNN的重要论文：</p>
 <ol>
-<li>Y. LeCun, B. Boser, J. S. Denker, D. Henderson, R. E. Howard,
-W. Hubbard, and L. D. Jackel. Backpropagation applied to handwritten
+<li>Y. LeCun, B. Boser, J. S. Denker, D. Henderson, R. E. Howard,<br />
+W. Hubbard, and L. D. Jackel. Backpropagation applied to handwritten<br />
 zip code recognition. Neural computation, 1989</li>
-<li>A. Krizhevsky, I. Sutskever, and G. Hinton. Imagenet classification
+<li>A. Krizhevsky, I. Sutskever, and G. Hinton. Imagenet classification<br />
 with deep convolutional neural networks. In NIPS, 2012.</li>
-<li>P. Sermanet, D. Eigen, X. Zhang, M. Mathieu, R. Fergus, and Y. LeCun.
-Overfeat: Integrated recognition, localization and detection
+<li>P. Sermanet, D. Eigen, X. Zhang, M. Mathieu, R. Fergus, and Y. LeCun.<br />
+Overfeat: Integrated recognition, localization and detection<br />
 using convolutional networks. In ICLR, 2014</li>
-<li>M. D. Zeiler and R. Fergus. Visualizing and understanding convolutional
+<li>M. D. Zeiler and R. Fergus. Visualizing and understanding convolutional<br />
 neural networks. In ECCV, 2014.</li>
 </ol>
 <p>近期研究表明，堆叠的深度是至关重要的因素。</p>
 <ol>
-<li>K. Simonyan and A. Zisserman. Very deep convolutional networks
+<li>K. Simonyan and A. Zisserman. Very deep convolutional networks<br />
 for large-scale image recognition. In ICLR, 2015</li>
-<li>C. Szegedy, W. Liu, Y. Jia, P. Sermanet, S. Reed, D. Anguelov, D. Erhan,
-V. Vanhoucke, and A. Rabinovich. Going deeper with convolutions.
+<li>C. Szegedy, W. Liu, Y. Jia, P. Sermanet, S. Reed, D. Anguelov, D. Erhan,<br />
+V. Vanhoucke, and A. Rabinovich. Going deeper with convolutions.<br />
 In CVPR, 2015</li>
 </ol>
 <p>ImageNet 的最佳结果都是很深的模型，从13层到30层。深度模型对其他的图像任务也有帮助。</p>
 <ol>
-<li>K. He, X. Zhang, S. Ren, and J. Sun. Delving deep into rectifiers:
-Surpassing human-level performance on imagenet classification. In
+<li>K. He, X. Zhang, S. Ren, and J. Sun. Delving deep into rectifiers:<br />
+Surpassing human-level performance on imagenet classification. In<br />
 ICCV, 2015.</li>
-<li>S. Ioffe and C. Szegedy. <strong>Batch normalization</strong>: Accelerating deep
+<li>S. Ioffe and C. Szegedy. <strong>Batch normalization</strong>: Accelerating deep<br />
 network training by reducing internal covariate shift. In ICML, 2015</li>
-<li>O. Russakovsky, J. Deng, H. Su, J. Krause, S. Satheesh, S. Ma,
-Z. Huang, A. Karpathy, A. Khosla, M. Bernstein, et al. Imagenet
+<li>O. Russakovsky, J. Deng, H. Su, J. Krause, S. Satheesh, S. Ma,<br />
+Z. Huang, A. Karpathy, A. Khosla, M. Bernstein, et al. Imagenet<br />
 large scale visual recognition challenge. arXiv:1409.0575, 2014.</li>
 </ol>
-<p>学习深度模型最大的问题在于 vanishing gradient，梯度消减！导致模型无法收敛。
+<p>学习深度模型最大的问题在于 vanishing gradient，梯度消减！导致模型无法收敛。<br />
 利用这些技巧，几十层深度的模型也可以通过BP算法+SGD进行训练。</p>
 <ol>
-<li>Y. Bengio, P. Simard, and P. Frasconi. Learning long-term dependencies
-with gradient descent is difficult. IEEE Transactions on Neural
+<li>Y. Bengio, P. Simard, and P. Frasconi. Learning long-term dependencies<br />
+with gradient descent is difficult. IEEE Transactions on Neural<br />
 Networks, 5(2):157–166, 1994.</li>
-<li>X. Glorot and Y. Bengio. Understanding the difficulty of training
+<li>X. Glorot and Y. Bengio. Understanding the difficulty of training<br />
 deep feedforward neural networks. In AISTATS, 2010.</li>
 </ol>
 <p>梯度消减的问题被很大程度上通过 normalized initialization 和 intermediate normalization layers 解决了</p>
 <ol>
-<li>Y. LeCun, L. Bottou, G. B. Orr, and K.-R. Muller. Efficient backprop. ¨
+<li>Y. LeCun, L. Bottou, G. B. Orr, and K.-R. Muller. Efficient backprop. ¨<br />
 In Neural Networks: Tricks of the Trade, pages 9–50. Springer, 1998.</li>
-<li>A. M. Saxe, J. L. McClelland, and S. Ganguli. Exact solutions to
-the nonlinear dynamics of learning in deep linear neural networks.
+<li>A. M. Saxe, J. L. McClelland, and S. Ganguli. Exact solutions to<br />
+the nonlinear dynamics of learning in deep linear neural networks.<br />
 arXiv:1312.6120, 2013.</li>
-<li>K. He, X. Zhang, S. Ren, and J. Sun. Delving deep into rectifiers:
-Surpassing human-level performance on imagenet classification. In
+<li>K. He, X. Zhang, S. Ren, and J. Sun. Delving deep into rectifiers:<br />
+Surpassing human-level performance on imagenet classification. In<br />
 ICCV, 2015.</li>
-<li>S. Ioffe and C. Szegedy. Batch normalization: Accelerating deep
+<li>S. Ioffe and C. Szegedy. Batch normalization: Accelerating deep<br />
 network training by reducing internal covariate shift. In ICML, 2015.</li>
 </ol>
-<p>随着层数的加深，模型的性能逐渐饱和，然后迅速恶化。这个问题并不是由于过拟合，更深的模型导致更差的性能！
-理论上来讲，深层模型应该可以做到比浅层模型更好的性能，可以设想多余的层是恒等变换，那么深层模型结果和浅层一样。
+<p>随着层数的加深，模型的性能逐渐饱和，然后迅速恶化。这个问题并不是由于过拟合，更深的模型导致更差的性能！<br />
+理论上来讲，深层模型应该可以做到比浅层模型更好的性能，可以设想多余的层是恒等变换，那么深层模型结果和浅层一样。<br />
 但是实际上的结果并非如此。</p>
-<p>残差网络并不直接拟合目标，而是拟合残差。假设潜在的目标映射为$(\mathcal{H}(x))$，我们让非线性层学习残差
-$(\mathcal{F}(x):=\mathcal{H}(x) - x)$，并提供一条短路（或直连）通道，使得输出为$(\mathcal{F}(x)+x)$。
-我们假设优化残差比原始映射要简单！（假设！！！！）
-在极端情况下，可以让非线性层置0，使得直接输出输入值。（我的思考：存在正则项的时候，这个确实更优，那是不是就证明残差网络不会比浅层网络更差了呢？！）
-短路连接在这里可以跳过一层或者多层。单位短路通道（即短路通道直接输出输入的值）不增加计算复杂度也不增加额外的参数。
+<p>残差网络并不直接拟合目标，而是拟合残差。假设潜在的目标映射为$(\mathcal{H}(x))$，我们让非线性层学习残差<br />
+$(\mathcal{F}(x):=\mathcal{H}(x) - x)$，并提供一条短路（或直连）通道，使得输出为$(\mathcal{F}(x)+x)$。<br />
+我们假设优化残差比原始映射要简单！（假设！！！！）<br />
+在极端情况下，可以让非线性层置0，使得直接输出输入值。（我的思考：存在正则项的时候，这个确实更优，那是不是就证明残差网络不会比浅层网络更差了呢？！）<br />
+短路连接在这里可以跳过一层或者多层。单位短路通道（即短路通道直接输出输入的值）不增加计算复杂度也不增加额外的参数。<br />
 整个网络可以采用 end-to-end 使用SGD+BP算法，可以采用现有的求解器就能实现。</p>
 <ol>
-<li>C. M. Bishop. Neural networks for pattern recognition. Oxford
+<li>C. M. Bishop. Neural networks for pattern recognition. Oxford<br />
 university press, 1995.</li>
-<li>B. D. Ripley. Pattern recognition and neural networks. Cambridge
+<li>B. D. Ripley. Pattern recognition and neural networks. Cambridge<br />
 university press, 1996.</li>
 <li>
-<p>W. Venables and B. Ripley. Modern applied statistics with s-plus.
+<p>W. Venables and B. Ripley. Modern applied statistics with s-plus.<br />
 1999</p>
 </li>
 <li>
-<p>ImageNet 论文： O. Russakovsky, J. Deng, H. Su, J. Krause, S. Satheesh, S. Ma,
-Z. Huang, A. Karpathy, A. Khosla, M. Bernstein, et al. Imagenet
+<p>ImageNet 论文： O. Russakovsky, J. Deng, H. Su, J. Krause, S. Satheesh, S. Ma,<br />
+Z. Huang, A. Karpathy, A. Khosla, M. Bernstein, et al. Imagenet<br />
 large scale visual recognition challenge. arXiv:1409.0575, 2014.</p>
 </li>
-<li>CIFAR-10 论文：A. Krizhevsky. Learning multiple layers of features from tiny images.
+<li>CIFAR-10 论文：A. Krizhevsky. Learning multiple layers of features from tiny images.<br />
 Tech Report, 2009.</li>
 </ol>
 <blockquote>
-<p>We present successfully trained models on this dataset (CIFAR-10) with
-over 100 layers, and explore models with over 1000 layers.
-Our ensemble has 3.57% top-5 error on the ImageNet test set, and won the 1st place in the ILSVRC
-2015 classification competition.
-The extremely deep representations also have excellent generalization performance
-on other recognition tasks, and lead us to further win the 1st places on: ImageNet detection, ImageNet localization,
+<p>We present successfully trained models on this dataset (CIFAR-10) with<br />
+over 100 layers, and explore models with over 1000 layers.<br />
+Our ensemble has 3.57% top-5 error on the ImageNet test set, and won the 1st place in the ILSVRC<br />
+2015 classification competition.<br />
+The extremely deep representations also have excellent generalization performance<br />
+on other recognition tasks, and lead us to further win the 1st places on: ImageNet detection, ImageNet localization,<br />
 COCO detection, and COCO segmentation in ILSVRC &amp; COCO 2015 competitions.</p>
 </blockquote>
 <h3 id="_4">相关的研究工作</h3>
 <h4 id="residual-representations">Residual Representations.</h4>
 <ul>
-<li>VLAD：H. Jegou, F. Perronnin, M. Douze, J. Sanchez, P. Perez, and
-C. Schmid. Aggregating local image descriptors into compact codes.
+<li>VLAD：H. Jegou, F. Perronnin, M. Douze, J. Sanchez, P. Perez, and<br />
+C. Schmid. Aggregating local image descriptors into compact codes.<br />
 TPAMI, 2012</li>
-<li>Fisher Vector：F. Perronnin and C. Dance. Fisher kernels on visual vocabularies for
+<li>Fisher Vector：F. Perronnin and C. Dance. Fisher kernels on visual vocabularies for<br />
 image categorization. In CVPR, 2007.</li>
 <li>
 <p>这两种表达被应用在图像检索和分类中：</p>
 </li>
 <li>
-<p>K. Chatfield, V. Lempitsky, A. Vedaldi, and A. Zisserman. The devil
-is in the details: an evaluation of recent feature encoding methods.
+<p>K. Chatfield, V. Lempitsky, A. Vedaldi, and A. Zisserman. The devil<br />
+is in the details: an evaluation of recent feature encoding methods.<br />
 In BMVC, 2011</p>
 </li>
 <li>
-<p>A. Vedaldi and B. Fulkerson. VLFeat: An open and portable library
+<p>A. Vedaldi and B. Fulkerson. VLFeat: An open and portable library<br />
 of computer vision algorithms, 2008</p>
 </li>
 <li>
 <p>在矢量量化中，编码残差比编码原始矢量更加有效。</p>
 </li>
 <li>
-<p>H. Jegou, M. Douze, and C. Schmid. Product quantization for nearest
+<p>H. Jegou, M. Douze, and C. Schmid. Product quantization for nearest<br />
 neighbor search. TPAMI, 33, 2011.</p>
 </li>
 <li>
@@ -204,46 +204,46 @@ neighbor search. TPAMI, 33, 2011.</p>
 </li>
 </ul>
 <h4 id="shortcut-connection">Shortcut Connection</h4>
-<p>已被研究多日了（哈哈哈哈），早起的多层感知器研究在输入输出间单独加了一个线性层。
+<p>已被研究多日了（哈哈哈哈），早起的多层感知器研究在输入输出间单独加了一个线性层。<br />
 在另外两篇论文中，一些中间层直接连接到一个辅助的分类器，通过这种方式减少梯度消减。</p>
 <ol>
-<li>C.-Y. Lee, S. Xie, P. Gallagher, Z. Zhang, and Z. Tu. Deeply supervised
+<li>C.-Y. Lee, S. Xie, P. Gallagher, Z. Zhang, and Z. Tu. Deeply supervised<br />
 nets. arXiv:1409.5185, 2014.</li>
-<li>R. K. Srivastava, K. Greff, and J. Schmidhuber. Highway networks.
+<li>R. K. Srivastava, K. Greff, and J. Schmidhuber. Highway networks.<br />
 arXiv:1505.00387, 2015</li>
 </ol>
 <p>等等其他，略。</p>
-<p>highway networks 在短路链接采用了门函数，该门函数有参数需要通过数据学习。
+<p>highway networks 在短路链接采用了门函数，该门函数有参数需要通过数据学习。<br />
 当门关掉（为0值）时，网络就是传统的神经网络，而不是残差网络。</p>
 <h3 id="deep-residual-learning">Deep Residual Learning</h3>
 <ul>
 <li>假设：（还是一个open question）多层非线性可以逼近复杂函数。</li>
-<li>当输入输出是相同的维度，可以假设它逼近残差$(\mathcal{H}(x) - x)$。虽然逼近原始函数和逼近残差，这两个函数都很复杂，
-但是后者更容易！前面说过，如果这些加入的非线性层是单位映射，那么多层不会比浅层差。但是由于梯度消减，多层非线性难以逼近单位函数，
-但是残差网络可以很容易，让非线性层置0即可。实际上，单位映射往往不是最优的。实验结果表明，残差部分学出来的结果都比较小，
+<li>当输入输出是相同的维度，可以假设它逼近残差$(\mathcal{H}(x) - x)$。虽然逼近原始函数和逼近残差，这两个函数都很复杂，<br />
+但是后者更容易！前面说过，如果这些加入的非线性层是单位映射，那么多层不会比浅层差。但是由于梯度消减，多层非线性难以逼近单位函数，<br />
+但是残差网络可以很容易，让非线性层置0即可。实际上，单位映射往往不是最优的。实验结果表明，残差部分学出来的结果都比较小，<br />
 这表明单位映射是一个很好的先验条件。</li>
 <li>残差网络基本模块是：</li>
 </ul>
-<p>$$
-y = \mathcal{F}(x, {W_i}) + x   \\
-\mathcal{F} = W_2 \sigma(W_1 x)   \\
-\sigma = ReLU
+<p>$$<br />
+y = \mathcal{F}(x, {W_i}) + x   \\<br />
+\mathcal{F} = W_2 \sigma(W_1 x)   \\<br />
+\sigma = ReLU<br />
 $$</p>
 <p>如果输入输出维度不同，可以通过投影的方法解决。$(W_s)$仅仅用来解决维度匹配的问题，如果维度相同，单位映射就好了。</p>
-<p>$$
-y = \mathcal{F}(x, {W_i}) + W_s x
+<p>$$<br />
+y = \mathcal{F}(x, {W_i}) + W_s x<br />
 $$</p>
 <ul>
 <li>
-<p>在论文里面，在ImageNet上最好的结果是110层，作者也试过1202层，发现训练集误差相近，但是测试集效果变差了，作者认为是
+<p>在论文里面，在ImageNet上最好的结果是110层，作者也试过1202层，发现训练集误差相近，但是测试集效果变差了，作者认为是<br />
 过拟合的原因，因为没有用到MaxOut[1]和Dropout[2]强正则化的做法。</p>
 </li>
 <li>
-<p>I. J. Goodfellow, D. Warde-Farley, M. Mirza, A. Courville, and
+<p>I. J. Goodfellow, D. Warde-Farley, M. Mirza, A. Courville, and<br />
 Y. Bengio. Maxout networks. arXiv:1302.4389, 2013.</p>
 </li>
-<li>G. E. Hinton, N. Srivastava, A. Krizhevsky, I. Sutskever, and
-R. R. Salakhutdinov. Improving neural networks by preventing coadaptation
+<li>G. E. Hinton, N. Srivastava, A. Krizhevsky, I. Sutskever, and<br />
+R. R. Salakhutdinov. Improving neural networks by preventing coadaptation<br />
 of feature detectors. arXiv:1207.0580, 2012</li>
 </ul>
 <h2 id="ppticml2016">何凯明PPT@ICML2016</h2>
@@ -291,9 +291,9 @@ of feature detectors. arXiv:1207.0580, 2012</li>
 <li>减少初值敏感</li>
 <li>增强正则化</li>
 </ul>
-<p>$$
-\hat{x} = \frac{x - \mu}{\sigma} \\
-y = \gamma \hat{x} + \beta
+<p>$$<br />
+\hat{x} = \frac{x - \mu}{\sigma} \\<br />
+y = \gamma \hat{x} + \beta<br />
 $$</p>
 <ul>
 <li>$(\mu, \sigma)$ 分别是 mini-batch 的均值和标准差，是由数据计算出来的</li>
@@ -306,11 +306,11 @@ $$</p>
 </ul>
 <h3 id="_8">单位映射的重要性</h3>
 <p>单位映射下：</p>
-<p>$$
-x_L = x_l + \sum_{i=l}^{L-1} \mathcal{F}_i(x_i)  \\
-\frac{\partial E}{\partial x_l} = \frac{\partial E}{\partial x_L}(1 + \frac{\partial E}{\partial x_l} \sum_{i=l}^{L-1} \mathcal{F}_i(x_i))
+<p>$$<br />
+x_L = x_l + \sum_{i=l}^{L-1} \mathcal{F}_i(x_i)  \\<br />
+\frac{\partial E}{\partial x_l} = \frac{\partial E}{\partial x_L}(1 + \frac{\partial E}{\partial x_l} \sum_{i=l}^{L-1} \mathcal{F}_i(x_i))<br />
 $$</p>
-<p>在单位映射下，梯度可以以恒定比例传递过来，
+<p>在单位映射下，梯度可以以恒定比例传递过来，<br />
 如果不是，一旦深度变深了，要么衰减，要么爆炸！</p>
 <p>加总之后，还是单位映射好，（我觉得还是梯度传递的问题，需要单位范数的映射才能不使得梯度消失和爆炸！）pre-active</p>
 <ol>
