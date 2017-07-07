@@ -616,6 +616,7 @@ set mapreduce.job.maps=<num>;
 set mapreduce.job.reduces=<num>;
 ```
 
+- 设置每个reducer最大处理数据量 `set hive.exec.reducers.bytes.per.reducer=<number>`
 - 用 `distribute by` 控制进入reducer的样本
 - 不要用 `count(distinct id)` 因为只能用一个reducer！可以用`sum(1) + group by id`，多一个job但是快很多，因为`group by`可以用多个reducer。
 一个数据，约3亿不同的id，第一种用时40分钟，其中reducer耗时35分钟！后一种5分钟！
@@ -638,3 +639,9 @@ from (
 - `SET hive.exec.parallel=true;` 让不同job并发执行！
 - skew join 优化： `set hive.optimize.skewjoin=true;`将一个join操作变为两个，第一个会将同一个key分散到不同的reduce
 - skew groupby 优化：`set hive.groupby.skewindata= true ;`
+- 输入是否融合小文件：
+
+```sql
+set hive.input.format=org.apache.hadoop.hive.ql.io.HiveInputFormat;   --- 不融合
+set hive.input.format=org.apache.hadoop.hive.ql.io.CombineHiveInputFormat;  --- 融合
+```
