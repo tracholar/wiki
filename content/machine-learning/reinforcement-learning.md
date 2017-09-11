@@ -39,12 +39,12 @@ discounting reward: $(r_0 + \gamma r_1 + \gamma^2 r_2 + ...)$
 
 - 状态 value function： $(V^* (s))$
 - q-state (s, a), $(Q^* (s,a))$
-- 最优策略 $(\i^* (s))$
+- 最优策略 $(\pi^* (s))$
 
 - 递归定义：
-    - $(V^* (s) = \max_a Q^* (s, a))$
-    - $(Q^* (s, a) = \sum_{s'} (s, a, s') \left[ R(s, a, s') + \gamma V^* (s') \right])$
-    - $(V^* (s) = \max_a \sum_{s'} (s, a, s') \left[ R(s, a, s') + \gamma V^* (s') \right])$
+    - $(V^ * (s) = \max_a Q^ * (s, a))$
+    - $(Q^ * (s, a) = \sum_{s'} (s, a, s') \left[ R(s, a, s') + \gamma V^* (s') \right])$
+    - $(V^ * (s) = \max_a \sum_{s'} (s, a, s') \left[ R(s, a, s') + \gamma V^* (s') \right])$
 
 - Time-limited value: 定义$(V_k(s))$ 为状态s下，最多k步下的最优value
 - Value iteration:
@@ -52,7 +52,17 @@ discounting reward: $(r_0 + \gamma r_1 + \gamma^2 r_2 + ...)$
     2. $(V_{k+1}(s) \leftarrow \max_a \sum_{s'} (s, a, s') \left[ R(s, a, s') + \gamma V_k^* (s') \right]) )$
     3. 重复1-2直到收敛！
     4. 复杂度，每次迭代 $(O(S^2A))$
-    5. 收敛到唯一最优值！
+    5. 收敛到唯一最优值！贝尔曼算子在 $(\gamma<1)$时时压缩算子，所以必收敛到不动点。
+- Policy iteration
+    1. 随机化策略$(\pi)$
+    2. Policy evaluation：对给定的策略 $(\pi)$，利用迭代或者线性方程求解的方法计算该策略下的值函数，即求解下面第一个方程。因为该方程是一个关于值函数的线性方程，所以对于有限状态的情况可以直接求解线性方程，或者利用迭代求解。
+    3. Policy improvement：对上述值函数，利用贝尔曼方程求出最优策略。重复2-3多次直到收敛，收敛条件是策略不改变了。
+       实际上，它是在交替迭代策略和值函数。这种方法可以保证每次迭代值函数单调不减，又因为有界所以收敛。
+
+$$
+V^{\pi_i}(s) = r(s, \pi_i(s)) + \gamma \sum_{s' \in S} p(s'|s, \pi_i(s)) V^{\pi_i}(s') \\\\
+\pi_{i+1}(s) = \arg \max_a r(s, a) + \gamma \sum_{s' \in S} p(s'|s, a) V^{\pi_i}(s')
+$$
 
 ## Reinforcement Learning
 仍然是一个MDP过程，仍然寻找最优决策！
@@ -67,7 +77,7 @@ discounting reward: $(r_0 + \gamma r_1 + \gamma^2 r_2 + ...)$
 - Step1：学习经验MDP模型：
     1. 对每一个个(s, a)统计s'
     2. 归一化得到$(\hat{T}(s, a, s'))$
-    3. 
+    3.
 
 
 ## 深度强化学习tutorial@ICML2016
@@ -86,12 +96,12 @@ $$
 Q(s, a, w) \approx Q^* (s, a)
 $$
 
-Q-Learning：
+### Q-Learning：
 
 最优 Q-value 应该遵循 Bellman 方程
 
 $$
-Q^* (s, a) = \mathbb{E}\_{s'} \left[ r + \gamma \max_{a'} Q(s', a')^* |s, a  \right]
+Q^ * (s, a) = \mathbb{E}\_{s'} \left[ r + \gamma \max_{a'} Q(s', a')^ * |s, a  \right]
 $$
 
 其中 s 表示状态，a 表示agent对环境做出的 action！
@@ -104,22 +114,32 @@ $$
 
 问题：1. 训练样本不是 iid； 2. 目标不稳定！
 
-DQN：利用 agent 自身经验构建样本！
+### DQN：利用 agent 自身经验构建样本！
 
 $$
-l = (r + \gamma \max_{a'} Q(s', a', w^-) - Q(s, a, w) )^2
+l = \left(r + \gamma \max_{a'} Q(s', a', w^-) - Q(s, a, w) \right)^2
 $$
 
-$(w^-)$是固定的！
+在某一次replay 的更新中，$(w^-)$是固定的！replay结束后，将线上的权值$(w)$更新到$(w^-)$
 
 
-Double DQN
+### Double DQN
 
 - 当前的 Q-network w 用来选择 action
 - 老的 Q-network w- 用来评估 action
 
 $$
-l = \left( r + \gamma Q( s', \arg\max_{a'} Q(s', a', w), w^- ) - Q(s, a, w)  \right)^2
+a^* = \arg\max_{a'} Q(s', a', w) \\\\
+l = \left( r + \gamma Q( s', a^ * , w^- ) - Q(s, a, w)  \right)^2
+$$
+
+### Prioritised replay
+按照 TD-error 对 replay memory 中的样本进行 importance sampling。
+
+$$
+\delta = \left| r + \gamma \max_{a'} Q(s', a', w^-)  - Q(s, a, w) \right| \\\\
+P(i) = \frac{p_i^{\alpha}}{\sum_k p_k^{\alpha}} \\\\
+p_i = \delta_i + \epsilon
 $$
 
 Duelling network
