@@ -49,6 +49,10 @@
 </li>
 <li><a href="#tutorialicml2016">深度强化学习tutorial@ICML2016</a><ul>
 <li><a href="#value-based-deep-rl">Value-Based Deep RL</a></li>
+<li><a href="#q-learning">Q-Learning：</a></li>
+<li><a href="#dqn-agent">DQN：利用 agent 自身经验构建样本！</a></li>
+<li><a href="#double-dqn">Double DQN</a></li>
+<li><a href="#prioritised-replay">Prioritised replay</a></li>
 <li><a href="#deep-policy-networks">Deep Policy Networks</a></li>
 </ul>
 </li>
@@ -93,14 +97,14 @@
 </li>
 <li>q-state (s, a), $(Q^* (s,a))$</li>
 <li>
-<p>最优策略 $(\i^* (s))$</p>
+<p>最优策略 $(\pi^* (s))$</p>
 </li>
 <li>
 <p>递归定义：</p>
 <ul>
-<li>$(V^<em> (s) = \max_a Q^</em> (s, a))$</li>
-<li>$(Q^<em> (s, a) = \sum_{s'} (s, a, s') \left[ R(s, a, s') + \gamma V^</em> (s') \right])$</li>
-<li>$(V^<em> (s) = \max_a \sum_{s'} (s, a, s') \left[ R(s, a, s') + \gamma V^</em> (s') \right])$</li>
+<li>$(V^ * (s) = \max_a Q^ * (s, a))$</li>
+<li>$(Q^ * (s, a) = \sum_{s'} (s, a, s') \left[ R(s, a, s') + \gamma V^* (s') \right])$</li>
+<li>$(V^ * (s) = \max_a \sum_{s'} (s, a, s') \left[ R(s, a, s') + \gamma V^* (s') \right])$</li>
 </ul>
 </li>
 <li>
@@ -111,10 +115,21 @@
 <li>$(V_{k+1}(s) \leftarrow \max_a \sum_{s'} (s, a, s') \left[ R(s, a, s') + \gamma V_k^* (s') \right]) )$</li>
 <li>重复1-2直到收敛！</li>
 <li>复杂度，每次迭代 $(O(S^2A))$</li>
-<li>收敛到唯一最优值！</li>
+<li>收敛到唯一最优值！贝尔曼算子在 $(\gamma&lt;1)$时时压缩算子，所以必收敛到不动点。</li>
+</ol>
+</li>
+<li>Policy iteration<ol>
+<li>随机化策略$(\pi)$</li>
+<li>Policy evaluation：对给定的策略 $(\pi)$，利用迭代或者线性方程求解的方法计算该策略下的值函数，即求解下面第一个方程。因为该方程是一个关于值函数的线性方程，所以对于有限状态的情况可以直接求解线性方程，或者利用迭代求解。</li>
+<li>Policy improvement：对上述值函数，利用贝尔曼方程求出最优策略。重复2-3多次直到收敛，收敛条件是策略不改变了。<br />
+   实际上，它是在交替迭代策略和值函数。这种方法可以保证每次迭代值函数单调不减，又因为有界所以收敛。</li>
 </ol>
 </li>
 </ul>
+<p>$$<br />
+V^{\pi_i}(s) = r(s, \pi_i(s)) + \gamma \sum_{s' \in S} p(s'|s, \pi_i(s)) V^{\pi_i}(s') \\<br />
+\pi_{i+1}(s) = \arg \max_a r(s, a) + \gamma \sum_{s' \in S} p(s'|s, a) V^{\pi_i}(s')<br />
+$$</p>
 <h2 id="reinforcement-learning">Reinforcement Learning</h2>
 <p>仍然是一个MDP过程，仍然寻找最优决策！<br />
 但是不知道状态转移函数T 和 回报函数 R！</p>
@@ -127,8 +142,8 @@
 <ul>
 <li>Step1：学习经验MDP模型：<ol>
 <li>对每一个个(s, a)统计s'</li>
-<li>归一化得到$(\hat{T}(s, a, s'))$</li>
-<li></li>
+<li>归一化得到$(\hat{T}(s, a, s'))$<br />
+3.</li>
 </ol>
 </li>
 </ul>
@@ -145,10 +160,10 @@
 <p>$$<br />
 Q(s, a, w) \approx Q^* (s, a)<br />
 $$</p>
-<p>Q-Learning：</p>
+<h3 id="q-learning">Q-Learning：</h3>
 <p>最优 Q-value 应该遵循 Bellman 方程</p>
 <p>$$<br />
-Q^<em> (s, a) = \mathbb{E}_{s'} \left[ r + \gamma \max_{a'} Q(s', a')^</em> |s, a  \right]<br />
+Q^ * (s, a) = \mathbb{E}_{s'} \left[ r + \gamma \max_{a'} Q(s', a')^ * |s, a  \right]<br />
 $$</p>
 <p>其中 s 表示状态，a 表示agent对环境做出的 action！<br />
 将方程右边当做目标，用神经网络学习！<br />
@@ -157,18 +172,26 @@ $$</p>
 l = (r + \gamma \max_{a'} Q(s', a', w) - Q(s, a, w) )^2<br />
 $$</p>
 <p>问题：1. 训练样本不是 iid； 2. 目标不稳定！</p>
-<p>DQN：利用 agent 自身经验构建样本！</p>
+<h3 id="dqn-agent">DQN：利用 agent 自身经验构建样本！</h3>
 <p>$$<br />
-l = (r + \gamma \max_{a'} Q(s', a', w^-) - Q(s, a, w) )^2<br />
+l = \left(r + \gamma \max_{a'} Q(s', a', w^-) - Q(s, a, w) \right)^2<br />
 $$</p>
-<p>$(w^-)$是固定的！</p>
-<p>Double DQN</p>
+<p>在某一次replay 的更新中，$(w^-)$是固定的！replay结束后，将线上的权值$(w)$更新到$(w^-)$</p>
+<h3 id="double-dqn">Double DQN</h3>
 <ul>
 <li>当前的 Q-network w 用来选择 action</li>
 <li>老的 Q-network w- 用来评估 action</li>
 </ul>
 <p>$$<br />
-l = \left( r + \gamma Q( s', \arg\max_{a'} Q(s', a', w), w^- ) - Q(s, a, w)  \right)^2<br />
+a^* = \arg\max_{a'} Q(s', a', w) \\<br />
+l = \left( r + \gamma Q( s', a^ * , w^- ) - Q(s, a, w)  \right)^2<br />
+$$</p>
+<h3 id="prioritised-replay">Prioritised replay</h3>
+<p>按照 TD-error 对 replay memory 中的样本进行 importance sampling。</p>
+<p>$$<br />
+\delta = \left| r + \gamma \max_{a'} Q(s', a', w^-)  - Q(s, a, w) \right| \\<br />
+P(i) = \frac{p_i^{\alpha}}{\sum_k p_k^{\alpha}} \\<br />
+p_i = \delta_i + \epsilon<br />
 $$</p>
 <p>Duelling network</p>
 <h3 id="deep-policy-networks">Deep Policy Networks</h3>
@@ -194,6 +217,7 @@ $$</p>
 <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
 <script type="text/javascript">
 const gitment = new Gitment({
+  id: location.pathname,
   title: '强化学习',
   owner: 'tracholar',
   repo: 'wiki',

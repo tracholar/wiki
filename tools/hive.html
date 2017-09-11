@@ -724,11 +724,12 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 </pre></div>
 
 
-<p>条件<br />
-- <code>SET hive.exec.parallel=true;</code> 让不同job并发执行！<br />
-- skew join 优化： <code>set hive.optimize.skewjoin=true;</code>将一个join操作变为两个，第一个会将同一个key分散到不同的reduce<br />
-- skew groupby 优化：<code>set hive.groupby.skewindata= true ;</code><br />
-- 输入是否融合小文件：</p>
+<ul>
+<li><code>SET hive.exec.parallel=true;</code> 让不同job并发执行！</li>
+<li>skew join 优化： <code>set hive.optimize.skewjoin=true;</code>将一个join操作变为两个，第一个会将同一个key分散到不同的reduce</li>
+<li>skew groupby 优化：<code>set hive.groupby.skewindata= true ;</code></li>
+<li>输入是否融合小文件：</li>
+</ul>
 <div class="hlcode"><pre><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="k">input</span><span class="p">.</span><span class="n">format</span><span class="o">=</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">HiveInputFormat</span><span class="p">;</span>   <span class="c1">--- 不融合</span>
 <span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="k">input</span><span class="p">.</span><span class="n">format</span><span class="o">=</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">CombineHiveInputFormat</span><span class="p">;</span>  <span class="c1">--- 融合</span>
 </pre></div>
@@ -739,6 +740,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
 <script type="text/javascript">
 const gitment = new Gitment({
+  id: location.pathname,
   title: 'Hive',
   owner: 'tracholar',
   repo: 'wiki',

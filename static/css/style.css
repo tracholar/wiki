@@ -296,3 +296,7 @@ table.hlcodetable {
         max-width: 62%;
     }
 }
+
+ul.gitment-comments-list li.gitment-comment {
+    list-style-type: none;
+}
