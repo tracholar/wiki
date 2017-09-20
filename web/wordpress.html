@@ -3,6 +3,9 @@
     <head>
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
         <title>wordpress开发指南 - tracholar's personal knowledge wiki</title>
@@ -17,7 +20,9 @@
         });
         </script>
         <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
 
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -50,7 +55,7 @@
 <h2 id="_1">分类目录</h2>
 <h3 id="_2">为分类目录添加元数据</h3>
 <p>钩子</p>
-<div class="hlcode"><pre><span class="x">//新建分类目录</span>
+<div class="hlcode"><pre><span></span><span class="x">//新建分类目录</span>
 <span class="x">add_action(&#39;category_add_form_fields&#39;, &#39;cat_add_form_fields_cb&#39;);</span>
 <span class="x">//编辑分类目录</span>
 <span class="x">add_action( &#39;category_edit_form_fields&#39;, &#39;cat_edit_form_fields_cb&#39;);</span>
@@ -62,7 +67,7 @@
 
 
 <p>创建和更新元数据函数</p>
-<div class="hlcode"><pre><span class="x">get_term_meta( $term_id, $meta_key, $single);</span>
+<div class="hlcode"><pre><span></span><span class="x">get_term_meta( $term_id, $meta_key, $single);</span>
 <span class="x">add_term_meta($term_id, $meta_key, $meta_value);</span>
 <span class="x">update_term_meta($term_id, $meta_key, $meta_value);</span>
 </pre></div>
@@ -112,5 +117,9 @@ gitment.render('comments')
         })();
         </script>
 
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
     </body>
 </html>

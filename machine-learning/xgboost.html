@@ -3,6 +3,9 @@
     <head>
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
         <title>xgboost - tracholar's personal knowledge wiki</title>
@@ -17,7 +20,9 @@
         });
         </script>
         <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
 
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -322,7 +327,7 @@ cache property and parallelization.</p>
 <ul>
 <li>xgboost的spark版本是对每一个分区单独训练？？？？没看懂</li>
 </ul>
-<div class="hlcode"><pre><span class="n">partitionedData</span><span class="o">.</span><span class="n">mapPartitions</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="n">partitionedData</span><span class="o">.</span><span class="n">mapPartitions</span> <span class="o">{</span>
       <span class="n">trainingSamples</span> <span class="k">=&gt;</span>
         <span class="n">rabitEnv</span><span class="o">.</span><span class="n">put</span><span class="o">(</span><span class="s">&quot;DMLC_TASK_ID&quot;</span><span class="o">,</span> <span class="nc">TaskContext</span><span class="o">.</span><span class="n">getPartitionId</span><span class="o">().</span><span class="n">toString</span><span class="o">)</span>
         <span class="nc">Rabit</span><span class="o">.</span><span class="n">init</span><span class="o">(</span><span class="n">rabitEnv</span><span class="o">.</span><span class="n">asJava</span><span class="o">)</span>
@@ -330,7 +335,7 @@ cache property and parallelization.</p>
         <span class="k">if</span> <span class="o">(</span><span class="n">trainingSamples</span><span class="o">.</span><span class="n">hasNext</span><span class="o">)</span> <span class="o">{</span>
           <span class="k">val</span> <span class="n">cacheFileName</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="o">{</span>
             <span class="k">if</span> <span class="o">(</span><span class="n">useExternalMemory</span> <span class="o">&amp;&amp;</span> <span class="n">trainingSamples</span><span class="o">.</span><span class="n">hasNext</span><span class="o">)</span> <span class="o">{</span>
-              <span class="n">s</span><span class="s">&quot;$appName-dtrain_cache-${TaskContext.getPartitionId()}&quot;</span>
+              <span class="s">s&quot;</span><span class="si">$appName</span><span class="s">-dtrain_cache-</span><span class="si">${</span><span class="nc">TaskContext</span><span class="o">.</span><span class="n">getPartitionId</span><span class="o">()</span><span class="si">}</span><span class="s">&quot;</span>
             <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
               <span class="kc">null</span>
             <span class="o">}</span>
@@ -343,8 +348,8 @@ cache property and parallelization.</p>
           <span class="nc">Rabit</span><span class="o">.</span><span class="n">shutdown</span><span class="o">()</span>
         <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
           <span class="nc">Rabit</span><span class="o">.</span><span class="n">shutdown</span><span class="o">()</span>
-          <span class="k">throw</span> <span class="k">new</span> <span class="nc">XGBoostError</span><span class="o">(</span><span class="n">s</span><span class="s">&quot;detect the empty partition in training dataset, partition ID:&quot;</span> <span class="o">+</span>
-            <span class="n">s</span><span class="s">&quot; ${TaskContext.getPartitionId().toString}&quot;</span><span class="o">)</span>
+          <span class="k">throw</span> <span class="k">new</span> <span class="nc">XGBoostError</span><span class="o">(</span><span class="s">s&quot;detect the empty partition in training dataset, partition ID:&quot;</span> <span class="o">+</span>
+            <span class="s">s&quot; </span><span class="si">${</span><span class="nc">TaskContext</span><span class="o">.</span><span class="n">getPartitionId</span><span class="o">().</span><span class="n">toString</span><span class="si">}</span><span class="s">&quot;</span><span class="o">)</span>
         <span class="o">}</span>
         <span class="nc">Iterator</span><span class="o">(</span><span class="n">booster</span><span class="o">)</span>
     <span class="o">}.</span><span class="n">cache</span><span class="o">()</span>
@@ -409,5 +414,9 @@ gitment.render('comments')
         })();
         </script>
 
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
     </body>
 </html>

@@ -3,6 +3,9 @@
     <head>
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
         <title>Hive - tracholar's personal knowledge wiki</title>
@@ -17,7 +20,9 @@
         });
         </script>
         <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
 
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -177,8 +182,8 @@
 <li>内置聚合函数：<code>count, sum, avg, min, max</code></li>
 </ul>
 <p>count 会自动去掉NULL值，这在条件count的时候很有用，例如分别统计在a&gt;1的情况下和a&lt;0情况下的uid，可以用一个查询搞定，不用join</p>
-<div class="hlcode"><pre><span class="k">select</span> <span class="k">count</span><span class="p">(</span><span class="k">distinct</span> <span class="n">if</span><span class="p">(</span><span class="n">a</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="n">uid</span><span class="p">,</span> <span class="k">null</span><span class="p">))</span> <span class="k">as</span> <span class="n">cnt1</span><span class="p">,</span>
-        <span class="k">count</span><span class="p">(</span><span class="k">distinct</span> <span class="n">if</span><span class="p">(</span><span class="n">a</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">,</span> <span class="n">uid</span><span class="p">,</span> <span class="k">null</span><span class="p">))</span> <span class="k">as</span> <span class="n">cnt0</span>
+<div class="hlcode"><pre><span></span><span class="k">select</span> <span class="k">count</span><span class="p">(</span><span class="k">distinct</span> <span class="k">if</span><span class="p">(</span><span class="n">a</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="n">uid</span><span class="p">,</span> <span class="k">null</span><span class="p">))</span> <span class="k">as</span> <span class="n">cnt1</span><span class="p">,</span>
+        <span class="k">count</span><span class="p">(</span><span class="k">distinct</span> <span class="k">if</span><span class="p">(</span><span class="n">a</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">,</span> <span class="n">uid</span><span class="p">,</span> <span class="k">null</span><span class="p">))</span> <span class="k">as</span> <span class="n">cnt0</span>
 <span class="k">from</span> <span class="n">some_table</span>
 </pre></div>
 
@@ -187,7 +192,7 @@
 <ul>
 <li><code>row_number()</code> 函数用法，<code>partition</code>用来将数据分区编号，<code>order by</code>描述编号顺序</li>
 </ul>
-<div class="hlcode"><pre><span class="k">select</span> <span class="n">uid</span><span class="p">,</span> <span class="n">row_number</span><span class="p">()</span> <span class="n">over</span> <span class="p">(</span><span class="n">partition</span> <span class="k">by</span> <span class="n">uid</span> <span class="k">order</span> <span class="k">by</span> <span class="n">uid</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="k">select</span> <span class="n">uid</span><span class="p">,</span> <span class="n">row_number</span><span class="p">()</span> <span class="n">over</span> <span class="p">(</span><span class="n">partition</span> <span class="k">by</span> <span class="n">uid</span> <span class="k">order</span> <span class="k">by</span> <span class="n">uid</span><span class="p">)</span>
 <span class="k">from</span>
 </pre></div>
 
@@ -215,7 +220,7 @@
 </li>
 <li>多表/文件插入操作：还是看代码吧！</li>
 </ul>
-<div class="hlcode"><pre><span class="k">FROM</span> <span class="n">pv_users</span>
+<div class="hlcode"><pre><span></span><span class="k">FROM</span> <span class="n">pv_users</span>
 <span class="k">INSERT</span> <span class="n">OVERWRITE</span> <span class="k">TABLE</span> <span class="n">pv_gender_sum</span>
     <span class="k">SELECT</span> <span class="n">pv_users</span><span class="p">.</span><span class="n">gender</span><span class="p">,</span> <span class="n">count_distinct</span><span class="p">(</span><span class="n">pv_users</span><span class="p">.</span><span class="n">userid</span><span class="p">)</span>
     <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">pv_users</span><span class="p">.</span><span class="n">gender</span>
@@ -229,7 +234,7 @@
 <ul>
 <li>动态分区插入：@since(0.6.0)，能够减少调度时间，显著提升性能！但是注意几个问题。</li>
 </ul>
-<div class="hlcode"><pre><span class="k">insert</span> <span class="n">overwrite</span> <span class="k">table</span> <span class="n">pv</span> <span class="n">partition</span> <span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="s1">&#39;2010-01-01&#39;</span><span class="p">,</span> <span class="n">country</span><span class="p">)</span>  <span class="c1">----- 动态决定country分区，dt分区值固定</span>
+<div class="hlcode"><pre><span></span><span class="k">insert</span> <span class="n">overwrite</span> <span class="k">table</span> <span class="n">pv</span> <span class="n">partition</span> <span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="s1">&#39;2010-01-01&#39;</span><span class="p">,</span> <span class="n">country</span><span class="p">)</span>  <span class="c1">----- 动态决定country分区，dt分区值固定</span>
 <span class="k">insert</span> <span class="n">overwrite</span> <span class="k">table</span> <span class="n">pv</span> <span class="n">partition</span> <span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">country</span><span class="o">=</span><span class="s1">&#39;US&#39;</span><span class="p">)</span>          <span class="c1">----- 将所有dt分区下 country=&#39;US&#39; 子分区都覆盖，一般不要能用这种写法！</span>
 </pre></div>
 
@@ -249,7 +254,7 @@
 </li>
 <li>快速采样：<code>TABLESAMPLE(BUCKET x OUT OF y)</code>，需要在建表的时候<code>CLUSTERED BY</code>支持。例如选出第3个bucket。</li>
 </ul>
-<div class="hlcode"><pre><span class="n">TABLESAMPLE</span><span class="p">(</span><span class="n">BUCKET</span> <span class="mi">3</span> <span class="k">OUT</span> <span class="k">OF</span> <span class="mi">64</span> <span class="k">ON</span> <span class="n">userid</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="n">TABLESAMPLE</span><span class="p">(</span><span class="n">BUCKET</span> <span class="mi">3</span> <span class="k">OUT</span> <span class="k">OF</span> <span class="mi">64</span> <span class="k">ON</span> <span class="n">userid</span><span class="p">)</span>
 </pre></div>
 
 
@@ -257,7 +262,7 @@
 <li>UNION ALL：</li>
 <li>Array 操作：</li>
 </ul>
-<div class="hlcode"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">array_table</span> <span class="p">(</span><span class="n">int_array_column</span> <span class="nb">ARRAY</span><span class="o">&lt;</span><span class="nb">INT</span><span class="o">&gt;</span><span class="p">);</span>
+<div class="hlcode"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">array_table</span> <span class="p">(</span><span class="n">int_array_column</span> <span class="nb">ARRAY</span><span class="o">&lt;</span><span class="nb">INT</span><span class="o">&gt;</span><span class="p">);</span>
 
 <span class="k">SELECT</span> <span class="n">pv</span><span class="p">.</span><span class="n">friends</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 <span class="k">FROM</span> <span class="n">page_views</span> <span class="n">pv</span><span class="p">;</span>
@@ -269,7 +274,7 @@
 <ul>
 <li>Custom Map/Reduce Scripts： <code>MAP, REDUCE</code>（是<code>TRANSFORM</code>的语法糖而已），或者<code>TRANSFORM</code> 函数（是否只能实现UDF的功能，UDAF和UDTF呢？）</li>
 </ul>
-<div class="hlcode"><pre><span class="k">FROM</span> <span class="p">(</span>
+<div class="hlcode"><pre><span></span><span class="k">FROM</span> <span class="p">(</span>
      <span class="k">FROM</span> <span class="n">pv_users</span>
      <span class="k">MAP</span> <span class="n">pv_users</span><span class="p">.</span><span class="n">userid</span><span class="p">,</span> <span class="n">pv_users</span><span class="p">.</span><span class="nb">date</span>
      <span class="k">USING</span> <span class="s1">&#39;map_script&#39;</span>
@@ -284,14 +289,14 @@
 
 
 <p>脚本：</p>
-<div class="hlcode"><pre><span class="kn">import</span> <span class="nn">sys</span>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 
 <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">:</span>
   <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-  <span class="n">userid</span><span class="p">,</span> <span class="n">unixtime</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
+  <span class="n">userid</span><span class="p">,</span> <span class="n">unixtime</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
   <span class="n">weekday</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">unixtime</span><span class="p">))</span><span class="o">.</span><span class="n">isoweekday</span><span class="p">()</span>
-  <span class="k">print</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">userid</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">weekday</span><span class="p">)])</span>
+  <span class="k">print</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">userid</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">weekday</span><span class="p">)])</span>
 </pre></div>
 
 
@@ -339,7 +344,7 @@
 <p>Hadoop 生态中的一个！</p>
 <h3 id="_10">压缩文件格式</h3>
 <p>直接从 gzip 等格式中存取为text格式表格。</p>
-<div class="hlcode"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">raw</span> <span class="p">(</span><span class="n">line</span> <span class="n">STRING</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">raw</span> <span class="p">(</span><span class="n">line</span> <span class="n">STRING</span><span class="p">)</span>
    <span class="k">ROW</span> <span class="n">FORMAT</span> <span class="n">DELIMITED</span> <span class="n">FIELDS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\t&#39;</span> <span class="n">LINES</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\n&#39;</span><span class="p">;</span>
 
 <span class="k">LOAD</span> <span class="k">DATA</span> <span class="k">LOCAL</span> <span class="n">INPATH</span> <span class="s1">&#39;/tmp/weblogs/20090603-access.log.gz&#39;</span> <span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">raw</span><span class="p">;</span>
@@ -351,7 +356,7 @@
 <h2 id="udf">UDF</h2>
 <p>UDF，UDAF，UDTF</p>
 <p>HIVE数据类型与 java 数据类型对应关系：</p>
-<div class="hlcode"><pre><span class="nx">hive</span>   <span class="nx">java</span>
+<div class="hlcode"><pre><span></span><span class="nx">hive</span>   <span class="nx">java</span>
 <span class="nx">map</span>    <span class="nx">HashMap</span>
 <span class="nx">array</span>  <span class="nx">ArrayList</span><span class="cp">&lt;?</span><span class="o">&gt;</span>
 </pre></div>
@@ -361,12 +366,12 @@
 <ul>
 <li>多表 JOIN 的时候，当JOIN条件都包含同一个Key的时候，会用同一个 Map/Reduce 处理，例如</li>
 </ul>
-<div class="hlcode"><pre><span class="k">SELECT</span> <span class="n">a</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="k">c</span><span class="p">.</span><span class="n">val</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">b</span> <span class="k">ON</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key1</span><span class="p">)</span> <span class="k">JOIN</span> <span class="k">c</span> <span class="k">ON</span> <span class="p">(</span><span class="k">c</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key1</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="k">SELECT</span> <span class="n">a</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="k">c</span><span class="p">.</span><span class="n">val</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">b</span> <span class="k">ON</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key1</span><span class="p">)</span> <span class="k">JOIN</span> <span class="k">c</span> <span class="k">ON</span> <span class="p">(</span><span class="k">c</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key1</span><span class="p">)</span>
 </pre></div>
 
 
 <p>只有一个 Map/Reduce 任务。而下面这个会有2个 Map/Reduce 任务(JOIN a,b; JOIN * ,c)。</p>
-<div class="hlcode"><pre><span class="k">SELECT</span> <span class="n">a</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="k">c</span><span class="p">.</span><span class="n">val</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">b</span> <span class="k">ON</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key1</span><span class="p">)</span> <span class="k">JOIN</span> <span class="k">c</span> <span class="k">ON</span> <span class="p">(</span><span class="k">c</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key2</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="k">SELECT</span> <span class="n">a</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="k">c</span><span class="p">.</span><span class="n">val</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">b</span> <span class="k">ON</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key1</span><span class="p">)</span> <span class="k">JOIN</span> <span class="k">c</span> <span class="k">ON</span> <span class="p">(</span><span class="k">c</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key2</span><span class="p">)</span>
 </pre></div>
 
 
@@ -375,7 +380,7 @@
 </blockquote>
 <p>将大表放后面，大表会以streaming的方式进入reducer，而其他的一buffer的方式存在（内存？），可以减少内存的需求。<br />
 默认让最后的表以streaming方式进入reducer，也可以手动指定。</p>
-<div class="hlcode"><pre><span class="k">SELECT</span> <span class="cm">/*+ STREAMTABLE(a) */</span> <span class="n">a</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="k">c</span><span class="p">.</span><span class="n">val</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">b</span> <span class="k">ON</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key1</span><span class="p">)</span> <span class="k">JOIN</span> <span class="k">c</span> <span class="k">ON</span> <span class="p">(</span><span class="k">c</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key1</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="k">SELECT</span> <span class="cm">/*+ STREAMTABLE(a) */</span> <span class="n">a</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">val</span><span class="p">,</span> <span class="k">c</span><span class="p">.</span><span class="n">val</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">b</span> <span class="k">ON</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key1</span><span class="p">)</span> <span class="k">JOIN</span> <span class="k">c</span> <span class="k">ON</span> <span class="p">(</span><span class="k">c</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">key1</span><span class="p">)</span>
 </pre></div>
 
 
@@ -399,7 +404,7 @@
 <ul>
 <li>MAPJOIN，JOIN 小表的时候，可以减少 reducer，提升性能！但是右链接和全连接中不能用！</li>
 </ul>
-<div class="hlcode"><pre><span class="k">SELECT</span> <span class="cm">/*+ MAPJOIN(b) */</span> <span class="n">a</span><span class="p">.</span><span class="k">key</span><span class="p">,</span> <span class="n">a</span><span class="p">.</span><span class="n">value</span>
+<div class="hlcode"><pre><span></span><span class="k">SELECT</span> <span class="cm">/*+ MAPJOIN(b) */</span> <span class="n">a</span><span class="p">.</span><span class="k">key</span><span class="p">,</span> <span class="n">a</span><span class="p">.</span><span class="n">value</span>
 <span class="k">FROM</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">b</span> <span class="k">ON</span> <span class="n">a</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="k">key</span>
 </pre></div>
 
@@ -412,7 +417,7 @@
 <li>如果在 JOIN 列上，进行分桶了，并且其中一个表的桶数目是另一个的倍数，那么就可以采用 MAPJOIN 优化了。<br />
 在 MAP 的时候，左表的第一个桶只会去取右表的第一个桶，而不是所有的数据！这个行为不是默认的，需要设置参数：</li>
 </ul>
-<div class="hlcode"><pre><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">optimize</span><span class="p">.</span><span class="n">bucketmapjoin</span> <span class="o">=</span> <span class="k">true</span>
+<div class="hlcode"><pre><span></span><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">optimize</span><span class="p">.</span><span class="n">bucketmapjoin</span> <span class="o">=</span> <span class="k">true</span>
 </pre></div>
 
 
@@ -420,13 +425,13 @@
 <li>如果两个表 JOIN 的字段分桶且排序的，并且分桶数目相同，那么可以采用 sort-merge。例如满足上述条件的两个表的join可以<br />
 只需要 Map 阶段！</li>
 </ul>
-<div class="hlcode"><pre><span class="k">SELECT</span> <span class="cm">/*+ MAPJOIN(b) */</span> <span class="n">a</span><span class="p">.</span><span class="k">key</span><span class="p">,</span> <span class="n">a</span><span class="p">.</span><span class="n">value</span>
+<div class="hlcode"><pre><span></span><span class="k">SELECT</span> <span class="cm">/*+ MAPJOIN(b) */</span> <span class="n">a</span><span class="p">.</span><span class="k">key</span><span class="p">,</span> <span class="n">a</span><span class="p">.</span><span class="n">value</span>
 <span class="k">FROM</span> <span class="n">A</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">B</span> <span class="n">b</span> <span class="k">ON</span> <span class="n">a</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="k">key</span>
 </pre></div>
 
 
 <p>同时需要设置参数：</p>
-<div class="hlcode"><pre><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="k">input</span><span class="p">.</span><span class="n">format</span><span class="o">=</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">BucketizedHiveInputFormat</span><span class="p">;</span>
+<div class="hlcode"><pre><span></span><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="k">input</span><span class="p">.</span><span class="n">format</span><span class="o">=</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">BucketizedHiveInputFormat</span><span class="p">;</span>
 <span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">optimize</span><span class="p">.</span><span class="n">bucketmapjoin</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
 <span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">optimize</span><span class="p">.</span><span class="n">bucketmapjoin</span><span class="p">.</span><span class="n">sortedmerge</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
 </pre></div>
@@ -445,17 +450,17 @@
 </ul>
 <p>可以设置 <code>hive.auto.convert.join=true</code> 让hive自动帮你转为 MAPJOIN。从 Hive 0.11.0  开始，默认值就是true。<br />
 MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+JoinOptimization">https://cwiki.apache.org/confluence/display/Hive/LanguageManual+JoinOptimization</a></p>
-<div class="hlcode"><pre><span class="n">Local</span> <span class="n">work</span><span class="o">:</span>
-<span class="n">read</span> <span class="n">records</span> <span class="n">via</span> <span class="n">standard</span> <span class="n">table</span> <span class="n">scan</span> <span class="p">(</span><span class="n">including</span> <span class="n">filters</span> <span class="n">and</span> <span class="n">projections</span><span class="p">)</span> <span class="n">from</span> <span class="n">source</span> <span class="n">on</span> <span class="n">local</span> <span class="n">machine</span>
-<span class="n">build</span> <span class="n">hashtable</span> <span class="n">in</span> <span class="n">memory</span>
-<span class="n">write</span> <span class="n">hashtable</span> <span class="n">to</span> <span class="n">local</span> <span class="n">disk</span>
-<span class="n">upload</span> <span class="n">hashtable</span> <span class="n">to</span> <span class="n">dfs</span>
-<span class="n">add</span> <span class="n">hashtable</span> <span class="n">to</span> <span class="n">distributed</span> <span class="n">cache</span>
+<div class="hlcode"><pre><span></span>Local work:
+read records via standard table scan (including filters and projections) from source on local machine
+build hashtable in memory
+write hashtable to local disk
+upload hashtable to dfs
+add hashtable to distributed cache
 
-<span class="n">Map</span> <span class="n">task</span>
-<span class="n">read</span> <span class="n">hashtable</span> <span class="n">from</span> <span class="n">local</span> <span class="n">disk</span> <span class="p">(</span><span class="n">distributed</span> <span class="n">cache</span><span class="p">)</span> <span class="n">into</span> <span class="n">memory</span>
-<span class="n">match</span> <span class="n">records</span><span class="err">&#39;</span> <span class="n">keys</span> <span class="n">against</span> <span class="n">hashtable</span>
-<span class="n">combine</span> <span class="n">matches</span> <span class="n">and</span> <span class="n">write</span> <span class="n">to</span> <span class="n">output</span>
+Map task
+read hashtable from local disk (distributed cache) into memory
+match records&#39; keys against hashtable
+combine matches and write to output
 </pre></div>
 
 
@@ -470,7 +475,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <p>优化链式 MAPJOIN</p>
 </li>
 </ul>
-<div class="hlcode"><pre><span class="k">select</span> <span class="cm">/*+ MAPJOIN(time_dim, date_dim) */</span> <span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">from</span>
+<div class="hlcode"><pre><span></span><span class="k">select</span> <span class="cm">/*+ MAPJOIN(time_dim, date_dim) */</span> <span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">from</span>
 <span class="n">store_sales</span>
 <span class="k">join</span> <span class="n">time_dim</span> <span class="k">on</span> <span class="p">(</span><span class="n">ss_sold_time_sk</span> <span class="o">=</span> <span class="n">t_time_sk</span><span class="p">)</span>
 <span class="k">join</span> <span class="n">date_dim</span> <span class="k">on</span> <span class="p">(</span><span class="n">ss_sold_date_sk</span> <span class="o">=</span> <span class="n">d_date_sk</span><span class="p">)</span>
@@ -479,7 +484,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 
 
 <p>通过两个值设置 MAPJOIN</p>
-<div class="hlcode"><pre><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">auto</span><span class="p">.</span><span class="k">convert</span><span class="p">.</span><span class="k">join</span><span class="p">.</span><span class="n">noconditionaltask</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+<div class="hlcode"><pre><span></span><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">auto</span><span class="p">.</span><span class="k">convert</span><span class="p">.</span><span class="k">join</span><span class="p">.</span><span class="n">noconditionaltask</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
 <span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">auto</span><span class="p">.</span><span class="k">convert</span><span class="p">.</span><span class="k">join</span><span class="p">.</span><span class="n">noconditionaltask</span><span class="p">.</span><span class="k">size</span> <span class="o">=</span> <span class="mi">10000000</span><span class="p">;</span>
 </pre></div>
 
@@ -489,7 +494,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <blockquote>
 <p>However, if the tables are partitioned, there could be a slow down as each mapper would need to get a very small chunk of a partition which has a single key.</p>
 </blockquote>
-<div class="hlcode"><pre><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">auto</span><span class="p">.</span><span class="k">convert</span><span class="p">.</span><span class="n">sortmerge</span><span class="p">.</span><span class="k">join</span><span class="o">=</span><span class="k">true</span><span class="p">;</span>
+<div class="hlcode"><pre><span></span><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">auto</span><span class="p">.</span><span class="k">convert</span><span class="p">.</span><span class="n">sortmerge</span><span class="p">.</span><span class="k">join</span><span class="o">=</span><span class="k">true</span><span class="p">;</span>
 <span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">optimize</span><span class="p">.</span><span class="n">bucketmapjoin</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
 <span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">optimize</span><span class="p">.</span><span class="n">bucketmapjoin</span><span class="p">.</span><span class="n">sortedmerge</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
 
@@ -500,7 +505,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 
 
 <p>大表选择策略会自动决定哪个表被 streaming，而不是 hash 并且 streaming。可选策略有</p>
-<div class="hlcode"><pre><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">optimizer</span><span class="p">.</span><span class="n">AvgPartitionSizeBasedBigTableSelectorForAutoSMJ</span> <span class="p">(</span><span class="k">default</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">optimizer</span><span class="p">.</span><span class="n">AvgPartitionSizeBasedBigTableSelectorForAutoSMJ</span> <span class="p">(</span><span class="k">default</span><span class="p">)</span>
 <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">optimizer</span><span class="p">.</span><span class="n">LeftmostBigTableSelectorForAutoSMJ</span>
 <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">optimizer</span><span class="p">.</span><span class="n">TableSizeBasedBigTableSelectorForAutoSMJ</span>
 </pre></div>
@@ -511,7 +516,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <p>这个Blog写的不错，<a href="https://my.oschina.net/leejun2005/blog/178631">https://my.oschina.net/leejun2005/blog/178631</a></p>
 <h2 id="udf_1">编写自己的UDF</h2>
 <p>TRANSFORM 貌似不能实现 UDAF。可以用java写UDF或UDAF，UDTF等。需要jdk1.7版本。</p>
-<div class="hlcode"><pre><span class="k">ADD</span> <span class="n">JAR</span> <span class="n">hdfs</span><span class="p">:</span><span class="o">///</span><span class="k">user</span><span class="o">/</span><span class="n">hadoop</span><span class="o">-</span><span class="k">data</span><span class="o">/</span><span class="n">user_upload</span><span class="o">/</span><span class="n">hive</span><span class="o">-</span><span class="n">kv</span><span class="o">-</span><span class="n">udaf_2</span><span class="p">.</span><span class="mi">10</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">.</span><span class="n">jar</span><span class="p">;</span>
+<div class="hlcode"><pre><span></span><span class="k">ADD</span> <span class="n">JAR</span> <span class="n">hdfs</span><span class="p">:</span><span class="o">///</span><span class="k">user</span><span class="o">/</span><span class="n">hadoop</span><span class="o">-</span><span class="k">data</span><span class="o">/</span><span class="n">user_upload</span><span class="o">/</span><span class="n">hive</span><span class="o">-</span><span class="n">kv</span><span class="o">-</span><span class="n">udaf_2</span><span class="p">.</span><span class="mi">10</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">.</span><span class="n">jar</span><span class="p">;</span>
 <span class="k">CREATE</span> <span class="k">TEMPORARY</span> <span class="k">FUNCTION</span> <span class="n">kv</span> <span class="k">as</span> <span class="s1">&#39;KV&#39;</span><span class="p">;</span>
 </pre></div>
 
@@ -525,7 +530,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <h2 id="lateral-view">Lateral View</h2>
 <p>用在 UDTF 中。对于输入的一行，输出是多行。0.12.0 版本开始，列名可以不用写，会自动采用UDTF输出的StructObjectInspector对象自动得到列名。参考<a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+LateralView">https://cwiki.apache.org/confluence/display/Hive/LanguageManual+LateralView</a></p>
 <p>一个例子，adid_list是一个Array，<code>explode()</code>函数会将这个list输出为多行。</p>
-<div class="hlcode"><pre><span class="k">SELECT</span> <span class="n">pageid</span><span class="p">,</span> <span class="n">adid</span>
+<div class="hlcode"><pre><span></span><span class="k">SELECT</span> <span class="n">pageid</span><span class="p">,</span> <span class="n">adid</span>
 <span class="k">FROM</span> <span class="n">pageAds</span> <span class="k">LATERAL</span> <span class="k">VIEW</span> <span class="n">explode</span><span class="p">(</span><span class="n">adid_list</span><span class="p">)</span> <span class="n">adTable</span> <span class="k">AS</span> <span class="n">adid</span><span class="p">;</span>
 
 <span class="k">SELECT</span> <span class="n">adid</span><span class="p">,</span> <span class="k">count</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -547,7 +552,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <li>对父查询字段的引用只支持在 WHERE 中。</li>
 </ul>
 <h2 id="_12">采样</h2>
-<div class="hlcode"><pre><span class="n">TABLESAMPLE</span> <span class="p">(</span><span class="n">BUCKET</span> <span class="n">x</span> <span class="k">OUT</span> <span class="k">OF</span> <span class="n">y</span> <span class="p">[</span><span class="k">ON</span> <span class="n">colname</span><span class="p">])</span>
+<div class="hlcode"><pre><span></span><span class="n">TABLESAMPLE</span> <span class="p">(</span><span class="n">BUCKET</span> <span class="n">x</span> <span class="k">OUT</span> <span class="k">OF</span> <span class="n">y</span> <span class="p">[</span><span class="k">ON</span> <span class="n">colname</span><span class="p">])</span>
 </pre></div>
 
 
@@ -556,7 +561,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 那么可以加快采样速度，因为只要简单地取出对应的BUCKET就可以了，而不用全表扫描。</p>
 <p>更多信息参考：<a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Sampling">https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Sampling</a></p>
 <p>block sampling @since(0.8)</p>
-<div class="hlcode"><pre><span class="n">TABLESAMPLE</span> <span class="p">(</span><span class="n">n</span> <span class="n">PERCENT</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="n">TABLESAMPLE</span> <span class="p">(</span><span class="n">n</span> <span class="n">PERCENT</span><span class="p">)</span>
 <span class="n">TABLESAMPLE</span> <span class="p">(</span><span class="n">ByteLengthLiteral</span><span class="p">)</span>   <span class="c1">---- 例如 100M</span>
 <span class="n">TABLESAMPLE</span> <span class="p">(</span><span class="n">n</span> <span class="k">ROWS</span><span class="p">)</span>
 
@@ -571,7 +576,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <h2 id="_13">虚拟列</h2>
 <p><code>INPUT__FILE__NAME, BLOCK__OFFSET__INSIDE__FILE</code> 在 Mapper 里面分别指输入文件名 和 全局文件位置</p>
 <p>简单例子</p>
-<div class="hlcode"><pre><span class="k">select</span> <span class="n">INPUT__FILE__NAME</span><span class="p">,</span> <span class="k">key</span><span class="p">,</span> <span class="n">BLOCK__OFFSET__INSIDE__FILE</span> <span class="k">from</span> <span class="n">src</span><span class="p">;</span>
+<div class="hlcode"><pre><span></span><span class="k">select</span> <span class="n">INPUT__FILE__NAME</span><span class="p">,</span> <span class="k">key</span><span class="p">,</span> <span class="n">BLOCK__OFFSET__INSIDE__FILE</span> <span class="k">from</span> <span class="n">src</span><span class="p">;</span>
 <span class="k">select</span> <span class="k">key</span><span class="p">,</span> <span class="k">count</span><span class="p">(</span><span class="n">INPUT__FILE__NAME</span><span class="p">)</span> <span class="k">from</span> <span class="n">src</span> <span class="k">group</span> <span class="k">by</span> <span class="k">key</span> <span class="k">order</span> <span class="k">by</span> <span class="k">key</span><span class="p">;</span>
 <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">src</span> <span class="k">where</span> <span class="n">BLOCK__OFFSET__INSIDE__FILE</span> <span class="o">&gt;</span> <span class="mi">12000</span> <span class="k">order</span> <span class="k">by</span> <span class="k">key</span><span class="p">;</span>
 </pre></div>
@@ -593,7 +598,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <li><code>PARTITION BY</code> 一个或多个分区列，<code>ORDER BY</code> 一个或多个字段</li>
 <li>可以在 OVER 里面指定窗 <code>ROWS ((CURRENT ROW) | (UNBOUNDED | [num]) PRECEDING) AND (UNBOUNDED | [num]) FOLLOWING</code></li>
 </ul>
-<div class="hlcode"><pre><span class="k">SELECT</span> <span class="n">a</span><span class="p">,</span> <span class="k">SUM</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="n">OVER</span> <span class="p">(</span><span class="n">PARTITION</span> <span class="k">BY</span> <span class="k">c</span><span class="p">,</span> <span class="n">d</span> <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">e</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="k">SELECT</span> <span class="n">a</span><span class="p">,</span> <span class="k">SUM</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="n">OVER</span> <span class="p">(</span><span class="n">PARTITION</span> <span class="k">BY</span> <span class="k">c</span><span class="p">,</span> <span class="n">d</span> <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">e</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 <span class="k">FROM</span> <span class="n">T</span><span class="p">;</span>
 
 <span class="k">SELECT</span> <span class="n">a</span><span class="p">,</span> <span class="k">SUM</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="n">OVER</span> <span class="p">(</span><span class="n">PARTITION</span> <span class="k">BY</span> <span class="k">c</span> <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">d</span> <span class="k">ROWS</span> <span class="k">BETWEEN</span> <span class="n">UNBOUNDED</span> <span class="n">PRECEDING</span> <span class="k">AND</span> <span class="k">CURRENT</span> <span class="k">ROW</span><span class="p">)</span>
@@ -615,7 +620,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <li><code>DISTINCT</code> 关键词使用在这些函数中要到 2.1.0 版本之后。</li>
 <li>在 OVER 中使用聚合函数也要到 2.1.0 版本之后</li>
 </ul>
-<div class="hlcode"><pre><span class="k">COUNT</span><span class="p">(</span><span class="k">DISTINCT</span> <span class="n">a</span><span class="p">)</span> <span class="n">OVER</span> <span class="p">(</span><span class="n">PARTITION</span> <span class="k">BY</span> <span class="k">c</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="k">COUNT</span><span class="p">(</span><span class="k">DISTINCT</span> <span class="n">a</span><span class="p">)</span> <span class="n">OVER</span> <span class="p">(</span><span class="n">PARTITION</span> <span class="k">BY</span> <span class="k">c</span><span class="p">)</span>
 
 <span class="k">SELECT</span> <span class="n">rank</span><span class="p">()</span> <span class="n">OVER</span> <span class="p">(</span><span class="k">ORDER</span> <span class="k">BY</span> <span class="k">sum</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
 <span class="k">FROM</span> <span class="n">T</span>
@@ -627,7 +632,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <ul>
 <li>GROUPING SETS：等价于多个 GROUP BY 然后 UNION</li>
 </ul>
-<div class="hlcode"><pre><span class="k">SELECT</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="k">SUM</span><span class="p">(</span><span class="k">c</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">tab1</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="k">GROUPING</span> <span class="k">SETS</span> <span class="p">(</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="k">SELECT</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="k">SUM</span><span class="p">(</span><span class="k">c</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">tab1</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="k">GROUPING</span> <span class="k">SETS</span> <span class="p">(</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="p">,</span> <span class="n">a</span><span class="p">)</span>
 
 <span class="c1">---- 等价于</span>
 <span class="k">SELECT</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="k">SUM</span><span class="p">(</span> <span class="k">c</span> <span class="p">)</span> <span class="k">FROM</span> <span class="n">tab1</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span>
@@ -667,8 +672,8 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <p><a href="https://issues.apache.org/jira/secure/attachment/12542020/UDFTrim.java">UDFTrim 模板</a></p>
 <h2 id="mac-jdk">MAC 切换不同的JDK</h2>
 <p>参考：<a href="https://stackoverflow.com/questions/20974607/can-java-7-and-java-8-co-exist-on-osx">https://stackoverflow.com/questions/20974607/can-java-7-and-java-8-co-exist-on-osx</a></p>
-<div class="hlcode"><pre>use-java <span class="o">()</span> <span class="o">{</span>
-    <span class="nb">export </span><span class="nv">JAVA_HOME</span><span class="o">=</span><span class="sb">`</span>/usr/libexec/java_home -v 1.<span class="nv">$1</span><span class="sb">`</span>
+<div class="hlcode"><pre><span></span>use-java <span class="o">()</span> <span class="o">{</span>
+    <span class="nb">export</span> <span class="nv">JAVA_HOME</span><span class="o">=</span><span class="sb">`</span>/usr/libexec/java_home -v <span class="m">1</span>.<span class="nv">$1</span><span class="sb">`</span>
 <span class="o">}</span>
 </pre></div>
 
@@ -678,7 +683,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <ul>
 <li>metainfo 超大：  </li>
 </ul>
-<div class="hlcode"><pre><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">yarn</span><span class="p">.</span><span class="n">exceptions</span><span class="p">.</span><span class="n">YarnRuntimeException</span><span class="o">:</span> <span class="n">java</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">IOException</span><span class="o">:</span> <span class="n">Split</span> <span class="n">metadata</span> <span class="n">size</span> <span class="n">exceeded</span> <span class="mf">10000000.</span> <span class="n">Aborting</span> <span class="n">job</span> <span class="n">job_1469532484579_647683</span>
+<div class="hlcode"><pre><span></span>org.apache.hadoop.yarn.exceptions.YarnRuntimeException: java.io.IOException: Split metadata size exceeded 10000000. Aborting job job_1469532484579_647683
 </pre></div>
 
 
@@ -699,9 +704,9 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <li>group by 和 sort by func(col)，可以是一个函数</li>
 <li>设置mapreduce阶段的mapper和reducer数目</li>
 </ul>
-<div class="hlcode"><pre><span class="c"># YARN: Hadoop 2</span>
-<span class="nb">set </span>mapreduce.job.maps<span class="o">=</span>&lt;num&gt;;
-<span class="nb">set </span>mapreduce.job.reduces<span class="o">=</span>&lt;num&gt;;
+<div class="hlcode"><pre><span></span><span class="c1"># YARN: Hadoop 2</span>
+<span class="nb">set</span> mapreduce.job.maps<span class="o">=</span>&lt;num&gt;<span class="p">;</span>
+<span class="nb">set</span> mapreduce.job.reduces<span class="o">=</span>&lt;num&gt;<span class="p">;</span>
 </pre></div>
 
 
@@ -713,7 +718,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <a href="https://stackoverflow.com/questions/19311193/why-is-countdistinct-slower-than-group-by-in-hive">https://stackoverflow.com/questions/19311193/why-is-countdistinct-slower-than-group-by-in-hive</a></li>
 </ul>
 <p>另一种去重的方法</p>
-<div class="hlcode"><pre><span class="k">select</span> <span class="k">sum</span><span class="p">(</span><span class="n">if</span><span class="p">(</span><span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="k">as</span> <span class="n">distinct_num</span><span class="p">,</span>
+<div class="hlcode"><pre><span></span><span class="k">select</span> <span class="k">sum</span><span class="p">(</span><span class="k">if</span><span class="p">(</span><span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="k">as</span> <span class="n">distinct_num</span><span class="p">,</span>
     <span class="k">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">as</span> <span class="n">num</span>
 <span class="k">from</span> <span class="p">(</span>
     <span class="k">select</span>
@@ -730,7 +735,7 @@ MAPJOIN 将小表放到内存，保存为一个 HASH MAP。工作流程是：<a 
 <li>skew groupby 优化：<code>set hive.groupby.skewindata= true ;</code></li>
 <li>输入是否融合小文件：</li>
 </ul>
-<div class="hlcode"><pre><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="k">input</span><span class="p">.</span><span class="n">format</span><span class="o">=</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">HiveInputFormat</span><span class="p">;</span>   <span class="c1">--- 不融合</span>
+<div class="hlcode"><pre><span></span><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="k">input</span><span class="p">.</span><span class="n">format</span><span class="o">=</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">HiveInputFormat</span><span class="p">;</span>   <span class="c1">--- 不融合</span>
 <span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="k">input</span><span class="p">.</span><span class="n">format</span><span class="o">=</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">CombineHiveInputFormat</span><span class="p">;</span>  <span class="c1">--- 融合</span>
 </pre></div>
 </div>
@@ -779,5 +784,9 @@ gitment.render('comments')
         })();
         </script>
 
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
     </body>
 </html>

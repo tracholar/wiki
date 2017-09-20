@@ -3,6 +3,9 @@
     <head>
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
         <title>Spark - tracholar's personal knowledge wiki</title>
@@ -17,7 +20,9 @@
         });
         </script>
         <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
 
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -91,20 +96,20 @@
 <p>从Spark官网下载安装包，然后解压即可。非常简单</p>
 <h2 id="worker">启动主机和worker</h2>
 <p>进入spark目录，然后运行脚本</p>
-<div class="hlcode"><pre>./sbin/start-master.sh
+<div class="hlcode"><pre><span></span>./sbin/start-master.sh
 </pre></div>
 
 
 <p>即可。进程会在后台运行，你可以通过 <a href="http://localhost:8080">http://localhost:8080</a> 进行监控。</p>
 <p>启动worker的脚本是</p>
-<div class="hlcode"><pre>./bin/spark-class org.apache.spark.deploy.worker.Worker spark://IsP:PORT
+<div class="hlcode"><pre><span></span>./bin/spark-class org.apache.spark.deploy.worker.Worker spark://IsP:PORT
 </pre></div>
 
 
 <p>其中IP和PORT可以在监控页面看到。</p>
 <p>关闭worker很简单，直接关闭worker运行的shell或者ctr + c中断即可。<br />
 关闭主机需要运行脚本</p>
-<div class="hlcode"><pre>./sbin/stop-master.sh
+<div class="hlcode"><pre><span></span>./sbin/stop-master.sh
 </pre></div>
 
 
@@ -112,7 +117,7 @@
 <p>启动scala版的shell命令为<code>./bin/spark-shell</code>，python版的命令为<code>./bin/pyspark</code></p>
 <h2 id="sparkcontext">SparkContext</h2>
 <p>sc是spark的入口，通过<code>SparkConf</code>来创建它。</p>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">sparkConf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkConf</span><span class="o">().</span><span class="n">setAppName</span><span class="o">(</span><span class="s">&quot;FromPostgreSql&quot;</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">sparkConf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkConf</span><span class="o">().</span><span class="n">setAppName</span><span class="o">(</span><span class="s">&quot;FromPostgreSql&quot;</span><span class="o">)</span>
   <span class="o">.</span><span class="n">setMaster</span><span class="o">(</span><span class="s">&quot;local[4]&quot;</span><span class="o">)</span>
   <span class="o">.</span><span class="n">set</span><span class="o">(</span><span class="s">&quot;spark.executor.memory&quot;</span><span class="o">,</span> <span class="s">&quot;2g&quot;</span><span class="o">)</span>
 <span class="k">val</span> <span class="n">sc</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkCsontext</span><span class="o">(</span><span class="n">sparkConf</span><span class="o">)</span>
@@ -140,7 +145,7 @@
 </li>
 <li>并行化容器，可以通过<code>SparkContext.parallelize</code> 方法创建分布式便于并行计算的数据结构。也可以用来将scala的容器转换为RDD结构的tips</li>
 </ul>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">data</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">4</span><span class="o">,</span><span class="mi">5</span><span class="o">,</span><span class="mi">6</span><span class="o">,</span><span class="mi">7</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">data</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">4</span><span class="o">,</span><span class="mi">5</span><span class="o">,</span><span class="mi">6</span><span class="o">,</span><span class="mi">7</span><span class="o">)</span>
 <span class="k">val</span> <span class="n">distData</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">data</span><span class="o">)</span>
 </pre></div>
 
@@ -176,7 +181,7 @@
 </ul>
 </li>
 </ul>
-<div class="hlcode"><pre><span class="k">class</span> <span class="nc">MyClass</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">class</span> <span class="nc">MyClass</span> <span class="o">{</span>
   <span class="k">val</span> <span class="n">field</span> <span class="k">=</span> <span class="s">&quot;Hello&quot;</span>
   <span class="k">def</span> <span class="n">doStuff</span><span class="o">(</span><span class="n">rdd</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span> <span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">field</span> <span class="o">+</span> <span class="n">x</span><span class="o">)</span> <span class="o">}</span>
 <span class="o">}</span>
@@ -189,8 +194,8 @@
 </pre></div>
 
 
-<div class="hlcode"><pre><span class="o">-</span> <span class="nx">java</span><span class="p">,</span>  <span class="err">`</span><span class="nx">org</span><span class="p">.</span><span class="nx">apache</span><span class="p">.</span><span class="nx">spark</span><span class="p">.</span><span class="nx">api</span><span class="p">.</span><span class="nx">java</span><span class="p">.</span><span class="kd">function</span><span class="err">`</span> <span class="err">对象，或者</span><span class="nx">java</span> <span class="mi">8</span> <span class="err">的</span><span class="nx">lambda</span><span class="err">表达式</span>
-<span class="o">-</span> <span class="nx">python</span><span class="err">，</span> <span class="nx">lambda</span><span class="err">表达式，本地函数，模块的顶级函数，对象的方法</span>
+<div class="hlcode"><pre><span></span>- java,  `org.apache.spark.api.java.function` 对象，或者java 8 的lambda表达式
+- python， lambda表达式，本地函数，模块的顶级函数，对象的方法
 </pre></div>
 
 
@@ -223,7 +228,7 @@
 <li>由于KV类型可以是很多不同类型，通用的操作不多，最常用的是 <code>shuffle</code> 操作，例如 grouping 和 aggregating by key。</li>
 <li>在spark中通过创建Tuple2对象实现K-V，例如在下述代码中</li>
 </ul>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">lines</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;data.txt&quot;</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">lines</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;data.txt&quot;</span><span class="o">)</span>
 <span class="k">val</span> <span class="n">pairs</span> <span class="k">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">s</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">s</span><span class="o">,</span> <span class="mi">1</span><span class="o">))</span>
 <span class="k">val</span> <span class="n">counts</span> <span class="k">=</span> <span class="n">pairs</span><span class="o">.</span><span class="n">reduceByKey</span><span class="o">((</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">)</span>
 </pre></div>
@@ -271,7 +276,7 @@
 <ul>
 <li>broadcast变量，不同的executor共享</li>
 </ul>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">broadcastVar</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">broadcast</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">))</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">broadcastVar</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">broadcast</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">))</span>
 <span class="n">broadcastVar</span><span class="o">.</span><span class="n">value</span>
 </pre></div>
 
@@ -281,14 +286,14 @@
 <ul>
 <li>Accumulator,</li>
 </ul>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">accum</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="s">&quot;My Accumulator&quot;</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">accum</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="s">&quot;My Accumulator&quot;</span><span class="o">)</span>
 <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">4</span><span class="o">)).</span><span class="n">foreach</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">accum</span> <span class="o">+=</span> <span class="n">x</span><span class="o">)</span>
 <span class="n">accum</span><span class="o">.</span><span class="n">value</span>
 </pre></div>
 
 
 <p>一般需要实现自己的AccumulatorParam子类，</p>
-<div class="hlcode"><pre><span class="k">object</span> <span class="nc">VectorAccumulatorParam</span> <span class="k">extends</span> <span class="nc">AccumulatorParam</span><span class="o">[</span><span class="kt">Vector</span><span class="o">]</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">object</span> <span class="nc">VectorAccumulatorParam</span> <span class="k">extends</span> <span class="nc">AccumulatorParam</span><span class="o">[</span><span class="kt">Vector</span><span class="o">]</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">zero</span><span class="o">(</span><span class="n">initialValue</span><span class="k">:</span> <span class="kt">Vector</span><span class="o">)</span><span class="k">:</span> <span class="kt">Vector</span> <span class="o">=</span> <span class="o">{</span>
     <span class="nc">Vector</span><span class="o">.</span><span class="n">zeros</span><span class="o">(</span><span class="n">initialValue</span><span class="o">.</span><span class="n">size</span><span class="o">)</span>
   <span class="o">}</span>
@@ -304,12 +309,12 @@
 
 <h2 id="spark">提交spark任务</h2>
 <p>使用 bin/spark-submit 脚本提交，语法</p>
-<div class="hlcode"><pre>./bin/spark-submit <span class="se">\</span>
+<div class="hlcode"><pre><span></span>./bin/spark-submit <span class="se">\</span>
   --class &lt;main-class&gt; <span class="se">\</span>
   --master &lt;master-url&gt; <span class="se">\</span>
   --deploy-mode &lt;deploy-mode&gt; <span class="se">\</span>
   --conf &lt;key&gt;<span class="o">=</span>&lt;value&gt; <span class="se">\</span>
-  ... <span class="c"># other options</span>
+  ... <span class="c1"># other options</span>
   &lt;application-jar&gt; <span class="se">\</span>
   <span class="o">[</span>application-arguments<span class="o">]</span>
 </pre></div>
@@ -325,7 +330,7 @@
 <ul>
 <li>从SparkContext创建</li>
 </ul>
-<div class="hlcode"><pre><span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="nc">SQLContext</span>
+<div class="hlcode"><pre><span></span><span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="nc">SQLContext</span>
 <span class="k">val</span> <span class="n">sc</span><span class="k">:</span> <span class="kt">SparkContext</span> <span class="c1">// An existing SparkContext.</span>
 <span class="k">val</span> <span class="n">sqlContext</span> <span class="k">=</span> <span class="k">new</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="nc">SQLContext</span><span class="o">(</span><span class="n">sc</span><span class="o">)</span>
 </pre></div>
@@ -334,7 +339,7 @@
 <ul>
 <li>使用<code>.sql</code>函数进行SQL查询，Spark SQL支持的语法</li>
 </ul>
-<div class="hlcode"><pre><span class="k">SELECT</span> <span class="p">[</span><span class="k">DISTINCT</span><span class="p">]</span> <span class="p">[</span><span class="k">column</span> <span class="k">names</span><span class="p">]</span><span class="o">|</span><span class="p">[</span><span class="n">wildcard</span><span class="p">]</span>
+<div class="hlcode"><pre><span></span><span class="k">SELECT</span> <span class="p">[</span><span class="k">DISTINCT</span><span class="p">]</span> <span class="p">[</span><span class="k">column</span> <span class="k">names</span><span class="p">]</span><span class="o">|</span><span class="p">[</span><span class="n">wildcard</span><span class="p">]</span>
 <span class="k">FROM</span> <span class="p">[</span><span class="n">kesypace</span> <span class="n">name</span><span class="p">.]</span><span class="k">table</span> <span class="n">name</span>
 <span class="p">[</span><span class="k">JOIN</span> <span class="n">clause</span> <span class="k">table</span> <span class="n">name</span> <span class="k">ON</span> <span class="k">join</span> <span class="n">condition</span><span class="p">]</span>
 <span class="p">[</span><span class="k">WHERE</span> <span class="n">condition</span><span class="p">]</span>
@@ -345,7 +350,7 @@
 
 
 <p>如果使用join进行查询，则支持的语法为：</p>
-<div class="hlcode"><pre><span class="k">SELECT</span> <span class="k">statement</span>
+<div class="hlcode"><pre><span></span><span class="k">SELECT</span> <span class="k">statement</span>
 <span class="k">FROM</span> <span class="k">statement</span>
 <span class="p">[</span><span class="k">JOIN</span> <span class="o">|</span> <span class="k">INNER</span> <span class="k">JOIN</span> <span class="o">|</span> <span class="k">LEFT</span> <span class="k">JOIN</span> <span class="o">|</span> <span class="k">LEFT</span> <span class="n">SEMI</span> <span class="k">JOIN</span> <span class="o">|</span> <span class="k">LEFT</span> <span class="k">OUTER</span> <span class="k">JOIN</span> <span class="o">|</span> <span class="k">RIGHT</span> <span class="k">JOIN</span> <span class="o">|</span> <span class="k">RIGHT</span> <span class="k">OUTER</span> <span class="k">JOIN</span> <span class="o">|</span> <span class="k">FULL</span> <span class="k">JOIN</span> <span class="o">|</span> <span class="k">FULL</span> <span class="k">OUTER</span> <span class="k">JOIN</span><span class="p">]</span>
 <span class="k">ON</span> <span class="k">join</span> <span class="n">condition</span>
@@ -356,7 +361,7 @@
 <h3 id="dataframe">DataFrame</h3>
 <p>Spark DataFrame的设计灵感正是基于R与Pandas。<br />
 我们通过外部Json文件创建一个DataFrame：</p>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">dataFrame</span> <span class="k">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">load</span><span class="o">(</span><span class="s">&quot;/example/data.json&quot;</span><span class="o">,</span> <span class="s">&quot;json&quot;</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">dataFrame</span> <span class="k">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">load</span><span class="o">(</span><span class="s">&quot;/example/data.json&quot;</span><span class="o">,</span> <span class="s">&quot;json&quot;</span><span class="o">)</span>
 <span class="n">dataFrame</span><span class="o">.</span><span class="n">show</span><span class="o">()</span>
 </pre></div>
 
@@ -364,7 +369,7 @@
 <blockquote>
 <p>With a SQLContext, applications can create DataFrames from an existing RDD, from a Hive table, or from data sources.</p>
 </blockquote>
-<div class="hlcode"><pre><span class="c1">// Create the DataFrame</span>
+<div class="hlcode"><pre><span></span><span class="c1">// Create the DataFrame</span>
 <span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">json</span><span class="o">(</span><span class="s">&quot;examples/src/main/resources/people.json&quot;</span><span class="o">)</span>
 
 <span class="c1">// Show the content of the DataFrame</span>
@@ -411,14 +416,14 @@
 <ul>
 <li>直接在文件上运行SQL！</li>
 </ul>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="o">(</span><span class="s">&quot;SELECT * FROM parquet.`examples/src/main/resources/users.parquet`&quot;</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="o">(</span><span class="s">&quot;SELECT * FROM parquet.`examples/src/main/resources/users.parquet`&quot;</span><span class="o">)</span>
 </pre></div>
 
 
 <ul>
 <li>注册UDF</li>
 </ul>
-<div class="hlcode"><pre><span class="n">sqlContext</span><span class="o">.</span><span class="n">udf</span><span class="o">.</span><span class="n">register</span><span class="o">(</span><span class="s">&quot;strLen&quot;</span><span class="o">,</span> <span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">length</span><span class="o">())</span>
+<div class="hlcode"><pre><span></span><span class="n">sqlContext</span><span class="o">.</span><span class="n">udf</span><span class="o">.</span><span class="n">register</span><span class="o">(</span><span class="s">&quot;strLen&quot;</span><span class="o">,</span> <span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">length</span><span class="o">())</span>
 </pre></div>
 
 
@@ -450,15 +455,15 @@
 在2.0版本开始，Spark对Estimators和Transformers提供统一的参数API。</p>
 </li>
 </ul>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">paramMap</span> <span class="k">=</span> <span class="nc">ParamMap</span><span class="o">(</span><span class="n">lr</span><span class="o">.</span><span class="n">maxIter</span> <span class="o">-&gt;</span> <span class="mi">20</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">paramMap</span> <span class="k">=</span> <span class="nc">ParamMap</span><span class="o">(</span><span class="n">lr</span><span class="o">.</span><span class="n">maxIter</span> <span class="o">-&gt;</span> <span class="mi">20</span><span class="o">)</span>
   <span class="o">.</span><span class="n">put</span><span class="o">(</span><span class="n">lr</span><span class="o">.</span><span class="n">maxIter</span><span class="o">,</span> <span class="mi">30</span><span class="o">)</span> <span class="c1">// Specify 1 Param.  This overwrites the original maxIter.</span>
   <span class="o">.</span><span class="n">put</span><span class="o">(</span><span class="n">lr</span><span class="o">.</span><span class="n">regParam</span> <span class="o">-&gt;</span> <span class="mf">0.1</span><span class="o">,</span> <span class="n">lr</span><span class="o">.</span><span class="n">threshold</span> <span class="o">-&gt;</span> <span class="mf">0.55</span><span class="o">)</span> <span class="c1">// Specify multiple Params.</span>
 </pre></div>
 
 
-<div class="hlcode"><pre><span class="n">paramMap</span> <span class="o">=</span> <span class="p">{</span><span class="n">lr</span><span class="o">.</span><span class="n">maxIter</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span>
-<span class="n">paramMap</span><span class="p">[</span><span class="n">lr</span><span class="o">.</span><span class="n">maxIter</span><span class="p">]</span> <span class="o">=</span> <span class="mi">30</span> <span class="c"># Specify 1 Param, overwriting the original maxIter.</span>
-<span class="n">paramMap</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">lr</span><span class="o">.</span><span class="n">regParam</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">lr</span><span class="o">.</span><span class="n">threshold</span><span class="p">:</span> <span class="mf">0.55</span><span class="p">})</span> <span class="c"># Specify multiple Params.</span>
+<div class="hlcode"><pre><span></span><span class="n">paramMap</span> <span class="o">=</span> <span class="p">{</span><span class="n">lr</span><span class="o">.</span><span class="n">maxIter</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span>
+<span class="n">paramMap</span><span class="p">[</span><span class="n">lr</span><span class="o">.</span><span class="n">maxIter</span><span class="p">]</span> <span class="o">=</span> <span class="mi">30</span> <span class="c1"># Specify 1 Param, overwriting the original maxIter.</span>
+<span class="n">paramMap</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">lr</span><span class="o">.</span><span class="n">regParam</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">lr</span><span class="o">.</span><span class="n">threshold</span><span class="p">:</span> <span class="mf">0.55</span><span class="p">})</span> <span class="c1"># Specify multiple Params.</span>
 </pre></div>
 
 
@@ -538,7 +543,7 @@ HashTF则是直接通过对特征计算hash函数映射到低维索引。还可�
 <li><code>ElementwiseProduct</code>：对输入向量乘以一个权值。方法<code>setScalingVec</code>设置权值。</li>
 <li><code>SQLTransformer</code>：让你用SQL语句进行变换特征。例子：</li>
 </ul>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">sqlTrans</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SQLTransformer</span><span class="o">().</span><span class="n">setStatement</span><span class="o">(</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">sqlTrans</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SQLTransformer</span><span class="o">().</span><span class="n">setStatement</span><span class="o">(</span>
   <span class="s">&quot;SELECT *, (v1 + v2) AS v3, (v1 * v2) AS v4 FROM __THIS__&quot;</span><span class="o">)</span>
 </pre></div>
 
@@ -553,7 +558,7 @@ HashTF则是直接通过对特征计算hash函数映射到低维索引。还可�
 <li><code>RFormula</code>：通过R模型公式选择特征，例如<code>clicked ~ country + hour</code>，输出列是默认是公式的响应变量名字。它会对字符串one-hot编码，对数值列转换为double类型。需要人工指定哪些特征。</li>
 <li><code>ChiSqSelector</code>：通过卡方独立性检验来选择特征。方法<code>setNumTopFeatures</code>指定要选择的卡方值前多少个。</li>
 </ul>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">labelIndexer</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">()</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">labelIndexer</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">()</span>
     <span class="o">.</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;label&quot;</span><span class="o">)</span>
     <span class="o">.</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;indexedLabel&quot;</span><span class="o">)</span>
     <span class="o">.</span><span class="n">fit</span><span class="o">(</span><span class="n">training</span><span class="o">)</span>
@@ -612,7 +617,7 @@ DataFrame通过collect函数之后就是Array[Row]</p>
 <li>从 <code>List[Row]</code> 创建</li>
 <li>从 <code>RDD[Row]</code> 创建</li>
 </ul>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">training</span> <span class="k">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">createDataFrame</span><span class="o">(</span><span class="nc">Seq</span><span class="o">(</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">training</span> <span class="k">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">createDataFrame</span><span class="o">(</span><span class="nc">Seq</span><span class="o">(</span>
   <span class="o">(</span><span class="mf">1.0</span><span class="o">,</span> <span class="nc">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="o">(</span><span class="mf">0.0</span><span class="o">,</span> <span class="mf">1.1</span><span class="o">,</span> <span class="mf">0.1</span><span class="o">)),</span>
   <span class="o">(</span><span class="mf">0.0</span><span class="o">,</span> <span class="nc">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="o">(</span><span class="mf">2.0</span><span class="o">,</span> <span class="mf">1.0</span><span class="o">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="o">)),</span>
   <span class="o">(</span><span class="mf">0.0</span><span class="o">,</span> <span class="nc">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="o">(</span><span class="mf">2.0</span><span class="o">,</span> <span class="mf">1.3</span><span class="o">,</span> <span class="mf">1.0</span><span class="o">)),</span>
@@ -647,7 +652,7 @@ DataFrame通过collect函数之后就是Array[Row]</p>
 <p>保存到磁盘</p>
 </li>
 </ul>
-<div class="hlcode"><pre><span class="n">df</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span> <span class="o">{</span> <span class="n">转换操作</span> <span class="o">}</span> <span class="o">.</span><span class="n">saveAsTextFile</span><span class="o">(</span><span class="n">filepath</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span> <span class="o">{</span> <span class="n">转换操作</span> <span class="o">}</span> <span class="o">.</span><span class="n">saveAsTextFile</span><span class="o">(</span><span class="n">filepath</span><span class="o">)</span>
 </pre></div>
 
 
@@ -666,7 +671,7 @@ DataFrame通过collect函数之后就是Array[Row]</p>
 <li>CoordinateMatrix，</li>
 <li>BlockMatrix</li>
 </ul>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">rows</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">Vector</span><span class="o">]</span> <span class="k">=</span> <span class="o">...</span> <span class="c1">// an RDD of local vectors</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">rows</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">Vector</span><span class="o">]</span> <span class="k">=</span> <span class="o">...</span> <span class="c1">// an RDD of local vectors</span>
 <span class="c1">// Create a RowMatrix from an RDD[Vector].</span>
 <span class="k">val</span> <span class="n">mat</span><span class="k">:</span> <span class="kt">RowMatrix</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RowMatrix</span><span class="o">(</span><span class="n">rows</span><span class="o">)</span>
 
@@ -685,7 +690,7 @@ DataFrame通过collect函数之后就是Array[Row]</p>
 </ul>
 <h2 id="tips">TIPS</h2>
 <h3 id="log4j">使用log4j</h3>
-<div class="hlcode"><pre><span class="k">package</span> <span class="nn">org.apache.log4j</span><span class="o">;</span>
+<div class="hlcode"><pre><span></span><span class="k">package</span> <span class="nn">org.apache.log4j</span><span class="o">;</span>
 
   <span class="n">public</span> <span class="k">class</span> <span class="nc">Logger</span> <span class="o">{</span>
 
@@ -767,5 +772,9 @@ gitment.render('comments')
         })();
         </script>
 
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
     </body>
 </html>

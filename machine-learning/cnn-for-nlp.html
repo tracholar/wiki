@@ -3,6 +3,9 @@
     <head>
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
         <title>Convolutional Neural Networks for NLP - tracholar's personal knowledge wiki</title>
@@ -17,7 +20,9 @@
         });
         </script>
         <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
 
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -107,8 +112,8 @@ of the 27th International Conference on Machine Learning (ICML-10), pages 807–
 </ul>
 <h3 id="_3">数据</h3>
 <p>字母通过one-hot编码为70维向量，包括26个字母，10个数字，33个其他字符和换行符。字符包括：</p>
-<div class="hlcode"><pre><span class="n">abcdefghijklmnopqrstuvwxyz0123456789</span>
-<span class="o">-</span><span class="p">,;.</span><span class="o">!?:</span><span class="err">’’’</span><span class="o">/</span><span class="err">\</span><span class="o">|</span><span class="n">_</span><span class="err">@#$</span><span class="o">%</span><span class="err">ˆ</span><span class="o">&amp;*</span><span class="err">˜‘</span><span class="o">+-=&lt;&gt;</span><span class="p">()[]{}</span>
+<div class="hlcode"><pre><span></span>abcdefghijklmnopqrstuvwxyz0123456789
+-,;.!?:’’’/\|_@#$%ˆ&amp;*˜‘+-=&lt;&gt;()[]{}
 </pre></div>
 
 
@@ -288,5 +293,9 @@ gitment.render('comments')
         })();
         </script>
 
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
     </body>
 </html>

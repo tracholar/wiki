@@ -3,6 +3,9 @@
     <head>
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
         <title>CentOS 上搭建PPTP VPN - tracholar's personal knowledge wiki</title>
@@ -17,7 +20,9 @@
         });
         </script>
         <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
 
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -52,7 +57,7 @@
 <ul>
 <li>安装ppp和iptables</li>
 </ul>
-<div class="hlcode"><pre>yum install -y perl ppp iptables
+<div class="hlcode"><pre><span></span>yum install -y perl ppp iptables
 </pre></div>
 
 
@@ -60,19 +65,19 @@
 <li>安装 pptpd</li>
 </ul>
 <p>首先查看ppp版本，不同版本对应的pptpd版本也不一样</p>
-<div class="hlcode"><pre>yum list installed ppp
+<div class="hlcode"><pre><span></span>yum list installed ppp
 </pre></div>
 
 
 <p>找到对应的ppp版本:<a href="http://poptop.sourceforge.net/yum/stable/packages/">http://poptop.sourceforge.net/yum/stable/packages/</a></p>
-<div class="hlcode"><pre><span class="n">ppp</span> <span class="mf">2.4.4</span><span class="err">——————</span><span class="o">&gt;</span><span class="n">pptpd</span> <span class="mf">1.3.4</span>
-<span class="n">ppp</span> <span class="mf">2.4.5</span><span class="err">——————</span><span class="o">&gt;</span><span class="n">pptpd</span> <span class="mf">1.4.0</span>
+<div class="hlcode"><pre><span></span>ppp 2.4.4——————&gt;pptpd 1.3.4
+ppp 2.4.5——————&gt;pptpd 1.4.0
 </pre></div>
 
 
 <p>我的电脑是i686, 2.4.5版本，所以找到对应的pptpd版本链接为 <a href="http://poptop.sourceforge.net/yum/stable/packages/pptpd-1.4.0-1.fc12.i686.rpm">http://poptop.sourceforge.net/yum/stable/packages/pptpd-1.4.0-1.fc12.i686.rpm</a></p>
 <p>推荐用 rpm 安装</p>
-<div class="hlcode"><pre>rpm -Uvh http://poptop.sourceforge.net/yum/stable/packages/pptpd-1.4.0-1.fc12.i686.rpm
+<div class="hlcode"><pre><span></span>rpm -Uvh http://poptop.sourceforge.net/yum/stable/packages/pptpd-1.4.0-1.fc12.i686.rpm
 yum install pptpd
 </pre></div>
 
@@ -81,48 +86,48 @@ yum install pptpd
 <ul>
 <li>修改配置pptpd</li>
 </ul>
-<div class="hlcode"><pre><span class="n">cp</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ppp</span><span class="o">/</span><span class="n">options</span><span class="p">.</span><span class="n">pptpd</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ppp</span><span class="o">/</span><span class="n">options</span><span class="p">.</span><span class="n">pptpd</span><span class="p">.</span><span class="n">bak</span>
-<span class="n">vi</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ppp</span><span class="o">/</span><span class="n">options</span><span class="p">.</span><span class="n">pptpd</span>
+<div class="hlcode"><pre><span></span>cp /etc/ppp/options.pptpd /etc/ppp/options.pptpd.bak
+vi /etc/ppp/options.pptpd
 </pre></div>
 
 
 <p>添加DNS解析</p>
-<div class="hlcode"><pre><span class="n">ms</span><span class="o">-</span><span class="n">dns</span> <span class="mf">8.8.8.8</span>
-<span class="n">ms</span><span class="o">-</span><span class="n">dns</span> <span class="mf">8.8.4.4</span>
+<div class="hlcode"><pre><span></span>ms-dns 8.8.8.8
+ms-dns 8.8.4.4
 </pre></div>
 
 
 <ul>
 <li>配置用户与密码：</li>
 </ul>
-<div class="hlcode"><pre><span class="n">cp</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ppp</span><span class="o">/</span><span class="n">chap</span><span class="o">-</span><span class="n">secrets</span>   <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ppp</span><span class="o">/</span><span class="n">chap</span><span class="o">-</span><span class="n">secrets</span><span class="p">.</span><span class="n">bak</span>
-<span class="n">vi</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ppp</span><span class="o">/</span><span class="n">chap</span><span class="o">-</span><span class="n">secrets</span>
+<div class="hlcode"><pre><span></span>cp /etc/ppp/chap-secrets   /etc/ppp/chap-secrets.bak
+vi /etc/ppp/chap-secrets
 </pre></div>
 
 
 <p>加入一行，空格隔开，注意后面的*号</p>
-<div class="hlcode"><pre><span class="err">你的登陆用户名</span> <span class="n">pptpd</span> <span class="err">你的登陆密码</span> <span class="o">*</span>
+<div class="hlcode"><pre><span></span>你的登陆用户名 pptpd 你的登陆密码 *
 </pre></div>
 
 
 <ul>
 <li>配置pptpd ip转发</li>
 </ul>
-<div class="hlcode"><pre><span class="n">cp</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">pptpd</span><span class="p">.</span><span class="n">conf</span>     <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">pptpd</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">bak</span>
-<span class="n">vi</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">pptpd</span><span class="p">.</span><span class="n">conf</span>
+<div class="hlcode"><pre><span></span>cp /etc/pptpd.conf     /etc/pptpd.conf.bak
+vi /etc/pptpd.conf
 </pre></div>
 
 
 <p>加入下面两行，并以空行结尾这个文件。下面的代码不需要更改其中的IP</p>
-<div class="hlcode"><pre><span class="n">localip</span> <span class="mf">192.168.9.1</span>
-<span class="n">remoteip</span> <span class="mf">192.168.9.11</span><span class="o">-</span><span class="mi">30</span> <span class="c1">//表示vpn客户端获得ip的范围</span>
+<div class="hlcode"><pre><span></span>localip 192.168.9.1
+remoteip 192.168.9.11-30 //表示vpn客户端获得ip的范围
 </pre></div>
 
 
 <ul>
 <li>配置流量转发</li>
 </ul>
-<div class="hlcode"><pre><span class="n">vi</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">sysctl</span><span class="p">.</span><span class="n">conf</span>
+<div class="hlcode"><pre><span></span>vi /etc/sysctl.conf
 </pre></div>
 
 
@@ -131,8 +136,8 @@ yum install pptpd
 <ul>
 <li>启动pptpd服务</li>
 </ul>
-<div class="hlcode"><pre>/sbin/service pptpd start
-<span class="c"># 或者 service pptpd start</span>
+<div class="hlcode"><pre><span></span>/sbin/service pptpd start
+<span class="c1"># 或者 service pptpd start</span>
 </pre></div>
 
 
@@ -141,14 +146,14 @@ yum install pptpd
 <ul>
 <li>配置网络流量转发</li>
 </ul>
-<div class="hlcode"><pre><span class="n">iptables</span> <span class="o">-</span><span class="n">t</span> <span class="n">nat</span> <span class="o">-</span><span class="n">A</span> <span class="n">POSTROUTING</span>    <span class="o">-</span><span class="n">s</span> <span class="mf">192.168.9.0</span><span class="o">/</span><span class="mi">24</span> <span class="o">-</span><span class="n">j</span> <span class="n">SNAT</span> <span class="o">--</span><span class="n">to</span><span class="o">-</span><span class="n">source</span>  <span class="err">你的服务器公网</span><span class="n">IP</span>
+<div class="hlcode"><pre><span></span>iptables -t nat -A POSTROUTING    -s 192.168.9.0/24 -j SNAT --to-source  你的服务器公网IP
 </pre></div>
 
 
 <p>保存转发规则，并重启服务</p>
-<div class="hlcode"><pre><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">init</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="n">iptables</span> <span class="n">save</span>
-<span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">service</span> <span class="n">iptables</span> <span class="n">restart</span>
-<span class="n">service</span> <span class="n">pptpd</span> <span class="n">restart</span>
+<div class="hlcode"><pre><span></span>/etc/init.d/iptables save
+/sbin/service iptables restart
+service pptpd restart
 </pre></div>
 
 
@@ -156,8 +161,8 @@ yum install pptpd
 <ul>
 <li>设置开机启动</li>
 </ul>
-<div class="hlcode"><pre><span class="n">chkconfig</span> <span class="n">pptpd</span> <span class="n">on</span>
-<span class="n">chkconfig</span> <span class="n">iptables</span> <span class="n">on</span>
+<div class="hlcode"><pre><span></span>chkconfig pptpd on
+chkconfig iptables on
 </pre></div>
 
 
@@ -210,5 +215,9 @@ gitment.render('comments')
         })();
         </script>
 
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
     </body>
 </html>

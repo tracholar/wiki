@@ -3,6 +3,9 @@
     <head>
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
         <title>maven - tracholar's personal knowledge wiki</title>
@@ -17,7 +20,9 @@
         });
         </script>
         <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
 
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -65,7 +70,7 @@
 所以这里我们介绍的就是怎样用 maven 来满足我们项目的日常需要。</p>
 <h2 id="_2">流程</h2>
 <h3 id="maven">创建maven项目</h3>
-<div class="hlcode"><pre>mvn archetype:generate -DgroupId<span class="o">=</span>com.mycompany.helloworld -DartifactId<span class="o">=</span>helloworld -Dpackage<span class="o">=</span>com.mycompany.helloworld -Dversion<span class="o">=</span>1.0-SNAPSHOT
+<div class="hlcode"><pre><span></span>mvn archetype:generate -DgroupId<span class="o">=</span>com.mycompany.helloworld -DartifactId<span class="o">=</span>helloworld -Dpackage<span class="o">=</span>com.mycompany.helloworld -Dversion<span class="o">=</span><span class="m">1</span>.0-SNAPSHOT
 </pre></div>
 
 
@@ -73,7 +78,7 @@
 所以按回车就好了。</p>
 <p>创建的配置属性对应的意义参考pom文件说明，这些属性是我们在命令行中用 -D 选项指定的。该选项使用 -Dname=value 的格式。</p>
 <h3 id="_3">构建项目</h3>
-<div class="hlcode"><pre><span class="nb">cd </span>helloworld
+<div class="hlcode"><pre><span></span><span class="nb">cd</span> helloworld
 mvn package
 </pre></div>
 
@@ -82,7 +87,7 @@ mvn package
 <p>maven 在 helloworld 下面建立了一个新的目录 target/ ，构建打包后的 jar 文件 helloworld-1.0-SNAPSHOT.jar 就存放在这个目录下。编译后的 class 文件放在 target/classes/ 目录下面，测试 class 文件放在 target/test-classes/ 目录下面。</p>
 <h3 id="_4">运行项目</h3>
 <p>为了验证我们的程序能运行，执行下面的命令：</p>
-<div class="hlcode"><pre>java -cp target/helloworld-1.0-SNAPSHOT.jar com.mycompany.helloworld.App
+<div class="hlcode"><pre><span></span>java -cp target/helloworld-1.0-SNAPSHOT.jar com.mycompany.helloworld.App
 </pre></div>
 
 
@@ -123,7 +128,7 @@ mvn package
 - package 阶段：jar:jar</p>
 <h3 id="maven_3">Maven 依赖管理</h3>
 <p>之前我们说过，maven 坐标能够确定一个项目。换句话说，我们可以用它来解决依赖关系。在 POM 中，依赖关系是在 dependencies 部分中定义的。在上面的 POM 例子中，我们用 dependencies 定义了对于 junit 的依赖：</p>
-<div class="hlcode"><pre><span class="nt">&lt;dependencies&gt;</span>
+<div class="hlcode"><pre><span></span><span class="nt">&lt;dependencies&gt;</span>
     <span class="nt">&lt;dependency&gt;</span>
       <span class="nt">&lt;groupId&gt;</span>junit<span class="nt">&lt;/groupId&gt;</span>
       <span class="nt">&lt;artifactId&gt;</span>junit<span class="nt">&lt;/artifactId&gt;</span>
@@ -144,12 +149,12 @@ mvn package
 <p>但是不是所有的 jar 文件都是可以从默认的远程库下载的，比如说我们自己开发的项目。这个时候，有两个选择：要么在公司内部设置定制库，要么手动下载和安装所需的jar文件到本地库。</p>
 <p>本地库是指 maven 下载了插件或者 jar 文件后存放在本地机器上的拷贝。在 Linux 上，它的位置在 ~/.m2/repository，在 Windows XP 上，在 C:\Documents and Settings\username.m2\repository ，在 Windows 7 上，在 C:\Users\username.m2\repository。当 maven 查找需要的 jar 文件时，它会先在本地库中寻找，只有在找不到的情况下，才会去远程库中找。</p>
 <p>运行下面的命令能把我们的 helloworld 项目安装到本地库：</p>
-<div class="hlcode"><pre>     <span class="nv">$mvn</span> install
+<div class="hlcode"><pre><span></span>     <span class="nv">$mvn</span> install
 </pre></div>
 
 
 <p>一旦一个项目被安装到了本地库后，你别的项目就可以通过 maven 坐标和这个项目建立依赖关系。比如如果我现在有一个新项目需要用到 helloworld，那么在运行了上面的 mvn install 命令后，我就可以如下所示来建立依赖关系：</p>
-<div class="hlcode"><pre>    <span class="nt">&lt;dependency&gt;</span>
+<div class="hlcode"><pre><span></span>    <span class="nt">&lt;dependency&gt;</span>
       <span class="nt">&lt;groupId&gt;</span>com.mycompany.helloworld<span class="nt">&lt;/groupId&gt;</span>
       <span class="nt">&lt;artifactId&gt;</span>helloworld<span class="nt">&lt;/artifactId&gt;</span>
       <span class="nt">&lt;version&gt;</span>1.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
@@ -162,39 +167,39 @@ mvn package
 <ul>
 <li>mavn常用参数</li>
 </ul>
-<div class="hlcode"><pre><span class="n">mvn</span> <span class="o">-</span><span class="n">e</span> <span class="err">显示详细错误</span>
-<span class="n">mvn</span> <span class="o">-</span><span class="n">U</span> <span class="err">强制更新</span><span class="n">snapshot</span><span class="err">类型的插件或依赖库（否则</span><span class="n">maven</span><span class="err">一天只会更新一次</span><span class="n">snapshot</span><span class="err">依赖）</span>
-<span class="n">mvn</span> <span class="o">-</span><span class="n">o</span> <span class="err">运行</span><span class="n">offline</span><span class="err">模式，不联网更新依赖</span>
-<span class="n">mvn</span> <span class="o">-</span><span class="n">N</span><span class="err">仅在当前项目模块执行命令，关闭</span><span class="n">reactor</span>
-<span class="n">mvn</span> <span class="o">-</span><span class="n">pl</span> <span class="n">module_name</span><span class="err">在指定模块上执行命令</span>
-<span class="n">mvn</span> <span class="o">-</span><span class="n">ff</span> <span class="err">在递归执行命令过程中，一旦发生错误就直接退出</span>
-<span class="n">mvn</span> <span class="o">-</span><span class="n">Dxxx</span><span class="o">=</span><span class="n">yyy</span><span class="err">指定</span><span class="n">java</span><span class="err">全局属性</span>
-<span class="n">mvn</span> <span class="o">-</span><span class="n">Pxxx</span><span class="err">引用</span><span class="n">profile</span> <span class="n">xxx</span>
+<div class="hlcode"><pre><span></span>mvn -e 显示详细错误
+mvn -U 强制更新snapshot类型的插件或依赖库（否则maven一天只会更新一次snapshot依赖）
+mvn -o 运行offline模式，不联网更新依赖
+mvn -N仅在当前项目模块执行命令，关闭reactor
+mvn -pl module_name在指定模块上执行命令
+mvn -ff 在递归执行命令过程中，一旦发生错误就直接退出
+mvn -Dxxx=yyy指定java全局属性
+mvn -Pxxx引用profile xxx
 </pre></div>
 
 
 <ul>
 <li>Lifecycle 中的命令</li>
 </ul>
-<div class="hlcode"><pre><span class="n">mvn</span> <span class="n">test</span><span class="o">-</span><span class="n">compile</span> <span class="err">编译测试代码</span>
-<span class="n">mvn</span> <span class="n">test</span> <span class="err">运行程序中的单元测试</span>
-<span class="n">mvn</span> <span class="n">compile</span> <span class="err">编译项目</span>
-<span class="n">mvn</span> <span class="n">package</span> <span class="err">打包，此时</span><span class="n">target</span><span class="err">目录下会出现</span><span class="n">maven</span><span class="o">-</span><span class="n">quickstart</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="n">SNAPSHOT</span><span class="p">.</span><span class="n">jar</span><span class="err">文件，即为打包后文件</span>
-<span class="n">mvn</span> <span class="n">install</span> <span class="err">打包并安装到本地仓库，此时本机仓库会新增</span><span class="n">maven</span><span class="o">-</span><span class="n">quickstart</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="n">SNAPSHOT</span><span class="p">.</span><span class="n">jar</span><span class="err">文件。</span>
-<span class="err">每个</span><span class="n">phase</span><span class="err">都可以作为</span><span class="n">goal</span><span class="err">，也可以联合，如之前介绍的</span><span class="n">mvn</span> <span class="n">clean</span> <span class="n">install</span>
+<div class="hlcode"><pre><span></span>mvn test-compile 编译测试代码
+mvn test 运行程序中的单元测试
+mvn compile 编译项目
+mvn package 打包，此时target目录下会出现maven-quickstart-1.0-SNAPSHOT.jar文件，即为打包后文件
+mvn install 打包并安装到本地仓库，此时本机仓库会新增maven-quickstart-1.0-SNAPSHOT.jar文件。
+每个phase都可以作为goal，也可以联合，如之前介绍的mvn clean install
 </pre></div>
 
 
 <ul>
 <li>其他命令</li>
 </ul>
-<div class="hlcode"><pre><span class="n">mvn</span> <span class="n">archetype</span><span class="o">:</span><span class="n">generate</span> <span class="err">创建</span><span class="n">maven</span><span class="err">项目</span>
-<span class="n">mvn</span> <span class="n">package</span> <span class="err">打包，上面已经介绍过了</span>
-<span class="n">mvn</span> <span class="n">package</span> <span class="o">-</span><span class="n">Prelease</span><span class="err">打包，并生成部署用的包，比如</span><span class="n">deploy</span><span class="o">/*</span><span class="p">.</span><span class="n">tgz</span>
-<span class="n">mvn</span> <span class="n">install</span> <span class="err">打包并安装到本地库</span>
-<span class="n">mvn</span> <span class="n">eclipse</span><span class="o">:</span><span class="n">eclipse</span> <span class="err">生成</span><span class="n">eclipse</span><span class="err">项目文件</span>
-<span class="n">mvn</span> <span class="n">eclipse</span><span class="o">:</span><span class="n">clean</span> <span class="err">清除</span><span class="n">eclipse</span><span class="err">项目文件</span>
-<span class="n">mvn</span> <span class="n">site</span> <span class="err">生成项目相关信息的网站</span>
+<div class="hlcode"><pre><span></span>mvn archetype:generate 创建maven项目
+mvn package 打包，上面已经介绍过了
+mvn package -Prelease打包，并生成部署用的包，比如deploy/*.tgz
+mvn install 打包并安装到本地库
+mvn eclipse:eclipse 生成eclipse项目文件
+mvn eclipse:clean 清除eclipse项目文件
+mvn site 生成项目相关信息的网站
 </pre></div>
 
 
@@ -251,5 +256,9 @@ gitment.render('comments')
         })();
         </script>
 
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
     </body>
 </html>

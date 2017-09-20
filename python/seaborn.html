@@ -3,6 +3,9 @@
     <head>
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
         <title>seaborn 绘图工具 - tracholar's personal knowledge wiki</title>
@@ -17,7 +20,9 @@
         });
         </script>
         <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
 
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -67,8 +72,8 @@
 <p>默认风格已经不错，如果要配置风格可以使用包的<code>axes_style()</code>和<code>set_style()</code>命令。<br />
 五中默认主题是<code>darkgrid, whitegrid, dark, white, ticks</code>，默认是<code>darkgrid</code>。<br />
 关键词汇总有<code>grid</code>代表有网格，没有的代表没有网格。</p>
-<div class="hlcode"><pre><span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s">&quot;whitegrid&quot;</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s2">&quot;whitegrid&quot;</span><span class="p">)</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
@@ -78,7 +83,7 @@
 <p>对于<code>white, ticks</code>主题，通常可以移除上边和右边的边框，通过<code>sns.despine()</code>命令就可以了。</p>
 <h3 id="_5">设置局部式样</h3>
 <p>使用 <code>sns.axes_style()</code> 函数和 <code>with</code> 环境。        </p>
-<div class="hlcode"><pre><span class="k">with</span> <span class="n">sns</span><span class="o">.</span><span class="n">axes_style</span><span class="p">(</span><span class="s">&quot;darkgrid&quot;</span><span class="p">):</span>
+<div class="hlcode"><pre><span></span><span class="k">with</span> <span class="n">sns</span><span class="o">.</span><span class="n">axes_style</span><span class="p">(</span><span class="s2">&quot;darkgrid&quot;</span><span class="p">):</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
     <span class="n">sinplot</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">)</span>
@@ -87,44 +92,44 @@
 
 
 <p>重写其他配置属性：      </p>
-<div class="hlcode"><pre><span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s">&quot;darkgrid&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s">&quot;axes.facecolor&quot;</span><span class="p">:</span> <span class="s">&quot;.9&quot;</span><span class="p">})</span>
+<div class="hlcode"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s2">&quot;darkgrid&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;axes.facecolor&quot;</span><span class="p">:</span> <span class="s2">&quot;.9&quot;</span><span class="p">})</span>
 </pre></div>
 
 
 <p>所有的配置属性可以通过<code>.axes_style()</code>，传入空参数得到：     </p>
-<div class="hlcode"><pre><span class="n">sns</span><span class="o">.</span><span class="n">axes_style</span><span class="p">()</span>
+<div class="hlcode"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">axes_style</span><span class="p">()</span>
 
-<span class="p">{</span><span class="s">&#39;axes.axisbelow&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
- <span class="s">&#39;axes.edgecolor&#39;</span><span class="p">:</span> <span class="s">&#39;.8&#39;</span><span class="p">,</span>
- <span class="s">&#39;axes.facecolor&#39;</span><span class="p">:</span> <span class="s">&#39;white&#39;</span><span class="p">,</span>
- <span class="s">&#39;axes.grid&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
- <span class="s">&#39;axes.labelcolor&#39;</span><span class="p">:</span> <span class="s">&#39;.15&#39;</span><span class="p">,</span>
- <span class="s">&#39;axes.linewidth&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
- <span class="s">&#39;figure.facecolor&#39;</span><span class="p">:</span> <span class="s">&#39;white&#39;</span><span class="p">,</span>
- <span class="s">&#39;font.family&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">u&#39;sans-serif&#39;</span><span class="p">],</span>
- <span class="s">&#39;font.sans-serif&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">u&#39;Arial&#39;</span><span class="p">,</span>
-  <span class="s">u&#39;Liberation Sans&#39;</span><span class="p">,</span>
-  <span class="s">u&#39;Bitstream Vera Sans&#39;</span><span class="p">,</span>
-  <span class="s">u&#39;sans-serif&#39;</span><span class="p">],</span>
- <span class="s">&#39;grid.color&#39;</span><span class="p">:</span> <span class="s">&#39;.8&#39;</span><span class="p">,</span>
- <span class="s">&#39;grid.linestyle&#39;</span><span class="p">:</span> <span class="s">u&#39;-&#39;</span><span class="p">,</span>
- <span class="s">&#39;image.cmap&#39;</span><span class="p">:</span> <span class="s">u&#39;Greys&#39;</span><span class="p">,</span>
- <span class="s">&#39;legend.frameon&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
- <span class="s">&#39;legend.numpoints&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
- <span class="s">&#39;legend.scatterpoints&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
- <span class="s">&#39;lines.solid_capstyle&#39;</span><span class="p">:</span> <span class="s">u&#39;round&#39;</span><span class="p">,</span>
- <span class="s">&#39;text.color&#39;</span><span class="p">:</span> <span class="s">&#39;.15&#39;</span><span class="p">,</span>
- <span class="s">&#39;xtick.color&#39;</span><span class="p">:</span> <span class="s">&#39;.15&#39;</span><span class="p">,</span>
- <span class="s">&#39;xtick.direction&#39;</span><span class="p">:</span> <span class="s">u&#39;out&#39;</span><span class="p">,</span>
- <span class="s">&#39;xtick.major.size&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
- <span class="s">&#39;xtick.minor.size&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
- <span class="s">&#39;ytick.color&#39;</span><span class="p">:</span> <span class="s">&#39;.15&#39;</span><span class="p">,</span>
- <span class="s">&#39;ytick.direction&#39;</span><span class="p">:</span> <span class="s">u&#39;out&#39;</span><span class="p">,</span>
- <span class="s">&#39;ytick.major.size&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
- <span class="s">&#39;ytick.minor.size&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
+<span class="p">{</span><span class="s1">&#39;axes.axisbelow&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+ <span class="s1">&#39;axes.edgecolor&#39;</span><span class="p">:</span> <span class="s1">&#39;.8&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;axes.facecolor&#39;</span><span class="p">:</span> <span class="s1">&#39;white&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;axes.grid&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+ <span class="s1">&#39;axes.labelcolor&#39;</span><span class="p">:</span> <span class="s1">&#39;.15&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;axes.linewidth&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+ <span class="s1">&#39;figure.facecolor&#39;</span><span class="p">:</span> <span class="s1">&#39;white&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;font.family&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">u</span><span class="s1">&#39;sans-serif&#39;</span><span class="p">],</span>
+ <span class="s1">&#39;font.sans-serif&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Arial&#39;</span><span class="p">,</span>
+  <span class="sa">u</span><span class="s1">&#39;Liberation Sans&#39;</span><span class="p">,</span>
+  <span class="sa">u</span><span class="s1">&#39;Bitstream Vera Sans&#39;</span><span class="p">,</span>
+  <span class="sa">u</span><span class="s1">&#39;sans-serif&#39;</span><span class="p">],</span>
+ <span class="s1">&#39;grid.color&#39;</span><span class="p">:</span> <span class="s1">&#39;.8&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;grid.linestyle&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;-&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;image.cmap&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;Greys&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;legend.frameon&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+ <span class="s1">&#39;legend.numpoints&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+ <span class="s1">&#39;legend.scatterpoints&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+ <span class="s1">&#39;lines.solid_capstyle&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;round&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;text.color&#39;</span><span class="p">:</span> <span class="s1">&#39;.15&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;xtick.color&#39;</span><span class="p">:</span> <span class="s1">&#39;.15&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;xtick.direction&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;out&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;xtick.major.size&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+ <span class="s1">&#39;xtick.minor.size&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+ <span class="s1">&#39;ytick.color&#39;</span><span class="p">:</span> <span class="s1">&#39;.15&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;ytick.direction&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;out&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;ytick.major.size&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+ <span class="s1">&#39;ytick.minor.size&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
  <span class="sb">``</span><span class="err">`</span>
 
-<span class="c">### 设置绘图上下文</span>
+<span class="c1">### 设置绘图上下文</span>
 <span class="err">内置四中上下文：</span><span class="sb">`paper, notebook, talk, poster`</span><span class="err">，默认是</span><span class="sb">`notebook`</span><span class="err">。</span>
 <span class="err">上下文可以通过</span><span class="sb">`sns.set_context(&#39;paper&#39;)`</span><span class="err">这种形式进行设置。</span>
 
@@ -134,34 +139,34 @@
 
 <span class="err">函数</span><span class="sb">`sns.set()`</span><span class="err">将所有配置设置为默认情况</span><span class="p">(</span><span class="err">传入空参数</span><span class="p">)</span><span class="err">，或者更多其他参数，包括</span><span class="sb">`rc`</span><span class="err">参数。</span>
 
-<span class="c">## Color palettes</span>
+<span class="c1">## Color palettes</span>
 <span class="sb">`sns.color_palette()`</span><span class="err">获取和设置</span><span class="n">color</span> <span class="n">palette</span>
 <span class="err">使用</span><span class="n">hls</span><span class="err">循环颜色系统，可以指定第一个参数为</span><span class="sb">`hls`</span><span class="err">，或者使用</span><span class="sb">`hls_palette()`</span><span class="err">函数。</span>
 <span class="err">绘制颜色画板的函数是</span> <span class="sb">`sns.palplot(pal)`</span><span class="err">。</span>
 <span class="err">一种更亮的版本是</span> <span class="n">husl</span> <span class="err">系统。</span>
 
-<span class="c">### Color Brewer</span>
+<span class="c1">### Color Brewer</span>
 <span class="err">类似于</span><span class="n">color</span> <span class="nb">map</span> <span class="err">？</span> <span class="err">好多颜色，先不看了。看不下去了。</span>
 
-<span class="c">### 使用命名好的颜色</span>
+<span class="c1">### 使用命名好的颜色</span>
 <span class="n">xkcd</span> <span class="err">颜色命名有</span><span class="mi">954</span><span class="err">中颜色，可以通过字典</span> <span class="sb">`sns.xkcd_rgb`</span> <span class="err">查看。</span> <span class="err">使用方式也是通过这个字典。</span>
 <span class="err">利用这个字典，可以将颜色名字列表转换为颜色画板。</span>
 
 <span class="sb">``</span><span class="err">`</span><span class="n">python</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">sns</span><span class="o">.</span><span class="n">xkcd_rgb</span><span class="p">[</span><span class="s">&quot;pale red&quot;</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">sns</span><span class="o">.</span><span class="n">xkcd_rgb</span><span class="p">[</span><span class="s">&quot;medium green&quot;</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">sns</span><span class="o">.</span><span class="n">xkcd_rgb</span><span class="p">[</span><span class="s">&quot;denim blue&quot;</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">sns</span><span class="o">.</span><span class="n">xkcd_rgb</span><span class="p">[</span><span class="s2">&quot;pale red&quot;</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">sns</span><span class="o">.</span><span class="n">xkcd_rgb</span><span class="p">[</span><span class="s2">&quot;medium green&quot;</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">sns</span><span class="o">.</span><span class="n">xkcd_rgb</span><span class="p">[</span><span class="s2">&quot;denim blue&quot;</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">);</span>
 
-<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;windows blue&quot;</span><span class="p">,</span> <span class="s">&quot;amber&quot;</span><span class="p">,</span> <span class="s">&quot;greyish&quot;</span><span class="p">,</span> <span class="s">&quot;faded green&quot;</span><span class="p">,</span> <span class="s">&quot;dusty purple&quot;</span><span class="p">]</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;windows blue&quot;</span><span class="p">,</span> <span class="s2">&quot;amber&quot;</span><span class="p">,</span> <span class="s2">&quot;greyish&quot;</span><span class="p">,</span> <span class="s2">&quot;faded green&quot;</span><span class="p">,</span> <span class="s2">&quot;dusty purple&quot;</span><span class="p">]</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">palplot</span><span class="p">(</span><span class="n">sns</span><span class="o">.</span><span class="n">xkcd_palette</span><span class="p">(</span><span class="n">colors</span><span class="p">))</span>
 </pre></div>
 
 
 <p>交互式颜色选择工具 <a href="http://www.luminoso.com/colors/">http://www.luminoso.com/colors/</a></p>
 <h3 id="_6">线性渐变颜色画板</h3>
-<div class="hlcode"><pre><span class="n">sns</span><span class="o">.</span><span class="n">palplot</span><span class="p">(</span><span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s">&quot;Blues&quot;</span><span class="p">))</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">palplot</span><span class="p">(</span><span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s">&quot;BuGn_r&quot;</span><span class="p">))</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">palplot</span><span class="p">(</span><span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s">&quot;GnBu_d&quot;</span><span class="p">))</span>
+<div class="hlcode"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">palplot</span><span class="p">(</span><span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s2">&quot;Blues&quot;</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">palplot</span><span class="p">(</span><span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s2">&quot;BuGn_r&quot;</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">palplot</span><span class="p">(</span><span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s2">&quot;GnBu_d&quot;</span><span class="p">))</span>
 </pre></div>
 
 
@@ -171,7 +176,7 @@
 <ul>
 <li><code>distplot()</code>，它会绘制histogram 直方图，并且会拟合一个 <a href="https://en.wikipedia.org/wiki/Kernel_density_estimation">kernel density estimate (KDE)</a>。            </li>
 </ul>
-<div class="hlcode"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">distplot</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
 </pre></div>
 
@@ -280,5 +285,9 @@ gitment.render('comments')
         })();
         </script>
 
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
     </body>
 </html>

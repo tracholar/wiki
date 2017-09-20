@@ -3,6 +3,9 @@
     <head>
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
         <title>Git常用命令汇总 - tracholar's personal knowledge wiki</title>
@@ -17,7 +20,9 @@
         });
         </script>
         <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
 
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -65,16 +70,16 @@
 </ul>
 <h2 id="tag">打tag</h2>
 <p>将当前版本添加tag<code>&lt;tagname&gt;</code></p>
-<div class="hlcode"><pre>git tag &lt;tagname&gt;
+<div class="hlcode"><pre><span></span>git tag &lt;tagname&gt;
 </pre></div>
 
 
 <p>列出标签</p>
-<div class="hlcode"><pre><span class="nv">$ </span>git tag
+<div class="hlcode"><pre><span></span>$ git tag
 v0.1
 v1.3
 
-<span class="nv">$ </span>git tag -l <span class="s1">&#39;v1.4.2.*&#39;</span>
+$ git tag -l <span class="s1">&#39;v1.4.2.*&#39;</span>
 v1.4.2.1
 v1.4.2.2
 v1.4.2.3
@@ -83,12 +88,12 @@ v1.4.2.4
 
 
 <p>将tag推送到远程服务器，参见[1-2]，推送所有的tags</p>
-<div class="hlcode"><pre>git push --tags
+<div class="hlcode"><pre><span></span>git push --tags
 </pre></div>
 
 
 <p>只推送单个tag</p>
-<div class="hlcode"><pre>git push origin &lt;tagname&gt;
+<div class="hlcode"><pre><span></span>git push origin &lt;tagname&gt;
 </pre></div>
 
 
@@ -97,25 +102,25 @@ v1.4.2.4
 <li><a href="https://git-scm.com/book/zh/v1/Git-%E5%9F%BA%E7%A1%80-%E6%89%93%E6%A0%87%E7%AD%BE">https://git-scm.com/book/zh/v1/Git-%E5%9F%BA%E7%A1%80-%E6%89%93%E6%A0%87%E7%AD%BE</a></li>
 </ol>
 <h2 id="_3">分支</h2>
-<div class="hlcode"><pre><span class="c">## 创建dev分支</span>
+<div class="hlcode"><pre><span></span><span class="c1">## 创建dev分支</span>
 git branch dev
-<span class="c">## 切换到dev分支</span>
+<span class="c1">## 切换到dev分支</span>
 git checkout dev
-<span class="c">## 上述两条命令也可以合并为一条</span>
+<span class="c1">## 上述两条命令也可以合并为一条</span>
 git checkout -b dev
 
-<span class="c">## 在dev分支作修改后，再切换回master分支</span>
+<span class="c1">## 在dev分支作修改后，再切换回master分支</span>
 git checkout master
-<span class="c">## 还可以创建多个其他分支</span>
+<span class="c1">## 还可以创建多个其他分支</span>
 git checkout -b issu35
 git checkout -b issu37
-<span class="c">## 在master分支中，合并dev分支</span>
-<span class="c">## 可与选择只合并某一个分支</span>
+<span class="c1">## 在master分支中，合并dev分支</span>
+<span class="c1">## 可与选择只合并某一个分支</span>
 git merge issu35  
-<span class="c">## 合并后，可以删除issu35分支</span>
+<span class="c1">## 合并后，可以删除issu35分支</span>
 git branch -d issu35
-<span class="c">## 如果合并分支时，发生冲突，解决冲突后再合并</span>
-<span class="c">## 可以通过命令查看冲突的地方</span>
+<span class="c1">## 如果合并分支时，发生冲突，解决冲突后再合并</span>
+<span class="c1">## 可以通过命令查看冲突的地方</span>
 git status
 </pre></div>
 
@@ -135,32 +140,32 @@ git status
 <li>问号（?）只匹配一个任意字符；如果在方括号中使用短划线分隔两个字符，表示所有在这两个字符范围内的都可以匹配（比如 [0-9] 表示匹配所有 0 到 9 的数字）。</li>
 </ul>
 <p>我们再看一个 .gitignore 文件的例子：</p>
-<div class="hlcode"><pre><span class="cp"># 此为注释 – 将被 Git 忽略</span>
-<span class="cp"># 忽略所有 .a 结尾的文件</span>
-<span class="o">*</span><span class="p">.</span><span class="n">a</span>
-<span class="cp"># 但 lib.a 除外</span>
-<span class="o">!</span><span class="n">lib</span><span class="p">.</span><span class="n">a</span>
-<span class="cp"># 仅仅忽略项目根目录下的 TODO 文件，不包括 subdir/TODO</span>
-<span class="o">/</span><span class="n">TODO</span>
-<span class="cp"># 忽略 build/ 目录下的所有文件</span>
-<span class="n">build</span><span class="o">/</span>
-<span class="cp"># 会忽略 doc/notes.txt 但不包括 doc/server/arch.txt</span>
-<span class="n">doc</span><span class="cm">/*.txt</span>
-<span class="cm"># ignore all .txt files in the doc/ directory</span>
-<span class="cm">doc/**/</span><span class="o">*</span><span class="p">.</span><span class="n">txt</span>
+<div class="hlcode"><pre><span></span># 此为注释 – 将被 Git 忽略
+# 忽略所有 .a 结尾的文件
+*.a
+# 但 lib.a 除外
+!lib.a
+# 仅仅忽略项目根目录下的 TODO 文件，不包括 subdir/TODO
+/TODO
+# 忽略 build/ 目录下的所有文件
+build/
+# 会忽略 doc/notes.txt 但不包括 doc/server/arch.txt
+doc/*.txt
+# ignore all .txt files in the doc/ directory
+doc/**/*.txt
 </pre></div>
 
 
 <p>A <code>**/</code> pattern is available in Git since version 1.8.2.</p>
 <p>如果不小心把文件加到缓存区，可以先通过如下命令删除，然后再将模式加到<code>.gitignore</code>文件中。<br />
 使用<code>git rm</code>的<code>--cached</code>参数。后面可以列出文件或者目录的名字，也可以使用 glob 模式。</p>
-<div class="hlcode"><pre>git rm --cached readme.txt
+<div class="hlcode"><pre><span></span>git rm --cached readme.txt
 git rm log/<span class="se">\*</span>.log
 </pre></div>
 
 
 <p>注意到星号 * 之前的反斜杠 <code>\</code>，因为 Git 有它自己的文件模式扩展匹配方式，所以我们不用 shell 来帮忙展开（译注：实际上不加反斜杠也可以运行，只不过按照 shell 扩展的话，仅仅删除指定目录下的文件而不会递归匹配。上面的例子本来就指定了目录，所以效果等同，但下面的例子就会用递归方式匹配，所以必须加反斜杠。）。此命令删除所有 log/ 目录下扩展名为 .log 的文件。类似的比如：</p>
-<div class="hlcode"><pre><span class="nv">$ </span>git rm <span class="se">\*</span>~
+<div class="hlcode"><pre><span></span>$ git rm <span class="se">\*</span>~
 </pre></div>
 
 
@@ -168,7 +173,7 @@ git rm log/<span class="se">\*</span>.log
 <h2 id="_4">强大的分支</h2>
 <h3 id="_5">创建分支</h3>
 <p>创建<code>dev</code>分支：</p>
-<div class="hlcode"><pre>git branch dev
+<div class="hlcode"><pre><span></span>git branch dev
 </pre></div>
 
 
@@ -241,5 +246,9 @@ gitment.render('comments')
         })();
         </script>
 
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
     </body>
 </html>

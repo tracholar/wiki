@@ -3,6 +3,9 @@
     <head>
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
         <title>scala语言 - tracholar's personal knowledge wiki</title>
@@ -17,7 +20,9 @@
         });
         </script>
         <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
 
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -111,7 +116,7 @@
 </li>
 <li>流程控制，直接看例子</li>
 </ul>
-<div class="hlcode"><pre><span class="k">for</span><span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="mi">0</span> <span class="n">to</span> <span class="mi">100</span><span class="o">){</span>
+<div class="hlcode"><pre><span></span><span class="k">for</span><span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="mi">0</span> <span class="n">to</span> <span class="mi">100</span><span class="o">){</span>
     <span class="n">println</span><span class="o">(</span><span class="n">i</span><span class="o">)</span>
 <span class="o">}</span>
 </pre></div>
@@ -120,7 +125,7 @@
 <ul>
 <li><code>def</code>创建函数，类型标签</li>
 </ul>
-<div class="hlcode"><pre><span class="k">def</span> <span class="n">addOne</span><span class="o">(</span><span class="n">m</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="n">addOne</span><span class="o">(</span><span class="n">m</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span>
 </pre></div>
 
 
@@ -128,7 +133,7 @@
 <li>匿名函数 <code>(x:Int) =&gt; x+1</code></li>
 <li>函数的部分应用</li>
 </ul>
-<div class="hlcode"><pre><span class="k">def</span> <span class="n">adder</span><span class="o">(</span><span class="n">m</span><span class="k">:</span><span class="kt">Int</span><span class="o">,</span> <span class="n">n</span><span class="k">:</span><span class="kt">Int</span><span class="o">)</span> <span class="k">=</span> <span class="n">m</span> <span class="o">+</span> <span class="n">n</span>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="n">adder</span><span class="o">(</span><span class="n">m</span><span class="k">:</span><span class="kt">Int</span><span class="o">,</span> <span class="n">n</span><span class="k">:</span><span class="kt">Int</span><span class="o">)</span> <span class="k">=</span> <span class="n">m</span> <span class="o">+</span> <span class="n">n</span>
 <span class="k">val</span> <span class="n">add2</span> <span class="k">=</span> <span class="n">adder</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="k">_:</span><span class="kt">Int</span><span class="o">)</span>
 </pre></div>
 
@@ -136,14 +141,14 @@
 <ul>
 <li>柯理化函数</li>
 </ul>
-<div class="hlcode"><pre><span class="k">def</span> <span class="n">muliply</span><span class="o">(</span><span class="n">m</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="o">(</span><span class="n">n</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="k">=</span> <span class="n">m</span> <span class="o">*</span> <span class="n">n</span>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="n">muliply</span><span class="o">(</span><span class="n">m</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="o">(</span><span class="n">n</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="k">=</span> <span class="n">m</span> <span class="o">*</span> <span class="n">n</span>
 </pre></div>
 
 
 <ul>
 <li>可变长参数</li>
 </ul>
-<div class="hlcode"><pre><span class="k">def</span> <span class="n">cap</span><span class="o">(</span><span class="n">args</span> <span class="nc">String</span><span class="o">*)</span> <span class="k">=</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="n">cap</span><span class="o">(</span><span class="n">args</span> <span class="nc">String</span><span class="o">*)</span> <span class="k">=</span> <span class="o">{</span>
     <span class="n">args</span><span class="o">.</span><span class="n">map</span> <span class="o">{</span>
         <span class="n">arg</span> <span class="k">=&gt;</span> <span class="n">arg</span><span class="o">.</span><span class="n">capitalize</span>
     <span class="o">}</span>
@@ -155,7 +160,7 @@
 <li>类 <code>class</code></li>
 <li>构造函数不是特殊的方法，他们是除了类的方法定义之外的代码。</li>
 </ul>
-<div class="hlcode"><pre><span class="k">class</span> <span class="nc">Calculator</span><span class="o">(</span><span class="n">brand</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">class</span> <span class="nc">Calculator</span><span class="o">(</span><span class="n">brand</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="o">{</span>
   <span class="cm">/**</span>
 <span class="cm">   * A constructor.</span>
 <span class="cm">   */</span>
@@ -177,7 +182,7 @@
 <li>Scala是高度面向表达式的：大多数东西都是表达式而非指令。</li>
 <li>继承</li>
 </ul>
-<div class="hlcode"><pre><span class="k">class</span> <span class="nc">ScientificCalculator</span><span class="o">(</span><span class="n">brand</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">Calculator</span><span class="o">(</span><span class="n">brand</span><span class="o">)</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">class</span> <span class="nc">ScientificCalculator</span><span class="o">(</span><span class="n">brand</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">Calculator</span><span class="o">(</span><span class="n">brand</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">log</span><span class="o">(</span><span class="n">m</span><span class="k">:</span> <span class="kt">Double</span><span class="o">,</span> <span class="n">base</span><span class="k">:</span> <span class="kt">Double</span><span class="o">)</span> <span class="k">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="o">(</span><span class="n">m</span><span class="o">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="o">(</span><span class="n">base</span><span class="o">)</span>
 <span class="o">}</span>
 </pre></div>
@@ -186,7 +191,7 @@
 <ul>
 <li>抽象类</li>
 </ul>
-<div class="hlcode"><pre><span class="k">abstract</span> <span class="k">class</span> <span class="nc">Shape</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">abstract</span> <span class="k">class</span> <span class="nc">Shape</span> <span class="o">{</span>
         <span class="k">def</span> <span class="n">getArea</span><span class="o">()</span><span class="k">:</span><span class="kt">Int</span>    <span class="c1">// subclass should define this</span>
 <span class="o">}</span>
 </pre></div>
@@ -211,7 +216,7 @@ class BMW extends Car with Shiny {<br />
 - 泛型，方法和trait都可以引入类型参数</p>
 </li>
 </ul>
-<div class="hlcode"><pre><span class="k">trait</span> <span class="nc">Cache</span><span class="o">[</span><span class="kt">K</span>, <span class="kt">V</span><span class="o">]</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">trait</span> <span class="nc">Cache</span><span class="o">[</span><span class="kt">K</span>, <span class="kt">V</span><span class="o">]</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">get</span><span class="o">(</span><span class="n">key</span><span class="k">:</span> <span class="kt">K</span><span class="o">)</span><span class="k">:</span> <span class="kt">V</span>
   <span class="k">def</span> <span class="n">put</span><span class="o">(</span><span class="n">key</span><span class="k">:</span> <span class="kt">K</span><span class="o">,</span> <span class="n">value</span><span class="k">:</span> <span class="kt">V</span><span class="o">)</span>
   <span class="k">def</span> <span class="n">delete</span><span class="o">(</span><span class="n">key</span><span class="k">:</span> <span class="kt">K</span><span class="o">)</span>
@@ -224,7 +229,7 @@ class BMW extends Car with Shiny {<br />
 <ul>
 <li>apply方法</li>
 </ul>
-<div class="hlcode"><pre><span class="k">class</span> <span class="nc">Bar</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">class</span> <span class="nc">Bar</span> <span class="o">{</span>
     <span class="k">def</span> <span class="n">apply</span><span class="o">()</span> <span class="k">=</span> <span class="mi">0</span>
 <span class="o">}</span>
 <span class="k">val</span> <span class="n">bar</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Bar</span>
@@ -236,7 +241,7 @@ class BMW extends Car with Shiny {<br />
 <ul>
 <li>单例对象，工厂模式</li>
 </ul>
-<div class="hlcode"><pre><span class="k">object</span> <span class="nc">Timer</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">object</span> <span class="nc">Timer</span> <span class="o">{</span>
   <span class="k">var</span> <span class="n">count</span> <span class="k">=</span> <span class="mi">0</span>
 
   <span class="k">def</span> <span class="n">currentCount</span><span class="o">()</span><span class="k">:</span> <span class="kt">Long</span> <span class="o">=</span> <span class="o">{</span>
@@ -252,7 +257,7 @@ class BMW extends Car with Shiny {<br />
 <li>函数即对象.<br />
 函数是一些特质的集合。具体来说，具有一个参数的函数是Function1特质的一个实例。这个特征定义了<code>apply()</code>语法糖，让你调用一个对象时就像你在调用一个函数。</li>
 </ul>
-<div class="hlcode"><pre><span class="k">object</span> <span class="nc">addOne</span> <span class="k">extends</span> <span class="nc">Function1</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">Int</span><span class="o">]</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">object</span> <span class="nc">addOne</span> <span class="k">extends</span> <span class="nc">Function1</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">Int</span><span class="o">]</span> <span class="o">{</span>
     <span class="k">def</span> <span class="n">apply</span><span class="o">(</span><span class="n">m</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span>
 <span class="o">}</span>
 <span class="k">class</span> <span class="nc">AddOne</span> <span class="k">extends</span> <span class="o">(</span><span class="nc">Int</span> <span class="k">=&gt;</span> <span class="nc">Int</span><span class="o">)</span> <span class="o">{</span>
@@ -266,7 +271,7 @@ class BMW extends Car with Shiny {<br />
 <li>模式匹配<br />
 匹配值</li>
 </ul>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">times</span> <span class="k">=</span> <span class="mi">1</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">times</span> <span class="k">=</span> <span class="mi">1</span>
 
 <span class="n">times</span> <span class="k">match</span> <span class="o">{</span>
     <span class="k">case</span> <span class="mi">1</span> <span class="k">=&gt;</span> <span class="s">&quot;one&quot;</span>
@@ -284,7 +289,7 @@ class BMW extends Car with Shiny {<br />
 
 
 <p>匹配类型</p>
-<div class="hlcode"><pre><span class="k">def</span> <span class="n">bigger</span><span class="o">(</span><span class="n">o</span><span class="k">:</span> <span class="kt">Any</span><span class="o">)</span><span class="k">:</span> <span class="kt">Any</span> <span class="o">=</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="n">bigger</span><span class="o">(</span><span class="n">o</span><span class="k">:</span> <span class="kt">Any</span><span class="o">)</span><span class="k">:</span> <span class="kt">Any</span> <span class="o">=</span> <span class="o">{</span>
   <span class="n">o</span> <span class="k">match</span> <span class="o">{</span>
     <span class="k">case</span> <span class="n">i</span><span class="k">:</span> <span class="kt">Int</span> <span class="kt">if</span> <span class="kt">i</span> <span class="kt">&lt;</span> <span class="err">0</span> <span class="o">=&gt;</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
     <span class="k">case</span> <span class="n">i</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=&gt;</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
@@ -297,7 +302,7 @@ class BMW extends Car with Shiny {<br />
 
 
 <p>匹配类成员</p>
-<div class="hlcode"><pre><span class="k">def</span> <span class="n">calcType</span><span class="o">(</span><span class="n">calc</span><span class="k">:</span> <span class="kt">Calculator</span><span class="o">)</span> <span class="k">=</span> <span class="n">calc</span> <span class="k">match</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="n">calcType</span><span class="o">(</span><span class="n">calc</span><span class="k">:</span> <span class="kt">Calculator</span><span class="o">)</span> <span class="k">=</span> <span class="n">calc</span> <span class="k">match</span> <span class="o">{</span>
   <span class="k">case</span> <span class="k">_</span> <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">brand</span> <span class="o">==</span> <span class="s">&quot;hp&quot;</span> <span class="o">&amp;&amp;</span> <span class="n">calc</span><span class="o">.</span><span class="n">model</span> <span class="o">==</span> <span class="s">&quot;20B&quot;</span> <span class="k">=&gt;</span> <span class="s">&quot;financial&quot;</span>
   <span class="k">case</span> <span class="k">_</span> <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">brand</span> <span class="o">==</span> <span class="s">&quot;hp&quot;</span> <span class="o">&amp;&amp;</span> <span class="n">calc</span><span class="o">.</span><span class="n">model</span> <span class="o">==</span> <span class="s">&quot;48G&quot;</span> <span class="k">=&gt;</span> <span class="s">&quot;scientific&quot;</span>
   <span class="k">case</span> <span class="k">_</span> <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">brand</span> <span class="o">==</span> <span class="s">&quot;hp&quot;</span> <span class="o">&amp;&amp;</span> <span class="n">calc</span><span class="o">.</span><span class="n">model</span> <span class="o">==</span> <span class="s">&quot;30B&quot;</span> <span class="k">=&gt;</span> <span class="s">&quot;business&quot;</span>
@@ -309,13 +314,13 @@ class BMW extends Car with Shiny {<br />
 <ul>
 <li>样本类 case class</li>
 </ul>
-<div class="hlcode"><pre><span class="k">case</span> <span class="k">class</span> <span class="nc">Calculator</span><span class="o">(</span><span class="n">brand</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">model</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span><span class="k">case</span> <span class="k">class</span> <span class="nc">Calculator</span><span class="o">(</span><span class="n">brand</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">model</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
 </pre></div>
 
 
 <p>case classes are designed to be used with pattern matching. Let’s simplify our calculator classifier example from earlier.<br />
 样本类就是被设计用在模式匹配中的。让我们简化之前的计算器分类器的例子。</p>
-<div class="hlcode"><pre><span class="k">def</span> <span class="n">calcType</span><span class="o">(</span><span class="n">calc</span><span class="k">:</span> <span class="kt">Calculator</span><span class="o">)</span> <span class="k">=</span> <span class="n">calc</span> <span class="k">match</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="n">calcType</span><span class="o">(</span><span class="n">calc</span><span class="k">:</span> <span class="kt">Calculator</span><span class="o">)</span> <span class="k">=</span> <span class="n">calc</span> <span class="k">match</span> <span class="o">{</span>
   <span class="k">case</span> <span class="nc">Calculator</span><span class="o">(</span><span class="s">&quot;hp&quot;</span><span class="o">,</span> <span class="s">&quot;20B&quot;</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="s">&quot;financial&quot;</span>
   <span class="k">case</span> <span class="nc">Calculator</span><span class="o">(</span><span class="s">&quot;hp&quot;</span><span class="o">,</span> <span class="s">&quot;48G&quot;</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="s">&quot;scientific&quot;</span>
   <span class="k">case</span> <span class="nc">Calculator</span><span class="o">(</span><span class="s">&quot;hp&quot;</span><span class="o">,</span> <span class="s">&quot;30B&quot;</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="s">&quot;business&quot;</span>
@@ -325,7 +330,7 @@ class BMW extends Car with Shiny {<br />
 
 
 <p>我们也可以将匹配的值重新命名。</p>
-<div class="hlcode"><pre>  <span class="k">case</span> <span class="n">c</span><span class="nd">@Calculator</span><span class="o">(</span><span class="k">_</span><span class="o">,</span> <span class="k">_</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="s">&quot;Calculator: %s of unknown type&quot;</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="n">c</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span>  <span class="k">case</span> <span class="n">c</span><span class="nd">@Calculator</span><span class="o">(</span><span class="k">_</span><span class="o">,</span> <span class="k">_</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="s">&quot;Calculator: %s of unknown type&quot;</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="n">c</span><span class="o">)</span>
 </pre></div>
 
 
@@ -338,14 +343,14 @@ class BMW extends Car with Shiny {<br />
 <li>String 实际上就是java.lang.String</li>
 <li>List 列表</li>
 </ul>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">numbers</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">,</span><span class="mi">4</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">numbers</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">,</span><span class="mi">4</span><span class="o">)</span>
 </pre></div>
 
 
 <ul>
 <li>Set 集</li>
 </ul>
-<div class="hlcode"><pre><span class="n">scala</span><span class="o">&gt;</span> <span class="nc">Set</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">1</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span><span class="n">scala</span><span class="o">&gt;</span> <span class="nc">Set</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">1</span><span class="o">)</span>
 <span class="n">res0</span><span class="k">:</span> <span class="kt">scala.collection.immutable.Set</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Set</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">)</span>
 </pre></div>
 
@@ -353,7 +358,7 @@ class BMW extends Car with Shiny {<br />
 <ul>
 <li>Tuple 元组</li>
 </ul>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">hostPort</span> <span class="k">=</span> <span class="o">(</span><span class="s">&quot;localhost&quot;</span><span class="o">,</span> <span class="mi">80</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">hostPort</span> <span class="k">=</span> <span class="o">(</span><span class="s">&quot;localhost&quot;</span><span class="o">,</span> <span class="mi">80</span><span class="o">)</span>
 <span class="n">hostPort</span><span class="o">.</span><span class="n">_1</span>  <span class="c1">// localhost</span>
 <span class="n">hostPort</span><span class="o">.</span><span class="n">_2</span>  <span class="c1">// 80</span>
 </pre></div>
@@ -365,7 +370,7 @@ class BMW extends Car with Shiny {<br />
 <dt>unpack：<code>val (v1, v2) = (1,2)</code>, <a href="https://stackoverflow.com/questions/15034565/is-there-a-scala-equivalent-of-the-python-list-unpack-a-k-a-operator">函数参数unpack例子</a></dt>
 <dd><code>_*</code></dd>
 </dl>
-<div class="hlcode"><pre><span class="k">def</span> <span class="n">hello</span><span class="o">(</span> <span class="n">names</span><span class="k">:</span> <span class="kt">String*</span><span class="o">)</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="n">hello</span><span class="o">(</span> <span class="n">names</span><span class="k">:</span> <span class="kt">String*</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">println</span><span class="o">(</span> <span class="s">&quot;Hello &quot;</span> <span class="o">+</span> <span class="n">names</span><span class="o">.</span><span class="n">mkString</span><span class="o">(</span><span class="s">&quot; and &quot;</span> <span class="o">)</span> <span class="o">)</span>
 <span class="o">}</span>
 
@@ -379,7 +384,7 @@ class BMW extends Car with Shiny {<br />
 <ul>
 <li>Map 映射，类似于python的字典，c的hash_map</li>
 </ul>
-<div class="hlcode"><pre><span class="nc">Map</span><span class="o">(</span><span class="mi">1</span> <span class="o">-&gt;</span> <span class="mi">2</span><span class="o">)</span>  <span class="c1">// 值映射</span>
+<div class="hlcode"><pre><span></span><span class="nc">Map</span><span class="o">(</span><span class="mi">1</span> <span class="o">-&gt;</span> <span class="mi">2</span><span class="o">)</span>  <span class="c1">// 值映射</span>
 <span class="nc">Map</span><span class="o">(</span><span class="s">&quot;foo&quot;</span> <span class="o">-&gt;</span> <span class="s">&quot;bar&quot;</span><span class="o">)</span>  <span class="c1">// 字符串映射</span>
 <span class="nc">Map</span><span class="o">(</span><span class="mi">1</span> <span class="o">-&gt;</span> <span class="nc">Map</span><span class="o">(</span><span class="s">&quot;foo&quot;</span> <span class="o">-&gt;</span> <span class="s">&quot;bar&quot;</span><span class="o">))</span>  <span class="c1">// 映射到映射</span>
 <span class="nc">Map</span><span class="o">(</span><span class="s">&quot;timesTwo&quot;</span> <span class="o">-&gt;</span> <span class="o">{</span><span class="n">timesTwo</span><span class="o">(</span><span class="k">_</span><span class="o">)})</span>   <span class="c1">// 映射到函数</span>
@@ -391,7 +396,7 @@ class BMW extends Car with Shiny {<br />
 Option 是一个表示有可能包含值的容器。<br />
 Option 本身是泛型的，有两个子类 <code>Some[T]</code> 或 <code>None</code>。<br />
 在模式匹配中会用到。</p>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">result</span> <span class="k">=</span> <span class="n">res1</span> <span class="k">match</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">result</span> <span class="k">=</span> <span class="n">res1</span> <span class="k">match</span> <span class="o">{</span>
     <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">n</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">n</span><span class="o">*</span><span class="mi">2</span>
     <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="mi">0</span>
 <span class="o">}</span>
@@ -399,7 +404,7 @@ Option 本身是泛型的，有两个子类 <code>Some[T]</code> 或 <code>None<
 
 
 <p>Option基本的接口是这样的：</p>
-<div class="hlcode"><pre><span class="k">trait</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">trait</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">isDefined</span><span class="k">:</span> <span class="kt">Boolean</span>
   <span class="k">def</span> <span class="n">get</span><span class="k">:</span> <span class="kt">T</span>
   <span class="k">def</span> <span class="n">getOrElse</span><span class="o">(</span><span class="n">t</span><span class="k">:</span> <span class="kt">T</span><span class="o">)</span><span class="k">:</span> <span class="kt">T</span>
@@ -417,14 +422,14 @@ Option 本身是泛型的，有两个子类 <code>Some[T]</code> 或 <code>None<
 例子：<code>List(1,2,3,4) map {i:Int =&gt; i*i}</code>，<br />
 或者这样调用</li>
 </ul>
-<div class="hlcode"><pre><span class="n">numbers</span><span class="o">.</span><span class="n">map</span><span class="o">((</span><span class="n">i</span><span class="k">:</span><span class="kt">Int</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">2</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span><span class="n">numbers</span><span class="o">.</span><span class="n">map</span><span class="o">((</span><span class="n">i</span><span class="k">:</span><span class="kt">Int</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">2</span><span class="o">)</span>
 </pre></div>
 
 
 <ul>
 <li>foreach， 很像map，但是没有返回值。仅用于有副作用的函数？</li>
 </ul>
-<div class="hlcode"><pre><span class="n">numbers</span><span class="o">.</span><span class="n">foreach</span><span class="o">((</span><span class="n">i</span><span class="k">:</span><span class="kt">Int</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">2</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span><span class="n">numbers</span><span class="o">.</span><span class="n">foreach</span><span class="o">((</span><span class="n">i</span><span class="k">:</span><span class="kt">Int</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">2</span><span class="o">)</span>
 </pre></div>
 
 
@@ -432,7 +437,7 @@ Option 本身是泛型的，有两个子类 <code>Some[T]</code> 或 <code>None<
 <li>filter，一处任何传入函数计算结果为<code>false</code>的元素。</li>
 <li>zip，将两个列表的内容聚合到一个对偶列表中。</li>
 </ul>
-<div class="hlcode"><pre><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">).</span><span class="n">zip</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">&quot;a&quot;</span><span class="o">,</span><span class="s">&quot;b&quot;</span><span class="o">,</span><span class="s">&quot;c&quot;</span><span class="o">))</span>  <span class="c1">//[(1,a),(2,b),(3,c)]</span>
+<div class="hlcode"><pre><span></span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">).</span><span class="n">zip</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">&quot;a&quot;</span><span class="o">,</span><span class="s">&quot;b&quot;</span><span class="o">,</span><span class="s">&quot;c&quot;</span><span class="o">))</span>  <span class="c1">//[(1,a),(2,b),(3,c)]</span>
 </pre></div>
 
 
@@ -450,7 +455,7 @@ Option 本身是泛型的，有两个子类 <code>Some[T]</code> 或 <code>None<
 <ul>
 <li><code>compose</code>组合其它函数形成新的函数<code>f(g(x))</code>。</li>
 </ul>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">fg</span> <span class="k">=</span> <span class="n">f</span> <span class="k">_</span> <span class="n">compose</span> <span class="n">g</span> <span class="k">_</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">fg</span> <span class="k">=</span> <span class="n">f</span> <span class="k">_</span> <span class="n">compose</span> <span class="n">g</span> <span class="k">_</span>
 </pre></div>
 
 
@@ -459,14 +464,14 @@ Option 本身是泛型的，有两个子类 <code>Some[T]</code> 或 <code>None<
 <h3 id="_5">偏函数</h3>
 <p>不是部分应用函数，篇函数是指只能接受该类型的某些特定的值。<br />
 <code>isDefinedAt</code>用来确定该函数能否接受一个给定的参数。</p>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">one</span><span class="k">:</span> <span class="kt">PartialFunction</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span> <span class="k">case</span> <span class="mi">1</span> <span class="k">=&gt;</span> <span class="s">&quot;one&quot;</span> <span class="o">}</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">one</span><span class="k">:</span> <span class="kt">PartialFunction</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span> <span class="k">case</span> <span class="mi">1</span> <span class="k">=&gt;</span> <span class="s">&quot;one&quot;</span> <span class="o">}</span>
 <span class="n">one</span><span class="o">.</span><span class="n">isDefinedAt</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>   <span class="c1">// true</span>
 <span class="n">one</span><span class="o">.</span><span class="n">isDefinedAt</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>   <span class="c1">// false</span>
 </pre></div>
 
 
 <p>PartialFunctions可以使用orElse组成新的函数，得到的PartialFunction反映了是否对给定参数进行了定义。</p>
-<div class="hlcode"><pre><span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">two</span><span class="k">:</span> <span class="kt">PartialFunction</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span> <span class="k">case</span> <span class="mi">2</span> <span class="k">=&gt;</span> <span class="s">&quot;two&quot;</span> <span class="o">}</span>
+<div class="hlcode"><pre><span></span><span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">two</span><span class="k">:</span> <span class="kt">PartialFunction</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span> <span class="k">case</span> <span class="mi">2</span> <span class="k">=&gt;</span> <span class="s">&quot;two&quot;</span> <span class="o">}</span>
 <span class="n">two</span><span class="k">:</span> <span class="kt">PartialFunction</span><span class="o">[</span><span class="kt">Int</span>,<span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">&lt;</span><span class="n">function1</span><span class="o">&gt;</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">three</span><span class="k">:</span> <span class="kt">PartialFunction</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span> <span class="k">case</span> <span class="mi">3</span> <span class="k">=&gt;</span> <span class="s">&quot;three&quot;</span> <span class="o">}</span>
@@ -502,7 +507,7 @@ Option 本身是泛型的，有两个子类 <code>Some[T]</code> 或 <code>None<
 <ul>
 <li>参数化多态，秩1多态性rank-one。下面是一个错误的例子，将会报编译错误。</li>
 </ul>
-<div class="hlcode"><pre><span class="k">def</span> <span class="n">foo</span><span class="o">[</span><span class="kt">A</span>, <span class="kt">B</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">A-&gt;List</span><span class="o">[</span><span class="kt">A</span><span class="o">],</span> <span class="n">b</span><span class="k">:</span> <span class="kt">B</span><span class="o">)</span> <span class="k">=</span> <span class="n">f</span><span class="o">(</span><span class="n">b</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="n">foo</span><span class="o">[</span><span class="kt">A</span>, <span class="kt">B</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">A-&gt;List</span><span class="o">[</span><span class="kt">A</span><span class="o">],</span> <span class="n">b</span><span class="k">:</span> <span class="kt">B</span><span class="o">)</span> <span class="k">=</span> <span class="n">f</span><span class="o">(</span><span class="n">b</span><span class="o">)</span>
 <span class="k">def</span> <span class="n">foo</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">A-&gt;List</span><span class="o">[</span><span class="kt">A</span><span class="o">],</span> <span class="n">b</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="k">=</span> <span class="n">f</span><span class="o">(</span><span class="n">i</span><span class="o">)</span>
 </pre></div>
 
@@ -512,7 +517,7 @@ Option 本身是泛型的，有两个子类 <code>Some[T]</code> 或 <code>None<
 Hindley Milner算法。 Scala编译器为我们做类型推断，<br />
 使得可以不明确指定返回类型。</li>
 </ul>
-<div class="hlcode"><pre><span class="k">def</span> <span class="n">id</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">x</span> <span class="k">:</span> <span class="kt">T</span><span class="o">)</span> <span class="k">=</span> <span class="n">x</span>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="n">id</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">x</span> <span class="k">:</span> <span class="kt">T</span><span class="o">)</span> <span class="k">=</span> <span class="n">x</span>
 <span class="k">val</span> <span class="n">x</span> <span class="k">=</span> <span class="n">id</span><span class="o">(</span><span class="s">&quot;hey&quot;</span><span class="o">)</span>
 </pre></div>
 
@@ -530,7 +535,7 @@ Hindley Milner算法。 Scala编译器为我们做类型推断，<br />
 <ul>
 <li>边界，指定泛型的大类型？<code>T &lt;: SomeType</code> 指定T是SomeType的子类。</li>
 </ul>
-<div class="hlcode"><pre><span class="n">scala</span><span class="o">&gt;</span> <span class="k">def</span> <span class="n">cacophony</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">things</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span> <span class="k">=</span> <span class="n">things</span> <span class="n">map</span> <span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">sound</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span><span class="n">scala</span><span class="o">&gt;</span> <span class="k">def</span> <span class="n">cacophony</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">things</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span> <span class="k">=</span> <span class="n">things</span> <span class="n">map</span> <span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">sound</span><span class="o">)</span>
 <span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">7</span><span class="k">:</span> <span class="kt">error:</span> <span class="kt">value</span> <span class="kt">sound</span> <span class="kt">is</span> <span class="kt">not</span> <span class="kt">a</span> <span class="kt">member</span> <span class="kt">of</span> <span class="k">type</span> <span class="kt">parameter</span> <span class="kt">T</span>
        <span class="k">def</span> <span class="n">cacophony</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">things</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span> <span class="k">=</span> <span class="n">things</span> <span class="n">map</span> <span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">sound</span><span class="o">)</span>
                                                         <span class="o">^</span>
@@ -546,7 +551,7 @@ Hindley Milner算法。 Scala编译器为我们做类型推断，<br />
 <p><code>T :&gt; SomeType</code> 指定T是SomeType的超类。<br />
 List 同样 定义了<code>::[B &gt;: T](x: B)</code> 来返回一个List[B]，例如下面这个例子中，<br />
 flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的是超类Animal的列表。</p>
-<div class="hlcode"><pre><span class="n">scala</span><span class="o">&gt;</span> <span class="k">new</span> <span class="nc">Animal</span> <span class="o">::</span> <span class="n">flock</span>
+<div class="hlcode"><pre><span></span><span class="n">scala</span><span class="o">&gt;</span> <span class="k">new</span> <span class="nc">Animal</span> <span class="o">::</span> <span class="n">flock</span>
 <span class="n">res59</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Animal</span><span class="o">]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="nc">Animal</span><span class="k">@</span><span class="mi">11</span><span class="n">f8d3a8</span><span class="o">,</span> <span class="nc">Bird</span><span class="k">@</span><span class="mi">7</span><span class="n">e1ec70e</span><span class="o">,</span> <span class="nc">Bird</span><span class="k">@</span><span class="mi">169</span><span class="n">ea8d2</span><span class="o">)</span>
 </pre></div>
 
@@ -557,7 +562,7 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 个人理解：下面这个例子与类型无关，只与List的接口有关，所以不影响类型推导系统。</li>
 </ul>
 <p>可以为通配符指定边界。</p>
-<div class="hlcode"><pre><span class="k">def</span> <span class="n">count</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">l</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span> <span class="k">=</span> <span class="n">l</span><span class="o">.</span><span class="n">size</span>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="n">count</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">l</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span> <span class="k">=</span> <span class="n">l</span><span class="o">.</span><span class="n">size</span>
 <span class="k">def</span> <span class="n">count</span><span class="o">(</span><span class="n">l</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="k">_</span><span class="o">])</span> <span class="k">=</span> <span class="n">l</span><span class="o">.</span><span class="n">size</span>
 
 <span class="k">def</span> <span class="n">hashcodes</span><span class="o">(</span><span class="n">l</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="k">_</span> <span class="k">&lt;:</span> <span class="kt">AnyRef</span><span class="o">])</span> <span class="k">=</span> <span class="n">l</span> <span class="n">map</span> <span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">hashCode</span><span class="o">)</span>
@@ -568,7 +573,7 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 <li>View bounds（type classes）， <code>&lt;%</code>.<br />
 在隐式函数可以帮助满足类型推断时，它们允许按需的函数应用。</li>
 </ul>
-<div class="hlcode"><pre><span class="k">class</span> <span class="nc">Container</span><span class="o">[</span><span class="kt">A</span> <span class="k">&lt;%</span> <span class="kt">Int</span><span class="o">]</span> <span class="o">{</span> <span class="k">def</span> <span class="n">addIt</span><span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span> <span class="k">=</span> <span class="mi">123</span> <span class="o">+</span> <span class="n">x</span> <span class="o">}</span>
+<div class="hlcode"><pre><span></span><span class="k">class</span> <span class="nc">Container</span><span class="o">[</span><span class="kt">A</span> <span class="k">&lt;%</span> <span class="kt">Int</span><span class="o">]</span> <span class="o">{</span> <span class="k">def</span> <span class="n">addIt</span><span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span> <span class="k">=</span> <span class="mi">123</span> <span class="o">+</span> <span class="n">x</span> <span class="o">}</span>
 </pre></div>
 
 
@@ -583,7 +588,7 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 <p>断言assert和require，通常用require做参数检查，而用assert做测试相关的。</p>
 </li>
 </ul>
-<div class="hlcode"><pre><span class="k">def</span> <span class="n">assert</span><span class="o">(</span><span class="n">assertion</span><span class="k">:</span> <span class="kt">Boolean</span><span class="o">)</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="n">assert</span><span class="o">(</span><span class="n">assertion</span><span class="k">:</span> <span class="kt">Boolean</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">if</span> <span class="o">(!</span><span class="n">assertion</span><span class="o">)</span>
     <span class="k">throw</span> <span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="nc">AssertionError</span><span class="o">(</span><span class="s">&quot;assertion failed&quot;</span><span class="o">)</span>
 <span class="o">}</span>
@@ -602,13 +607,13 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 
 <h2 id="_7">隐式转换</h2>
 <h3 id="_8">隐式函数</h3>
-<div class="hlcode"><pre><span class="k">implicit</span> <span class="k">def</span> <span class="n">intToString</span><span class="o">(</span><span class="n">x</span><span class="k">:</span><span class="kt">Int</span><span class="o">)</span> <span class="k">:</span> <span class="kt">x.toString</span>
+<div class="hlcode"><pre><span></span><span class="k">implicit</span> <span class="k">def</span> <span class="n">intToString</span><span class="o">(</span><span class="n">x</span><span class="k">:</span><span class="kt">Int</span><span class="o">)</span> <span class="k">:</span> <span class="kt">x.toString</span>
 </pre></div>
 
 
 <h3 id="210">隐式类 2.10.+</h3>
 <p>隐式类的主方法可以用于隐式类型转换。</p>
-<div class="hlcode"><pre><span class="k">object</span> <span class="nc">Helpers</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">object</span> <span class="nc">Helpers</span> <span class="o">{</span>
   <span class="k">implicit</span> <span class="k">class</span> <span class="nc">IntWithTimes</span><span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="o">{</span>
     <span class="k">def</span> <span class="n">times</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="o">=&gt;</span> <span class="n">A</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
       <span class="k">def</span> <span class="n">loop</span><span class="o">(</span><span class="n">current</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span>
@@ -657,18 +662,18 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 - s支持局部变量和表达式。<br />
 - f表明对变量进行格式化，类似于printf的功能。类型安全，如果不匹配，将会报错。<code>%s</code>是通用的？！<br />
 - raw字符串就是不会对转义字符转义。相当于python里面的r</p>
-<div class="hlcode"><pre><span class="c1">// 插入局部变量</span>
+<div class="hlcode"><pre><span></span><span class="c1">// 插入局部变量</span>
 <span class="k">val</span> <span class="n">name</span> <span class="k">=</span> <span class="s">&quot;James&quot;</span>
-<span class="n">println</span><span class="o">(</span><span class="n">s</span><span class="s">&quot;Hello, $name&quot;</span><span class="o">)</span>  <span class="c1">// Hello, James</span>
+<span class="n">println</span><span class="o">(</span><span class="s">s&quot;Hello, </span><span class="si">$name</span><span class="s">&quot;</span><span class="o">)</span>  <span class="c1">// Hello, James</span>
 <span class="c1">// 插入表达式</span>
-<span class="n">println</span><span class="o">(</span><span class="n">s</span><span class="s">&quot;1 + 1 = ${1 + 1}&quot;</span><span class="o">)</span>
+<span class="n">println</span><span class="o">(</span><span class="s">s&quot;1 + 1 = </span><span class="si">${</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s">&quot;</span><span class="o">)</span>
 
 <span class="k">val</span> <span class="n">height</span> <span class="k">=</span> <span class="mf">1.9d</span>
 <span class="k">val</span> <span class="n">name</span> <span class="k">=</span> <span class="s">&quot;James&quot;</span>
 <span class="c1">// f 使用类似于printf格式字符</span>
-<span class="n">println</span><span class="o">(</span><span class="n">f</span><span class="s">&quot;$name%s is $height%2.2f meters tall&quot;</span><span class="o">)</span>  <span class="c1">// James is 1.90 meters tall</span>
+<span class="n">println</span><span class="o">(</span><span class="s">f&quot;</span><span class="si">$name</span><span class="s">%s is </span><span class="si">$height</span><span class="s">%2.2f meters tall&quot;</span><span class="o">)</span>  <span class="c1">// James is 1.90 meters tall</span>
 
-<span class="n">println</span><span class="o">(</span><span class="n">raw</span><span class="s">&quot;a\nb&quot;</span><span class="o">)</span> <span class="c1">// Output: a\nb</span>
+<span class="n">println</span><span class="o">(</span><span class="s">raw&quot;a\nb&quot;</span><span class="o">)</span> <span class="c1">// Output: a\nb</span>
 </pre></div>
 
 
@@ -677,7 +682,7 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 <ul>
 <li>创建集合</li>
 </ul>
-<div class="hlcode"><pre><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">,</span><span class="mi">4</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">,</span><span class="mi">4</span><span class="o">)</span>
 <span class="mi">1</span> <span class="o">::</span> <span class="mi">2</span> <span class="o">::</span> <span class="mi">3</span> <span class="o">::</span> <span class="nc">Nil</span>
 
 <span class="k">val</span> <span class="n">L</span> <span class="k">=</span> <span class="mi">1</span> <span class="n">to</span> <span class="mi">1000</span> <span class="n">toList</span>
@@ -715,7 +720,7 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 </ul>
 <h3 id="seq">Seq</h3>
 <p>貌似与list没啥区别，需要再仔细看看。</p>
-<div class="hlcode"><pre><span class="n">scala</span><span class="o">&gt;</span> <span class="nc">Seq</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span><span class="n">scala</span><span class="o">&gt;</span> <span class="nc">Seq</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">)</span>
 <span class="n">res3</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">)</span>
 </pre></div>
 
@@ -726,7 +731,7 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 <ul>
 <li>创建MAP</li>
 </ul>
-<div class="hlcode"><pre><span class="n">Map</span><span class="p">(</span><span class="sc">&#39;a&#39;</span> <span class="o">-&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="sc">&#39;b&#39;</span> <span class="o">-&gt;</span> <span class="mi">2</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span>Map(&#39;a&#39; -&gt; 1, &#39;b&#39; -&gt; 2)
 </pre></div>
 
 
@@ -776,7 +781,7 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 </ul>
 </li>
 </ul>
-<div class="hlcode"><pre><span class="k">def</span> <span class="n">hasNext</span><span class="o">()</span><span class="k">:</span> <span class="kt">Boolean</span>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="n">hasNext</span><span class="o">()</span><span class="k">:</span> <span class="kt">Boolean</span>
 <span class="k">def</span> <span class="n">next</span><span class="o">()</span><span class="k">:</span> <span class="kt">A</span>
 </pre></div>
 
@@ -785,7 +790,7 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 <li>Seq 序列，有顺序的对象序列</li>
 <li>Set 没有重复的对象集合</li>
 </ul>
-<div class="hlcode"><pre><span class="k">def</span> <span class="n">contains</span><span class="o">(</span><span class="n">key</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span><span class="k">:</span> <span class="kt">Boolean</span>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="n">contains</span><span class="o">(</span><span class="n">key</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span><span class="k">:</span> <span class="kt">Boolean</span>
 <span class="k">def</span> <span class="o">+(</span><span class="n">elem</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span><span class="k">:</span> <span class="kt">Set</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span>
 <span class="k">def</span> <span class="o">-(</span><span class="n">elem</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span><span class="k">:</span> <span class="kt">Set</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span>
 </pre></div>
@@ -804,7 +809,7 @@ flock是Bird类型，Bird是Animal的子类。<code>::</code>操作后返回的�
 <li>Range 等间隔的Int有序序列。<br />
     继承 <code>traverable</code>, <code>Iterable</code>, <code>Seq</code>.</li>
 </ul>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">r0</span> <span class="k">=</span> <span class="mi">0</span> <span class="n">until</span> <span class="mi">10</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">r0</span> <span class="k">=</span> <span class="mi">0</span> <span class="n">until</span> <span class="mi">10</span>
 <span class="k">val</span> <span class="n">r1</span> <span class="k">=</span> <span class="mi">0</span> <span class="n">until</span> <span class="mi">10</span> <span class="n">by</span> <span class="mi">2</span>
 <span class="k">new</span> <span class="nc">Range</span><span class="o">(</span><span class="n">start</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">end</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">step</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span>
 </pre></div>
@@ -833,7 +838,7 @@ Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的
 </ul>
 <h3 id="java">与Java转换</h3>
 <p>您可以通过JavaConverters package轻松地在Java和Scala的集合类型之间转换。它用asScala 装饰常用的Java集合以和用asJava 方法装饰Scala集合。</p>
-<div class="hlcode"><pre>   <span class="k">import</span> <span class="nn">scala.collection.JavaConverters._</span>
+<div class="hlcode"><pre><span></span>   <span class="k">import</span> <span class="nn">scala.collection.JavaConverters._</span>
    <span class="k">val</span> <span class="n">sl</span> <span class="k">=</span> <span class="k">new</span> <span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">mutable</span><span class="o">.</span><span class="nc">ListBuffer</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span>
    <span class="k">val</span> <span class="n">jl</span> <span class="k">:</span> <span class="kt">java.util.List</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="n">sl</span><span class="o">.</span><span class="n">asJava</span>
    <span class="k">val</span> <span class="n">sl2</span> <span class="k">:</span> <span class="kt">scala.collection.mutable.Buffer</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="n">jl</span><span class="o">.</span><span class="n">asScala</span>
@@ -842,7 +847,7 @@ Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的
 
 
 <p>双向转换：</p>
-<div class="hlcode"><pre><span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="nc">Iterable</span> <span class="o">&lt;=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="nc">Iterable</span>
+<div class="hlcode"><pre><span></span><span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="nc">Iterable</span> <span class="o">&lt;=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="nc">Iterable</span>
 <span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="nc">Iterable</span> <span class="o">&lt;=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="nc">Collection</span>
 <span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="nc">Iterator</span> <span class="o">&lt;=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.{</span> <span class="nc">Iterator</span><span class="o">,</span> <span class="nc">Enumeration</span> <span class="o">}</span>
 <span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">mutable</span><span class="o">.</span><span class="nc">Buffer</span> <span class="o">&lt;=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="nc">List</span>
@@ -853,7 +858,7 @@ Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的
 
 
 <p>此外，也提供了以下单向转换</p>
-<div class="hlcode"><pre><span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="nc">Seq</span> <span class="k">=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="nc">List</span>
+<div class="hlcode"><pre><span></span><span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="nc">Seq</span> <span class="k">=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="nc">List</span>
 <span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">mutable</span><span class="o">.</span><span class="nc">Seq</span> <span class="k">=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="nc">List</span>
 <span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="nc">Set</span> <span class="k">=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="nc">Set</span>
 <span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="nc">Map</span> <span class="k">=&gt;</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="nc">Map</span>
@@ -862,7 +867,7 @@ Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的
 
 <h2 id="specs">使用specs进行测试</h2>
 <p>貌似现在包为specs2，导入单元测试规范<code>org.specs2.mutable.Specification</code></p>
-<div class="hlcode"><pre><span class="n">org</span><span class="o">.</span><span class="n">specs2</span><span class="o">.</span><span class="n">mutable</span><span class="o">.</span><span class="k">_</span>
+<div class="hlcode"><pre><span></span><span class="n">org</span><span class="o">.</span><span class="n">specs2</span><span class="o">.</span><span class="n">mutable</span><span class="o">.</span><span class="k">_</span>
 
 <span class="k">object</span> <span class="nc">ArithmeticSpec</span> <span class="k">extends</span> <span class="nc">Specification</span> <span class="o">{</span>
   <span class="s">&quot;Arithmetic&quot;</span> <span class="n">should</span> <span class="o">{</span>
@@ -881,7 +886,7 @@ Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的
 <ul>
 <li>Runnable/Callable定义如下，区别在于Runnable没有返回值，而Callable有。</li>
 </ul>
-<div class="hlcode"><pre><span class="k">trait</span> <span class="nc">Runnable</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">trait</span> <span class="nc">Runnable</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">run</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span>
 <span class="o">}</span>
 
@@ -895,7 +900,7 @@ Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的
 <li>线程，Scala并发是建立在Java并发模型基础上的。在Sun JVM上，对IO密集的任务，我们可以在一台机器运行成千上万个线程。<br />
   一个线程需要一个<code>Runnable</code>。你必须调用线程的 <code>start</code> 方法来运行Runnable。</li>
 </ul>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">hello</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Thread</span><span class="o">(</span><span class="k">new</span> <span class="nc">Runnable</span> <span class="o">{</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">hello</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Thread</span><span class="o">(</span><span class="k">new</span> <span class="nc">Runnable</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">run</span><span class="o">()</span> <span class="o">{</span>
     <span class="n">println</span><span class="o">(</span><span class="s">&quot;hello world&quot;</span><span class="o">)</span>
   <span class="o">}</span>
@@ -908,7 +913,7 @@ Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的
 <p>创建一个自己的线程步骤，首先创建一个实现Runnable接口的类，然后将该类的实例作为参数传给<code>new Thread()</code>即可，<br />
 然后再调用创建的线程的<code>.start()</code>方法就可以运行了。</p>
 <p>也可以利用java的线程的执行服务构建一个线程池。<code>java.util.concurrent.{Executors, ExecutorService}</code></p>
-<div class="hlcode"><pre><span class="k">val</span> <span class="n">pool</span><span class="k">:</span> <span class="kt">ExecutorService</span> <span class="o">=</span> <span class="nc">Executors</span><span class="o">.</span><span class="n">newFixedThreadPool</span><span class="o">(</span><span class="n">poolSize</span><span class="o">)</span>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">pool</span><span class="k">:</span> <span class="kt">ExecutorService</span> <span class="o">=</span> <span class="nc">Executors</span><span class="o">.</span><span class="n">newFixedThreadPool</span><span class="o">(</span><span class="n">poolSize</span><span class="o">)</span>
 <span class="n">pool</span><span class="o">.</span><span class="n">execute</span><span class="o">(</span><span class="k">new</span> <span class="nc">MyRunableClass</span><span class="o">())</span>
 </pre></div>
 
@@ -922,7 +927,7 @@ Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的
 <li>volatile</li>
 <li>AtomicReference</li>
 </ul>
-<div class="hlcode"><pre><span class="c1">// synchronized</span>
+<div class="hlcode"><pre><span></span><span class="c1">// synchronized</span>
 <span class="k">class</span> <span class="nc">Person</span><span class="o">(</span><span class="k">var</span> <span class="n">name</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">set</span><span class="o">(</span><span class="n">changedName</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="o">{</span>
     <span class="k">this</span><span class="o">.</span><span class="n">synchronized</span> <span class="o">{</span>
@@ -957,7 +962,7 @@ Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的
 <li>使用<code>ClassTag</code>，用类型作为参数 <a href="https://github.com/apache/spark/blob/v2.0.0/core/src/main/scala/org/apache/spark/SparkContext.scala#L1189">Spark rdd.objectFile 源码</a></li>
 </ul>
 <p>从classTag创建对象的方法还没搞清楚，参看<a href="https://github.com/apache/spark/blob/v2.0.0/core/src/main/scala/org/apache/spark/SparkContext.scala#L2342">代码</a>！：</p>
-<div class="hlcode"><pre><span class="k">import</span> <span class="nn">scala.reflect.</span><span class="o">{</span><span class="n">classTag</span><span class="o">,</span> <span class="nc">ClassTag</span><span class="o">}</span>
+<div class="hlcode"><pre><span></span><span class="k">import</span> <span class="nn">scala.reflect.</span><span class="o">{</span><span class="n">classTag</span><span class="o">,</span> <span class="nc">ClassTag</span><span class="o">}</span>
 
 <span class="k">def</span> <span class="n">objectFile</span><span class="o">[</span><span class="kt">T:</span> <span class="kt">ClassTag</span><span class="o">](</span>
       <span class="n">path</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span>
@@ -984,7 +989,7 @@ Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的
 <h2 id="test">Test</h2>
 <p>包 <code>http://www.scalatest.org/</code></p>
 <p>build.sbt 引入测试包</p>
-<div class="hlcode"><pre><span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s">&quot;org.scalatest&quot;</span> <span class="o">%</span> <span class="s">&quot;scalatest_2.10&quot;</span> <span class="o">%</span> <span class="s">&quot;2.2.6&quot;</span> <span class="o">%</span> <span class="s">&quot;test&quot;</span>
+<div class="hlcode"><pre><span></span><span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s">&quot;org.scalatest&quot;</span> <span class="o">%</span> <span class="s">&quot;scalatest_2.10&quot;</span> <span class="o">%</span> <span class="s">&quot;2.2.6&quot;</span> <span class="o">%</span> <span class="s">&quot;test&quot;</span>
 </pre></div>
 
 
@@ -997,7 +1002,7 @@ Scala允许我们是务实的，它鼓励不变性，但不惩罚我们需要的
 </ul>
 <p>Achieving success</p>
 <h3 id="funsuit">FunSuit</h3>
-<div class="hlcode"><pre><span class="k">import</span> <span class="nn">org.scalatest.FunSuite</span>
+<div class="hlcode"><pre><span></span><span class="k">import</span> <span class="nn">org.scalatest.FunSuite</span>
 
 <span class="k">class</span> <span class="nc">SetSuite</span> <span class="k">extends</span> <span class="nc">FunSuite</span> <span class="o">{</span>
 
@@ -1061,5 +1066,9 @@ gitment.render('comments')
         })();
         </script>
 
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
     </body>
 </html>

@@ -3,6 +3,9 @@
     <head>
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
         <title>Python 日期时间相关模块总结 - tracholar's personal knowledge wiki</title>
@@ -17,7 +20,9 @@
         });
         </script>
         <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
 
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -67,7 +72,7 @@
 还有一些操作系统跟时间有关的系统调用。</p>
 <h3 id="_2">基本用法</h3>
 <p>生成Unix时间戳，单位是秒</p>
-<div class="hlcode"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">ts</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<div class="hlcode"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">ts</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">ts</span>
 <span class="mf">1445495655.495</span>
 </pre></div>
@@ -75,7 +80,7 @@
 
 <p>时间戳是一个浮点数，可以通过内置函数转换为其他格式。</p>
 <p>时间戳转换为<code>struct_time</code></p>
-<div class="hlcode"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">time</span><span class="o">.</span><span class="n">gmtime</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">time</span><span class="o">.</span><span class="n">gmtime</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 <span class="n">time</span><span class="o">.</span><span class="n">struct_time</span><span class="p">(</span><span class="n">tm_year</span><span class="o">=</span><span class="mi">2015</span><span class="p">,</span> <span class="n">tm_mon</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">tm_mday</span><span class="o">=</span><span class="mi">22</span><span class="p">,</span> <span class="n">tm_hour</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">tm_min</span><span class="o">=</span><span class="mi">34</span><span class="p">,</span> <span class="n">tm_sec</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">tm_wday</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">tm_yday</span><span class="o">=</span><span class="mi">295</span><span class="p">,</span> <span class="n">tm_isdst</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
@@ -84,29 +89,29 @@
 
 
 <p>时间戳转换为方便阅读的字符串   </p>
-<div class="hlcode"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
-<span class="s">&#39;Thu Oct 22 14:34:15 2015&#39;</span>
+<div class="hlcode"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+<span class="s1">&#39;Thu Oct 22 14:34:15 2015&#39;</span>
 </pre></div>
 
 
 <p><code>struct_time</code>转换为字符串   </p>
-<div class="hlcode"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">st</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">st</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">time</span><span class="o">.</span><span class="n">asctime</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
-<span class="s">&#39;Thu Oct 22 14:34:15 2015&#39;</span>
+<span class="s1">&#39;Thu Oct 22 14:34:15 2015&#39;</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">st</span><span class="p">)</span>
-<span class="s">&#39;2015-10-22&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">st</span><span class="p">)</span>
+<span class="s1">&#39;2015-10-22&#39;</span>
 </pre></div>
 
 
 <p><code>struct_time</code>转换为时间戳  </p>
-<div class="hlcode"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
 <span class="mf">1445495655.0</span>
 </pre></div>
 
 
 <p>时间字符串转<code>struct_time</code>    </p>
-<div class="hlcode"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="s">&#39;2015-10-22&#39;</span><span class="p">,</span><span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s">&#39;</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="s1">&#39;2015-10-22&#39;</span><span class="p">,</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="n">time</span><span class="o">.</span><span class="n">struct_time</span><span class="p">(</span><span class="n">tm_year</span><span class="o">=</span><span class="mi">2015</span><span class="p">,</span> <span class="n">tm_mon</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">tm_mday</span><span class="o">=</span><span class="mi">22</span><span class="p">,</span> <span class="n">tm_hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tm_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tm_sec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tm_wday</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">tm_yday</span><span class="o">=</span><span class="mi">295</span><span class="p">,</span> <span class="n">tm_isdst</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
@@ -115,18 +120,18 @@
 <h2 id="datetime">datetime 模块</h2>
 <p>datetime模块提供对时间和日期的封装，并提供他们之间的数学运算。<br />
 该模块包含4个类，用得多的是<code>datetime.timedelta</code>和<code>datetime.datetime</code>。    </p>
-<div class="hlcode"><pre><span class="nb">object</span>
-    <span class="n">timedelta</span>     <span class="c"># 主要用于计算时间跨度</span>
-    <span class="n">tzinfo</span>        <span class="c"># 时区相关</span>
-    <span class="n">time</span>          <span class="c"># 只关注时间</span>
-    <span class="n">date</span>          <span class="c"># 只关注日期</span>
-        <span class="n">datetime</span>  <span class="c"># 同时有时间和日期</span>
+<div class="hlcode"><pre><span></span><span class="nb">object</span>
+    <span class="n">timedelta</span>     <span class="c1"># 主要用于计算时间跨度</span>
+    <span class="n">tzinfo</span>        <span class="c1"># 时区相关</span>
+    <span class="n">time</span>          <span class="c1"># 只关注时间</span>
+    <span class="n">date</span>          <span class="c1"># 只关注日期</span>
+        <span class="n">datetime</span>  <span class="c1"># 同时有时间和日期</span>
 </pre></div>
 
 
 <p>date只包含年月日3个属性，datetime还包含时、分、秒、毫秒。</p>
 <p>获取现在时间   </p>
-<div class="hlcode"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+<div class="hlcode"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
 <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">54</span><span class="p">,</span> <span class="mi">88000</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="mi">304000</span><span class="p">)</span>
@@ -134,7 +139,7 @@
 
 
 <p>与时间戳的转换    </p>
-<div class="hlcode"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">495000</span><span class="p">)</span>
 </pre></div>
 
@@ -142,22 +147,22 @@
 <p>利用<code>datetime.combine(date,time)</code>可以将date和time组合为datetime。<br />
 利用<code>datetime.strptime</code>和<code>datetime.strftime</code><br />
 可以在时间字符串和datetime对象间相互转换。   </p>
-<div class="hlcode"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="s">&#39;2015-10-12&#39;</span><span class="p">,</span><span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s">&#39;</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="s1">&#39;2015-10-12&#39;</span><span class="p">,</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">dt</span>
 <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%d</span><span class="s">/%m/%Y&#39;</span><span class="p">)</span>
-<span class="s">&#39;12/10/2015&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">/%m/%Y&#39;</span><span class="p">)</span>
+<span class="s1">&#39;12/10/2015&#39;</span>
 </pre></div>
 
 
 <p>对datetime对象做部分修改    </p>
-<div class="hlcode"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">)</span>
 <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
 
 
 <p>转换为timetuple也就是time.struct_time   </p>
-<div class="hlcode"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">dt</span><span class="o">.</span><span class="n">timetuple</span>
+<div class="hlcode"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">dt</span><span class="o">.</span><span class="n">timetuple</span>
 <span class="n">time</span><span class="o">.</span><span class="n">struct_time</span><span class="p">(</span><span class="n">tm_year</span><span class="o">=</span><span class="mi">2015</span><span class="p">,</span> <span class="n">tm_mon</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">tm_mday</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">tm_hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tm_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tm_sec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tm_wday</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tm_yday</span><span class="o">=</span><span class="mi">285</span><span class="p">,</span> <span class="n">tm_isdst</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
@@ -165,13 +170,13 @@
 <p><code>datetime.timedelta</code>对象和<code>datetime.time</code>对象的属性是类似的，只不过前者是时间差。<br />
 <code>total_seconds</code>方法返回总的秒数。</p>
 <p><code>timedelta</code>和<code>datetime</code>之间的数学运算可以归纳为    </p>
-<div class="hlcode"><pre><span class="n">timedelta</span> <span class="o">=</span> <span class="n">datetime</span> <span class="o">-</span> <span class="n">datetime</span>
+<div class="hlcode"><pre><span></span><span class="n">timedelta</span> <span class="o">=</span> <span class="n">datetime</span> <span class="o">-</span> <span class="n">datetime</span>
 <span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span> <span class="o">+</span> <span class="n">timedelta</span>
 </pre></div>
 
 
 <p>例如   </p>
-<div class="hlcode"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">delta</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">delta</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">delta</span>
 <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3600</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> 
@@ -182,7 +187,7 @@
 
 <h2 id="calendar">calendar 模块</h2>
 <p>这个模块主要提供日历的一些操作，可以很方便生成一个文本日历。    </p>
-<div class="hlcode"><pre><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">calendar</span><span class="o">.</span><span class="n">month</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">calendar</span><span class="o">.</span><span class="n">month</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
 
     <span class="n">October</span> <span class="mi">2015</span>
 <span class="n">Mo</span> <span class="n">Tu</span> <span class="n">We</span> <span class="n">Th</span> <span class="n">Fr</span> <span class="n">Sa</span> <span class="n">Su</span>
@@ -246,5 +251,9 @@ gitment.render('comments')
         })();
         </script>
 
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
     </body>
 </html>

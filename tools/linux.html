@@ -3,6 +3,9 @@
     <head>
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
         <title>Linux 基础知识 - tracholar's personal knowledge wiki</title>
@@ -17,7 +20,9 @@
         });
         </script>
         <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
 
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -78,7 +83,7 @@
 <li>重定向：<code>2&gt;&amp;1</code>表示将stderr重定向到stdout，<code>2&gt;/dev/null</code>表示重定向stderr到空洞，也就是不打印出stderr。<br />
   后面这个在运行hadoop和spark的时候有用。也可以将stdout和stderr重定向到不同文件，例如：        </li>
 </ul>
-<div class="hlcode"><pre>some-cmd 1&gt;stdout.txt 2&gt;stderr.txt
+<div class="hlcode"><pre><span></span>some-cmd <span class="m">1</span>&gt;stdout.txt <span class="m">2</span>&gt;stderr.txt
 </pre></div>
 
 
@@ -113,12 +118,12 @@ sudo [-klv]<br />
 nohup 无疑能通过忽略 HUP 信号来使我们的进程避免中途被中断，但如果我们换个角度思考，如果我们的进程不属于接受 HUP 信号的终端的子进程，那么自然也就不会受到 HUP 信号的影响了。setsid 就能帮助我们做到这一点。             <br />
 使用的时候，也只需在要处理的命令前加上 setsid 即可。<br />
 - 当我们将"&amp;"也放入“()”内之后，我们就会发现所提交的作业并不在作业列表中，也就是说，是无法通过jobs来查看的。让我们来看看为什么这样就能躲过 HUP 信号的影响吧。                     </p>
-<div class="hlcode"><pre>subshell 示例
-<span class="o">[</span>root@pvcent107 ~<span class="o">]</span><span class="c"># (ping www.ibm.com &amp;)</span>
-<span class="o">[</span>root@pvcent107 ~<span class="o">]</span><span class="c"># ps -ef |grep www.ibm.com</span>
-root     16270     1  0 14:13 pts/4    00:00:00 ping www.ibm.com
-root     16278 15362  0 14:13 pts/4    00:00:00 grep www.ibm.com
-<span class="o">[</span>root@pvcent107 ~<span class="o">]</span><span class="c">#</span>
+<div class="hlcode"><pre><span></span>subshell 示例
+<span class="o">[</span>root@pvcent107 ~<span class="o">]</span><span class="c1"># (ping www.ibm.com &amp;)</span>
+<span class="o">[</span>root@pvcent107 ~<span class="o">]</span><span class="c1"># ps -ef |grep www.ibm.com</span>
+root     <span class="m">16270</span>     <span class="m">1</span>  <span class="m">0</span> <span class="m">14</span>:13 pts/4    <span class="m">00</span>:00:00 ping www.ibm.com
+root     <span class="m">16278</span> <span class="m">15362</span>  <span class="m">0</span> <span class="m">14</span>:13 pts/4    <span class="m">00</span>:00:00 grep www.ibm.com
+<span class="o">[</span>root@pvcent107 ~<span class="o">]</span><span class="c1">#</span>
 </pre></div>
 
 
@@ -133,9 +138,9 @@ root     16278 15362  0 14:13 pts/4    00:00:00 grep www.ibm.com
 <ul>
 <li>grep 字符匹配</li>
 </ul>
-<div class="hlcode"><pre><span class="c">## 从log.txt中查找keyword出现的行</span>
+<div class="hlcode"><pre><span></span><span class="c1">## 从log.txt中查找keyword出现的行</span>
 grep keyword log.txt
-<span class="c">## 查询多个模式</span>
+<span class="c1">## 查询多个模式</span>
 grep -E <span class="s1">&#39;keyword|otherword&#39;</span> log.txt
 grep -e keyword -e otherword log.txt
 </pre></div>
@@ -169,14 +174,14 @@ grep -e keyword -e otherword log.txt
 </ul>
 <p>最后接你要周期执行的命令即可。</p>
 <h4 id="_8">例子</h4>
-<div class="hlcode"><pre><span class="c"># 监控log</span>
-watch -n 1 -d tail log-file
+<div class="hlcode"><pre><span></span><span class="c1"># 监控log</span>
+watch -n <span class="m">1</span> -d tail log-file
 
-<span class="c"># 显示网络连接变化</span>
-watch -n 1 -d netstat -ant
+<span class="c1"># 显示网络连接变化</span>
+watch -n <span class="m">1</span> -d netstat -ant
 
-<span class="c"># 每秒高亮显示http连接数变化</span>
-watch -n 1 -d <span class="s1">&#39;pstree|grep http&#39;</span>
+<span class="c1"># 每秒高亮显示http连接数变化</span>
+watch -n <span class="m">1</span> -d <span class="s1">&#39;pstree|grep http&#39;</span>
 </pre></div>
 
 
@@ -339,15 +344,15 @@ watch -n 1 -d <span class="s1">&#39;pstree|grep http&#39;</span>
     - <code>:/str/w file</code>  正向搜索，并将第一个包含字符串 str 的行写入 file 文件<br />
     - <code>:/str1/,/str2/w file</code> 正向搜索，并将包含字符串 str1 的行至包含字符串 str2 的行写<br />
 - 搜索正则表达式</p>
-<div class="hlcode"><pre>^                放在字符串前面，匹配行首的字；
-<span class="nv">$ </span>               放在字符串后面，匹配行尾的字；
+<div class="hlcode"><pre><span></span>^                放在字符串前面，匹配行首的字；
+$                放在字符串后面，匹配行尾的字；
 <span class="se">\&lt;</span>               匹配一个字的字头；
 <span class="se">\&gt;</span>               匹配一个字的字尾；
 .                匹配任何单个正文字符；
 <span class="o">[</span>str<span class="o">]</span>            匹配 str 中的任何单个字符；
 <span class="o">[</span>^str<span class="o">]</span>           匹配任何不在 str 中的单个字符；
 <span class="o">[</span>a-b<span class="o">]</span>            匹配 a 到 b 之间的任一字符；
-*                匹配前一个字符的 0 次或多次出现；
+*                匹配前一个字符的 <span class="m">0</span> 次或多次出现；
 <span class="se">\ </span>               转义后面的字符。
 </pre></div>
 
@@ -410,11 +415,11 @@ watch -n 1 -d <span class="s1">&#39;pstree|grep http&#39;</span>
 <p>选项设置，命令<code>:set option</code></p>
 </li>
 </ul>
-<div class="hlcode"><pre>autoindent        设置该选项，则正文自动缩进
+<div class="hlcode"><pre><span></span>autoindent        设置该选项，则正文自动缩进
 ignorecase        设置该选项，则忽略规则表达式中大小写字母的区别
 number            设置该选项，则显示正文行号
 ruler             设置该选项，则在屏幕底部显示光标所在行、列的位置
-tabstop           设置按 Tab 键跳过的空格数。例如 :set <span class="nv">tabstop</span><span class="o">=</span>n，n 默认值为 8
+tabstop           设置按 Tab 键跳过的空格数。例如 :set <span class="nv">tabstop</span><span class="o">=</span>n，n 默认值为 <span class="m">8</span>
 mk                将选项保存在当前目录的 .exrc 文件中
 </pre></div>
 
@@ -485,5 +490,9 @@ gitment.render('comments')
         })();
         </script>
 
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
     </body>
 </html>

@@ -3,6 +3,9 @@
     <head>
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
         <title>Keras 深度学习库 - tracholar's personal knowledge wiki</title>
@@ -17,7 +20,9 @@
         });
         </script>
         <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
 
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -79,25 +84,25 @@
 <h2 id="step-by-step">快速入门 Step by step</h2>
 <p>快速入门教程参考官方文档<a href="http://keras.io">http://keras.io</a></p>
 <p>Step1. 创建<code>Sequential</code>模型，通过<code>Sequential.add</code>方法添加层。</p>
-<div class="hlcode"><pre><span class="kn">from</span> <span class="nn">keras.models</span> <span class="kn">import</span> <span class="n">Sequential</span>
+<div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">keras.models</span> <span class="kn">import</span> <span class="n">Sequential</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
 
 <span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Activation</span>
 <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">output_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">input_dim</span><span class="o">=</span><span class="mi">100</span><span class="p">))</span>
-<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Activation</span><span class="p">(</span><span class="s">&quot;relu&quot;</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Activation</span><span class="p">(</span><span class="s2">&quot;relu&quot;</span><span class="p">))</span>
 <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">output_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
-<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Activation</span><span class="p">(</span><span class="s">&quot;softmax&quot;</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Activation</span><span class="p">(</span><span class="s2">&quot;softmax&quot;</span><span class="p">))</span>
 </pre></div>
 
 
 <p>Step2. 编译模型，可以指定优化方法和损失函数等</p>
-<div class="hlcode"><pre><span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s">&#39;categorical_crossentropy&#39;</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="s">&#39;sgd&#39;</span><span class="p">,</span>
-             <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;accuracy&#39;</span><span class="p">])</span>
+<div class="hlcode"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;categorical_crossentropy&#39;</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;sgd&#39;</span><span class="p">,</span>
+             <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
 </pre></div>
 
 
 <p>Step3. 调用<code>fit</code>方法训练模型，这里采用随机生成的数据</p>
-<div class="hlcode"><pre><span class="n">x_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="n">x_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
 <span class="n">y_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1000</span><span class="p">,))</span>
 <span class="n">y_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1000</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
 <span class="n">y_train</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">),</span> <span class="n">y_labels</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
@@ -107,7 +112,7 @@
 
 
 <p>Step 4. 模型预测，这里采用另一组随机生成的数据</p>
-<div class="hlcode"><pre><span class="n">x_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="n">x_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
 <span class="n">y_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1000</span><span class="p">,))</span>
 <span class="n">y_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1000</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
 <span class="n">y_test</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">),</span> <span class="n">y_labels</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
@@ -125,17 +130,17 @@
 <h2 id="sequential-model">Sequential model</h2>
 <p>所谓<code>Sequential</code>模型，就是多个layer的线性堆叠。可以通过构造函数创建一个多层的序列模型，<br />
 也可以通过<code>.add()</code>方法添加层。</p>
-<div class="hlcode"><pre><span class="c">## 通过构造函数创建模型，参数是 List[Model]</span>
+<div class="hlcode"><pre><span></span><span class="c1">## 通过构造函数创建模型，参数是 List[Model]</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">([</span>
     <span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">input_dim</span><span class="o">=</span><span class="mi">784</span><span class="p">),</span>
-    <span class="n">Activation</span><span class="p">(</span><span class="s">&#39;relu&#39;</span><span class="p">),</span>
+    <span class="n">Activation</span><span class="p">(</span><span class="s1">&#39;relu&#39;</span><span class="p">),</span>
     <span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
-    <span class="n">Activation</span><span class="p">(</span><span class="s">&#39;softmax&#39;</span><span class="p">),</span>
+    <span class="n">Activation</span><span class="p">(</span><span class="s1">&#39;softmax&#39;</span><span class="p">),</span>
 <span class="p">])</span>
-<span class="c">## 通过 .add() 添加层</span>
+<span class="c1">## 通过 .add() 添加层</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">input_dim</span><span class="o">=</span><span class="mi">784</span><span class="p">))</span>
-<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Activation</span><span class="p">(</span><span class="s">&#39;relu&#39;</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Activation</span><span class="p">(</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
 </pre></div>
 
 
@@ -147,19 +152,19 @@
 </ul>
 </li>
 </ul>
-<div class="hlcode"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+<div class="hlcode"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">784</span><span class="p">,)))</span>
 
 <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">batch_input_shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="mi">784</span><span class="p">)))</span>
-<span class="c"># note that batch dimension is &quot;None&quot; here,</span>
-<span class="c"># so the model will be able to process batches of any size.</span>
+<span class="c1"># note that batch dimension is &quot;None&quot; here,</span>
+<span class="c1"># so the model will be able to process batches of any size.</span>
 
 <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">input_dim</span><span class="o">=</span><span class="mi">784</span><span class="p">))</span>
 
 
-<span class="c">## 3D</span>
+<span class="c1">## 3D</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">)))</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
@@ -193,7 +198,7 @@
 <li>dot: dot product. You can specify which axes to reduce along via the argument dot_axes.</li>
 <li>cos: cosine proximity between vectors in 2D tensors.</li>
 </ul>
-<div class="hlcode"><pre><span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">Merge</span>
+<div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">Merge</span>
 
 <span class="n">left_branch</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
 <span class="n">left_branch</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">input_dim</span><span class="o">=</span><span class="mi">784</span><span class="p">))</span>
@@ -201,20 +206,20 @@
 <span class="n">right_branch</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
 <span class="n">right_branch</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">input_dim</span><span class="o">=</span><span class="mi">784</span><span class="p">))</span>
 
-<span class="c">## mode=&#39;concat&#39; 表示将两个tensor链接成一个长的tensor</span>
-<span class="n">merged</span> <span class="o">=</span> <span class="n">Merge</span><span class="p">([</span><span class="n">left_branch</span><span class="p">,</span> <span class="n">right_branch</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;concat&#39;</span><span class="p">)</span>
+<span class="c1">## mode=&#39;concat&#39; 表示将两个tensor链接成一个长的tensor</span>
+<span class="n">merged</span> <span class="o">=</span> <span class="n">Merge</span><span class="p">([</span><span class="n">left_branch</span><span class="p">,</span> <span class="n">right_branch</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;concat&#39;</span><span class="p">)</span>
 
 <span class="n">final_model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
 <span class="n">final_model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">merged</span><span class="p">)</span>
-<span class="n">final_model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">&#39;softmax&#39;</span><span class="p">))</span>
+<span class="n">final_model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">))</span>
 
-<span class="n">final_model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s">&#39;rmsprop&#39;</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s">&#39;categorical_crossentropy&#39;</span><span class="p">)</span>
-<span class="n">final_model</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="n">input_data_1</span><span class="p">,</span> <span class="n">input_data_2</span><span class="p">],</span> <span class="n">targets</span><span class="p">)</span>  <span class="c"># we pass one data array per model input</span>
+<span class="n">final_model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;rmsprop&#39;</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;categorical_crossentropy&#39;</span><span class="p">)</span>
+<span class="n">final_model</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="n">input_data_1</span><span class="p">,</span> <span class="n">input_data_2</span><span class="p">],</span> <span class="n">targets</span><span class="p">)</span>  <span class="c1"># we pass one data array per model input</span>
 </pre></div>
 
 
 <p>也可以采用自定义的函数进行融合。</p>
-<div class="hlcode"><pre><span class="n">merged</span> <span class="o">=</span> <span class="n">Merge</span><span class="p">([</span><span class="n">left_branch</span><span class="p">,</span> <span class="n">right_branch</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="n">merged</span> <span class="o">=</span> <span class="n">Merge</span><span class="p">([</span><span class="n">left_branch</span><span class="p">,</span> <span class="n">right_branch</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 
 
@@ -252,26 +257,26 @@
 </ul>
 </li>
 </ul>
-<div class="hlcode"><pre><span class="c"># for a multi-class classification problem</span>
-<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s">&#39;rmsprop&#39;</span><span class="p">,</span>
-              <span class="n">loss</span><span class="o">=</span><span class="s">&#39;categorical_crossentropy&#39;</span><span class="p">,</span>
-              <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;accuracy&#39;</span><span class="p">])</span>
+<div class="hlcode"><pre><span></span><span class="c1"># for a multi-class classification problem</span>
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;rmsprop&#39;</span><span class="p">,</span>
+              <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;categorical_crossentropy&#39;</span><span class="p">,</span>
+              <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
 
-<span class="c"># for a binary classification problem</span>
-<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s">&#39;rmsprop&#39;</span><span class="p">,</span>
-              <span class="n">loss</span><span class="o">=</span><span class="s">&#39;binary_crossentropy&#39;</span><span class="p">,</span>
-              <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;accuracy&#39;</span><span class="p">])</span>
+<span class="c1"># for a binary classification problem</span>
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;rmsprop&#39;</span><span class="p">,</span>
+              <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;binary_crossentropy&#39;</span><span class="p">,</span>
+              <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
 
-<span class="c"># for a mean squared error regression problem</span>
-<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s">&#39;rmsprop&#39;</span><span class="p">,</span>
-              <span class="n">loss</span><span class="o">=</span><span class="s">&#39;mse&#39;</span><span class="p">)</span>
+<span class="c1"># for a mean squared error regression problem</span>
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;rmsprop&#39;</span><span class="p">,</span>
+              <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;mse&#39;</span><span class="p">)</span>
 </pre></div>
 
 
 <h3 id="_4">训练</h3>
 <p>输入<code>np.ndarray</code>，调用<code>fit</code>训练模型。</p>
-<div class="hlcode"><pre><span class="c"># train the model, iterating on the data in batches</span>
-<span class="c"># of 32 samples</span>
+<div class="hlcode"><pre><span></span><span class="c1"># train the model, iterating on the data in batches</span>
+<span class="c1"># of 32 samples</span>
 <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">nb_epoch</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
 </pre></div>
 
@@ -279,7 +284,7 @@
 <h3 id="_5">模型评估</h3>
 <p>调用 <code>evaluate</code> 方法评估。</p>
 <h3 id="_6">模型预测</h3>
-<div class="hlcode"><pre><span class="n">classes</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_classes</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+<div class="hlcode"><pre><span></span><span class="n">classes</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_classes</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
 <span class="n">proba</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
 </pre></div>
 
@@ -297,43 +302,43 @@
 <li>输入tensor 和输出tensor 可以用来定义一个模型，与 theano 的函数一样</li>
 <li>上述定义的模型可以和Sequential 模型一样训练</li>
 </ul>
-<div class="hlcode"><pre><span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Dense</span>
+<div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Dense</span>
 <span class="kn">from</span> <span class="nn">keras.models</span> <span class="kn">import</span> <span class="n">Model</span>
 
-<span class="c"># this returns a tensor</span>
+<span class="c1"># this returns a tensor</span>
 <span class="n">inputs</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">784</span><span class="p">,))</span>
 
-<span class="c"># a layer instance is callable on a tensor, and returns a tensor</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">&#39;relu&#39;</span><span class="p">)(</span><span class="n">inputs</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">&#39;relu&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">predictions</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">&#39;softmax&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<span class="c1"># a layer instance is callable on a tensor, and returns a tensor</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">)(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
 
-<span class="c"># this creates a model that includes</span>
-<span class="c"># the Input layer and three Dense layers</span>
+<span class="c1"># this creates a model that includes</span>
+<span class="c1"># the Input layer and three Dense layers</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">predictions</span><span class="p">)</span>
-<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s">&#39;rmsprop&#39;</span><span class="p">,</span>
-              <span class="n">loss</span><span class="o">=</span><span class="s">&#39;categorical_crossentropy&#39;</span><span class="p">,</span>
-              <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;accuracy&#39;</span><span class="p">])</span>
-<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>  <span class="c"># starts training</span>
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;rmsprop&#39;</span><span class="p">,</span>
+              <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;categorical_crossentropy&#39;</span><span class="p">,</span>
+              <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>  <span class="c1"># starts training</span>
 </pre></div>
 
 
 <ul>
 <li>所有模型都是callable，所以可以重用一个模型。利用<code>TimeDistributed</code>，可以将图像的模型应用到video处理。</li>
 </ul>
-<div class="hlcode"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">784</span><span class="p">,))</span>
-<span class="c"># this works, and returns the 10-way softmax we defined above.</span>
+<div class="hlcode"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">784</span><span class="p">,))</span>
+<span class="c1"># this works, and returns the 10-way softmax we defined above.</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">TimeDistributed</span>
 
-<span class="c"># input tensor for sequences of 20 timesteps,</span>
-<span class="c"># each containing a 784-dimensional vector</span>
+<span class="c1"># input tensor for sequences of 20 timesteps,</span>
+<span class="c1"># each containing a 784-dimensional vector</span>
 <span class="n">input_sequences</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">784</span><span class="p">))</span>
 
-<span class="c"># this applies our previous model to every timestep in the input sequences.</span>
-<span class="c"># the output of the previous model was a 10-way softmax,</span>
-<span class="c"># so the output of the layer below will be a sequence of 20 vectors of size 10.</span>
+<span class="c1"># this applies our previous model to every timestep in the input sequences.</span>
+<span class="c1"># the output of the previous model was a 10-way softmax,</span>
+<span class="c1"># so the output of the layer below will be a sequence of 20 vectors of size 10.</span>
 <span class="n">processed_sequences</span> <span class="o">=</span> <span class="n">TimeDistributed</span><span class="p">(</span><span class="n">model</span><span class="p">)(</span><span class="n">input_sequences</span><span class="p">)</span>
 </pre></div>
 
@@ -341,59 +346,59 @@
 <h3 id="_8">多输入多输出模型</h3>
 <p>例如下图</p>
 <p><img alt="MIMO模型" src="https://s3.amazonaws.com/keras.io/img/multi-input-multi-output-graph.png" /></p>
-<div class="hlcode"><pre><span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Embedding</span><span class="p">,</span> <span class="n">LSTM</span><span class="p">,</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">merge</span>
+<div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Embedding</span><span class="p">,</span> <span class="n">LSTM</span><span class="p">,</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">merge</span>
 <span class="kn">from</span> <span class="nn">keras.models</span> <span class="kn">import</span> <span class="n">Model</span>
 
-<span class="c"># headline input: meant to receive sequences of 100 integers, between 1 and 10000.</span>
-<span class="c"># note that we can name any layer by passing it a &quot;name&quot; argument.</span>
-<span class="n">main_input</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;main_input&#39;</span><span class="p">)</span>
+<span class="c1"># headline input: meant to receive sequences of 100 integers, between 1 and 10000.</span>
+<span class="c1"># note that we can name any layer by passing it a &quot;name&quot; argument.</span>
+<span class="n">main_input</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int32&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;main_input&#39;</span><span class="p">)</span>
 
-<span class="c"># this embedding layer will encode the input sequence</span>
-<span class="c"># into a sequence of dense 512-dimensional vectors.</span>
+<span class="c1"># this embedding layer will encode the input sequence</span>
+<span class="c1"># into a sequence of dense 512-dimensional vectors.</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">Embedding</span><span class="p">(</span><span class="n">output_dim</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">input_dim</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">input_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)(</span><span class="n">main_input</span><span class="p">)</span>
 
-<span class="c"># a LSTM will transform the vector sequence into a single vector,</span>
-<span class="c"># containing information about the entire sequence</span>
+<span class="c1"># a LSTM will transform the vector sequence into a single vector,</span>
+<span class="c1"># containing information about the entire sequence</span>
 <span class="n">lstm_out</span> <span class="o">=</span> <span class="n">LSTM</span><span class="p">(</span><span class="mi">32</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
 
-<span class="c"># Here we insert the auxiliary loss, allowing the LSTM and Embedding layer</span>
-<span class="c"># to be trained smoothly even though the main loss will be much higher in the model.</span>
-<span class="n">auxiliary_loss</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">&#39;sigmoid&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;aux_output&#39;</span><span class="p">)(</span><span class="n">lstm_out</span><span class="p">)</span>
+<span class="c1"># Here we insert the auxiliary loss, allowing the LSTM and Embedding layer</span>
+<span class="c1"># to be trained smoothly even though the main loss will be much higher in the model.</span>
+<span class="n">auxiliary_loss</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;sigmoid&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;aux_output&#39;</span><span class="p">)(</span><span class="n">lstm_out</span><span class="p">)</span>
 
-<span class="c"># concat lstm_out 和 auxiliary_input 作为后续模型的输入</span>
-<span class="n">auxiliary_input</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,),</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;aux_input&#39;</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">merge</span><span class="p">([</span><span class="n">lstm_out</span><span class="p">,</span> <span class="n">auxiliary_input</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;concat&#39;</span><span class="p">)</span>
+<span class="c1"># concat lstm_out 和 auxiliary_input 作为后续模型的输入</span>
+<span class="n">auxiliary_input</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;aux_input&#39;</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">merge</span><span class="p">([</span><span class="n">lstm_out</span><span class="p">,</span> <span class="n">auxiliary_input</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;concat&#39;</span><span class="p">)</span>
 
-<span class="c"># we stack a deep fully-connected network on top</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">&#39;relu&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">&#39;relu&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">&#39;relu&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<span class="c1"># we stack a deep fully-connected network on top</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
 
-<span class="c"># and finally we add the main logistic regression layer</span>
-<span class="n">main_loss</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">&#39;sigmoid&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;main_output&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<span class="c1"># and finally we add the main logistic regression layer</span>
+<span class="n">main_loss</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;sigmoid&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;main_output&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
 
-<span class="c"># 创建这个多输入多输出模型</span>
+<span class="c1"># 创建这个多输入多输出模型</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="p">[</span><span class="n">main_input</span><span class="p">,</span> <span class="n">auxiliary_input</span><span class="p">],</span> <span class="n">output</span><span class="o">=</span><span class="p">[</span><span class="n">main_loss</span><span class="p">,</span> <span class="n">auxiliary_loss</span><span class="p">])</span>
 
-<span class="c"># 编译模型</span>
-<span class="c"># We compile the model and assign a weight of 0.2 to the auxiliary loss.</span>
-<span class="c"># To specify different loss_weights or loss for each different output,</span>
-<span class="c"># you can use a list or a dictionary. Here we pass a single loss as the loss argument,</span>
-<span class="c"># so the same loss will be used on all outputs.</span>
-<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s">&#39;rmsprop&#39;</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s">&#39;binary_crossentropy&#39;</span><span class="p">,</span>
+<span class="c1"># 编译模型</span>
+<span class="c1"># We compile the model and assign a weight of 0.2 to the auxiliary loss.</span>
+<span class="c1"># To specify different loss_weights or loss for each different output,</span>
+<span class="c1"># you can use a list or a dictionary. Here we pass a single loss as the loss argument,</span>
+<span class="c1"># so the same loss will be used on all outputs.</span>
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;rmsprop&#39;</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;binary_crossentropy&#39;</span><span class="p">,</span>
               <span class="n">loss_weights</span><span class="o">=</span><span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
-<span class="c"># 训练模型</span>
+<span class="c1"># 训练模型</span>
 <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="n">headline_data</span><span class="p">,</span> <span class="n">additional_data</span><span class="p">],</span> <span class="p">[</span><span class="n">labels</span><span class="p">,</span> <span class="n">labels</span><span class="p">],</span>
           <span class="n">nb_epoch</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
 
-<span class="c"># 因为我们为每一个输出层设置了name，所以也可以通过字典而不是list指定参数</span>
-<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s">&#39;rmsprop&#39;</span><span class="p">,</span>
-              <span class="n">loss</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;main_output&#39;</span><span class="p">:</span> <span class="s">&#39;binary_crossentropy&#39;</span><span class="p">,</span> <span class="s">&#39;aux_output&#39;</span><span class="p">:</span> <span class="s">&#39;binary_crossentropy&#39;</span><span class="p">},</span>
-              <span class="n">loss_weights</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;main_output&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span> <span class="s">&#39;aux_output&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">})</span>
+<span class="c1"># 因为我们为每一个输出层设置了name，所以也可以通过字典而不是list指定参数</span>
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;rmsprop&#39;</span><span class="p">,</span>
+              <span class="n">loss</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;main_output&#39;</span><span class="p">:</span> <span class="s1">&#39;binary_crossentropy&#39;</span><span class="p">,</span> <span class="s1">&#39;aux_output&#39;</span><span class="p">:</span> <span class="s1">&#39;binary_crossentropy&#39;</span><span class="p">},</span>
+              <span class="n">loss_weights</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;main_output&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span> <span class="s1">&#39;aux_output&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">})</span>
 
-<span class="c"># and trained it via:</span>
-<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">({</span><span class="s">&#39;main_input&#39;</span><span class="p">:</span> <span class="n">headline_data</span><span class="p">,</span> <span class="s">&#39;aux_input&#39;</span><span class="p">:</span> <span class="n">additional_data</span><span class="p">},</span>
-          <span class="p">{</span><span class="s">&#39;main_output&#39;</span><span class="p">:</span> <span class="n">labels</span><span class="p">,</span> <span class="s">&#39;aux_output&#39;</span><span class="p">:</span> <span class="n">labels</span><span class="p">},</span>
+<span class="c1"># and trained it via:</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">({</span><span class="s1">&#39;main_input&#39;</span><span class="p">:</span> <span class="n">headline_data</span><span class="p">,</span> <span class="s1">&#39;aux_input&#39;</span><span class="p">:</span> <span class="n">additional_data</span><span class="p">},</span>
+          <span class="p">{</span><span class="s1">&#39;main_output&#39;</span><span class="p">:</span> <span class="n">labels</span><span class="p">,</span> <span class="s1">&#39;aux_output&#39;</span><span class="p">:</span> <span class="n">labels</span><span class="p">},</span>
           <span class="n">nb_epoch</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
 </pre></div>
 
@@ -401,36 +406,36 @@
 <h3 id="shared-layers">Shared layers 共享层</h3>
 <p>比如训练一个模型，预测两个tweets是否来自同一个人，首先可以用LSTM将两个tweet转换为两个向量，<br />
 而这个LSTM对两个tweet都能用，所以可以将这个LSTM层共享。</p>
-<div class="hlcode"><pre><span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">LSTM</span><span class="p">,</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">merge</span>
+<div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">LSTM</span><span class="p">,</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">merge</span>
 <span class="kn">from</span> <span class="nn">keras.models</span> <span class="kn">import</span> <span class="n">Model</span>
 
 <span class="n">tweet_a</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">140</span><span class="p">,</span> <span class="mi">256</span><span class="p">))</span>
 <span class="n">tweet_b</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">140</span><span class="p">,</span> <span class="mi">256</span><span class="p">))</span>
 
-<span class="c"># this layer can take as input a matrix</span>
-<span class="c"># and will return a vector of size 64</span>
+<span class="c1"># this layer can take as input a matrix</span>
+<span class="c1"># and will return a vector of size 64</span>
 <span class="n">shared_lstm</span> <span class="o">=</span> <span class="n">LSTM</span><span class="p">(</span><span class="mi">64</span><span class="p">)</span>
 
-<span class="c"># when we reuse the same layer instance</span>
-<span class="c"># multiple times, the weights of the layer</span>
-<span class="c"># are also being reused</span>
-<span class="c"># (it is effectively *the same* layer)</span>
+<span class="c1"># when we reuse the same layer instance</span>
+<span class="c1"># multiple times, the weights of the layer</span>
+<span class="c1"># are also being reused</span>
+<span class="c1"># (it is effectively *the same* layer)</span>
 <span class="n">encoded_a</span> <span class="o">=</span> <span class="n">shared_lstm</span><span class="p">(</span><span class="n">tweet_a</span><span class="p">)</span>
 <span class="n">encoded_b</span> <span class="o">=</span> <span class="n">shared_lstm</span><span class="p">(</span><span class="n">tweet_b</span><span class="p">)</span>
 
-<span class="c"># we can then concatenate the two vectors:</span>
-<span class="n">merged_vector</span> <span class="o">=</span> <span class="n">merge</span><span class="p">([</span><span class="n">encoded_a</span><span class="p">,</span> <span class="n">encoded_b</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;concat&#39;</span><span class="p">,</span> <span class="n">concat_axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># we can then concatenate the two vectors:</span>
+<span class="n">merged_vector</span> <span class="o">=</span> <span class="n">merge</span><span class="p">([</span><span class="n">encoded_a</span><span class="p">,</span> <span class="n">encoded_b</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;concat&#39;</span><span class="p">,</span> <span class="n">concat_axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="c"># and add a logistic regression on top</span>
-<span class="n">predictions</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">&#39;sigmoid&#39;</span><span class="p">)(</span><span class="n">merged_vector</span><span class="p">)</span>
+<span class="c1"># and add a logistic regression on top</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;sigmoid&#39;</span><span class="p">)(</span><span class="n">merged_vector</span><span class="p">)</span>
 
-<span class="c"># we define a trainable model linking the</span>
-<span class="c"># tweet inputs to the predictions</span>
+<span class="c1"># we define a trainable model linking the</span>
+<span class="c1"># tweet inputs to the predictions</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="p">[</span><span class="n">tweet_a</span><span class="p">,</span> <span class="n">tweet_b</span><span class="p">],</span> <span class="n">output</span><span class="o">=</span><span class="n">predictions</span><span class="p">)</span>
 
-<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s">&#39;rmsprop&#39;</span><span class="p">,</span>
-              <span class="n">loss</span><span class="o">=</span><span class="s">&#39;binary_crossentropy&#39;</span><span class="p">,</span>
-              <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;accuracy&#39;</span><span class="p">])</span>
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;rmsprop&#39;</span><span class="p">,</span>
+              <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;binary_crossentropy&#39;</span><span class="p">,</span>
+              <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
 <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="n">data_a</span><span class="p">,</span> <span class="n">data_b</span><span class="p">],</span> <span class="n">labels</span><span class="p">,</span> <span class="n">nb_epoch</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 
@@ -444,14 +449,14 @@
 <li>inception modeule</li>
 <li>residual connection</li>
 </ul>
-<div class="hlcode"><pre><span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">merge</span><span class="p">,</span> <span class="n">Convolution2D</span><span class="p">,</span> <span class="n">Input</span>
+<div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">merge</span><span class="p">,</span> <span class="n">Convolution2D</span><span class="p">,</span> <span class="n">Input</span>
 
-<span class="c"># input tensor for a 3-channel 256x256 image</span>
+<span class="c1"># input tensor for a 3-channel 256x256 image</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">))</span>
-<span class="c"># 3x3 conv with 3 output channels (same as input channels)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">Convolution2D</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">border_mode</span><span class="o">=</span><span class="s">&#39;same&#39;</span><span class="p">)</span>
-<span class="c"># this returns x + y.</span>
-<span class="n">z</span> <span class="o">=</span> <span class="n">merge</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;sum&#39;</span><span class="p">)</span>
+<span class="c1"># 3x3 conv with 3 output channels (same as input channels)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">Convolution2D</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">border_mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+<span class="c1"># this returns x + y.</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">merge</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">)</span>
 </pre></div>
 
 
@@ -490,23 +495,23 @@
 <li><code>Reshape(hape)</code> shape:Tuple，将特征尺寸reshape，不影响样本维度。</li>
 <li><code>Permute(dims)</code> dims:Tuple[int,int,...] 将维度重新变换，如果dims是两个元素，相当于转置。</li>
 </ul>
-<div class="hlcode"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+<div class="hlcode"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Permute</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">)))</span>
-<span class="c"># now: model.output_shape == (None, 64, 10)</span>
-<span class="c"># note: `None` is the batch dimension</span>
+<span class="c1"># now: model.output_shape == (None, 64, 10)</span>
+<span class="c1"># note: `None` is the batch dimension</span>
 </pre></div>
 
 
 <ul>
 <li><code>RepeatVector(n:Int)</code> 将输入重复n次，</li>
 </ul>
-<div class="hlcode"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+<div class="hlcode"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">input_dim</span><span class="o">=</span><span class="mi">32</span><span class="p">))</span>
-<span class="c"># now: model.output_shape == (None, 32)</span>
-<span class="c"># note: `None` is the batch dimension</span>
+<span class="c1"># now: model.output_shape == (None, 32)</span>
+<span class="c1"># note: `None` is the batch dimension</span>
 
 <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">RepeatVector</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-<span class="c"># now: model.output_shape == (None, 3, 32)</span>
+<span class="c1"># now: model.output_shape == (None, 3, 32)</span>
 </pre></div>
 
 
@@ -514,7 +519,7 @@
 <li><code>Merge(layers:List[Layer], mode:String|Function, ...)</code> 融合层。</li>
 <li><code>Lambda(func:Function, output_shape:Tuple, args:Dict)</code> 将任意符号函数应用到之前的层</li>
 </ul>
-<div class="hlcode"><pre><span class="c"># add a x -&gt; x^2 layer</span>
+<div class="hlcode"><pre><span></span><span class="c1"># add a x -&gt; x^2 layer</span>
 <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Lambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
 </pre></div>
 
@@ -533,13 +538,13 @@
 <li><code>plot(model, to_file=filename, show_shapes=False, show_layer_names=True)</code> 保存到文件</li>
 <li><code>model_to_dot(model, show_shapes=False, show_layer_names=True).create(format='dot')</code> 输出为dot绘图格式，也可以指定<code>format</code>为svg等格式。然后利用<code>IPython.display</code> 模块输出为SVG图像。</li>
 </ul>
-<div class="hlcode"><pre><span class="kn">from</span> <span class="nn">keras.utils.visualize_util</span> <span class="kn">import</span> <span class="n">plot</span>
+<div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">keras.utils.visualize_util</span> <span class="kn">import</span> <span class="n">plot</span>
 <span class="n">plot</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">show_shapes</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">SVG</span>
 <span class="kn">from</span> <span class="nn">keras.utils.visualize_util</span> <span class="kn">import</span> <span class="n">model_to_dot</span>
 
-<span class="n">SVG</span><span class="p">(</span><span class="n">model_to_dot</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">show_shapes</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;dot&#39;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;svg&#39;</span><span class="p">))</span>
+<span class="n">SVG</span><span class="p">(</span><span class="n">model_to_dot</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">show_shapes</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s1">&#39;dot&#39;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;svg&#39;</span><span class="p">))</span>
 </pre></div>
 
 
@@ -598,5 +603,9 @@ gitment.render('comments')
         })();
         </script>
 
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
     </body>
 </html>

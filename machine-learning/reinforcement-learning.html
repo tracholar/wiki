@@ -3,6 +3,9 @@
     <head>
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
         <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
         <title>强化学习 - tracholar's personal knowledge wiki</title>
@@ -17,7 +20,9 @@
         });
         </script>
         <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
 
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -53,6 +58,7 @@
 <li><a href="#dqn-agent">DQN：利用 agent 自身经验构建样本！</a></li>
 <li><a href="#double-dqn">Double DQN</a></li>
 <li><a href="#prioritised-replay">Prioritised replay</a></li>
+<li><a href="#duelling-network">Duelling network</a></li>
 <li><a href="#deep-policy-networks">Deep Policy Networks</a></li>
 </ul>
 </li>
@@ -193,7 +199,18 @@ $$</p>
 P(i) = \frac{p_i^{\alpha}}{\sum_k p_k^{\alpha}} \\<br />
 p_i = \delta_i + \epsilon<br />
 $$</p>
-<p>Duelling network</p>
+<h3 id="duelling-network">Duelling network</h3>
+<p>将 Q 函数分解为状态值函数与 advantage function（不知道怎么翻译） 之和。</p>
+<p>$$<br />
+Q(s,a; \theta, \alpha, \beta) = V(s; \theta, \alpha) + A(s,a; \theta, \alpha)<br />
+$$</p>
+<p>上式V和A之间是不定的，可以相差一个任意常数，不影响结果。为此，有两种解决方案，减最大值和平均值。<br />
+平均值方案更加稳定，因为V只需要跟踪平均波动，而不是最大波动。</p>
+<p>$$<br />
+Q(s,a; \theta, \alpha, \beta) = V(s; \theta, \alpha) + \left( A(s,a; \theta, \alpha) - \max_{a'\in \mathcal{A}} A(s,a'; \theta, \alpha) \right)  \\<br />
+Q(s,a; \theta, \alpha, \beta) = V(s; \theta, \alpha) + \left( A(s,a; \theta, \alpha) - \frac{1}{|\mathcal{A}|} \sum_{a'} A(s,a'; \theta, \alpha) \right)<br />
+$$</p>
+<p><img alt="Duelling network" src="/wiki/static/images/duelling-net.png" /></p>
 <h3 id="deep-policy-networks">Deep Policy Networks</h3>
 <p>用神经网络建模策略函数</p>
 <p>$$<br />
@@ -207,7 +224,8 @@ $$</p>
 <ul>
 <li>强化学习书籍：<a href="https://webdocs.cs.ualberta.ca/~sutton/book/ebook/the-book.html">https://webdocs.cs.ualberta.ca/~sutton/book/ebook/the-book.html</a></li>
 <li>Tutorial: Deep Reinforcement Learning， ICML 2016. David Silver, Google Deepmind.</li>
-<li>Berkeley 课程：Deep RL. <a href="http://rll.berkeley.edu/deeprlcourse/">http://rll.berkeley.edu/deeprlcourse/</a></li>
+<li>CS234: Reinforcement Learning <a href="http://web.stanford.edu/class/cs234/index.html">http://web.stanford.edu/class/cs234/index.html</a></li>
+<li>Berkeley 课程：CS 294: Deep Reinforcement Learning. <a href="http://rll.berkeley.edu/deeprlcourse/">http://rll.berkeley.edu/deeprlcourse/</a></li>
 <li><a href="http://ai.berkeley.edu/course_schedule.html">http://ai.berkeley.edu/course_schedule.html</a></li>
 </ul>
 </div>
@@ -256,5 +274,9 @@ gitment.render('comments')
         })();
         </script>
 
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
     </body>
 </html>
