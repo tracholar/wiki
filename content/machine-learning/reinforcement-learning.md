@@ -142,7 +142,23 @@ P(i) = \frac{p_i^{\alpha}}{\sum_k p_k^{\alpha}} \\\\
 p_i = \delta_i + \epsilon
 $$
 
-Duelling network
+### Duelling network
+将 Q 函数分解为状态值函数与 advantage function（不知道怎么翻译） 之和。
+
+$$
+Q(s,a; \theta, \alpha, \beta) = V(s; \theta, \alpha) + A(s,a; \theta, \alpha)
+$$
+
+上式V和A之间是不定的，可以相差一个任意常数，不影响结果。为此，有两种解决方案，减最大值和平均值。
+平均值方案更加稳定，因为V只需要跟踪平均波动，而不是最大波动。
+
+$$
+Q(s,a; \theta, \alpha, \beta) = V(s; \theta, \alpha) + \left( A(s,a; \theta, \alpha) - \max_{a'\in \mathcal{A}} A(s,a'; \theta, \alpha) \right)  \\\\
+Q(s,a; \theta, \alpha, \beta) = V(s; \theta, \alpha) + \left( A(s,a; \theta, \alpha) - \frac{1}{|\mathcal{A}|} \sum_{a'} A(s,a'; \theta, \alpha) \right)
+$$
+
+
+![Duelling network](/wiki/static/images/duelling-net.png)
 
 ### Deep Policy Networks
 用神经网络建模策略函数
@@ -162,5 +178,6 @@ $$
 ## 相关资料
 - 强化学习书籍：<https://webdocs.cs.ualberta.ca/~sutton/book/ebook/the-book.html>
 - Tutorial: Deep Reinforcement Learning， ICML 2016. David Silver, Google Deepmind.
-- Berkeley 课程：Deep RL. <http://rll.berkeley.edu/deeprlcourse/>
+- CS234: Reinforcement Learning <http://web.stanford.edu/class/cs234/index.html>
+- Berkeley 课程：CS 294: Deep Reinforcement Learning. <http://rll.berkeley.edu/deeprlcourse/>
 - <http://ai.berkeley.edu/course_schedule.html>
