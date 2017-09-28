@@ -20,8 +20,8 @@ else
     simiki g
     cd output
     mkdir src
-    cp ../src/*.html .
-    cp ../src/*/*.html .
+    cp ../src/*.html src/
+    cp ../src/*/*.html src/
     git add . --all
     git commit -am "$1"
     git pull origin gh-pages
