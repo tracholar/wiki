@@ -21,6 +21,7 @@ else
     cd output
     mkdir src
     cp ../src/*.html .
+    cp ../src/*/*.html .
     git add . --all
     git commit -am "$1"
     git pull origin gh-pages
