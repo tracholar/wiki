@@ -47,17 +47,34 @@
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">问题背景</a></li>
-<li><a href="#id-score">id  |   score</a></li>
 <li><a href="#_2">现象</a></li>
 <li><a href="#_3">解释</a></li>
 </ul>
 </div>
 <h2 id="_1">问题背景</h2>
 <p>现有源表A，包含两列，id和score</p>
-<h2 id="id-score">id  |   score</h2>
-<p>1   |   0.3<br />
-2   |   0.5<br />
-8   |   0.9</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>score</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0.3</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0.5</td>
+</tr>
+<tr>
+<td>8</td>
+<td>0.9</td>
+</tr>
+</tbody>
+</table>
 <p>A表大约有3亿条记录，现在需要根据score将记录分为10个等级。<br />
 于是，很容易用聚合函数 <code>percentile_approx()</code> 通过转换为窗函数实现</p>
 <div class="hlcode"><pre><span></span><span class="k">select</span> <span class="n">id</span><span class="p">,</span> <span class="n">array_search</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
