@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>Hive中窗函数的一个问题 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#hive">hive</a>&nbsp;»&nbsp;Hive中窗函数的一个问题</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">Hive中窗函数的一个问题</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">问题背景</a></li>
+<li><a href="#id-score">id  |   score</a></li>
+<li><a href="#_2">现象</a></li>
+<li><a href="#_3">解释</a></li>
+</ul>
+</div>
+<h2 id="_1">问题背景</h2>
+<p>现有源表A，包含两列，id和score</p>
+<h2 id="id-score">id  |   score</h2>
+<p>1   |   0.3<br />
+2   |   0.5<br />
+8   |   0.9</p>
+<p>A表大约有3亿条记录，现在需要根据score将记录分为10个等级。<br />
+于是，很容易用聚合函数 <code>percentile_approx()</code> 通过转换为窗函数实现</p>
+<div class="hlcode"><pre><span></span><span class="k">select</span> <span class="n">id</span><span class="p">,</span> <span class="n">array_search</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
+<span class="k">from</span> <span class="p">(</span>
+    <span class="k">select</span> <span class="n">id</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">percentile_approx</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="nb">array</span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">8</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">9</span><span class="p">))</span> <span class="n">over</span> <span class="p">()</span> <span class="k">as</span> <span class="n">splits</span>
+    <span class="k">from</span> <span class="n">A</span>
+<span class="p">)</span><span class="n">t</span>
+</pre></div>
+
+
+<p><code>array_search</code> 是自己写的一个UDF，寻找score所在的分段！</p>
+<h2 id="_2">现象</h2>
+<p>运行的时候发现，多个reduce最后一个运行特别慢，而且当运行到100%后会卡死，直到大约20分钟结束，<br />
+在输出的数据分片中，发现所有的数据都集中到一个分片了。</p>
+<h2 id="_3">解释</h2>
+<p>问题在 <code>over ()</code> 将聚合函数转换为窗函数上，窗函数会将同一个partition的数据分到一个reduce上，<br />
+如果是 <code>over (partition by xx)</code>，那么xx字段相同的值会在同一个reduce上，然而这里是将所有的记录当做同一个分片，<br />
+因而出现了所有数据集中到一个reduce上面的现象，进而导致写入数据的时候，只有一个reduce在写入3亿条记录。<br />
+导致看起来就像卡死在100%这个状态了！</p>
+<p>解决办法：不要用窗函数，用join</p>
+<div class="hlcode"><pre><span></span><span class="k">select</span> <span class="n">id</span><span class="p">,</span> <span class="n">array_search</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span> <span class="k">from</span> <span class="n">A</span>
+<span class="k">join</span> <span class="p">(</span>
+    <span class="k">select</span> <span class="n">percentile_approx</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="nb">array</span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">8</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">9</span><span class="p">))</span> <span class="k">as</span> <span class="n">splits</span>
+    <span class="k">from</span> <span class="n">A</span>
+<span class="p">)</span><span class="n">t</span>
+</pre></div>
+
+
+<p>经过改造后，运行时间从之前接近1小时减少到5分钟！</p>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2017-10-10 </span></div>
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: 'Hive中窗函数的一个问题',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2017 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>
