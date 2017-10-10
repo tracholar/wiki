@@ -49,6 +49,7 @@
 <li><a href="#_1">问题背景</a></li>
 <li><a href="#_2">现象</a></li>
 <li><a href="#_3">解释</a></li>
+<li><a href="#_4">解决办法</a></li>
 </ul>
 </div>
 <h2 id="_1">问题背景</h2>
@@ -79,7 +80,8 @@
 于是，很容易用聚合函数 <code>percentile_approx()</code> 通过转换为窗函数实现</p>
 <div class="hlcode"><pre><span></span><span class="k">select</span> <span class="n">id</span><span class="p">,</span> <span class="n">array_search</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
 <span class="k">from</span> <span class="p">(</span>
-    <span class="k">select</span> <span class="n">id</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">percentile_approx</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="nb">array</span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">8</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">9</span><span class="p">))</span> <span class="n">over</span> <span class="p">()</span> <span class="k">as</span> <span class="n">splits</span>
+    <span class="k">select</span> <span class="n">id</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span>
+        <span class="n">percentile_approx</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="nb">array</span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">8</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">9</span><span class="p">))</span> <span class="n">over</span> <span class="p">()</span> <span class="k">as</span> <span class="n">splits</span>
     <span class="k">from</span> <span class="n">A</span>
 <span class="p">)</span><span class="n">t</span>
 </pre></div>
@@ -92,9 +94,10 @@
 <h2 id="_3">解释</h2>
 <p>问题在 <code>over ()</code> 将聚合函数转换为窗函数上，窗函数会将同一个partition的数据分到一个reduce上，<br />
 如果是 <code>over (partition by xx)</code>，那么xx字段相同的值会在同一个reduce上，然而这里是将所有的记录当做同一个分片，<br />
-因而出现了所有数据集中到一个reduce上面的现象，进而导致写入数据的时候，只有一个reduce在写入3亿条记录。<br />
-导致看起来就像卡死在100%这个状态了！</p>
-<p>解决办法：不要用窗函数，用join</p>
+因而出现了所有数据集中到一个reduce上面的现象，进而导致写入数据的时候，只有一个reduce在写入3亿条记录，<br />
+使得看起来就像卡死在100%这个状态了！</p>
+<h2 id="_4">解决办法</h2>
+<p>不要用窗函数，而用<code>(map) join</code>，HIVE会自动将这个join操作转为 map join。</p>
 <div class="hlcode"><pre><span></span><span class="k">select</span> <span class="n">id</span><span class="p">,</span> <span class="n">array_search</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span> <span class="k">from</span> <span class="n">A</span>
 <span class="k">join</span> <span class="p">(</span>
     <span class="k">select</span> <span class="n">percentile_approx</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="nb">array</span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">8</span><span class="p">,</span><span class="mi">0</span><span class="p">.</span><span class="mi">9</span><span class="p">))</span> <span class="k">as</span> <span class="n">splits</span>
