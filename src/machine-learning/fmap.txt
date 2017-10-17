@@ -1,0 +1,4 @@
+0	sepal length (cm)	q
+1	sepal width (cm)	q
+2	petal length (cm)	q
+3	petal width (cm)	q

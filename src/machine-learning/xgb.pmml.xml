@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PMML xmlns="http://www.dmg.org/PMML-4_3" version="4.3">
+	<Header>
+		<Application name="JPMML-XGBoost" version="1.2-SNAPSHOT"/>
+		<Timestamp>2017-10-17T03:34:01Z</Timestamp>
+	</Header>
+	<DataDictionary>
+		<DataField name="_target" optype="continuous" dataType="float"/>
+		<DataField name="petal length (cm)" optype="continuous" dataType="float"/>
+	</DataDictionary>
+	<MiningModel functionName="regression" x-mathContext="float">
+		<MiningSchema>
+			<MiningField name="_target" usageType="target"/>
+			<MiningField name="petal length (cm)"/>
+		</MiningSchema>
+		<Segmentation multipleModelMethod="modelChain">
+			<Segment id="1">
+				<True/>
+				<MiningModel functionName="regression" x-mathContext="float">
+					<MiningSchema>
+						<MiningField name="petal length (cm)"/>
+					</MiningSchema>
+					<Output>
+						<OutputField name="xgbValue" optype="continuous" dataType="float" feature="predictedValue" isFinalResult="false"/>
+					</Output>
+					<Segmentation multipleModelMethod="sum">
+						<Segment id="1">
+							<True/>
+							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
+								<MiningSchema>
+									<MiningField name="petal length (cm)"/>
+								</MiningSchema>
+								<Node id="1" defaultChild="2">
+									<True/>
+									<Node id="2" score="-0.5555556">
+										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
+									</Node>
+									<Node id="3" score="0.5555556">
+										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+									</Node>
+								</Node>
+							</TreeModel>
+						</Segment>
+						<Segment id="2">
+							<True/>
+							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
+								<MiningSchema>
+									<MiningField name="petal length (cm)"/>
+								</MiningSchema>
+								<Node id="1" defaultChild="2">
+									<True/>
+									<Node id="2" score="-0.43460518">
+										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
+									</Node>
+									<Node id="3" score="0.43460515">
+										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+									</Node>
+								</Node>
+							</TreeModel>
+						</Segment>
+						<Segment id="3">
+							<True/>
+							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
+								<MiningSchema>
+									<MiningField name="petal length (cm)"/>
+								</MiningSchema>
+								<Node id="1" defaultChild="2">
+									<True/>
+									<Node id="2" score="-0.3736209">
+										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
+									</Node>
+									<Node id="3" score="0.3736209">
+										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+									</Node>
+								</Node>
+							</TreeModel>
+						</Segment>
+						<Segment id="4">
+							<True/>
+							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
+								<MiningSchema>
+									<MiningField name="petal length (cm)"/>
+								</MiningSchema>
+								<Node id="1" defaultChild="2">
+									<True/>
+									<Node id="2" score="-0.33534816">
+										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
+									</Node>
+									<Node id="3" score="0.33534813">
+										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+									</Node>
+								</Node>
+							</TreeModel>
+						</Segment>
+						<Segment id="5">
+							<True/>
+							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
+								<MiningSchema>
+									<MiningField name="petal length (cm)"/>
+								</MiningSchema>
+								<Node id="1" defaultChild="2">
+									<True/>
+									<Node id="2" score="-0.30775395">
+										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
+									</Node>
+									<Node id="3" score="0.30775395">
+										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+									</Node>
+								</Node>
+							</TreeModel>
+						</Segment>
+						<Segment id="6">
+							<True/>
+							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
+								<MiningSchema>
+									<MiningField name="petal length (cm)"/>
+								</MiningSchema>
+								<Node id="1" defaultChild="2">
+									<True/>
+									<Node id="2" score="-0.28562728">
+										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
+									</Node>
+									<Node id="3" score="0.28562734">
+										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+									</Node>
+								</Node>
+							</TreeModel>
+						</Segment>
+						<Segment id="7">
+							<True/>
+							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
+								<MiningSchema>
+									<MiningField name="petal length (cm)"/>
+								</MiningSchema>
+								<Node id="1" defaultChild="2">
+									<True/>
+									<Node id="2" score="-0.26637065">
+										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
+									</Node>
+									<Node id="3" score="0.26637065">
+										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+									</Node>
+								</Node>
+							</TreeModel>
+						</Segment>
+						<Segment id="8">
+							<True/>
+							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
+								<MiningSchema>
+									<MiningField name="petal length (cm)"/>
+								</MiningSchema>
+								<Node id="1" defaultChild="2">
+									<True/>
+									<Node id="2" score="-0.24863355">
+										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
+									</Node>
+									<Node id="3" score="0.24863355">
+										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+									</Node>
+								</Node>
+							</TreeModel>
+						</Segment>
+						<Segment id="9">
+							<True/>
+							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
+								<MiningSchema>
+									<MiningField name="petal length (cm)"/>
+								</MiningSchema>
+								<Node id="1" defaultChild="2">
+									<True/>
+									<Node id="2" score="-0.23175785">
+										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
+									</Node>
+									<Node id="3" score="0.23175776">
+										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+									</Node>
+								</Node>
+							</TreeModel>
+						</Segment>
+						<Segment id="10">
+							<True/>
+							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
+								<MiningSchema>
+									<MiningField name="petal length (cm)"/>
+								</MiningSchema>
+								<Node id="1" defaultChild="2">
+									<True/>
+									<Node id="2" score="-0.21549894">
+										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
+									</Node>
+									<Node id="3" score="0.21549894">
+										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+									</Node>
+								</Node>
+							</TreeModel>
+						</Segment>
+					</Segmentation>
+				</MiningModel>
+			</Segment>
+			<Segment id="2">
+				<True/>
+				<RegressionModel functionName="regression" normalizationMethod="logit" x-mathContext="float">
+					<MiningSchema>
+						<MiningField name="_target" usageType="target"/>
+						<MiningField name="xgbValue"/>
+					</MiningSchema>
+					<RegressionTable intercept="0.0">
+						<NumericPredictor name="xgbValue" coefficient="1.0"/>
+					</RegressionTable>
+				</RegressionModel>
+			</Segment>
+		</Segmentation>
+	</MiningModel>
+</PMML>
