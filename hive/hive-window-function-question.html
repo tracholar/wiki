@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>Hive中窗函数的一个问题 - tracholar's personal knowledge wiki</title>
+        <title>Hive中窗函数数据倾斜的问题 - tracholar's personal knowledge wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -40,10 +40,10 @@
         <div id="container">
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#hive">hive</a>&nbsp;»&nbsp;Hive中窗函数的一个问题</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#hive">hive</a>&nbsp;»&nbsp;Hive中窗函数数据倾斜的问题</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">Hive中窗函数的一个问题</div>
+<div id="title">Hive中窗函数数据倾斜的问题</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">问题背景</a></li>
@@ -76,7 +76,35 @@
 </tr>
 </tbody>
 </table>
-<p>A表大约有3亿条记录，现在需要根据score将记录分为10个等级。<br />
+<p>A表大约有3亿条记录，现在需要根据score的排序将记录分为10个等级。<br />
+将score按照从小到大排序，score在前10%的记录，等级为0；10%-20%之间的，等级为1；以此类推。</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>score</th>
+<th>level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0.3</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0.5</td>
+<td>5</td>
+</tr>
+<tr>
+<td>8</td>
+<td>0.9</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+<p>如果用全局排序实现，需要对3亿条记录排序，非常慢。可以先利用分位点近似算法，近似寻找10%,20%,...,90%分位点来优化。<br />
 于是，很容易用聚合函数 <code>percentile_approx()</code> 通过转换为窗函数实现</p>
 <div class="hlcode"><pre><span></span><span class="k">select</span> <span class="n">id</span><span class="p">,</span> <span class="n">array_search</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
 <span class="k">from</span> <span class="p">(</span>
@@ -115,7 +143,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: 'Hive中窗函数的一个问题',
+  title: 'Hive中窗函数数据倾斜的问题',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
