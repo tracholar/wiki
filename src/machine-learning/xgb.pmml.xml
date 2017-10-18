@@ -2,15 +2,19 @@
 <PMML xmlns="http://www.dmg.org/PMML-4_3" version="4.3">
 	<Header>
 		<Application name="JPMML-XGBoost" version="1.2-SNAPSHOT"/>
-		<Timestamp>2017-10-17T03:34:01Z</Timestamp>
+		<Timestamp>2017-10-18T03:53:12Z</Timestamp>
 	</Header>
 	<DataDictionary>
 		<DataField name="_target" optype="continuous" dataType="float"/>
+		<DataField name="sepal width (cm)" optype="continuous" dataType="float"/>
 		<DataField name="petal length (cm)" optype="continuous" dataType="float"/>
+		<DataField name="petal width (cm)" optype="continuous" dataType="float"/>
 	</DataDictionary>
 	<MiningModel functionName="regression" x-mathContext="float">
 		<MiningSchema>
 			<MiningField name="_target" usageType="target"/>
+			<MiningField name="sepal width (cm)"/>
+			<MiningField name="petal width (cm)"/>
 			<MiningField name="petal length (cm)"/>
 		</MiningSchema>
 		<Segmentation multipleModelMethod="modelChain">
@@ -18,6 +22,8 @@
 				<True/>
 				<MiningModel functionName="regression" x-mathContext="float">
 					<MiningSchema>
+						<MiningField name="sepal width (cm)"/>
+						<MiningField name="petal width (cm)"/>
 						<MiningField name="petal length (cm)"/>
 					</MiningSchema>
 					<Output>
@@ -29,14 +35,27 @@
 							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
 								<MiningSchema>
 									<MiningField name="petal length (cm)"/>
+									<MiningField name="petal width (cm)"/>
 								</MiningSchema>
 								<Node id="1" defaultChild="2">
 									<True/>
 									<Node id="2" score="-0.5555556">
 										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
 									</Node>
-									<Node id="3" score="0.5555556">
+									<Node id="3" defaultChild="4">
 										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+										<Node id="4" defaultChild="6">
+											<SimplePredicate field="petal width (cm)" operator="lessThan" value="1.75"/>
+											<Node id="6" score="0.5307692">
+												<SimplePredicate field="petal length (cm)" operator="lessThan" value="4.95"/>
+											</Node>
+											<Node id="7" score="-0.120000005">
+												<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="4.95"/>
+											</Node>
+										</Node>
+										<Node id="5" score="-0.528">
+											<SimplePredicate field="petal width (cm)" operator="greaterOrEqual" value="1.75"/>
+										</Node>
 									</Node>
 								</Node>
 							</TreeModel>
@@ -46,14 +65,33 @@
 							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
 								<MiningSchema>
 									<MiningField name="petal length (cm)"/>
+									<MiningField name="petal width (cm)"/>
 								</MiningSchema>
 								<Node id="1" defaultChild="2">
 									<True/>
 									<Node id="2" score="-0.43460518">
 										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
 									</Node>
-									<Node id="3" score="0.43460515">
+									<Node id="3" defaultChild="4">
 										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+										<Node id="4" defaultChild="6">
+											<SimplePredicate field="petal width (cm)" operator="lessThan" value="1.6500001"/>
+											<Node id="6" score="0.43660852">
+												<SimplePredicate field="petal length (cm)" operator="lessThan" value="4.95"/>
+											</Node>
+											<Node id="7" score="-0.18038389">
+												<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="4.95"/>
+											</Node>
+										</Node>
+										<Node id="5" defaultChild="8">
+											<SimplePredicate field="petal width (cm)" operator="greaterOrEqual" value="1.6500001"/>
+											<Node id="8" score="-0.18520343">
+												<SimplePredicate field="petal length (cm)" operator="lessThan" value="5.05"/>
+											</Node>
+											<Node id="9" score="-0.428601">
+												<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="5.05"/>
+											</Node>
+										</Node>
 									</Node>
 								</Node>
 							</TreeModel>
@@ -63,14 +101,27 @@
 							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
 								<MiningSchema>
 									<MiningField name="petal length (cm)"/>
+									<MiningField name="petal width (cm)"/>
 								</MiningSchema>
 								<Node id="1" defaultChild="2">
 									<True/>
 									<Node id="2" score="-0.3736209">
 										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
 									</Node>
-									<Node id="3" score="0.3736209">
+									<Node id="3" defaultChild="4">
 										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+										<Node id="4" defaultChild="6">
+											<SimplePredicate field="petal width (cm)" operator="lessThan" value="1.75"/>
+											<Node id="6" score="0.34904766">
+												<SimplePredicate field="petal length (cm)" operator="lessThan" value="4.95"/>
+											</Node>
+											<Node id="7" score="-0.06709183">
+												<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="4.95"/>
+											</Node>
+										</Node>
+										<Node id="5" score="-0.35178867">
+											<SimplePredicate field="petal width (cm)" operator="greaterOrEqual" value="1.75"/>
+										</Node>
 									</Node>
 								</Node>
 							</TreeModel>
@@ -80,14 +131,33 @@
 							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
 								<MiningSchema>
 									<MiningField name="petal length (cm)"/>
+									<MiningField name="petal width (cm)"/>
 								</MiningSchema>
 								<Node id="1" defaultChild="2">
 									<True/>
 									<Node id="2" score="-0.33534816">
 										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
 									</Node>
-									<Node id="3" score="0.33534813">
+									<Node id="3" defaultChild="4">
 										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+										<Node id="4" defaultChild="6">
+											<SimplePredicate field="petal length (cm)" operator="lessThan" value="4.8500004"/>
+											<Node id="6" score="0.33385718">
+												<SimplePredicate field="petal width (cm)" operator="lessThan" value="1.55"/>
+											</Node>
+											<Node id="7" score="-0.001866312">
+												<SimplePredicate field="petal width (cm)" operator="greaterOrEqual" value="1.55"/>
+											</Node>
+										</Node>
+										<Node id="5" defaultChild="8">
+											<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="4.8500004"/>
+											<Node id="8" score="-0.0033317108">
+												<SimplePredicate field="petal width (cm)" operator="lessThan" value="1.75"/>
+											</Node>
+											<Node id="9" score="-0.33782256">
+												<SimplePredicate field="petal width (cm)" operator="greaterOrEqual" value="1.75"/>
+											</Node>
+										</Node>
 									</Node>
 								</Node>
 							</TreeModel>
@@ -97,14 +167,33 @@
 							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
 								<MiningSchema>
 									<MiningField name="petal length (cm)"/>
+									<MiningField name="petal width (cm)"/>
 								</MiningSchema>
 								<Node id="1" defaultChild="2">
 									<True/>
 									<Node id="2" score="-0.30775395">
 										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
 									</Node>
-									<Node id="3" score="0.30775395">
+									<Node id="3" defaultChild="4">
 										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+										<Node id="4" defaultChild="6">
+											<SimplePredicate field="petal length (cm)" operator="lessThan" value="4.8500004"/>
+											<Node id="6" score="0.3050914">
+												<SimplePredicate field="petal width (cm)" operator="lessThan" value="1.55"/>
+											</Node>
+											<Node id="7" score="-0.0015696144">
+												<SimplePredicate field="petal width (cm)" operator="greaterOrEqual" value="1.55"/>
+											</Node>
+										</Node>
+										<Node id="5" defaultChild="8">
+											<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="4.8500004"/>
+											<Node id="8" score="-0.0026915248">
+												<SimplePredicate field="petal width (cm)" operator="lessThan" value="1.75"/>
+											</Node>
+											<Node id="9" score="-0.30809927">
+												<SimplePredicate field="petal width (cm)" operator="greaterOrEqual" value="1.75"/>
+											</Node>
+										</Node>
 									</Node>
 								</Node>
 							</TreeModel>
@@ -114,14 +203,33 @@
 							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
 								<MiningSchema>
 									<MiningField name="petal length (cm)"/>
+									<MiningField name="petal width (cm)"/>
 								</MiningSchema>
 								<Node id="1" defaultChild="2">
 									<True/>
 									<Node id="2" score="-0.28562728">
 										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
 									</Node>
-									<Node id="3" score="0.28562734">
+									<Node id="3" defaultChild="4">
 										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+										<Node id="4" defaultChild="6">
+											<SimplePredicate field="petal length (cm)" operator="lessThan" value="4.8500004"/>
+											<Node id="6" score="0.2820541">
+												<SimplePredicate field="petal width (cm)" operator="lessThan" value="1.55"/>
+											</Node>
+											<Node id="7" score="-0.00132007">
+												<SimplePredicate field="petal width (cm)" operator="greaterOrEqual" value="1.55"/>
+											</Node>
+										</Node>
+										<Node id="5" defaultChild="8">
+											<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="4.8500004"/>
+											<Node id="8" score="-0.0021743374">
+												<SimplePredicate field="petal width (cm)" operator="lessThan" value="1.75"/>
+											</Node>
+											<Node id="9" score="-0.2845382">
+												<SimplePredicate field="petal width (cm)" operator="greaterOrEqual" value="1.75"/>
+											</Node>
+										</Node>
 									</Node>
 								</Node>
 							</TreeModel>
@@ -131,14 +239,33 @@
 							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
 								<MiningSchema>
 									<MiningField name="petal length (cm)"/>
+									<MiningField name="petal width (cm)"/>
 								</MiningSchema>
 								<Node id="1" defaultChild="2">
 									<True/>
 									<Node id="2" score="-0.26637065">
 										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
 									</Node>
-									<Node id="3" score="0.26637065">
+									<Node id="3" defaultChild="4">
 										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+										<Node id="4" defaultChild="6">
+											<SimplePredicate field="petal length (cm)" operator="lessThan" value="5.05"/>
+											<Node id="6" score="0.24336874">
+												<SimplePredicate field="petal width (cm)" operator="lessThan" value="1.6500001"/>
+											</Node>
+											<Node id="7" score="-0.051155947">
+												<SimplePredicate field="petal width (cm)" operator="greaterOrEqual" value="1.6500001"/>
+											</Node>
+										</Node>
+										<Node id="5" defaultChild="8">
+											<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="5.05"/>
+											<Node id="8" score="-0.058688626">
+												<SimplePredicate field="petal length (cm)" operator="lessThan" value="5.1499996"/>
+											</Node>
+											<Node id="9" score="-0.27388227">
+												<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="5.1499996"/>
+											</Node>
+										</Node>
 									</Node>
 								</Node>
 							</TreeModel>
@@ -148,14 +275,33 @@
 							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
 								<MiningSchema>
 									<MiningField name="petal length (cm)"/>
+									<MiningField name="petal width (cm)"/>
 								</MiningSchema>
 								<Node id="1" defaultChild="2">
 									<True/>
 									<Node id="2" score="-0.24863355">
 										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
 									</Node>
-									<Node id="3" score="0.24863355">
+									<Node id="3" defaultChild="4">
 										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+										<Node id="4" defaultChild="6">
+											<SimplePredicate field="petal length (cm)" operator="lessThan" value="4.95"/>
+											<Node id="6" score="0.25980884">
+												<SimplePredicate field="petal width (cm)" operator="lessThan" value="1.6500001"/>
+											</Node>
+											<Node id="7" score="-0.105715856">
+												<SimplePredicate field="petal width (cm)" operator="greaterOrEqual" value="1.6500001"/>
+											</Node>
+										</Node>
+										<Node id="5" defaultChild="8">
+											<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="4.95"/>
+											<Node id="8" score="-0.047682796">
+												<SimplePredicate field="petal length (cm)" operator="lessThan" value="5.1499996"/>
+											</Node>
+											<Node id="9" score="-0.25220206">
+												<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="5.1499996"/>
+											</Node>
+										</Node>
 									</Node>
 								</Node>
 							</TreeModel>
@@ -164,15 +310,35 @@
 							<True/>
 							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
 								<MiningSchema>
+									<MiningField name="sepal width (cm)"/>
 									<MiningField name="petal length (cm)"/>
+									<MiningField name="petal width (cm)"/>
 								</MiningSchema>
 								<Node id="1" defaultChild="2">
 									<True/>
 									<Node id="2" score="-0.23175785">
 										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
 									</Node>
-									<Node id="3" score="0.23175776">
+									<Node id="3" defaultChild="4">
 										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+										<Node id="4" defaultChild="6">
+											<SimplePredicate field="petal length (cm)" operator="lessThan" value="4.8500004"/>
+											<Node id="6" score="0.040117096">
+												<SimplePredicate field="sepal width (cm)" operator="lessThan" value="2.65"/>
+											</Node>
+											<Node id="7" score="0.2050172">
+												<SimplePredicate field="sepal width (cm)" operator="greaterOrEqual" value="2.65"/>
+											</Node>
+										</Node>
+										<Node id="5" defaultChild="8">
+											<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="4.8500004"/>
+											<Node id="8" score="0.011787203">
+												<SimplePredicate field="petal width (cm)" operator="lessThan" value="1.75"/>
+											</Node>
+											<Node id="9" score="-0.23697253">
+												<SimplePredicate field="petal width (cm)" operator="greaterOrEqual" value="1.75"/>
+											</Node>
+										</Node>
 									</Node>
 								</Node>
 							</TreeModel>
@@ -181,6 +347,7 @@
 							<True/>
 							<TreeModel functionName="regression" missingValueStrategy="defaultChild" splitCharacteristic="binarySplit" x-mathContext="float">
 								<MiningSchema>
+									<MiningField name="sepal width (cm)"/>
 									<MiningField name="petal length (cm)"/>
 								</MiningSchema>
 								<Node id="1" defaultChild="2">
@@ -188,8 +355,26 @@
 									<Node id="2" score="-0.21549894">
 										<SimplePredicate field="petal length (cm)" operator="lessThan" value="2.45"/>
 									</Node>
-									<Node id="3" score="0.21549894">
+									<Node id="3" defaultChild="4">
 										<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="2.45"/>
+										<Node id="4" defaultChild="6">
+											<SimplePredicate field="petal length (cm)" operator="lessThan" value="5.05"/>
+											<Node id="6" score="-0.01701414">
+												<SimplePredicate field="sepal width (cm)" operator="lessThan" value="2.85"/>
+											</Node>
+											<Node id="7" score="0.23654057">
+												<SimplePredicate field="sepal width (cm)" operator="greaterOrEqual" value="2.85"/>
+											</Node>
+										</Node>
+										<Node id="5" defaultChild="8">
+											<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="5.05"/>
+											<Node id="8" score="-0.055756122">
+												<SimplePredicate field="petal length (cm)" operator="lessThan" value="5.3500004"/>
+											</Node>
+											<Node id="9" score="-0.21391292">
+												<SimplePredicate field="petal length (cm)" operator="greaterOrEqual" value="5.3500004"/>
+											</Node>
+										</Node>
 									</Node>
 								</Node>
 							</TreeModel>
