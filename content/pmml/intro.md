@@ -230,9 +230,20 @@ PMML文件是基于XML格式的文本文件，有且只有一个根节点`PMML`�
 - `majorityVote` 投票
 - `weightedMajorityVote`, `weightedAverage`, `max`, `median`
 
-每一个`Segment`包含属性`id`和`weight`，`weight`可选属性，在加权融合的情况下才有用。每一个`Segment`包含的子元素有 [`PREDICATE`](http://dmg.org/pmml/v4-3/TreeModel.html#xsdGroup_PREDICATE) 和 [`MODEL-ELEMENT`](http://dmg.org/pmml/v4-3/GeneralStructure.html#xsdGroup_MODEL-ELEMENT)。这个例子中的`PREDICATE`是`<True/>`，表明使用这个模型计算预测值。模型元素有两个，一个是`MiningModel`，另一个是`TreeModel`。
+每一个`Segment`包含属性`id`和`weight`，`weight`可选属性，在加权融合的情况下才有用。每一个`Segment`包含的子元素有 [`PREDICATE`](http://dmg.org/pmml/v4-3/TreeModel.html#xsdGroup_PREDICATE) 和 [`MODEL-ELEMENT`](http://dmg.org/pmml/v4-3/GeneralStructure.html#xsdGroup_MODEL-ELEMENT)。这个例子中的`PREDICATE`是`<True/>`，表明使用这个模型计算预测值，如果为`<False/>`则不使用。模型元素有两个，一个是`MiningModel`，另一个是`TreeModel`。`TreeModel`我们在后面介绍。
 
-## 输出变换
+#### Output & Target
+[`Output`](http://dmg.org/pmml/v4-3/Output.html#xsdElement_Output) 和 [`Target`](http://dmg.org/pmml/v4-3/Targets.html) 都可以用于定义模型的输出。
+
+`Target` 可以对输出结果做简单的线性变换：$(f(x) = 10 + 3.14 x)$
+
+```xml
+<Targets>
+  <Target field="amount" rescaleConstant="10" rescaleFactor="3.14" min="-10" max="10.5" castInteger="round"/>
+</Targets>
+```
+
+`Output` 则可以应用更复杂的变换，`OutputField`的`feature`属性，可以输出很多有用的信息[ref](http://dmg.org/pmml/v4-3/Output.html#xsdType_RESULT-FEATURE)，例如预测原始值，决策树叶子结点的ID值等等。
 
 ```xml
 <Output>
@@ -255,5 +266,9 @@ PMML文件是基于XML格式的文本文件，有且只有一个根节点`PMML`�
 </Output>
 ```
 
+PMML内置了常用的[数学函数](http://dmg.org/pmml/v4-3/BuiltinFunctions.html)，函数的应用非常简单，直接创建一个`Apply`元素，并指定属性`function`为函数名即可，然后将参数依次作为子元素。参数可以是常数`Constant`和其他字段`FieldRef`，甚至一个新的函数应用结果`Apply`。用户也可以创建自定义函数，将函数的定义放到 `TransformationDictionary` 中，然后就可以直接引用了。
+
+
 ## 参考
 1. https://www.ibm.com/developerworks/cn/opensource/ind-PMML1/index.html
+2. PMML-4_3标准文档 <http://dmg.org/pmml/pmml-v4-3.html>
