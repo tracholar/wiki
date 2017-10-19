@@ -1,5 +1,5 @@
 ---
-title: "PMML 预测模型"
+title: "PMML 预测模型教程"
 layout: page
 date: 2016-07-21
 ---
@@ -120,6 +120,8 @@ Object value = results.get(output.get(0).getName());
 ```
 
 ## PMML文件分析
+
+### 基本框架分析
 打开 xgb.pmml.xml 文件，我们可以看到一个实际可用的PMML文件结构。
 
 ```xml
@@ -146,7 +148,7 @@ PMML文件是基于XML格式的文本文件，有且只有一个根节点`PMML`�
 
 `PMML` 子元素有两个是必须的，`Header` 和 `DataDictionary`。
 
-1. `Header`  头部信息，只包含说明信息，对预测逻辑没有影响，通常包括：
+`Header`  头部信息，只包含说明信息，对预测逻辑没有影响，通常包括：
     - 包含的属性
         - copyright 版权
         - description 描述文本
@@ -155,17 +157,103 @@ PMML文件是基于XML格式的文本文件，有且只有一个根节点`PMML`�
         - Application 描述生成PMML文件的软件相关信息，本例子说明这个PMML是由 **JPMML-XGBoost** 软件生成的，该软件版本是 **1.2-SNAPSHOT**。
         - Timestamp 生成的时间戳
         - Annotation 可选，描述模型版本更新信息
-2. `DataDictionary` 数据字典，描述字段信息，包括模型的输入字段和输出字段，这里`_target`是输出字段，其他三个是输入字段。
-   每一个字段用 `DataField` 元素描述[ref](http://dmg.org/pmml/v4-3/DataDictionary.html#xsdElement_DataField)。
-   `DataField`
 
-`PMML` 可选的元素有4个，分别是：[ref](http://dmg.org/pmml/v4-3/GeneralStructure.html)
+`DataDictionary` 数据字典，描述字段信息，包括模型的输入字段和输出字段，这里`_target`是输出字段，其他三个是输入字段。每一个字段用 `DataField` 元素描述[ref](http://dmg.org/pmml/v4-3/DataDictionary.html#xsdElement_DataField)。`DataField` 有三个必须的属性：`name` 字段或特征名字，`optype` 操作类型，`dataType` 数据类型。 `DataDictionary` 只负责字段的定义，对字段的处理比如缺失值处理应该在模型的`MiningField` 区域定义。
+
+`optype` 是操作类型，有三个可选值：`categorical` 类别变量，只能进行相等的判断; `ordinal` 序数变量还可以进行顺序比较; `continuous` 只有这个操作类型才能进行算术运算，这种类型的变量应用比较多。
+
+`dataType` 是数据类型，大约有十几种类型[[ref]](http://dmg.org/pmml/v4-3/DataDictionary.html#xsdType_DATATYPE)。
+
+
+`PMML` 可选的元素有4个，分别是：[ref](http://dmg.org/pmml/v4-3/GeneralStructure.html)。包括 `string`, `interger`, `float`, `double`, `date` 等常见的数据类型。
 
 1. `MiningBuildTask` 可以包含任意XML值，用于表达模型训练时的相关信息，对模型预测没有影响。
-2. `TransformationDictionary`
+2. `TransformationDictionary` 变换字典，用于定义各种变换。
 3. `MODEL-ELEMENT` 这是个模型元素集合，用来表达模型的参数和预测逻辑。具体使用时，可以是这个集合里面任意一种元素，在这个例子里面，用得就是 `MiningModel` 这个元素，还可以是`GeneralRegressionModel`等18个元素中的任意一个，可以参看[链接](http://dmg.org/pmml/v4-3/GeneralStructure.html#xsdGroup_MODEL-ELEMENT)。
-4. `Extension`
+4. `Extension` 扩展信息
 
+`MODEL-ELEMENT` 大约包括18个不同的模型，每一个模型都有几个相同的属性。`functionName` 用于定义该模型是回归、分类还是聚类等等，是必须的属性。PMML里面一共定义了7种类型[ref](http://dmg.org/pmml/v4-3/GeneralStructure.html)，常用的有回归`regression`、分类`classification`、聚类`clustering`。另外两个可选的属性是：`modelName` 和 `algorithmName`，只用于提示，对模型预测没有实质性影响。
+`MODEL-ELEMENT` 都包含了这样一些元素：`MiningSchema`（必须）、 `Output`、 `Targets`等，这些在后面的章节将会详细介绍。
+
+### 模型分析
+找到 `MiningModel` 区块，可以看到这个元素的主要结构如下(非主要结构已被省略)：
+
+```xml
+<MiningModel functionName="regression" x-mathContext="float">
+    <MiningSchema>
+        <MiningField name="_target" usageType="target"/>
+        <MiningField name="sepal width (cm)"/>
+        <MiningField name="petal width (cm)"/>
+        <MiningField name="petal length (cm)"/>
+    </MiningSchema>
+    <Segmentation multipleModelMethod="modelChain">
+        <Segment id="1">
+            <True/>
+            <MiningModel functionName="regression" x-mathContext="float">
+                ...
+            </MiningModel>
+        </Segment>
+        <Segment id="2">
+            <True/>
+            <RegressionModel functionName="regression" normalizationMethod="logit" x-mathContext="float">
+                ...
+            </RegressionModel>
+        </Segment>
+    </Segmentation>
+</MiningModel>
+```
+
+`MiningModel` 实际上是一种通用的模型，通常用于模型的融合。它包含了一个特有子的元素 `Segmentation`，用于融合多个模型。本文的例子里面顶层的模型（即`MiningModel`）包含了两个模型。多个模型的融合方式是`modelChain`，即前一个模型的输出作为后一个模型的输入。融合方式由`Segmentation`的属性`multipleModelMethod`指定。实际上，因为XGBoost用的是回归树，然后将所有树的输出结果相加得到第一个模型的输出；第二个模型只是对第一个模型的输出做了一个简单的`logit`变换，将原始值转换为概率值。
+
+`MiningSchema` 是所有模型都必须有的子元素，包括模型内的子模型也都有。对于所有输入这个模型的数据，都必须经过 `MiningSchema`，这个元素里面包含了这个模型用到的所有字段，相比 `DataDictionary`，`MiningSchema`可以为每个模型定义特有的一些信息，还包括缺失值异常值处理等特征预处理操作。[ref](http://dmg.org/pmml/v4-3/MiningSchema.html)
+
+#### MiningField
+每一个字段由`MiningField`定义，它包含以下属性：
+
+- `name` 必须，字段名字
+- `usageType` 字段用途，默认是`active`即用作输入特征，值`target` 表示该字段是监督学习模型的目标，也是模型预测结果。其他取值参考[ref](http://dmg.org/pmml/v4-3/MiningSchema.html)
+- `optype` 操作类型，一般在数据字典中定义，这里可以重载这个属性
+- `outliers` 异常值处理方式：`asIs` `asMissingValues` `asExtremeValues`（极端值通过属性`lowValue`和`highValue`定义）
+- `missingValueReplacement` 缺失值替换值，如果有这个属性，在进入模型前先用这个值替换
+- `missingValueTreatment` 只是提示替换的值的来源，对PMML预测没有影响
+
+```xml
+<MiningField name="foo" missingValueReplacement="3.14" missingValueTreatment="asMean"/>
+```
+
+#### Segmentation
+多个模型用 `Segmentation` 来组织，每一个模型都被包括在子元素 `Segment` 中。 `Segmentation` 只有一个属性 `multipleModelMethod` 用来表明多个模型的组合方式，可以取得值如下[ref](http://dmg.org/pmml/v4-3/MultipleModels.html#xsdElement_Segmentation)
+
+- `modelChain` 模型链，Predicates的值为TRUE的模型按照顺序打分。模型的输出字段 `OutputFields` 里面的字段，可以作为后续模型的输入。
+- `sum` 求和，将多个模型的预测值求和。
+- `average` 平均，将多个模型的预测值平均。
+- `majorityVote` 投票
+- `weightedMajorityVote`, `weightedAverage`, `max`, `median`
+
+每一个`Segment`包含属性`id`和`weight`，`weight`可选属性，在加权融合的情况下才有用。每一个`Segment`包含的子元素有 [`PREDICATE`](http://dmg.org/pmml/v4-3/TreeModel.html#xsdGroup_PREDICATE) 和 [`MODEL-ELEMENT`](http://dmg.org/pmml/v4-3/GeneralStructure.html#xsdGroup_MODEL-ELEMENT)。这个例子中的`PREDICATE`是`<True/>`，表明使用这个模型计算预测值。模型元素有两个，一个是`MiningModel`，另一个是`TreeModel`。
+
+## 输出变换
+
+```xml
+<Output>
+    <OutputField name="rawResult" dataType="double" feature="predictedValue" />
+    <OutputField name="_target" dataType="double" feature="transformedValue" >
+        <!--  pow(10, s+0.5) - 1 -->
+        <Apply function="round">
+            <Apply function="-">
+                <Apply function="pow">
+                    <Constant dataType="double">10.0</Constant>
+                    <Apply function="+">
+                        <FieldRef field="rawResult"></FieldRef>
+                        <Constant dataType="double">0.5</Constant>
+                    </Apply>
+                </Apply>
+                <Constant dataType="double">1.0</Constant>
+            </Apply>
+        </Apply>
+    </OutputField>
+</Output>
+```
 
 ## 参考
 1. https://www.ibm.com/developerworks/cn/opensource/ind-PMML1/index.html
