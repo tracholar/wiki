@@ -244,6 +244,7 @@ PMML文件是基于XML格式的文本文件，有且只有一个根节点`PMML`�
 ```
 
 `Output` 则可以应用更复杂的变换，`OutputField`的`feature`属性，可以输出很多有用的信息[ref](http://dmg.org/pmml/v4-3/Output.html#xsdType_RESULT-FEATURE)，例如预测原始值，决策树叶子结点的ID值等等。
+下面是一个对模型输出结果做变换$(f(x) = 10^{x + 0.5} - 1)$的例子，这个例子来自于用XGBoost对log1p后的值做回归，因为多个决策树的结果加和后，要乘以0.5，所以反变换就是上面这个表达式了。
 
 ```xml
 <Output>
