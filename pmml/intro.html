@@ -53,12 +53,12 @@
 <li><a href="#_2">模型分析</a><ul>
 <li><a href="#miningfield">MiningField</a></li>
 <li><a href="#segmentation">Segmentation</a></li>
+<li><a href="#output-target">Output &amp; Target</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#_3">输出变换</a></li>
-<li><a href="#_4">参考</a></li>
+<li><a href="#_3">参考</a></li>
 </ul>
 </div>
 <h2 id="pmml">什么是PMML</h2>
@@ -266,8 +266,18 @@ PMML模型的部署可以使用 <a href="https://github.com/jpmml/jpmml-evaluato
 <li><code>majorityVote</code> 投票</li>
 <li><code>weightedMajorityVote</code>, <code>weightedAverage</code>, <code>max</code>, <code>median</code></li>
 </ul>
-<p>每一个<code>Segment</code>包含属性<code>id</code>和<code>weight</code>，<code>weight</code>可选属性，在加权融合的情况下才有用。每一个<code>Segment</code>包含的子元素有 <a href="http://dmg.org/pmml/v4-3/TreeModel.html#xsdGroup_PREDICATE"><code>PREDICATE</code></a> 和 <a href="http://dmg.org/pmml/v4-3/GeneralStructure.html#xsdGroup_MODEL-ELEMENT"><code>MODEL-ELEMENT</code></a>。这个例子中的<code>PREDICATE</code>是<code>&lt;True/&gt;</code>，表明使用这个模型计算预测值。模型元素有两个，一个是<code>MiningModel</code>，另一个是<code>TreeModel</code>。</p>
-<h2 id="_3">输出变换</h2>
+<p>每一个<code>Segment</code>包含属性<code>id</code>和<code>weight</code>，<code>weight</code>可选属性，在加权融合的情况下才有用。每一个<code>Segment</code>包含的子元素有 <a href="http://dmg.org/pmml/v4-3/TreeModel.html#xsdGroup_PREDICATE"><code>PREDICATE</code></a> 和 <a href="http://dmg.org/pmml/v4-3/GeneralStructure.html#xsdGroup_MODEL-ELEMENT"><code>MODEL-ELEMENT</code></a>。这个例子中的<code>PREDICATE</code>是<code>&lt;True/&gt;</code>，表明使用这个模型计算预测值，如果为<code>&lt;False/&gt;</code>则不使用。模型元素有两个，一个是<code>MiningModel</code>，另一个是<code>TreeModel</code>。<code>TreeModel</code>我们在后面介绍。</p>
+<h4 id="output-target">Output &amp; Target</h4>
+<p><a href="http://dmg.org/pmml/v4-3/Output.html#xsdElement_Output"><code>Output</code></a> 和 <a href="http://dmg.org/pmml/v4-3/Targets.html"><code>Target</code></a> 都可以用于定义模型的输出。</p>
+<p><code>Target</code> 可以对输出结果做简单的线性变换：$(f(x) = 10 + 3.14 x)$</p>
+<div class="hlcode"><pre><span></span><span class="nt">&lt;Targets&gt;</span>
+  <span class="nt">&lt;Target</span> <span class="na">field=</span><span class="s">&quot;amount&quot;</span> <span class="na">rescaleConstant=</span><span class="s">&quot;10&quot;</span> <span class="na">rescaleFactor=</span><span class="s">&quot;3.14&quot;</span> <span class="na">min=</span><span class="s">&quot;-10&quot;</span> <span class="na">max=</span><span class="s">&quot;10.5&quot;</span> <span class="na">castInteger=</span><span class="s">&quot;round&quot;</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/Targets&gt;</span>
+</pre></div>
+
+
+<p><code>Output</code> 则可以应用更复杂的变换，<code>OutputField</code>的<code>feature</code>属性，可以输出很多有用的信息<a href="http://dmg.org/pmml/v4-3/Output.html#xsdType_RESULT-FEATURE">ref</a>，例如预测原始值，决策树叶子结点的ID值等等。<br />
+下面是一个对模型输出结果做变换$(f(x) = 10^{x + 0.5} - 1)$的例子，这个例子来自于用XGBoost对log1p后的值做回归，因为多个决策树的结果加和后，要乘以0.5，所以反变换就是上面这个表达式了。</p>
 <div class="hlcode"><pre><span></span><span class="nt">&lt;Output&gt;</span>
     <span class="nt">&lt;OutputField</span> <span class="na">name=</span><span class="s">&quot;rawResult&quot;</span> <span class="na">dataType=</span><span class="s">&quot;double&quot;</span> <span class="na">feature=</span><span class="s">&quot;predictedValue&quot;</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;OutputField</span> <span class="na">name=</span><span class="s">&quot;_target&quot;</span> <span class="na">dataType=</span><span class="s">&quot;double&quot;</span> <span class="na">feature=</span><span class="s">&quot;transformedValue&quot;</span> <span class="nt">&gt;</span>
@@ -289,9 +299,11 @@ PMML模型的部署可以使用 <a href="https://github.com/jpmml/jpmml-evaluato
 </pre></div>
 
 
-<h2 id="_4">参考</h2>
+<p>PMML内置了常用的<a href="http://dmg.org/pmml/v4-3/BuiltinFunctions.html">数学函数</a>，函数的应用非常简单，直接创建一个<code>Apply</code>元素，并指定属性<code>function</code>为函数名即可，然后将参数依次作为子元素。参数可以是常数<code>Constant</code>和其他字段<code>FieldRef</code>，甚至一个新的函数应用结果<code>Apply</code>。用户也可以创建自定义函数，将函数的定义放到 <code>TransformationDictionary</code> 中，然后就可以直接引用了。</p>
+<h2 id="_3">参考</h2>
 <ol>
 <li>https://www.ibm.com/developerworks/cn/opensource/ind-PMML1/index.html</li>
+<li>PMML-4_3标准文档 <a href="http://dmg.org/pmml/pmml-v4-3.html">http://dmg.org/pmml/pmml-v4-3.html</a></li>
 </ol>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2016-07-21 </span></div>
