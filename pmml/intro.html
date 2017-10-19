@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>PMML 预测模型 - tracholar's personal knowledge wiki</title>
+        <title>PMML 预测模型教程 - tracholar's personal knowledge wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -40,16 +40,25 @@
         <div id="container">
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#pmml">pmml</a>&nbsp;»&nbsp;PMML 预测模型</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#pmml">pmml</a>&nbsp;»&nbsp;PMML 预测模型教程</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">PMML 预测模型</div>
+<div id="title">PMML 预测模型教程</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#pmml">什么是PMML</a></li>
 <li><a href="#pmml_1">使用PMML发布预测模型</a></li>
-<li><a href="#pmml_2">PMML文件分析</a></li>
-<li><a href="#_1">参考</a></li>
+<li><a href="#pmml_2">PMML文件分析</a><ul>
+<li><a href="#_1">基本框架分析</a></li>
+<li><a href="#_2">模型分析</a><ul>
+<li><a href="#miningfield">MiningField</a></li>
+<li><a href="#segmentation">Segmentation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_3">输出变换</a></li>
+<li><a href="#_4">参考</a></li>
 </ul>
 </div>
 <h2 id="pmml">什么是PMML</h2>
@@ -160,6 +169,7 @@ PMML模型的部署可以使用 <a href="https://github.com/jpmml/jpmml-evaluato
 
 
 <h2 id="pmml_2">PMML文件分析</h2>
+<h3 id="_1">基本框架分析</h3>
 <p>打开 xgb.pmml.xml 文件，我们可以看到一个实际可用的PMML文件结构。</p>
 <div class="hlcode"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;</span>
 <span class="nt">&lt;PMML</span> <span class="na">xmlns=</span><span class="s">&quot;http://www.dmg.org/PMML-4_3&quot;</span> <span class="na">version=</span><span class="s">&quot;4.3&quot;</span><span class="nt">&gt;</span>
@@ -183,34 +193,103 @@ PMML模型的部署可以使用 <a href="https://github.com/jpmml/jpmml-evaluato
 <p>PMML文件是基于XML格式的文本文件，有且只有一个根节点<code>PMML</code>。<br />
 <code>PMML</code> 根节点除了 xmlns 属性外，有且只有一个属性 <code>version</code>，它的值表明PMML标准的版本。</p>
 <p><code>PMML</code> 子元素有两个是必须的，<code>Header</code> 和 <code>DataDictionary</code>。</p>
-<ol>
-<li><code>Header</code>  头部信息，只包含说明信息，对预测逻辑没有影响，通常包括：<ul>
-<li>包含的属性<ul>
-<li>copyright 版权</li>
-<li>description 描述文本</li>
-<li>modelVersion 模型版本</li>
-</ul>
-</li>
-<li>包含的子元素<ul>
-<li>Application 描述生成PMML文件的软件相关信息，本例子说明这个PMML是由 <strong>JPMML-XGBoost</strong> 软件生成的，该软件版本是 <strong>1.2-SNAPSHOT</strong>。</li>
-<li>Timestamp 生成的时间戳</li>
-<li>Annotation 可选，描述模型版本更新信息</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><code>DataDictionary</code> 数据字典，描述字段信息，包括模型的输入字段和输出字段，这里<code>_target</code>是输出字段，其他三个是输入字段。<br />
-   每一个字段用 <code>DataField</code> 元素描述<a href="http://dmg.org/pmml/v4-3/DataDictionary.html#xsdElement_DataField">ref</a>。<br />
-<code>DataField</code></li>
-</ol>
-<p><code>PMML</code> 可选的元素有4个，分别是：<a href="http://dmg.org/pmml/v4-3/GeneralStructure.html">ref</a></p>
+<p><code>Header</code>  头部信息，只包含说明信息，对预测逻辑没有影响，通常包括：<br />
+    - 包含的属性<br />
+        - copyright 版权<br />
+        - description 描述文本<br />
+        - modelVersion 模型版本<br />
+    - 包含的子元素<br />
+        - Application 描述生成PMML文件的软件相关信息，本例子说明这个PMML是由 <strong>JPMML-XGBoost</strong> 软件生成的，该软件版本是 <strong>1.2-SNAPSHOT</strong>。<br />
+        - Timestamp 生成的时间戳<br />
+        - Annotation 可选，描述模型版本更新信息</p>
+<p><code>DataDictionary</code> 数据字典，描述字段信息，包括模型的输入字段和输出字段，这里<code>_target</code>是输出字段，其他三个是输入字段。每一个字段用 <code>DataField</code> 元素描述<a href="http://dmg.org/pmml/v4-3/DataDictionary.html#xsdElement_DataField">ref</a>。<code>DataField</code> 有三个必须的属性：<code>name</code> 字段或特征名字，<code>optype</code> 操作类型，<code>dataType</code> 数据类型。 <code>DataDictionary</code> 只负责字段的定义，对字段的处理比如缺失值处理应该在模型的<code>MiningField</code> 区域定义。</p>
+<p><code>optype</code> 是操作类型，有三个可选值：<code>categorical</code> 类别变量，只能进行相等的判断; <code>ordinal</code> 序数变量还可以进行顺序比较; <code>continuous</code> 只有这个操作类型才能进行算术运算，这种类型的变量应用比较多。</p>
+<p><code>dataType</code> 是数据类型，大约有十几种类型<a href="http://dmg.org/pmml/v4-3/DataDictionary.html#xsdType_DATATYPE">[ref]</a>。</p>
+<p><code>PMML</code> 可选的元素有4个，分别是：<a href="http://dmg.org/pmml/v4-3/GeneralStructure.html">ref</a>。包括 <code>string</code>, <code>interger</code>, <code>float</code>, <code>double</code>, <code>date</code> 等常见的数据类型。</p>
 <ol>
 <li><code>MiningBuildTask</code> 可以包含任意XML值，用于表达模型训练时的相关信息，对模型预测没有影响。</li>
-<li><code>TransformationDictionary</code></li>
+<li><code>TransformationDictionary</code> 变换字典，用于定义各种变换。</li>
 <li><code>MODEL-ELEMENT</code> 这是个模型元素集合，用来表达模型的参数和预测逻辑。具体使用时，可以是这个集合里面任意一种元素，在这个例子里面，用得就是 <code>MiningModel</code> 这个元素，还可以是<code>GeneralRegressionModel</code>等18个元素中的任意一个，可以参看<a href="http://dmg.org/pmml/v4-3/GeneralStructure.html#xsdGroup_MODEL-ELEMENT">链接</a>。</li>
-<li><code>Extension</code></li>
+<li><code>Extension</code> 扩展信息</li>
 </ol>
-<h2 id="_1">参考</h2>
+<p><code>MODEL-ELEMENT</code> 大约包括18个不同的模型，每一个模型都有几个相同的属性。<code>functionName</code> 用于定义该模型是回归、分类还是聚类等等，是必须的属性。PMML里面一共定义了7种类型<a href="http://dmg.org/pmml/v4-3/GeneralStructure.html">ref</a>，常用的有回归<code>regression</code>、分类<code>classification</code>、聚类<code>clustering</code>。另外两个可选的属性是：<code>modelName</code> 和 <code>algorithmName</code>，只用于提示，对模型预测没有实质性影响。<br />
+<code>MODEL-ELEMENT</code> 都包含了这样一些元素：<code>MiningSchema</code>（必须）、 <code>Output</code>、 <code>Targets</code>等，这些在后面的章节将会详细介绍。</p>
+<h3 id="_2">模型分析</h3>
+<p>找到 <code>MiningModel</code> 区块，可以看到这个元素的主要结构如下(非主要结构已被省略)：</p>
+<div class="hlcode"><pre><span></span><span class="nt">&lt;MiningModel</span> <span class="na">functionName=</span><span class="s">&quot;regression&quot;</span> <span class="na">x-mathContext=</span><span class="s">&quot;float&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;MiningSchema&gt;</span>
+        <span class="nt">&lt;MiningField</span> <span class="na">name=</span><span class="s">&quot;_target&quot;</span> <span class="na">usageType=</span><span class="s">&quot;target&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;MiningField</span> <span class="na">name=</span><span class="s">&quot;sepal width (cm)&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;MiningField</span> <span class="na">name=</span><span class="s">&quot;petal width (cm)&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;MiningField</span> <span class="na">name=</span><span class="s">&quot;petal length (cm)&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/MiningSchema&gt;</span>
+    <span class="nt">&lt;Segmentation</span> <span class="na">multipleModelMethod=</span><span class="s">&quot;modelChain&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;Segment</span> <span class="na">id=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;True/&gt;</span>
+            <span class="nt">&lt;MiningModel</span> <span class="na">functionName=</span><span class="s">&quot;regression&quot;</span> <span class="na">x-mathContext=</span><span class="s">&quot;float&quot;</span><span class="nt">&gt;</span>
+                ...
+            <span class="nt">&lt;/MiningModel&gt;</span>
+        <span class="nt">&lt;/Segment&gt;</span>
+        <span class="nt">&lt;Segment</span> <span class="na">id=</span><span class="s">&quot;2&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;True/&gt;</span>
+            <span class="nt">&lt;RegressionModel</span> <span class="na">functionName=</span><span class="s">&quot;regression&quot;</span> <span class="na">normalizationMethod=</span><span class="s">&quot;logit&quot;</span> <span class="na">x-mathContext=</span><span class="s">&quot;float&quot;</span><span class="nt">&gt;</span>
+                ...
+            <span class="nt">&lt;/RegressionModel&gt;</span>
+        <span class="nt">&lt;/Segment&gt;</span>
+    <span class="nt">&lt;/Segmentation&gt;</span>
+<span class="nt">&lt;/MiningModel&gt;</span>
+</pre></div>
+
+
+<p><code>MiningModel</code> 实际上是一种通用的模型，通常用于模型的融合。它包含了一个特有子的元素 <code>Segmentation</code>，用于融合多个模型。本文的例子里面顶层的模型（即<code>MiningModel</code>）包含了两个模型。多个模型的融合方式是<code>modelChain</code>，即前一个模型的输出作为后一个模型的输入。融合方式由<code>Segmentation</code>的属性<code>multipleModelMethod</code>指定。实际上，因为XGBoost用的是回归树，然后将所有树的输出结果相加得到第一个模型的输出；第二个模型只是对第一个模型的输出做了一个简单的<code>logit</code>变换，将原始值转换为概率值。</p>
+<p><code>MiningSchema</code> 是所有模型都必须有的子元素，包括模型内的子模型也都有。对于所有输入这个模型的数据，都必须经过 <code>MiningSchema</code>，这个元素里面包含了这个模型用到的所有字段，相比 <code>DataDictionary</code>，<code>MiningSchema</code>可以为每个模型定义特有的一些信息，还包括缺失值异常值处理等特征预处理操作。<a href="http://dmg.org/pmml/v4-3/MiningSchema.html">ref</a></p>
+<h4 id="miningfield">MiningField</h4>
+<p>每一个字段由<code>MiningField</code>定义，它包含以下属性：</p>
+<ul>
+<li><code>name</code> 必须，字段名字</li>
+<li><code>usageType</code> 字段用途，默认是<code>active</code>即用作输入特征，值<code>target</code> 表示该字段是监督学习模型的目标，也是模型预测结果。其他取值参考<a href="http://dmg.org/pmml/v4-3/MiningSchema.html">ref</a></li>
+<li><code>optype</code> 操作类型，一般在数据字典中定义，这里可以重载这个属性</li>
+<li><code>outliers</code> 异常值处理方式：<code>asIs</code> <code>asMissingValues</code> <code>asExtremeValues</code>（极端值通过属性<code>lowValue</code>和<code>highValue</code>定义）</li>
+<li><code>missingValueReplacement</code> 缺失值替换值，如果有这个属性，在进入模型前先用这个值替换</li>
+<li><code>missingValueTreatment</code> 只是提示替换的值的来源，对PMML预测没有影响</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="nt">&lt;MiningField</span> <span class="na">name=</span><span class="s">&quot;foo&quot;</span> <span class="na">missingValueReplacement=</span><span class="s">&quot;3.14&quot;</span> <span class="na">missingValueTreatment=</span><span class="s">&quot;asMean&quot;</span><span class="nt">/&gt;</span>
+</pre></div>
+
+
+<h4 id="segmentation">Segmentation</h4>
+<p>多个模型用 <code>Segmentation</code> 来组织，每一个模型都被包括在子元素 <code>Segment</code> 中。 <code>Segmentation</code> 只有一个属性 <code>multipleModelMethod</code> 用来表明多个模型的组合方式，可以取得值如下<a href="http://dmg.org/pmml/v4-3/MultipleModels.html#xsdElement_Segmentation">ref</a></p>
+<ul>
+<li><code>modelChain</code> 模型链，Predicates的值为TRUE的模型按照顺序打分。模型的输出字段 <code>OutputFields</code> 里面的字段，可以作为后续模型的输入。</li>
+<li><code>sum</code> 求和，将多个模型的预测值求和。</li>
+<li><code>average</code> 平均，将多个模型的预测值平均。</li>
+<li><code>majorityVote</code> 投票</li>
+<li><code>weightedMajorityVote</code>, <code>weightedAverage</code>, <code>max</code>, <code>median</code></li>
+</ul>
+<p>每一个<code>Segment</code>包含属性<code>id</code>和<code>weight</code>，<code>weight</code>可选属性，在加权融合的情况下才有用。每一个<code>Segment</code>包含的子元素有 <a href="http://dmg.org/pmml/v4-3/TreeModel.html#xsdGroup_PREDICATE"><code>PREDICATE</code></a> 和 <a href="http://dmg.org/pmml/v4-3/GeneralStructure.html#xsdGroup_MODEL-ELEMENT"><code>MODEL-ELEMENT</code></a>。这个例子中的<code>PREDICATE</code>是<code>&lt;True/&gt;</code>，表明使用这个模型计算预测值。模型元素有两个，一个是<code>MiningModel</code>，另一个是<code>TreeModel</code>。</p>
+<h2 id="_3">输出变换</h2>
+<div class="hlcode"><pre><span></span><span class="nt">&lt;Output&gt;</span>
+    <span class="nt">&lt;OutputField</span> <span class="na">name=</span><span class="s">&quot;rawResult&quot;</span> <span class="na">dataType=</span><span class="s">&quot;double&quot;</span> <span class="na">feature=</span><span class="s">&quot;predictedValue&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;OutputField</span> <span class="na">name=</span><span class="s">&quot;_target&quot;</span> <span class="na">dataType=</span><span class="s">&quot;double&quot;</span> <span class="na">feature=</span><span class="s">&quot;transformedValue&quot;</span> <span class="nt">&gt;</span>
+        <span class="c">&lt;!--  pow(10, s+0.5) - 1 --&gt;</span>
+        <span class="nt">&lt;Apply</span> <span class="na">function=</span><span class="s">&quot;round&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;Apply</span> <span class="na">function=</span><span class="s">&quot;-&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;Apply</span> <span class="na">function=</span><span class="s">&quot;pow&quot;</span><span class="nt">&gt;</span>
+                    <span class="nt">&lt;Constant</span> <span class="na">dataType=</span><span class="s">&quot;double&quot;</span><span class="nt">&gt;</span>10.0<span class="nt">&lt;/Constant&gt;</span>
+                    <span class="nt">&lt;Apply</span> <span class="na">function=</span><span class="s">&quot;+&quot;</span><span class="nt">&gt;</span>
+                        <span class="nt">&lt;FieldRef</span> <span class="na">field=</span><span class="s">&quot;rawResult&quot;</span><span class="nt">&gt;&lt;/FieldRef&gt;</span>
+                        <span class="nt">&lt;Constant</span> <span class="na">dataType=</span><span class="s">&quot;double&quot;</span><span class="nt">&gt;</span>0.5<span class="nt">&lt;/Constant&gt;</span>
+                    <span class="nt">&lt;/Apply&gt;</span>
+                <span class="nt">&lt;/Apply&gt;</span>
+                <span class="nt">&lt;Constant</span> <span class="na">dataType=</span><span class="s">&quot;double&quot;</span><span class="nt">&gt;</span>1.0<span class="nt">&lt;/Constant&gt;</span>
+            <span class="nt">&lt;/Apply&gt;</span>
+        <span class="nt">&lt;/Apply&gt;</span>
+    <span class="nt">&lt;/OutputField&gt;</span>
+<span class="nt">&lt;/Output&gt;</span>
+</pre></div>
+
+
+<h2 id="_4">参考</h2>
 <ol>
 <li>https://www.ibm.com/developerworks/cn/opensource/ind-PMML1/index.html</li>
 </ol>
@@ -222,7 +301,7 @@ PMML模型的部署可以使用 <a href="https://github.com/jpmml/jpmml-evaluato
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: 'PMML 预测模型',
+  title: 'PMML 预测模型教程',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
