@@ -84,6 +84,13 @@
 
 font.sans-serif      : Microsoft YaHei
 </pre></div>
+
+
+<p>可以通过下述代码查看系统支持的字体，MAC默认中文字体是 <code>STHeiti</code></p>
+<div class="hlcode"><pre><span></span><span class="n">fm</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">font_manager</span><span class="o">.</span><span class="n">FontManager</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fm</span><span class="o">.</span><span class="n">ttflist</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+</pre></div>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2017-10-17 </span></div>
 <div id="comments"></div>
