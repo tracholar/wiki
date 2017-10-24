@@ -43,3 +43,10 @@ font.family         : sans-serif
 
 font.sans-serif      : Microsoft YaHei
 ```
+可以通过下述代码查看系统支持的字体，MAC默认中文字体是 `STHeiti`
+
+```python
+fm = matplotlib.font_manager.FontManager()
+for f in fm.ttflist:
+    print f.name.decode('utf-8')
+```
