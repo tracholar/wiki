@@ -27,3 +27,6 @@ group by ID
 select ID, concat_ws('', collect_list(if(key='A', value, NULL))) as A_value, concat_ws(collect_list(if(key='B', value, NULL))) as B_value
 group by ID
 ```
+
+## 列转行
+这个需要利用 UDTF 实现！

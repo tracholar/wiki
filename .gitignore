@@ -6,4 +6,7 @@ output
 *.proj
 *.iml
 .idea/
+*.gz
+*.data
+logs/
 
