@@ -50,3 +50,5 @@ fm = matplotlib.font_manager.FontManager()
 for f in fm.ttflist:
     print f.name.decode('utf-8')
 ```
+
+注意，要使得配置生效，还需要删除字体缓存！MAC 中字体缓存在 `~/.matplotlib/fontList.cache` ，删除该文件即可！
