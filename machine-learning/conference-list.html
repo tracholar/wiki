@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>Decoupled Neural Interfaces using Synthetic Gradients - tracholar's personal knowledge wiki</title>
+        <title>机器学习相关资料 - tracholar's personal knowledge wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -40,56 +40,42 @@
         <div id="container">
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;Decoupled Neural Interfaces using Synthetic Gradients</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;机器学习相关资料</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">Decoupled Neural Interfaces using Synthetic Gradients</div>
+<div id="title">机器学习相关资料</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">论文导读</a></li>
-<li><a href="#_2">导言</a></li>
+<li><a href="#_1">会议</a></li>
+<li><a href="#_2">研究组</a></li>
 </ul>
 </div>
-<h2 id="_1">论文导读</h2>
-<p>这篇文章是 Google Deepmind 团队的一片文章，改进了BP算法在Leayer 层面上的串行计算结构。</p>
-<h2 id="_2">导言</h2>
-<p>神经网络 BP 算法的几个 Lock：</p>
+<h2 id="_1">会议</h2>
 <ul>
-<li>Forward Locking：每一模块（层）必须等到前面的层全部计算结束才能得到输入数据。</li>
-<li>Update Locking：每一个模块都要等到forward模式下依赖的模块计算完成才能更新。</li>
-<li>Backwards Locking：所有模块要等到forward模式和backward模式依赖的所有模块计算完成后才能更新。</li>
+<li>NIPS <a href="https://nips.cc/">https://nips.cc/</a></li>
+<li>ICML</li>
+<li>CVPR</li>
+<li>KDD</li>
+<li>AAAI</li>
+<li>ICLR</li>
+<li>IJCAI</li>
 </ul>
-<p>现有神经网络更新权值的问题：Update Locking</p>
+<h2 id="_2">研究组</h2>
 <ul>
-<li>多个异步模块构成的系统</li>
-<li>分布式模型</li>
+<li>南京大学-周志华 <a href="https://cs.nju.edu.cn/zhouzh/">https://cs.nju.edu.cn/zhouzh/</a></li>
+<li>DeepMind <a href="https://deepmind.com/research/publications/">https://deepmind.com/research/publications/</a></li>
+<li>Hinton <a href="http://www.cs.toronto.edu/~hinton/">http://www.cs.toronto.edu/~hinton/</a></li>
+<li>Yoshua Bengio <a href="http://www.iro.umontreal.ca/~bengioy/yoshua_en/">http://www.iro.umontreal.ca/~bengioy/yoshua_en/</a></li>
 </ul>
-<p>本论文主要工作是移除了 Update Locking 依赖。权值更新方法：</p>
-<p>$$<br />
-\frac{\partial L}{\partial \theta_i} = f_{Bprop}((h_i,x_i,y_i,\theta_i),(h_{i+1},x_{i+1},y_{i+1},\theta_{i+1}),...) \frac{\partial h_i}{\partial \theta_i} \\<br />
-\approx \hat{f}_{Bprop}(h_i) \frac{\partial h_i}{\partial \theta_i}<br />
-$$</p>
-<p>这里下标表示层数（或者模型序号），$(x, y)$表示输入和监督？h表示层的输出，该方法用一个神经网络对第一部分建模，而且只采用该层输出的局部信息！</p>
-<p>Decoupled Neural Interface (DNI). 预测误差仅依赖与该层的输出，因而一旦该层计算完毕，就可以马上得到BP误差！<br />
-该梯度仅跟输出h有关，成为 synthetic gradients (合成梯度)，可以利用这个合成梯度立即更新该层网络权值！<br />
-从而移除了 Update Locking 和 Backwards Locking！</p>
-<p>利用同样思想，移除Forward Locking?预测输入？</p>
-<ol>
-<li>J. Baxter and P. L. Bartlett. Direct gradient-based reinforcement learning. In Circuits and Systems,</li>
-<li>Proceedings. ISCAS 2000 Geneva. The 2000 IEEE International Symposium on, volume 3, pages<br />
-271–274. IEEE, 2000.</li>
-<li><strong>Y. Bengio</strong>. How auto-encoders could provide credit assignment in deep networks via target propagation.<br />
-arXiv preprint arXiv:1407.7906, 2014.</li>
-</ol>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2016-08-28 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2017-12-06 </span></div>
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
 <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: 'Decoupled Neural Interfaces using Synthetic Gradients',
+  title: '机器学习相关资料',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
