@@ -170,9 +170,34 @@ $$
 目标函数为total discounted reward
 
 $$
-L(u) = \mathbf{E}(r_1 + \gamma r_2 + \gamma^2 r_3 + ... | \pi(., u))
+J(u) = \mathbf{E}(r_1 + \gamma r_2 + \gamma^2 r_3 + ... | \pi(., u))
 $$
 
+令$(\tao = (s_1, a_1, ..., s_t, a_t))$代表状态-动作路径，用$(r(\tao))$代表每个路径的折扣reward，那么期望回报函数
+
+$$
+J(\theta) = \int \pi_{\theta}(\tao) r(\tao) d\tao
+$$
+
+对参数$(\theta)$求导，由于回报函数与参数无关，所以梯度只作用与策略函数
+
+$$
+\nabla_{\theta} J(\theta) = \int \nabla_{\theta} \pi_{\theta}(\tao) r(\tao) d\tao =\int  \pi_{\theta}(\tao) \nabla_{\theta} \log \pi_{\theta}(\tao) r(\tao) d\tao = E_{\tao ~ \pi_{\theta}(\tao)} \nabla_{\theta} \pi_{\theta}(\tao) r(\tao)
+$$
+
+利用马尔科夫性，
+
+$$
+\log \pi_{\theta}(\tao) = \log p(s_1) + \sum_{t=1}^T \left[\log \pi_{\theta}(a_t|s_t) + \log p(s_{t+1}|s_t, a_t) \right]
+$$
+
+代入上式可得
+
+$$
+\nabla_{\theta} J(\theta) = E_{\tao ~ \pi_{\theta}(\tao)} \sum_{t=1}^T  \nabla_{\theta}\log \pi_{\theta}(a_t|s_t)  r(\tao)
+$$
+
+如果把策略函数看做在状态s下选择动作a的概率，回报是该样本的权重！即加权极大似然估计！
 
 
 ## 相关资料
