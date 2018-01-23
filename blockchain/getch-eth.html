@@ -1,0 +1,327 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>以太坊网络的命令行工具 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#blockchain">blockchain</a>&nbsp;»&nbsp;以太坊网络的命令行工具</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">以太坊网络的命令行工具</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">客户端</a></li>
+<li><a href="#geth">Geth</a><ul>
+<li><a href="#mac-os">MAC OS</a></li>
+<li><a href="#windows">WINDOWS</a></li>
+<li><a href="#linux">LINUX</a></li>
+</ul>
+</li>
+<li><a href="#eth">ETH</a><ul>
+<li><a href="#mac">MAC</a></li>
+<li><a href="#linux_1">在LINUX上安装：</a></li>
+<li><a href="#windows_1">在WINDOWS上安装</a></li>
+</ul>
+</li>
+<li><a href="#python">Python</a><ul>
+<li><a href="#_2">其他选项</a></li>
+</ul>
+</li>
+<li><a href="#_3">运行</a><ul>
+<li><a href="#_4">连接到一个私人测试网</a></li>
+<li><a href="#_5">日志</a></li>
+<li><a href="#_6">了解有关运行节点的更多信息</a></li>
+</ul>
+</li>
+<li><a href="#_7">用法示例</a><ul>
+<li><a href="#_8">创建帐户</a></li>
+<li><a href="#_9">获取帐户的余额</a></li>
+<li><a href="#_10">一次检查所有余额</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>这些是区块链开发者的工具。 命令行工具将允许您连接服务器或在以太坊区块链上运行应用程序 - 或者您自己的私人区块链。</p>
+<h2 id="_1">客户端</h2>
+<p>为了安全起见 ，为以太坊创建了三个独立的实现。 客户端具有几乎相同的功能，因此您选择的客户端可以在平台、语言以及您计划的网络使用方面进行个人选择。</p>
+<p>如果您正在构建一个需要对以太坊网络提供最大正常运行时间保证的业务，那么我们建议您至少运行两个客户端的一个实例以确保可靠性。</p>
+<h2 id="geth">Geth</h2>
+<p><img alt="geth" src="https://ethereum.org/images/icons/gopher.png" /></p>
+<p>Go语言的实现被称为Geth 。 Geth已经过安全审计，将成为面向最终用户的 <strong>Mist Browser</strong> 的未来基础，所以如果你有网站开发经验，并且有兴趣为dapps构建前端，你应该试用Geth。</p>
+<h3 id="mac-os">MAC OS</h3>
+<p>安装Homebrew ，并确保它是最新的：</p>
+<div class="hlcode"><pre><span></span>brew update
+brew upgrade
+</pre></div>
+
+
+<p>然后使用这些命令来安装以太坊：</p>
+<div class="hlcode"><pre><span></span>brew tap ethereum/ethereum
+brew install ethereum
+</pre></div>
+
+
+<p>有关更多信息，请参阅<a href="https://github.com/ethereum/go-ethereum/wiki/Installation-Instructions-for-Mac">Mac OSX Geth的完整文档</a></p>
+<h3 id="windows">WINDOWS</h3>
+<p>下载最新的稳定<a href="https://geth.ethereum.org/downloads/">二进制文件</a> ，解压缩，下载压缩文件，从压缩包中提取geth.exe，打开一个命令终端并输入：</p>
+<div class="hlcode"><pre><span></span>chdir &lt;path to extracted binary&gt;
+open geth.exe
+</pre></div>
+
+
+<p>有关更多信息，请参阅<a href="https://github.com/ethereum/go-ethereum/wiki/Installation-instructions-for-Windows">Windows Geth上的完整文档</a></p>
+<h3 id="linux">LINUX</h3>
+<p>在Ubuntu上，执行这些命令：</p>
+<div class="hlcode"><pre><span></span>sudo apt-get install software-properties-common sudo add-apt-repository -y ppa:ethereum/ethereum sudo apt-get update sudo apt-get install ethereum
+</pre></div>
+
+
+<p>有关其他环境和更多说明，请参阅<a href="https://github.com/ethereum/go-ethereum/wiki/Building-Ethereum">Geth linux的完整文档</a></p>
+<h2 id="eth">ETH</h2>
+<p><img alt="Logo for C ++" src="https://ethereum.org/images/icons/cpp.png" /></p>
+<p>C++实现称为Eth 。 如果您希望通过并行运行两种不同的实现来增加安全性，或者认真对待GPU挖掘，那么C++“Eth”客户端就是为您服务的。</p>
+<h3 id="mac">MAC</h3>
+<p>安装Homebrew ，然后确保它是最新的：</p>
+<div class="hlcode"><pre><span></span>brew update
+brew upgrade
+</pre></div>
+
+
+<p>然后使用这些命令来安装cpp-ethereum：</p>
+<div class="hlcode"><pre><span></span>brew tap ethereum/ethereum
+brew install cpp-ethereum
+brew linkapps cpp-ethereum
+</pre></div>
+
+
+<p><a href="http://www.ethdocs.org/en/latest/ethereum-clients/cpp-ethereum/index.html">cpp-ethereum文档</a>提供了有关OS X Homebrew软件包和从Source构建OS X的详细信息。</p>
+<h3 id="linux_1">在LINUX上安装：</h3>
+<p>如果您使用Apt-get，请将其粘贴到终端中：</p>
+<div class="hlcode"><pre><span></span>apt-get install cpp-ethereum
+</pre></div>
+
+
+<p>cpp-ethereum文档详细介绍了关于Ubuntu的PPA以及从Source构建Linux的信息 。</p>
+<h3 id="windows_1">在WINDOWS上安装</h3>
+<p>cpp-ethereum文档包含有关从源代码构建Windows的详细信息。</p>
+<h2 id="python">Python</h2>
+<p>Python的实现被称为Pyethapp。 如果您有兴趣了解以太坊如何工作以及如何扩展它，那么这个客户端的代码基础可能是最具可读性的，并且拥有一个具有快速开发周期的合同测试程序库。 这并不意味着高端的使用，因为这个客户端的性能没有那么高的清晰度和可靠性。 如果你是一个Python开发者，希望构建分布式的应用程序，或者对以太坊有兴趣进行研究或学术研究，那么这是一个很好的客户端：我们邀请你来看看并为之作出贡献 。</p>
+<h3 id="_2">其他选项</h3>
+<ul>
+<li>奇偶校验技术 （ Parity Technologies）实施了一个Rust实施</li>
+<li>由Blockapps开发的一个Haskell实现</li>
+<li>如果您有兴趣开发一个完全在Web浏览器中运行的轻型应用程序，那么我们推荐使用EthereumJS作为基础。</li>
+<li>如果您想创建一个小型硬件项目，请查看Raspberry Pi的实现</li>
+<li>如果你想为非Ubuntu Linux安装geth，那么我们建议你从源代码开始构建</li>
+<li>如果你想在Mac上有更多的灵活性，试试Homebrew</li>
+</ul>
+<h2 id="_3">运行</h2>
+<p>Geth和Eth是运行完整的以太坊节点的多用途命令行工具。 它们提供了多个接口： 命令行子命令和选项， JSON-RPC服务器和交互式控制台 。</p>
+<p>对于本指南，我们将重点介绍控制台，这是一个包含您可能需要的所有主要功能的JavaScript环境。 根据您的客户端，粘贴以下任一命令：</p>
+<p>Geth</p>
+<div class="hlcode"><pre><span></span>geth console
+</pre></div>
+
+
+<p>Eth</p>
+<p>Eth仍然有一个内置的控制台，但它很快就会被移除。 开始使用</p>
+<div class="hlcode"><pre><span></span>eth
+</pre></div>
+
+
+<p>然后使用<code>geth attach</code> （如果你也有geth）或者下面的npm控制台。 Eth可能需要一些时间才能启动。</p>
+<div class="hlcode"><pre><span></span>npm install -g ethereum-console
+ethconsole
+</pre></div>
+
+
+<p>第一次启动命令行时，您将获得许可证。 在您使用之前，您必须先接受此许可证，请仔细阅读。</p>
+<p><em>注意：如果您只想测试技术并玩耍，请勿使用主网络。 进一步阅读以了解如何部署私有测试网络，而不用花费太多时间。</em></p>
+<h3 id="_4">连接到一个私人测试网</h3>
+<p>有时你可能不想连接到现场公共网络; 相反，您可以选择创建自己的私人测试网。 如果您不需要测试公共合同，只想尝试或开发技术，这非常有用。 由于您是您专用网络的唯一成员，因此您有责任查找所有块，验证所有交易并执行所有智能合约。 这使得开发更容易，因为您可以灵活控制个人区块链中的交易。</p>
+<p>Geth</p>
+<div class="hlcode"><pre><span></span>geth --datadir ~/.ethereum_private init ~/dev/genesis.json
+geth --fast --cache 512 --ipcpath ~/Library/Ethereum/geth.ipc --networkid 1234 --datadir ~/.ethereum_private console
+</pre></div>
+
+
+<p>Eth</p>
+<div class="hlcode"><pre><span></span>eth --private 12345 --genesis-json ~/test/genesis.json --db-path ~/.ethereum_experiment
+</pre></div>
+
+
+<p>将12345替换为您想要用作网络ID的任意数字。 最好改变生成块的内容，因为如果有人不小心使用真正的链连接到你的测试网络，你的本地副本将被认为是一个旧的分支，并更新为“真实”的分支 。 改变数据地址也会改变您本地的区块链副本，否则，为了成功地挖掘一个区块，您需要对付区块链本地副本中存在的最后一个区块 - 这可能需要几个小时。</p>
+<p>如果你想创建一个私人网络，你应该出于安全原因使用不同的起源块（genesis block: 一个包含Ether所有交易的数据库）。 你可以阅读我们的博客文章如何生成您的文件 。 在不久的将来，我们将提供更好的方法来获得其他的起源块。</p>
+<p>这些命令可以防止任何人不知道您选择的密码，网络ID和起源文件连接到您或为您提供不需要的数据。 如果你想连接到其他节点，并创建一个多台计算机的小型私人网络，他们都将需要使用相同的网络ID和一个相同的起源块。 您还必须帮助每个节点找到其他节点。 要做到这一点，首先你需要自己的节点URL：</p>
+<div class="hlcode"><pre><span></span>admin.nodeInfo.NodeUrl
+</pre></div>
+
+
+<p>该命令将会返回你的节点url - 记下它，然后在其他客户端上，告诉他们通过执行这个命令来添加你的节点：</p>
+<div class="hlcode"><pre><span></span>admin.addPeer(&quot;YOURNODEURL&quot;)
+</pre></div>
+
+
+<p>您不需要将每个客户端添加到彼此，因为一旦连接，他们将共享关于他们连接到的任何其他同伴的信息。</p>
+<p>如果您使用的是Eth，那么只需找出您的IP并执行以下命令：</p>
+<div class="hlcode"><pre><span></span>web3.admin.net.connect(&quot;YOURIP:30303&quot;)
+</pre></div>
+
+
+<h3 id="_5">日志</h3>
+<p>如果你正在运行Geth，你会注意到在你的控制台上弹出了很多日志条目 - 有时在你输入的时候。 这是因为所有警告和进度信息都由客户端实时记录到您的终端中。 如果要将日志保存到可以稍后查看的文件，请使用以下命令：</p>
+<div class="hlcode"><pre><span></span>geth console 2&gt;&gt;geth.log
+</pre></div>
+
+
+<p>Geth支持多个终端窗口，你可以用一个日志和另一个控制台启动一个新的日志。 这将给你与原来的控制台完全相同的功能，但没有混乱。 要做到这一点，打开一个新的终端窗口并输入：</p>
+<div class="hlcode"><pre><span></span>geth attach
+</pre></div>
+
+
+<p>控制台具有自动完成和历史命令支持。 您可以通过按Tab键完成一个命令，然后geth会自动补全当前的语句，当有多个补全选择时显示可用补全列表。 您可以使用向上和向下箭头键导航您的命令历史记录。</p>
+<h3 id="_6">了解有关运行节点的更多信息</h3>
+<ul>
+<li><a href="http://ethdocs.org/en/latest/account-management.html#backup-and-restore-accounts">备份还原</a></li>
+<li><a href="http://ethdocs.org/en/latest/network/connecting-to-the-network.html">连接到网络</a></li>
+</ul>
+<h2 id="_7">用法示例</h2>
+<h3 id="_8">创建帐户</h3>
+<p>为了使用以太坊网络，你需要生成一个帐户。 有很多方法可以解决这个问题 ，但最简单的方法是通过控制台。</p>
+<p>注意：如果您是在奥运期间或开发早期运行以太网， 请不要重复使用 Frontier客户端软件1.0发布之前生成的密钥 ，否则可能会受到重播攻击（replay attacks） 。 备份这些密钥，并使用Frontier发布客户端创建新密钥。</p>
+<div class="hlcode"><pre><span></span>personal.newAccount(&quot;Write here a good, randomly generated, passphrase!&quot;)
+</pre></div>
+
+
+<p>注意：拿起一个很好的密码并写下来。 如果您丢失了用于加密帐户的密码，则无法访问该帐户。 重复：没有安全网。 如果没有有效的密码，无法访问您的帐户，并且此处没有“忘记我的密码”选项。 有关详细信息，请参阅此XKCD 。</p>
+<p><strong>不要忘记你的 PASSPHRASE！</strong></p>
+<p>您可以创建尽可能多或尽可能少的帐户。 按照惯例我们称您创建您的主要帐户的第一个帐户。 您可以使用以下命令查看所有帐户：</p>
+<div class="hlcode"><pre><span></span>web3.eth.accounts
+</pre></div>
+
+
+<p>账户的排序反映了他们创建的时间。 密钥文件存储在<code>DATADIR/keystore</code>下，可以通过复制其中包含的文件在客户端之间传输。 这些文件使用密码进行加密，如果包含任何数量的ether，则应备份。 但是，请注意，如果您传输个别密钥文件，则提交的帐户顺序可能会发生变化，您可能无法在同一个位置结束同一个帐户。 所以请注意，只要您不将外部密钥文件复制到您的密钥库，依靠帐户索引就是合理的。</p>
+<h3 id="_9">获取帐户的余额</h3>
+<p>控制台上的所有命令实际上都是在JavaScript中运行，因此您可以创建变量和函数。 您也可以将任何“eth”函数编写为“web3.eth”，因为它实际上是主“web3”对象的一部分。</p>
+<p>试试这个例子：</p>
+<div class="hlcode"><pre><span></span><span class="kd">var</span> <span class="nx">primaryAccount</span> <span class="o">=</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">accounts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+
+<p>您现在有一个名为<code>primaryAccount</code>的变量，您可以在其他调用中使用该变量。 要获得任何帐户的余额，请使用<code>eth.getBalance</code>函数，如下所示：</p>
+<div class="hlcode"><pre><span></span><span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">getBalance</span><span class="p">(</span><span class="nx">primaryAccount</span><span class="p">)</span>
+</pre></div>
+
+
+<p>你的余额应该返回0，因为你刚创建它。 为了进行下一步操作，您需要在帐户中拥有一些以太网帐户，以便支付gas费用。 在下一节中，您将了解什么是gas，以及如何与网络进行交互。</p>
+<h3 id="_10">一次检查所有余额</h3>
+<p>命令行工具是JavaScript环境，这意味着您可以像创建JavaScript一样创建函数。 例如，如果您想要一次查看所有帐户的余额，请使用此JavaScript代码段。</p>
+<p>它将遍历每个帐户，并在以太网中打印其余额，可以使用以下代码：</p>
+<div class="hlcode"><pre><span></span><span class="kd">function</span> <span class="nx">checkAllBalances</span><span class="p">()</span> <span class="p">{</span>
+     <span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">getAccounts</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">accounts</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">accounts</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+               <span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">getBalance</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">balance</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot;:\tbalance: &quot;</span> <span class="o">+</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">fromWei</span><span class="p">(</span><span class="nx">balance</span><span class="p">,</span> <span class="s2">&quot;ether&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; ether&quot;</span><span class="p">);</span>
+                <span class="p">});</span>
+        <span class="p">});</span>
+    <span class="p">});</span>
+<span class="p">};</span>
+</pre></div>
+
+
+<p>一旦你执行上面的行，你需要检查所有的余额是调用下面的函数：</p>
+<div class="hlcode"><pre><span></span><span class="nx">checkAllBalances</span><span class="p">()</span>
+</pre></div>
+
+
+<p>提示：如果您有许多这样的小巧方便的脚本，您可以将它们保存到一个文件中，然后使用loadScript一次加载它们：</p>
+<div class="hlcode"><pre><span></span><span class="nx">loadScript</span><span class="p">(</span><span class="s1">&#39;/some/script/here.js&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2018-01-23 </span></div>
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: '以太坊网络的命令行工具',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2018 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>
