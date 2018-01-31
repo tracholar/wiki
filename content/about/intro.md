@@ -5,7 +5,7 @@ date: 2016-05-25
 ---
 
 # 关于 #
-@tracholar 中科大-左元，过去学物理，后来搞通信，现在搞数据挖掘。
+@tracholar 过去学物理，后来搞通信，现在搞数据挖掘。
 [硕士论文: 光通信中量子接收机的理论与初步实验研究](/wiki/static/pdf/master-thesis.pdf)是做量子接收机，现在做数据挖掘。
 
 这是我的个人知识WIKI，采用[@simiki](https://github.com/tankywoo/simiki)
