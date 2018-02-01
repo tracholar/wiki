@@ -48,14 +48,32 @@
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">投影算子</a></li>
 <li><a href="#moreau">Moreau 分解</a></li>
-<li><a href="#_2">近似梯度法</a></li>
-<li><a href="#_3">软阈值算法</a><ul>
-<li><a href="#l1">L1范数正则</a></li>
+<li><a href="#_2">近似梯度法</a><ul>
+<li><a href="#forward-backward-splitting">forward-backward splitting</a></li>
+<li><a href="#_3">投影梯度算法</a></li>
+<li><a href="#_4">交替投影算法</a></li>
+</ul>
+</li>
+<li><a href="#_5">投影算子计算</a><ul>
+<li><a href="#_6">二次函数</a></li>
+<li><a href="#_7">标量函数</a></li>
+<li><a href="#_8">纺射集投影</a></li>
+<li><a href="#_9">半空间</a></li>
+<li><a href="#_10">集合的支持函数</a></li>
+<li><a href="#_11">范数</a><ul>
 <li><a href="#l2">L2范数</a></li>
+<li><a href="#l1">L1范数</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_12">软阈值算法</a><ul>
+<li><a href="#l1_1">L1范数正则</a></li>
+<li><a href="#l2_1">L2范数</a></li>
 <li><a href="#l21">L21范数</a></li>
 </ul>
 </li>
-<li><a href="#_4">相关资料</a></li>
+<li><a href="#_13">相关资料</a></li>
 </ul>
 </div>
 <h2 id="_1">投影算子</h2>
@@ -112,6 +130,7 @@ f^ * (y) = \sup_x \left(y^T x - f(x)\right)<br />
 $$</p>
 <p>这个分解可以看做几何中的正交分解！</p>
 <h2 id="_2">近似梯度法</h2>
+<h3 id="forward-backward-splitting">forward-backward splitting</h3>
 <p>如果目标函数存在不可微分部分，可以将目标函数分解为两部分，一部分可以微分，另一部分不可微分</p>
 <p>$$<br />
 \min_x f(x) + g(x)<br />
@@ -125,8 +144,144 @@ p = (I + \lambda \partial g)^{-1} (I - \lambda \nabla f) (p) \\<br />
 p = prox_{\lambda g}\left( p - \lambda \nabla f(p)  \right)<br />
 $$</p>
 <p>上述不动点方程给出了优化迭代步骤！</p>
-<h2 id="_3">软阈值算法</h2>
-<h3 id="l1">L1范数正则</h3>
+<p>如果两步都采用投影来做</p>
+<p>$$<br />
+p = prox_{ g}\left( prox_f (p) \right)<br />
+$$</p>
+<p>就是 backward-backward splitting.</p>
+<h3 id="_3">投影梯度算法</h3>
+<p>求解约束优化问题</p>
+<p>$$<br />
+\min_{x \in C} f_2(x)<br />
+$$</p>
+<p>迭代算法</p>
+<p>$$<br />
+x_{k+1} = P_C\left(x_k - \gamma \nabla f_2(x_k)\right)<br />
+$$</p>
+<p>$(P_C)$是到凸集的投影，该算法的集合意义是先沿着f2的梯度方向下降，让后将结果点投影到集合C中，以保证解不会离开约束区域！</p>
+<h3 id="_4">交替投影算法</h3>
+<p>求解约束优化问题</p>
+<p>$$<br />
+\min_{x\in C} \frac{1}{2} d_D^2(x)<br />
+$$</p>
+<p>$(d_D(x))$是点x到凸集D的距离，采 backward-backward 分割，可得迭代算法</p>
+<p>$$<br />
+x_{k+1} = P_C(P_D(x_k))<br />
+$$</p>
+<p>该算法的几何图像是，交替像两个凸集C和D进行投影，直到收敛！</p>
+<h2 id="_5">投影算子计算</h2>
+<p>常规的计算方法是直接根据定义，求解优化问题：</p>
+<p>$$<br />
+\min_y f(y) + \frac{1}{2\lambda}||y - x||^2<br />
+$$</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>$(dom f)$有限</th>
+<th>$(dom f = R^n)$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>f光滑</td>
+<td>投影梯度法、内点法</td>
+<td>梯度下降</td>
+</tr>
+<tr>
+<td>f不光滑</td>
+<td>投影次梯度法</td>
+<td>次梯度法</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_6">二次函数</h3>
+<p>$(f(x) = 1/2x^T A x + b^T x +c )$，</p>
+<p>$$<br />
+prox_{\lambda f} (v)= (I + \lambda A)^{-1}(y - \lambda b)<br />
+$$</p>
+<p>如果 A = I, 且只有二次项，即$(f = || \cdot || _ 2^2)$，那么投影算子表现为shrinkage operator，直观来看就是把做了一个衰减！</p>
+<p>$$<br />
+prox_{\lambda f}(v) = \frac{v}{1 + \lambda}<br />
+$$</p>
+<h3 id="_7">标量函数</h3>
+<p>如果f是标量函数，自变量是单变量，那么很容易求得</p>
+<p>$$<br />
+v \in \lambda \partial f(x) + x \\<br />
+x =prox_{\lambda f}(v) = (1 + \partial f)^{-1} v<br />
+$$</p>
+<p>当$(f(x) = |x|)$时，有</p>
+<p>$$<br />
+prox_{\lambda f}(v) = \max(|v| - \lambda , 0) sgn(v)<br />
+$$</p>
+<p>即软阈值（soft thresholding）操作！</p>
+<h3 id="_8">纺射集投影</h3>
+<p>集合$(C = \{x| Ax = b \})$,投影操作为</p>
+<p>$$<br />
+\Pi_C(v) = v - A^\dagger(Ax - b)<br />
+$$</p>
+<p>$(\dagger)$是<a href="https://en.wikipedia.org/wiki/Moore%E2%80%93Penrose_inverse">伪逆</a>。</p>
+<p>当A是一个向量时，相当于投影到超平面，</p>
+<p>$$<br />
+\Pi_C(v) = v - \frac{a^Tx-b}{||a||_ 2^2} a<br />
+$$</p>
+<h3 id="_9">半空间</h3>
+<p>集合$(C = \{x| a^Tx \le b \})$,投影操作为</p>
+<p>$$<br />
+\Pi_C(v) = v - \frac{(a^Tx-b) _ + }{||a|| _ 2^2} a<br />
+$$</p>
+<p>即要减掉向量在另外一边的分量！</p>
+<h3 id="_10">集合的支持函数</h3>
+<p>集合C的支持函数定义为</p>
+<p>$$<br />
+S_c(x) = \sup_{y\in C}y^T x<br />
+$$</p>
+<p>结合解释是，以x为外法向量的点就是支持点！支持函数与示性函数共轭$(S_C^ * = I_C )$。<br />
+根据Moreau分解，知</p>
+<p>$$<br />
+prox_{\lambda S_c}(v) = v - \lambda \Pi_C(v/\lambda)<br />
+$$</p>
+<p>注意最后一个式子的几何理解！</p>
+<h3 id="_11">范数</h3>
+<p>如果函数$(f = || \cdot ||)$，那么对偶函数$(f^ * = I_B)$， B是对偶范数的单位球！</p>
+<p>$$<br />
+prox_{\lambda f}(v) = v - \lambda \Pi_B(v/\lambda)<br />
+$$</p>
+<h4 id="l2">L2范数</h4>
+<p>L2范数的对偶范数还是L2范数，L2单位球就是欧式空间的单位球！所以</p>
+<p>$$<br />
+\Pi_B(v) = \begin{cases}<br />
+            v/||v|| _ 2, \quad ||v|| _ 2 &gt; 1, \\<br />
+            v, \quad ||v|| _ 2 \le 1<br />
+            \end{cases}<br />
+$$</p>
+<p>所以L2范数的投影为</p>
+<p>$$<br />
+prox_{\lambda f}(v) = \begin{cases}<br />
+            (1 - \lambda/||v|| _ 2) v, \quad ||v|| _ 2 &gt; \lambda, \\<br />
+            0, \quad ||v|| _ 2 \le \lambda<br />
+            \end{cases}<br />
+$$</p>
+<p>也就是将原始向量v沿着v方向减少$(\lambda)$长度，除非减到0向量！也叫做 block soft thresholding操作！</p>
+<h4 id="l1">L1范数</h4>
+<p>L1范数的对偶范数是$(L_{\infty})$，对应的单位球是单位立方体，投影为</p>
+<p>$$<br />
+\Pi_B(v) = \begin{cases}<br />
+            sgn(v_i), \quad |v _ i| &gt; 1, \\<br />
+            v_i, \quad |v_i| \le 1<br />
+            \end{cases}<br />
+$$</p>
+<p>所以</p>
+<p>$$<br />
+v_{i+1} = \begin{cases}<br />
+    v_i - \lambda, \quad v_i&gt;\lambda \\<br />
+    -v_i + \lambda, \quad v_i&lt;-\lambda \\<br />
+    0, \quad other<br />
+    \end{cases}<br />
+$$</p>
+<p><img alt="软阈值" src="/wiki/static/images/soft-threshold.png" style="width:400px;float:left;" /></p>
+<h2 id="_12">软阈值算法</h2>
+<h3 id="l1_1">L1范数正则</h3>
 <p>L1正则问题</p>
 <p>$$<br />
 \min_x f(x) + \lambda |x|_ 1<br />
@@ -153,11 +308,10 @@ x_i = \begin{cases}<br />
     0, \quad other<br />
     \end{cases}<br />
 $$</p>
-<p>这表明，加了L1正则项，相当于将阈值为$(\lambda)$以内的分量都置0，以上的都减小$(\lambda)$，图像如下</p>
-<p><img alt="软阈值" src="/wiki/static/images/soft-threshold.png" /></p>
-<h3 id="l2">L2范数</h3>
+<p>这表明，加了L1正则项，相当于将阈值为$(\lambda)$以内的分量都置0，以上的都减小$(\lambda)$。</p>
+<h3 id="l2_1">L2范数</h3>
 <h3 id="l21">L21范数</h3>
-<h2 id="_4">相关资料</h2>
+<h2 id="_13">相关资料</h2>
 <ol>
 <li>比较全面介绍近似算法的书；Parikh N, Boyd S. Proximal algorithms[J]. Foundations and Trends® in Optimization, 2014, 1(3): 127-239.</li>
 <li>近似算法综述论文：Combettes P L, Pesquet J C. Proximal splitting methods in signal processing[M]//Fixed-point algorithms for inverse problems in science and engineering. Springer, New York, NY, 2011: 185-212.</li>
