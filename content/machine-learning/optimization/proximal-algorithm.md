@@ -85,6 +85,8 @@ $$
 这个分解可以看做几何中的正交分解！
 
 ## 近似梯度法
+
+### forward-backward splitting
 如果目标函数存在不可微分部分，可以将目标函数分解为两部分，一部分可以微分，另一部分不可微分
 
 $$
@@ -102,6 +104,178 @@ p = prox_{\lambda g}\left( p - \lambda \nabla f(p)  \right)
 $$
 
 上述不动点方程给出了优化迭代步骤！
+
+如果两步都采用投影来做
+
+$$
+p = prox_{ g}\left( prox_f (p) \right)
+$$
+
+就是 backward-backward splitting.
+
+### 投影梯度算法
+求解约束优化问题
+
+$$
+\min_{x \in C} f_2(x)
+$$
+
+迭代算法
+
+$$
+x_{k+1} = P_C\left(x_k - \gamma \nabla f_2(x_k)\right)
+$$
+
+$(P_C)$是到凸集的投影，该算法的集合意义是先沿着f2的梯度方向下降，让后将结果点投影到集合C中，以保证解不会离开约束区域！
+
+### 交替投影算法
+
+求解约束优化问题
+
+$$
+\min_{x\in C} \frac{1}{2} d_D^2(x)
+$$
+
+$(d_D(x))$是点x到凸集D的距离，采 backward-backward 分割，可得迭代算法
+
+$$
+x_{k+1} = P_C(P_D(x_k))
+$$
+
+该算法的几何图像是，交替像两个凸集C和D进行投影，直到收敛！
+
+## 投影算子计算
+常规的计算方法是直接根据定义，求解优化问题：
+
+$$
+\min_y f(y) + \frac{1}{2\lambda}||y - x||^2
+$$
+
+|  | $(dom f)$有限 | $(dom f = R^n)$ |
+---|---------------|-----------------|
+f光滑|   投影梯度法、内点法  |   梯度下降        |
+f不光滑|  投影次梯度法  | 次梯度法        |
+
+### 二次函数
+$(f(x) = 1/2x^T A x + b^T x +c )$，
+
+$$
+prox_{\lambda f} (v)= (I + \lambda A)^{-1}(y - \lambda b)
+$$
+
+如果 A = I, 且只有二次项，即$(f = || \cdot || _ 2^2)$，那么投影算子表现为shrinkage operator，直观来看就是把做了一个衰减！
+
+$$
+prox_{\lambda f}(v) = \frac{v}{1 + \lambda}
+$$
+
+### 标量函数
+如果f是标量函数，自变量是单变量，那么很容易求得
+
+$$
+v \in \lambda \partial f(x) + x \\\\
+x =prox_{\lambda f}(v) = (1 + \partial f)^{-1} v
+$$
+
+当$(f(x) = |x|)$时，有
+
+$$
+prox_{\lambda f}(v) = \max(|v| - \lambda , 0) sgn(v)
+$$
+
+即软阈值（soft thresholding）操作！
+
+### 纺射集投影
+集合$(C = \\{x| Ax = b \\})$,投影操作为
+
+$$
+\Pi_C(v) = v - A^\dagger(Ax - b)
+$$
+
+$(\dagger)$是[伪逆](https://en.wikipedia.org/wiki/Moore%E2%80%93Penrose_inverse)。
+
+当A是一个向量时，相当于投影到超平面，
+
+$$
+\Pi_C(v) = v - \frac{a^Tx-b}{||a||_ 2^2} a
+$$
+
+### 半空间
+集合$(C = \\{x| a^Tx \le b \\})$,投影操作为
+
+$$
+\Pi_C(v) = v - \frac{(a^Tx-b) _ + }{||a|| _ 2^2} a
+$$
+
+即要减掉向量在另外一边的分量！
+
+### 集合的支持函数
+集合C的支持函数定义为
+
+$$
+S_c(x) = \sup_{y\in C}y^T x
+$$
+
+结合解释是，以x为外法向量的点就是支持点！支持函数与示性函数共轭$(S_C^ * = I_C )$。
+根据Moreau分解，知
+
+$$
+prox_{\lambda S_c}(v) = v - \lambda \Pi_C(v/\lambda)
+$$
+
+注意最后一个式子的几何理解！
+
+### 范数
+如果函数$(f = || \cdot ||)$，那么对偶函数$(f^ * = I_B)$， B是对偶范数的单位球！
+
+$$
+prox_{\lambda f}(v) = v - \lambda \Pi_B(v/\lambda)
+$$
+
+#### L2范数
+L2范数的对偶范数还是L2范数，L2单位球就是欧式空间的单位球！所以
+
+$$
+\Pi_B(v) = \begin{cases}
+            v/||v|| _ 2, \quad ||v|| _ 2 > 1, \\\\
+            v, \quad ||v|| _ 2 \le 1
+            \end{cases}
+$$
+
+所以L2范数的投影为
+
+$$
+prox_{\lambda f}(v) = \begin{cases}
+            (1 - \lambda/||v|| _ 2) v, \quad ||v|| _ 2 > \lambda, \\\\
+            0, \quad ||v|| _ 2 \le \lambda
+            \end{cases}
+$$
+
+也就是将原始向量v沿着v方向减少$(\lambda)$长度，除非减到0向量！也叫做 block soft thresholding操作！
+
+#### L1范数
+L1范数的对偶范数是$(L_{\infty})$，对应的单位球是单位立方体，投影为
+
+$$
+\Pi_B(v) = \begin{cases}
+            sgn(v_i), \quad |v _ i| > 1, \\\\
+            v_i, \quad |v_i| \le 1
+            \end{cases}
+$$
+
+所以
+
+$$
+v_{i+1} = \begin{cases}
+    v_i - \lambda, \quad v_i>\lambda \\\\
+    -v_i + \lambda, \quad v_i<-\lambda \\\\
+    0, \quad other
+    \end{cases}
+$$
+
+
+<img alt="软阈值" src="/wiki/static/images/soft-threshold.png" style="width:400px;float:left;" />
+
 
 ## 软阈值算法
 ### L1范数正则
@@ -141,9 +315,8 @@ x_i = \begin{cases}
     \end{cases}
 $$
 
-这表明，加了L1正则项，相当于将阈值为$(\lambda)$以内的分量都置0，以上的都减小$(\lambda)$，图像如下
+这表明，加了L1正则项，相当于将阈值为$(\lambda)$以内的分量都置0，以上的都减小$(\lambda)$。
 
-![软阈值](/wiki/static/images/soft-threshold.png)
 
 ### L2范数
 
