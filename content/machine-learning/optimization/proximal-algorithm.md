@@ -322,6 +322,91 @@ $$
 
 ### L21范数
 
+## 软阈值算法实现
+求解问题
+
+$$
+\min_x \frac{1}{2} x^TAx + b^Tx + \lambda_2 ||x|| _ 2^2 + \lambda_1 ||x|| _ 1
+$$
+
+可以看到，L1正则很容易得到稀疏解！
+
+```python
+import numpy as np
+
+## 问题100维
+n = 100
+A = np.random.randn(n, n)
+A = np.matmul(A, A.T)
+b = np.random.randn(n)
+
+# 目标函数
+def f(x, lab=1, lab2=0.01):
+    return 0.5*np.dot(x, np.matmul(A, x)) + np.dot(b, x) + lab * np.sum(np.abs(x)) + lab2*np.sum(x * x)
+
+# 除了L1正则项外的梯度
+def grad(x, lab2=0.01):
+    return np.matmul(A, x) + b + lab2*x
+
+
+# 软阈值迭代算法
+
+x = np.random.randn(n)
+mu = 0.001
+lamb = 0.001
+lab2 = 0.01
+
+for i in range(1000):
+    # STEP1：梯度下降
+    x -= grad(x, lab2) * mu
+
+    # STEP2：投影操作，也就是软阈值操作
+    for j in range(len(x)):
+        if x[j] >  lamb:
+            x[j] -= lamb
+        elif x[j] < - lamb:
+            x[j] += lamb
+        else:
+            x[j] = 0.0
+
+    # 打印中间迭代结果
+    if i % 100 == 0:
+        print i, 'loss=', f(x, lamb, lab2)
+
+print x
+
+>>> Output:
+    0 loss= 2885.940934
+    100 loss= 7.00429601928
+    200 loss= -1.41118168711
+    300 loss= -1.80700326257
+    400 loss= -0.92442027893
+    500 loss= -0.495608788531
+    600 loss= -0.406029439039
+    700 loss= -0.39699782142
+    800 loss= -0.396142837958
+    900 loss= -0.396063831362
+    [ 0.         -0.02240752  0.          0.01838245  0.          0.          0.
+      0.00298963  0.          0.         -0.00955873 -0.00178735  0.00042998
+      0.          0.          0.          0.         -0.0186204   0.          0.
+      0.          0.          0.          0.          0.          0.0191493   0.
+      0.          0.          0.          0.02302297  0.          0.          0.
+      0.         -0.00320408  0.          0.          0.         -0.00015352
+      0.          0.          0.00672691  0.          0.         -0.00197078
+      0.02170618 -0.01355523  0.         -0.01622619  0.          0.00736487
+     -0.00019741  0.          0.00403908  0.          0.00964287  0.00306289
+      0.          0.          0.          0.          0.          0.00409562
+      0.00345642  0.         -0.01593566  0.01548538  0.00547625  0.
+     -0.00019676  0.          0.          0.          0.         -0.00330652
+      0.01107757  0.          0.          0.          0.          0.01343474
+      0.          0.          0.0086595   0.          0.          0.          0.
+     -0.00124211  0.          0.          0.00161077  0.          0.          0.
+      0.          0.         -0.01026826  0.        ]
+```
+
+
+
+
 ## 相关资料
 1. 比较全面介绍近似算法的书；Parikh N, Boyd S. Proximal algorithms[J]. Foundations and Trends® in Optimization, 2014, 1(3): 127-239.
 2. 近似算法综述论文：Combettes P L, Pesquet J C. Proximal splitting methods in signal processing[M]//Fixed-point algorithms for inverse problems in science and engineering. Springer, New York, NY, 2011: 185-212.
