@@ -143,7 +143,7 @@ $$
 
 这表明，加了L1正则项，相当于将阈值为$(\lambda)$以内的分量都置0，以上的都减小$(\lambda)$，图像如下
 
-![软阈值](/static/images/soft-threshold.png)
+![软阈值](/wiki/static/images/soft-threshold.png)
 
 ### L2范数
 
