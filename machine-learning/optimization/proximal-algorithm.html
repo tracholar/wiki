@@ -74,7 +74,9 @@
 </ul>
 </li>
 <li><a href="#_13">软阈值算法实现</a></li>
-<li><a href="#_14">相关资料</a></li>
+<li><a href="#admm">交替方向乘子ADMM</a></li>
+<li><a href="#_14">多个函数</a></li>
+<li><a href="#_15">相关资料</a></li>
 </ul>
 </div>
 <h2 id="_1">投影算子</h2>
@@ -315,34 +317,58 @@ $$</p>
 <h2 id="_13">软阈值算法实现</h2>
 <p>求解问题</p>
 <p>$$<br />
-\min_x \frac{1}{2} x^TAx + b^Tx + \lambda_2 ||x|| _ 2^2 + \lambda_1 ||x|| _ 1<br />
+\min_x \frac{1}{2} ||Ax - b||^2 + \lambda_2 ||x|| _ 2^2 + \lambda_1 ||x|| _ 1<br />
 $$</p>
-<p>可以看到，L1正则很容易得到稀疏解！</p>
+<p>可以看到，算法很快就收敛了，并且L1正则很容易得到稀疏解！</p>
 <div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
 <span class="c1">## 问题100维</span>
+<span class="c1">#</span>
+
 <span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="o">*</span><span class="mi">10</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="c1"># 超定方程</span>
+<span class="n">xx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">0.8</span>
+<span class="n">xx</span> <span class="o">=</span> <span class="n">xx</span> <span class="o">*</span> <span class="n">mask</span>
+<span class="k">print</span> <span class="s1">&#39;ground truth:&#39;</span><span class="p">,</span> <span class="n">xx</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">xx</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span> <span class="c1"># 加入一些噪声</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">Output</span><span class="p">:</span>
+    <span class="n">ground</span> <span class="n">truth</span><span class="p">:</span> <span class="p">[</span> <span class="mf">0.</span>          <span class="mf">0.42171383</span> <span class="o">-</span><span class="mf">0.94716965</span>  <span class="mf">0.54640995</span>  <span class="mf">0.67948742</span>  <span class="mf">0.88857648</span>
+    <span class="mf">0.14209921</span> <span class="o">-</span><span class="mf">0.70685128</span>  <span class="mf">0.43310285</span> <span class="o">-</span><span class="mf">1.2423563</span>   <span class="mf">0.27323468</span> <span class="o">-</span><span class="mf">0.23007387</span>
+    <span class="mf">1.53049499</span> <span class="o">-</span><span class="mf">0.03076339</span> <span class="o">-</span><span class="mf">0.</span>          <span class="mf">0.53795911</span>  <span class="mf">1.1853585</span>   <span class="mf">0.66830622</span>
+    <span class="mf">0.0813316</span>  <span class="o">-</span><span class="mf">0.39508658</span>  <span class="mf">0.75451939</span>  <span class="mf">0.53967945</span> <span class="o">-</span><span class="mf">0.</span>         <span class="o">-</span><span class="mf">0.79440595</span>
+    <span class="mf">0.10416921</span> <span class="o">-</span><span class="mf">0.76577241</span>  <span class="mf">2.21847433</span> <span class="o">-</span><span class="mf">1.38163076</span>  <span class="mf">0.6089114</span>   <span class="mf">1.18767332</span>
+    <span class="o">-</span><span class="mf">1.28999937</span>  <span class="mf">0.65445551</span> <span class="o">-</span><span class="mf">0.3248272</span>  <span class="o">-</span><span class="mf">0.88002173</span> <span class="o">-</span><span class="mf">0.82729771</span>  <span class="mf">0.47309462</span>
+    <span class="o">-</span><span class="mf">0.8384278</span>  <span class="o">-</span><span class="mf">1.66928355</span>  <span class="mf">0.85613791</span>  <span class="mf">0.31921217</span>  <span class="mf">2.51727067</span>  <span class="mf">1.11885762</span>
+    <span class="mf">0.38646877</span>  <span class="mf">0.32068998</span>  <span class="mf">0.</span>          <span class="mf">1.02912399</span> <span class="o">-</span><span class="mf">0.4607417</span>  <span class="o">-</span><span class="mf">0.84519518</span>
+    <span class="o">-</span><span class="mf">0.</span>          <span class="mf">0.34949314</span>  <span class="mf">0.56150765</span>  <span class="mf">0.08035849</span>  <span class="mf">1.812666</span>   <span class="o">-</span><span class="mf">1.23004836</span>
+    <span class="mf">1.65564242</span>  <span class="mf">0.23581581</span> <span class="o">-</span><span class="mf">0.03529459</span> <span class="o">-</span><span class="mf">0.33258733</span> <span class="o">-</span><span class="mf">0.65909872</span> <span class="o">-</span><span class="mf">1.1317373</span>
+    <span class="o">-</span><span class="mf">0.46223132</span>  <span class="mf">0.97113475</span>  <span class="mf">0.</span>          <span class="mf">0.17753836</span> <span class="o">-</span><span class="mf">0.</span>          <span class="mf">0.</span>
+    <span class="mf">0.08929848</span>  <span class="mf">0.02685682</span>  <span class="mf">0.</span>         <span class="o">-</span><span class="mf">0.</span>          <span class="mf">1.86521051</span> <span class="o">-</span><span class="mf">1.02918525</span>
+    <span class="mf">1.39816556</span> <span class="o">-</span><span class="mf">0.32507115</span>  <span class="mf">0.20111102</span> <span class="o">-</span><span class="mf">0.</span>         <span class="o">-</span><span class="mf">1.81123986</span>  <span class="mf">0.18043876</span>
+    <span class="mf">0.</span>         <span class="o">-</span><span class="mf">0.84625861</span>  <span class="mf">0.8709556</span>   <span class="mf">0.</span>          <span class="mf">0.65961205</span>  <span class="mf">2.35225572</span>
+    <span class="mf">0.</span>         <span class="o">-</span><span class="mf">0.04910171</span> <span class="o">-</span><span class="mf">1.35667457</span> <span class="o">-</span><span class="mf">1.45385942</span>  <span class="mf">0.15419398</span>  <span class="mf">1.1789595</span>
+    <span class="mf">0.7340732</span>  <span class="o">-</span><span class="mf">0.</span>          <span class="mf">0.85819805</span>  <span class="mf">0.57832173</span>  <span class="mf">0.49845621</span>  <span class="mf">0.</span>         <span class="o">-</span><span class="mf">0.6047393</span>
+    <span class="mf">0.99361454</span>  <span class="mf">0.45679531</span>  <span class="mf">0.28392374</span><span class="p">]</span>
+
 
 <span class="c1"># 目标函数</span>
 <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">lab</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">lab2</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
-    <span class="k">return</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">lab</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">+</span> <span class="n">lab2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span><span class="o">+</span> <span class="n">lab</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">+</span> <span class="n">lab2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="p">)</span>
 
 <span class="c1"># 除了L1正则项外的梯度</span>
 <span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">lab2</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">lab2</span><span class="o">*</span><span class="n">x</span>
-
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="n">lab2</span><span class="o">*</span><span class="n">x</span>
 
 <span class="c1"># 软阈值迭代算法</span>
 
 <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 <span class="n">mu</span> <span class="o">=</span> <span class="mf">0.001</span>
-<span class="n">lamb</span> <span class="o">=</span> <span class="mf">0.001</span>
+<span class="n">lamb</span> <span class="o">=</span> <span class="mf">0.01</span>
 <span class="n">lab2</span> <span class="o">=</span> <span class="mf">0.01</span>
 
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
     <span class="c1"># STEP1：梯度下降</span>
     <span class="n">x</span> <span class="o">-=</span> <span class="n">grad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">lab2</span><span class="p">)</span> <span class="o">*</span> <span class="n">mu</span>
 
@@ -356,42 +382,81 @@ $$</p>
             <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
 
     <span class="c1"># 打印中间迭代结果</span>
-    <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">print</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;loss=&#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">lamb</span><span class="p">,</span> <span class="n">lab2</span><span class="p">)</span>
 
 <span class="k">print</span> <span class="n">x</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="n">Output</span><span class="p">:</span>
-    <span class="mi">0</span> <span class="n">loss</span><span class="o">=</span> <span class="mf">2885.940934</span>
-    <span class="mi">100</span> <span class="n">loss</span><span class="o">=</span> <span class="mf">7.00429601928</span>
-    <span class="mi">200</span> <span class="n">loss</span><span class="o">=</span> <span class="o">-</span><span class="mf">1.41118168711</span>
-    <span class="mi">300</span> <span class="n">loss</span><span class="o">=</span> <span class="o">-</span><span class="mf">1.80700326257</span>
-    <span class="mi">400</span> <span class="n">loss</span><span class="o">=</span> <span class="o">-</span><span class="mf">0.92442027893</span>
-    <span class="mi">500</span> <span class="n">loss</span><span class="o">=</span> <span class="o">-</span><span class="mf">0.495608788531</span>
-    <span class="mi">600</span> <span class="n">loss</span><span class="o">=</span> <span class="o">-</span><span class="mf">0.406029439039</span>
-    <span class="mi">700</span> <span class="n">loss</span><span class="o">=</span> <span class="o">-</span><span class="mf">0.39699782142</span>
-    <span class="mi">800</span> <span class="n">loss</span><span class="o">=</span> <span class="o">-</span><span class="mf">0.396142837958</span>
-    <span class="mi">900</span> <span class="n">loss</span><span class="o">=</span> <span class="o">-</span><span class="mf">0.396063831362</span>
-    <span class="p">[</span> <span class="mf">0.</span>         <span class="o">-</span><span class="mf">0.02240752</span>  <span class="mf">0.</span>          <span class="mf">0.01838245</span>  <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.</span>
-      <span class="mf">0.00298963</span>  <span class="mf">0.</span>          <span class="mf">0.</span>         <span class="o">-</span><span class="mf">0.00955873</span> <span class="o">-</span><span class="mf">0.00178735</span>  <span class="mf">0.00042998</span>
-      <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.</span>         <span class="o">-</span><span class="mf">0.0186204</span>   <span class="mf">0.</span>          <span class="mf">0.</span>
-      <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.0191493</span>   <span class="mf">0.</span>
-      <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.02302297</span>  <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.</span>
-      <span class="mf">0.</span>         <span class="o">-</span><span class="mf">0.00320408</span>  <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.</span>         <span class="o">-</span><span class="mf">0.00015352</span>
-      <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.00672691</span>  <span class="mf">0.</span>          <span class="mf">0.</span>         <span class="o">-</span><span class="mf">0.00197078</span>
-      <span class="mf">0.02170618</span> <span class="o">-</span><span class="mf">0.01355523</span>  <span class="mf">0.</span>         <span class="o">-</span><span class="mf">0.01622619</span>  <span class="mf">0.</span>          <span class="mf">0.00736487</span>
-     <span class="o">-</span><span class="mf">0.00019741</span>  <span class="mf">0.</span>          <span class="mf">0.00403908</span>  <span class="mf">0.</span>          <span class="mf">0.00964287</span>  <span class="mf">0.00306289</span>
-      <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.00409562</span>
-      <span class="mf">0.00345642</span>  <span class="mf">0.</span>         <span class="o">-</span><span class="mf">0.01593566</span>  <span class="mf">0.01548538</span>  <span class="mf">0.00547625</span>  <span class="mf">0.</span>
-     <span class="o">-</span><span class="mf">0.00019676</span>  <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.</span>         <span class="o">-</span><span class="mf">0.00330652</span>
-      <span class="mf">0.01107757</span>  <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.01343474</span>
-      <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.0086595</span>   <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.</span>
-     <span class="o">-</span><span class="mf">0.00124211</span>  <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.00161077</span>  <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">0.</span>
-      <span class="mf">0.</span>          <span class="mf">0.</span>         <span class="o">-</span><span class="mf">0.01026826</span>  <span class="mf">0.</span>        <span class="p">]</span>
+    <span class="mi">0</span> <span class="n">loss</span><span class="o">=</span> <span class="mf">7532.16879981</span>
+    <span class="mi">10</span> <span class="n">loss</span><span class="o">=</span> <span class="mf">11.0285759018</span>
+    <span class="mi">20</span> <span class="n">loss</span><span class="o">=</span> <span class="mf">10.9840030328</span>
+    <span class="mi">30</span> <span class="n">loss</span><span class="o">=</span> <span class="mf">10.9842744582</span>
+    <span class="mi">40</span> <span class="n">loss</span><span class="o">=</span> <span class="mf">10.9842770859</span>
+    <span class="mi">50</span> <span class="n">loss</span><span class="o">=</span> <span class="mf">10.9842771092</span>
+    <span class="mi">60</span> <span class="n">loss</span><span class="o">=</span> <span class="mf">10.9842771094</span>
+    <span class="mi">70</span> <span class="n">loss</span><span class="o">=</span> <span class="mf">10.9842771094</span>
+    <span class="mi">80</span> <span class="n">loss</span><span class="o">=</span> <span class="mf">10.9842771094</span>
+    <span class="mi">90</span> <span class="n">loss</span><span class="o">=</span> <span class="mf">10.9842771094</span>
+    <span class="p">[</span> <span class="mf">0.</span>          <span class="mf">0.41005474</span> <span class="o">-</span><span class="mf">0.93416517</span>  <span class="mf">0.52872225</span>  <span class="mf">0.66901803</span>  <span class="mf">0.87710187</span>
+    <span class="mf">0.1254697</span>  <span class="o">-</span><span class="mf">0.69410934</span>  <span class="mf">0.42094427</span> <span class="o">-</span><span class="mf">1.23128115</span>  <span class="mf">0.25644887</span> <span class="o">-</span><span class="mf">0.22262353</span>
+    <span class="mf">1.51692245</span> <span class="o">-</span><span class="mf">0.02018758</span>  <span class="mf">0.</span>          <span class="mf">0.53116499</span>  <span class="mf">1.17967392</span>  <span class="mf">0.64459272</span>
+    <span class="mf">0.06787308</span> <span class="o">-</span><span class="mf">0.38043066</span>  <span class="mf">0.74631218</span>  <span class="mf">0.52152388</span>  <span class="mf">0.</span>         <span class="o">-</span><span class="mf">0.79768153</span>
+    <span class="mf">0.09135038</span> <span class="o">-</span><span class="mf">0.75555311</span>  <span class="mf">2.20245087</span> <span class="o">-</span><span class="mf">1.36570672</span>  <span class="mf">0.59778203</span>  <span class="mf">1.17212485</span>
+    <span class="o">-</span><span class="mf">1.27509079</span>  <span class="mf">0.63889237</span> <span class="o">-</span><span class="mf">0.31797818</span> <span class="o">-</span><span class="mf">0.87161519</span> <span class="o">-</span><span class="mf">0.81344888</span>  <span class="mf">0.464237</span>
+    <span class="o">-</span><span class="mf">0.82969714</span> <span class="o">-</span><span class="mf">1.66337076</span>  <span class="mf">0.83671452</span>  <span class="mf">0.30766759</span>  <span class="mf">2.50494207</span>  <span class="mf">1.1034511</span>
+    <span class="mf">0.38148637</span>  <span class="mf">0.31093457</span>  <span class="mf">0.</span>          <span class="mf">1.02118932</span> <span class="o">-</span><span class="mf">0.45228788</span> <span class="o">-</span><span class="mf">0.8302418</span>   <span class="mf">0.</span>
+    <span class="mf">0.32929066</span>  <span class="mf">0.54006833</span>  <span class="mf">0.06742762</span>  <span class="mf">1.80640673</span> <span class="o">-</span><span class="mf">1.2229943</span>   <span class="mf">1.64774712</span>
+    <span class="mf">0.21735476</span> <span class="o">-</span><span class="mf">0.02296309</span> <span class="o">-</span><span class="mf">0.3222897</span>  <span class="o">-</span><span class="mf">0.65161403</span> <span class="o">-</span><span class="mf">1.10748401</span> <span class="o">-</span><span class="mf">0.44978335</span>
+    <span class="mf">0.95982422</span>  <span class="mf">0.</span>          <span class="mf">0.16099326</span> <span class="o">-</span><span class="mf">0.00337374</span>  <span class="mf">0.</span>          <span class="mf">0.0845288</span>
+    <span class="mf">0.01798603</span>  <span class="mf">0.</span>          <span class="mf">0.</span>          <span class="mf">1.84882179</span> <span class="o">-</span><span class="mf">1.01734222</span>  <span class="mf">1.39139325</span>
+    <span class="o">-</span><span class="mf">0.31544124</span>  <span class="mf">0.18957113</span>  <span class="mf">0.</span>         <span class="o">-</span><span class="mf">1.80153297</span>  <span class="mf">0.17600738</span>  <span class="mf">0.</span>
+    <span class="o">-</span><span class="mf">0.83960423</span>  <span class="mf">0.86347204</span>  <span class="mf">0.</span>          <span class="mf">0.64546066</span>  <span class="mf">2.35318802</span>  <span class="mf">0.</span>
+    <span class="o">-</span><span class="mf">0.03208243</span> <span class="o">-</span><span class="mf">1.34212428</span> <span class="o">-</span><span class="mf">1.44773413</span>  <span class="mf">0.14815159</span>  <span class="mf">1.17458127</span>  <span class="mf">0.72367534</span>
+    <span class="mf">0.</span>          <span class="mf">0.84649559</span>  <span class="mf">0.56543654</span>  <span class="mf">0.47495661</span>  <span class="mf">0.</span>         <span class="o">-</span><span class="mf">0.59702874</span>
+    <span class="mf">0.98713984</span>  <span class="mf">0.4507846</span>   <span class="mf">0.27214572</span><span class="p">]</span>
 </pre></div>
 
 
-<h2 id="_14">相关资料</h2>
+<h2 id="admm">交替方向乘子ADMM</h2>
+<p>求目标可分解优化问题</p>
+<p>$$<br />
+\min_{x,z} f(x) + g(z) \\<br />
+s.t. \quad Ax + Bz = c<br />
+$$</p>
+<p>利用增广拉格朗日乘子</p>
+<p>$$<br />
+L_{\rho}(x, z, y) = f(x) + g(z) + y^T(Ax + Bz - c) + \rho/2 ||Ax+Bz-c||^2<br />
+$$</p>
+<p>利用拉格朗日对偶问题的性质可知，在强对偶条件下，最优解为</p>
+<p>$$<br />
+x * , y * , z * = \arg\max_y (\arg\min_{x,z} L(x,z, y) )<br />
+$$</p>
+<p>于是有交替迭代算法(ADMM):</p>
+<p>$$<br />
+x_{k+1} = \arg\min_x L_{\rho}(x, z_k, y_k) \\<br />
+z_{k+1} = \arg\min_z L_{\rho}(x_{k+1}, z, y_k) \\<br />
+y_{k+1} = y_k + \rho (Ax_{k+1} +Bz_{k+1} - c)<br />
+$$</p>
+<p>其中前两个式子实际上是两个投影算子，最后一个式子是用梯度上升求对偶函数的最大值！</p>
+<p>当A=-B=I时，可得到无约束最优化问题$(\min_x f(x) + g(x))$的求解算法</p>
+<p>$$<br />
+x_{k+1} = prox_{\lambda_k f}(z_k - u_k) \\<br />
+z_{k+1} = prox_{\lambda_k f}(x_{k+1} + u_k) \\<br />
+u_{k+1} = u_k + x_{k+1} - z_{k+1}<br />
+$$</p>
+<h2 id="_14">多个函数</h2>
+<p>优化如下问题，其中这些函数都有可能是不光滑的</p>
+<p>$$<br />
+\min f_1(x) + ... + f_m(x)<br />
+$$</p>
+<p>将问题转化为约束优化问题</p>
+<p>$$<br />
+\min_{x \in D}  f(x) \\<br />
+f(x) = f_1(x_1) + ... + f_m(x_m) \\<br />
+x = (x_1, ..., x_m), D= {(x_1,...,x_m) | x_1=...=x_m}<br />
+$$</p>
+<h2 id="_15">相关资料</h2>
 <ol>
 <li>比较全面介绍近似算法的书；Parikh N, Boyd S. Proximal algorithms[J]. Foundations and Trends® in Optimization, 2014, 1(3): 127-239.</li>
 <li>近似算法综述论文：Combettes P L, Pesquet J C. Proximal splitting methods in signal processing[M]//Fixed-point algorithms for inverse problems in science and engineering. Springer, New York, NY, 2011: 185-212.</li>
