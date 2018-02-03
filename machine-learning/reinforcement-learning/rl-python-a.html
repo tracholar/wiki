@@ -1,0 +1,383 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>强化学习算法实现(I) - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning-reinforcement-learning">reinforcement-learning</a>&nbsp;»&nbsp;强化学习算法实现(I)</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">强化学习算法实现(I)</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">环境构建</a></li>
+<li><a href="#_2">值迭代</a></li>
+<li><a href="#_3">策略迭代</a></li>
+<li><a href="#_4">蒙特卡罗法</a></li>
+<li><a href="#q-learning">Q-Learning</a></li>
+</ul>
+</div>
+<h2 id="_1">环境构建</h2>
+<p>MDP的环境是指转移概率$(P(s'| s, a))$和回报函数$(r(s, a))$！<br />
+在环境已知的动态规划算法中，用于迭代算法当中。在环境位置的TD方法中用于模拟。</p>
+<p>构建一个简单的环境，有nS个状态，0，1，...，nS-1；其中nS-1是终止状态。<br />
+该环境下一共两个动作：0向左运动，1向右运动，每个动作都有概率p0不动，p1的概率会往反方向运动, 1-p0-p1概率正常运动。</p>
+<table>
+<thead>
+<tr>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>...</th>
+<th>9</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>←·→</td>
+<td>←·→</td>
+<td>←·→</td>
+<td>←·→</td>
+<td>终点</td>
+</tr>
+</tbody>
+</table>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="n">nS</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">nA</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1">#不要改这个参数</span>
+<span class="n">Done</span> <span class="o">=</span> <span class="n">nS</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="n">p0</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nS</span><span class="p">,</span> <span class="n">nA</span><span class="p">,</span> <span class="n">nS</span><span class="p">))</span> <span class="c1"># 转移概率</span>
+<span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nS</span><span class="p">,</span> <span class="n">nA</span><span class="p">,</span> <span class="n">nS</span><span class="p">))</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="c1"># 回报都是-1</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nS</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="n">Done</span><span class="p">:</span> <span class="c1"># 终止态转移概率都为0</span>
+        <span class="k">continue</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nA</span><span class="p">):</span>
+        <span class="n">inc</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span> <span class="c1"># 步长        </span>
+        <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">+=</span> <span class="n">p0</span> <span class="c1"># 不动</span>
+        <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span> <span class="o">-</span> <span class="n">inc</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">p1</span> <span class="c1"># 反方向</span>
+        <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span> <span class="o">+</span> <span class="n">inc</span><span class="p">)]</span> <span class="o">+=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">p0</span> <span class="o">-</span> <span class="n">p1</span> <span class="c1"># 正常运动</span>
+</pre></div>
+
+
+<h2 id="_2">值迭代</h2>
+<p>迭代法求解非线性方程，值迭代迭代方程</p>
+<p>$$<br />
+V(s) = \max_a \sum_{s'}P(s'|s, a) [r(s, a) + \gamma V(s')]<br />
+$$</p>
+<div class="hlcode"><pre><span></span><span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nS</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="n">converage</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nS</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="n">Done</span><span class="p">:</span>  <span class="c1"># 终止状态不迭代</span>
+            <span class="n">V</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># HJB 非线性方程</span>
+        <span class="n">maxV</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">ss</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">ss</span><span class="p">]</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">V</span><span class="p">[</span><span class="n">ss</span><span class="p">])</span> <span class="k">for</span> <span class="n">ss</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nS</span><span class="p">)</span>
+                        <span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nA</span><span class="p">)</span>
+                   <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">V</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">!=</span> <span class="n">maxV</span><span class="p">:</span> <span class="c1"># 测试值迭代是否收敛</span>
+            <span class="n">converage</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="n">V</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">maxV</span>
+    <span class="k">if</span> <span class="n">converage</span><span class="p">:</span>
+        <span class="k">break</span>
+
+<span class="k">print</span> <span class="s1">&#39;iteral steps:&#39;</span><span class="p">,</span> <span class="n">it</span>
+<span class="k">print</span> <span class="n">V</span>
+
+<span class="o">&gt;&gt;&gt;</span>
+<span class="n">iteral</span> <span class="n">steps</span><span class="p">:</span> <span class="mi">57</span>
+<span class="p">[</span><span class="o">-</span><span class="mf">12.65306123</span> <span class="o">-</span><span class="mf">11.40306123</span>  <span class="o">-</span><span class="mf">9.99681123</span>  <span class="o">-</span><span class="mf">8.57102998</span>  <span class="o">-</span><span class="mf">7.14280732</span>
+  <span class="o">-</span><span class="mf">5.71427949</span>  <span class="o">-</span><span class="mf">4.28571351</span>  <span class="o">-</span><span class="mf">2.85714276</span>  <span class="o">-</span><span class="mf">1.42857142</span>   <span class="mf">0.</span>        <span class="p">]</span>
+</pre></div>
+
+
+<h2 id="_3">策略迭代</h2>
+<ul>
+<li>策略迭代分两步<ol>
+<li>第一步固定策略，求解值函数，叫策略评估，因为策略固定了，HJB方程由非线性方程变成线性方程，可以采用迭代解法或者高斯消元法求解；</li>
+<li>第二步叫策略提升，对值函数构造新的更优策略！</li>
+</ol>
+</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="n">pi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nS</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span> <span class="c1">#初始策略全部往左</span>
+
+<span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nS</span><span class="p">)</span>
+    <span class="c1"># 策略评估，解线性方程，雅克比迭代法</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+        <span class="n">converage</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nS</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="n">Done</span><span class="p">:</span>
+                <span class="n">V</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># HJB 线性方程</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">pi</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">ss</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">ss</span><span class="p">]</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">V</span><span class="p">[</span><span class="n">ss</span><span class="p">])</span> <span class="k">for</span> <span class="n">ss</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nS</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">V</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">!=</span> <span class="n">v</span><span class="p">:</span>
+                <span class="n">converage</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="n">V</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">if</span> <span class="n">converage</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="c1"># 策略提升</span>
+    <span class="n">converage</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nS</span><span class="p">):</span>
+        <span class="n">maxA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">([</span><span class="nb">sum</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">ss</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">ss</span><span class="p">]</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">V</span><span class="p">[</span><span class="n">ss</span><span class="p">])</span> <span class="k">for</span> <span class="n">ss</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nS</span><span class="p">))</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nA</span><span class="p">)])</span>
+        <span class="k">if</span> <span class="n">maxA</span> <span class="o">!=</span> <span class="n">pi</span><span class="p">[</span><span class="n">s</span><span class="p">]:</span>
+            <span class="n">converage</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="n">pi</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">maxA</span>
+    <span class="k">print</span> <span class="s1">&#39;iter&#39;</span><span class="p">,</span><span class="n">it</span><span class="p">,</span> <span class="s1">&#39;pi =&#39;</span><span class="p">,</span><span class="n">pi</span>
+
+    <span class="k">if</span> <span class="n">converage</span><span class="p">:</span>
+        <span class="k">break</span>
+
+<span class="k">print</span> <span class="s1">&#39;pi =&#39;</span><span class="p">,</span> <span class="n">pi</span>
+<span class="k">print</span> <span class="s1">&#39;V =&#39;</span><span class="p">,</span> <span class="n">V</span>
+
+<span class="o">&gt;&gt;&gt;</span>
+<span class="nb">iter</span> <span class="mi">0</span> <span class="n">pi</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">1</span> <span class="n">pi</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">2</span> <span class="n">pi</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">3</span> <span class="n">pi</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">4</span> <span class="n">pi</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">pi</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">V</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">12.65306123</span> <span class="o">-</span><span class="mf">11.40306123</span>  <span class="o">-</span><span class="mf">9.99681123</span>  <span class="o">-</span><span class="mf">8.57102998</span>  <span class="o">-</span><span class="mf">7.14280732</span>
+  <span class="o">-</span><span class="mf">5.71427949</span>  <span class="o">-</span><span class="mf">4.28571351</span>  <span class="o">-</span><span class="mf">2.85714276</span>  <span class="o">-</span><span class="mf">1.42857142</span>   <span class="mf">0.</span>        <span class="p">]</span>
+</pre></div>
+
+
+<h2 id="_4">蒙特卡罗法</h2>
+<p>当环境未知时，即转移概率未知，无法利用HJB方程求解值函数。蒙特卡罗法通过运行到结束得到回报，去更新动作值函数——Q函数！</p>
+<div class="hlcode"><pre><span></span><span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nS</span><span class="p">,</span> <span class="n">nA</span><span class="p">))</span>
+<span class="n">pi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nA</span><span class="p">,</span> <span class="n">nS</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">go_next</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="n">p</span> <span class="o">+</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">i</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">i</span>
+        <span class="n">p</span> <span class="o">+=</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">])</span>
+
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">it</span> <span class="o">%</span> <span class="mi">50</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s1">&#39;iter&#39;</span><span class="p">,</span> <span class="n">it</span><span class="p">,</span> <span class="s1">&#39;pi=&#39;</span><span class="p">,</span> <span class="n">pi</span>
+
+    <span class="c1"># 策略评估：根据目前策略仿真一条状态-动作路径，更新Q函数</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nS</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nA</span><span class="p">):</span>
+            <span class="c1"># 仿真一条状态-动作路径</span>
+            <span class="n">history</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">ss</span> <span class="o">=</span> <span class="n">s</span>
+            <span class="k">while</span> <span class="n">ss</span> <span class="o">!=</span> <span class="n">Done</span><span class="p">:</span>
+                <span class="n">ss_next</span> <span class="o">=</span> <span class="n">go_next</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+                <span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ss</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">R</span><span class="p">[</span><span class="n">ss</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">ss_next</span><span class="p">],</span> <span class="n">ss_next</span><span class="p">))</span>
+                <span class="n">ss</span> <span class="o">=</span> <span class="n">ss_next</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="n">pi</span><span class="p">[</span><span class="n">ss</span><span class="p">]</span> <span class="c1">#更新动作</span>
+                <span class="c1">#print ss</span>
+
+            <span class="n">Gt</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># 对出现的所有(s, a)对更新Q函数，复用这条路径</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">))):</span>
+                <span class="n">ss</span><span class="p">,</span> <span class="n">aa</span><span class="p">,</span> <span class="n">rr</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">history</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">Gt</span> <span class="o">=</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">Gt</span> <span class="o">+</span> <span class="n">rr</span>
+                <span class="n">Q</span><span class="p">[</span><span class="n">ss</span><span class="p">,</span> <span class="n">aa</span><span class="p">]</span> <span class="o">+=</span> <span class="n">alpha</span> <span class="o">*</span> <span class="p">(</span><span class="n">Gt</span> <span class="o">-</span> <span class="n">Q</span><span class="p">[</span><span class="n">ss</span><span class="p">,</span> <span class="n">aa</span><span class="p">])</span>
+
+    <span class="c1"># 策略提升：根据更新后的Q函数，更新策略</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nS</span><span class="p">):</span>
+        <span class="n">pi</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:])</span>
+<span class="k">print</span> <span class="s1">&#39;V=&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">print</span> <span class="s1">&#39;pi=&#39;</span><span class="p">,</span> <span class="n">pi</span>
+
+<span class="o">&gt;&gt;&gt;</span>
+<span class="nb">iter</span> <span class="mi">0</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">50</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">100</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">150</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">200</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">250</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">300</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">350</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">400</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">450</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">500</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">550</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">600</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">650</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">700</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">750</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">800</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">850</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">900</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">iter</span> <span class="mi">950</span> <span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">V</span><span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">12.60595021</span> <span class="o">-</span><span class="mf">11.20499113</span>  <span class="o">-</span><span class="mf">9.82580041</span>  <span class="o">-</span><span class="mf">8.41347716</span>  <span class="o">-</span><span class="mf">6.9761059</span>
+  <span class="o">-</span><span class="mf">5.5099145</span>   <span class="o">-</span><span class="mf">4.19408818</span>  <span class="o">-</span><span class="mf">2.89429492</span>  <span class="o">-</span><span class="mf">1.45856045</span>   <span class="mf">0.</span>        <span class="p">]</span>
+<span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+
+<h2 id="q-learning">Q-Learning</h2>
+<p>Q-learning是TD方法的一种，也是用得最多的一种，因为他可以很方便off-policy学习，不需用借助重要性采样。<br />
+相比蒙特卡罗法可以不需要等到运行结束就可以更新Q函数。</p>
+<div class="hlcode"><pre><span></span><span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nS</span><span class="p">,</span> <span class="n">nA</span><span class="p">))</span>
+<span class="n">pi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nA</span><span class="p">,</span> <span class="n">nS</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">go_next</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="n">p</span> <span class="o">+</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">i</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">i</span>
+        <span class="n">p</span> <span class="o">+=</span> <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">])</span>
+
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.9</span> <span class="c1"># 探索</span>
+<span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">it</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s1">&#39;iter&#39;</span><span class="p">,</span> <span class="n">it</span><span class="p">,</span> <span class="s1">&#39;epsilon=&#39;</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="s1">&#39;V[0]=&#39;</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="c1"># 根据目前策略仿真一条状态-动作路径，并同时更新Q函数</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nS</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="n">Done</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nA</span><span class="p">):</span>
+            <span class="c1"># 仿真一条状态-动作路径</span>
+            <span class="n">ss</span> <span class="o">=</span> <span class="n">s</span>
+            <span class="k">while</span> <span class="n">ss</span> <span class="o">!=</span> <span class="n">Done</span><span class="p">:</span>
+                <span class="n">ss_next</span> <span class="o">=</span> <span class="n">go_next</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+                <span class="n">Gt</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">ss</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">ss_next</span><span class="p">]</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">ss_next</span><span class="p">,</span> <span class="p">:])</span>
+                <span class="n">Q</span><span class="p">[</span><span class="n">ss</span><span class="p">,</span> <span class="n">a</span><span class="p">]</span> <span class="o">+=</span> <span class="n">alpha</span> <span class="o">*</span> <span class="p">(</span><span class="n">Gt</span> <span class="o">-</span> <span class="n">Q</span><span class="p">[</span><span class="n">ss</span><span class="p">,</span> <span class="n">a</span><span class="p">])</span>  <span class="c1"># Q-learning 迭代步骤</span>
+                <span class="n">ss</span> <span class="o">=</span> <span class="n">ss_next</span>
+
+                <span class="n">a</span> <span class="o">=</span> <span class="n">pi</span><span class="p">[</span><span class="n">ss</span><span class="p">]</span> <span class="c1">#选择动作</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">epsilon</span><span class="p">:</span> <span class="c1"># 探索</span>
+                    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nA</span><span class="p">)</span>
+                <span class="c1">#print ss</span>
+
+    <span class="n">epsilon</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">epsilon</span> <span class="o">*</span><span class="mf">0.99</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nS</span><span class="p">):</span>
+    <span class="n">pi</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:])</span>
+
+<span class="k">print</span> <span class="s1">&#39;V=&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">print</span> <span class="s1">&#39;pi=&#39;</span><span class="p">,</span> <span class="n">pi</span>
+
+<span class="o">&gt;&gt;&gt;</span>
+<span class="nb">iter</span> <span class="mi">0</span> <span class="n">epsilon</span><span class="o">=</span> <span class="mf">0.9</span> <span class="n">V</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span> <span class="mf">0.0</span>
+<span class="nb">iter</span> <span class="mi">10</span> <span class="n">epsilon</span><span class="o">=</span> <span class="mf">0.813943867508</span> <span class="n">V</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span> <span class="o">-</span><span class="mf">5.50430863461</span>
+<span class="nb">iter</span> <span class="mi">20</span> <span class="n">epsilon</span><span class="o">=</span> <span class="mf">0.736116243838</span> <span class="n">V</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span> <span class="o">-</span><span class="mf">9.58192560014</span>
+<span class="nb">iter</span> <span class="mi">30</span> <span class="n">epsilon</span><span class="o">=</span> <span class="mf">0.665730336049</span> <span class="n">V</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span> <span class="o">-</span><span class="mf">11.372140159</span>
+<span class="nb">iter</span> <span class="mi">40</span> <span class="n">epsilon</span><span class="o">=</span> <span class="mf">0.602074582713</span> <span class="n">V</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span> <span class="o">-</span><span class="mf">12.0806787351</span>
+<span class="nb">iter</span> <span class="mi">50</span> <span class="n">epsilon</span><span class="o">=</span> <span class="mf">0.544505460424</span> <span class="n">V</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span> <span class="o">-</span><span class="mf">12.3537691746</span>
+<span class="nb">iter</span> <span class="mi">60</span> <span class="n">epsilon</span><span class="o">=</span> <span class="mf">0.492440978152</span> <span class="n">V</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span> <span class="o">-</span><span class="mf">12.5909546081</span>
+<span class="nb">iter</span> <span class="mi">70</span> <span class="n">epsilon</span><span class="o">=</span> <span class="mf">0.44535479364</span> <span class="n">V</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span> <span class="o">-</span><span class="mf">12.657326121</span>
+<span class="nb">iter</span> <span class="mi">80</span> <span class="n">epsilon</span><span class="o">=</span> <span class="mf">0.402770892387</span> <span class="n">V</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span> <span class="o">-</span><span class="mf">12.5917214982</span>
+<span class="nb">iter</span> <span class="mi">90</span> <span class="n">epsilon</span><span class="o">=</span> <span class="mf">0.36425877541</span> <span class="n">V</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span> <span class="o">-</span><span class="mf">12.7107205284</span>
+<span class="n">V</span><span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">12.70433436</span> <span class="o">-</span><span class="mf">11.41177551</span>  <span class="o">-</span><span class="mf">9.8564413</span>   <span class="o">-</span><span class="mf">8.59335991</span>  <span class="o">-</span><span class="mf">7.20906867</span>
+  <span class="o">-</span><span class="mf">5.70400336</span>  <span class="o">-</span><span class="mf">4.41177384</span>  <span class="o">-</span><span class="mf">2.82674456</span>  <span class="o">-</span><span class="mf">1.35446586</span>   <span class="mf">0.</span>        <span class="p">]</span>
+<span class="n">pi</span><span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2018-02-02 </span></div>
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: '强化学习算法实现(I)',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2018 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>
