@@ -103,7 +103,7 @@ p = (I + \lambda \partial g)^{-1} (I - \lambda \nabla f) (p) \\\\
 p = prox_{\lambda g}\left( p - \lambda \nabla f(p)  \right)
 $$
 
-上述不动点方程给出了优化迭代步骤！
+上述不动点方程给出了优化迭代步骤，**先按着可微函数梯度下降，然后对不可微函数做投影下降**！
 
 如果两步都采用投影来做
 
