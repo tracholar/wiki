@@ -61,6 +61,7 @@
 </li>
 <li><a href="#n-step-td">n-step TD方法</a></li>
 <li><a href="#tdlambda">TD($(\lambda)$)方法</a></li>
+<li><a href="#_2">策略梯度理论</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -184,6 +185,43 @@ $$</p>
 G_t^{\lambda} = (1-\lambda)\sum_{n=1}^{\infty} \lambda^{n-1} G_{t:t+n}<br />
 $$</p>
 <p>可以看出当$(\lambda = 0)$时，就是单步TD方法，当$(\lambda = 1)$时，就是蒙特卡洛方法。</p>
+<p>后向更新算法，迭代地利用 TD error进行更新</p>
+<p>$$<br />
+Z_t(s) = \begin{cases}<br />
+    \gamma \lambda Z_{t-1}(s), \quad s \neq S_t \\<br />
+    \gamma \lambda Z_{t-1}(s) + 1, \quad s = S_t<br />
+    \end{cases} \\<br />
+\delta_t = R_{t+2} + \gamma V_t(S_{t+1}) - V_t(S_t) \\<br />
+V_t(S_t) \leftarrow V_{t-1}(S_t) + \alpha \delta_t Z_t(S_t)<br />
+$$</p>
+<h2 id="_2">策略梯度理论</h2>
+<p>直接建模策略函数</p>
+<p>$$<br />
+\nabla J(\theta) = \sum_s \mu_{\pi}(s) \sum_a q_{\pi}(s, a) \nabla_{\theta} \pi(a|s,\theta) = E_{\tau \sim \pi_{\theta}} \nabla_{\theta} \pi_{\theta}(\tau) r(\tau)<br />
+$$</p>
+<p>两种表述，前面一个等式是状态-动作表述，后一个等式是状态-动作序列表述。策略梯度法实际上相当于用回报作为样本权重的极大似然估计。</p>
+<p>REINFORCE：<strong>蒙特卡罗策略梯度</strong></p>
+<p>$$<br />
+\nabla J(\theta) = E_{\pi}\left[   \gamma^t\sum_a  q_{\pi}(S_t, a) \nabla_{\theta} \pi(a|S_t,\theta)    \right]  \quad \text{(对状态采样)}\\<br />
+= E_{\pi}\left[   \gamma^t q_{\pi}(S_t, A_t) \nabla_{\theta} \log \pi(A_t|S_t,\theta)    \right]      \quad \text{(对动作采样)}\\<br />
+= E_{\pi}\left[   \gamma^t G_t \nabla_{\theta} \log \pi(A_t|S_t,\theta)    \right]      \quad \text{(用采样的回报替换q函数)}\\<br />
+= E_{\pi}\left[   \gamma^t (G_t - V(S_t)) \nabla_{\theta} \log \pi(A_t|S_t,\theta) \right]<br />
+$$</p>
+<p>等二个等式，用到了关系</p>
+<p>$$<br />
+Eq_{\pi}(S_t, A_t)\nabla_{\theta} \log \pi(A_t|S_t,\theta)  = \sum_a  \pi(a|S_t)q_{\pi}(S_t, a)\nabla_{\theta} \log \pi(A_t|S_t,\theta)<br />
+$$</p>
+<p>最后一个等式是因为被剪掉的部分期望值为0.</p>
+<p>因此，可以利用单个样本$((S_t, A_t))$估计策略梯度，得到策略梯度随机梯度上升迭代公式</p>
+<p>$$<br />
+\theta_{t+1} = \theta_{t} + \alpha \gamma^t G_t \nabla_{\theta} \log \pi(A_t|S_t,\theta_t)<br />
+$$</p>
+<p>这里的$(G_t)$采用的是单条链的最终回报，所以是用蒙特卡罗法估计策略梯度！</p>
+<p>用$(\delta_t = G_t - V(S_t; w))$替换$(G_t)$可以减小梯度估计的方差，并且使用TD方法估计$(G_t = R_{t+1} + \gamma V(S_{t+1}; w))$。这就是 <strong>Actor Critic</strong> 算法：</p>
+<p>$$<br />
+\theta_{t+1} = \theta_{t} + \alpha \gamma^t \delta_t \nabla_{\theta} \log \pi(A_t|S_t,\theta_t)<br />
+$$</p>
+<p><img alt="actor critic" src="/wiki/static/images/actor-critic.png" /></p>
 </div>
 <div id="content-footer">created in <span class="create-date date"> 2018-02-02 </span></div>
 <div id="comments"></div>

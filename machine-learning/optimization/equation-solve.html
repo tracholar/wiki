@@ -1,0 +1,144 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>方程求解方法汇总 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning-optimization">optimization</a>&nbsp;»&nbsp;方程求解方法汇总</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">方程求解方法汇总</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">线性方程</a><ul>
+<li><a href="#_2">高斯消元法</a></li>
+<li><a href="#_3">迭代解法</a></li>
+</ul>
+</li>
+<li><a href="#_4">非线性方程</a><ul>
+<li><a href="#_5">不动点迭代</a></li>
+<li><a href="#_6">线性搜索</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="_1">线性方程</h2>
+<h3 id="_2">高斯消元法</h3>
+<p>高斯消元法求解线性方程是最为经典的方法，基本思想就是一次消去多个变量，直到留下一个，从而解出结果。用矩阵的语言描述，就是对线性方程</p>
+<p>$$<br />
+Ax = b<br />
+$$</p>
+<p>的矩阵A和b构成的增广矩阵[A b]做一系列的行变换$(P_i, i=1,...,k)$，将矩阵A变成只有对角线为1或0的单位阵</p>
+<p>$$<br />
+P_k P_{k-1} ... P_1 A x = P_k P_{k-1} ... P_1 b \\<br />
+x = P b<br />
+$$</p>
+<p>$(P = P_k P_{k-1} ... P_1)$是一系列的航变换，将A矩阵变为单位阵，实际上就是A矩阵的逆！<br />
+高斯消元法计算复杂度是$(O(n^3))$。</p>
+<h3 id="_3">迭代解法</h3>
+<p><strong>Jacobi 迭代</strong>：将系数矩阵A分解为$(A = D + B)$，其中D是对角阵，B是对角线上为0的矩阵。那么有</p>
+<p>$$<br />
+x = - D^{-1} B x + D^{-1} b<br />
+$$</p>
+<p>上式可以把x看做迭代方程的不动点，这就是Jacobi迭代法。收敛的充分条件是$(||D^{-1}B||&lt;1)$，如果取无穷范数，则表示A矩阵是主对角元最大的矩阵，即$(|a_{ii}| &gt; |a_{ij}|, \forall i,j)$。一般的方差，总可以通过简单的行初等变换变成主对角元最大的矩阵！</p>
+<p><strong>Gauss-Seidel迭代</strong>：将矩阵分解为$(A = L + U)$，其中L是<em>有</em>对角元素的下三角阵，U是<em>没有</em>对角元的上三角阵。迭代方程为</p>
+<p>$$<br />
+L x_{k+1} = - U x_k + b<br />
+$$</p>
+<p>每一次迭代是在解稀疏矩阵是下三角矩阵的线性方程，可以在$(O(n^2))$时间复杂度内求解！迭代速度高于Jacobi迭代。</p>
+<h2 id="_4">非线性方程</h2>
+<h3 id="_5">不动点迭代</h3>
+<p>与线性方程的迭代方法类似，构造不动点方程，使得迭代是压缩映象，那么不断迭代该方程可以得到不动点，就是非线性方程的解！</p>
+<p>$$<br />
+x = g(x)<br />
+$$</p>
+<h3 id="_6">线性搜索</h3>
+<p>二分法、牛顿法等方法。实际上牛顿法求解方程可以看做梯度是f的原函数的最优化问题。</p>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2018-02-04 </span></div>
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: '方程求解方法汇总',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2018 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>
