@@ -187,3 +187,57 @@ G_t^{\lambda} = (1-\lambda)\sum_{n=1}^{\infty} \lambda^{n-1} G_{t:t+n}
 $$
 
 可以看出当$(\lambda = 0)$时，就是单步TD方法，当$(\lambda = 1)$时，就是蒙特卡洛方法。
+
+后向更新算法，迭代地利用 TD error进行更新
+
+$$
+Z_t(s) = \begin{cases}
+    \gamma \lambda Z_{t-1}(s), \quad s \neq S_t \\\\
+    \gamma \lambda Z_{t-1}(s) + 1, \quad s = S_t
+    \end{cases} \\\\
+\delta_t = R_{t+2} + \gamma V_t(S_{t+1}) - V_t(S_t) \\\\
+V_t(S_t) \leftarrow V_{t-1}(S_t) + \alpha \delta_t Z_t(S_t)
+$$
+
+
+## 策略梯度理论
+直接建模策略函数
+
+$$
+\nabla J(\theta) = \sum_s \mu_{\pi}(s) \sum_a q_{\pi}(s, a) \nabla_{\theta} \pi(a|s,\theta) = E_{\tau \sim \pi_{\theta}} \nabla_{\theta} \pi_{\theta}(\tau) r(\tau)
+$$
+
+两种表述，前面一个等式是状态-动作表述，后一个等式是状态-动作序列表述。策略梯度法实际上相当于用回报作为样本权重的极大似然估计。
+
+REINFORCE：**蒙特卡罗策略梯度**
+
+$$
+\nabla J(\theta) = E_{\pi}\left[   \gamma^t\sum_a  q_{\pi}(S_t, a) \nabla_{\theta} \pi(a|S_t,\theta)    \right]  \quad \text{(对状态采样)}\\\\
+= E_{\pi}\left[   \gamma^t q_{\pi}(S_t, A_t) \nabla_{\theta} \log \pi(A_t|S_t,\theta)    \right]      \quad \text{(对动作采样)}\\\\
+= E_{\pi}\left[   \gamma^t G_t \nabla_{\theta} \log \pi(A_t|S_t,\theta)    \right]      \quad \text{(用采样的回报替换q函数)}\\\\
+= E_{\pi}\left[   \gamma^t (G_t - V(S_t)) \nabla_{\theta} \log \pi(A_t|S_t,\theta) \right]  
+$$
+
+等二个等式，用到了关系
+
+$$
+Eq_{\pi}(S_t, A_t)\nabla_{\theta} \log \pi(A_t|S_t,\theta)  = \sum_a  \pi(a|S_t)q_{\pi}(S_t, a)\nabla_{\theta} \log \pi(A_t|S_t,\theta)
+$$
+
+最后一个等式是因为被剪掉的部分期望值为0.
+
+因此，可以利用单个样本$((S_t, A_t))$估计策略梯度，得到策略梯度随机梯度上升迭代公式
+
+$$
+\theta_{t+1} = \theta_{t} + \alpha \gamma^t G_t \nabla_{\theta} \log \pi(A_t|S_t,\theta_t)
+$$
+
+这里的$(G_t)$采用的是单条链的最终回报，所以是用蒙特卡罗法估计策略梯度！
+
+用$(\delta_t = G_t - V(S_t; w))$替换$(G_t)$可以减小梯度估计的方差，并且使用TD方法估计$(G_t = R_{t+1} + \gamma V(S_{t+1}; w))$。这就是 **Actor Critic** 算法：
+
+$$
+\theta_{t+1} = \theta_{t} + \alpha \gamma^t \delta_t \nabla_{\theta} \log \pi(A_t|S_t,\theta_t)
+$$
+
+![actor critic](/wiki/static/images/actor-critic.png)
