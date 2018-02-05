@@ -83,9 +83,23 @@
 </ol>
 <h2 id="_2">机器学习的本质</h2>
 <h3 id="_3">机器学习历史简述</h3>
-<p>现在人们通常将机器学习和人工智能联系在一起，实际上，人工智能涉及的领域更加宽泛，机器学习只是其中一种手段。人工智能的起源可以追溯到上世纪50年代，1956年举办的达茂思会议(<a href="https://en.wikipedia.org/wiki/Dartmouth_Workshop">Dartmouth Conference</a>)，在这次会议上，信息论之父Shannon和IBM科学家Nathan Rochester等人，一起探讨了一个议题：精确地描述学习过程和智能的特征并用机器进行模拟。</p>
+<p>现在人们通常将机器学习和人工智能联系在一起，实际上，人工智能涉及的领域更加宽泛，机器学习只是其中一种手段。人工智能的起源可以追溯到上世纪50年代，1956年举办的达茂思会议(<a href="https://en.wikipedia.org/wiki/Dartmouth_Workshop">Dartmouth Conference</a>)，在这次会议上，信息论之父Shannon和IBM科学家Nathan Rochester等人，一起探讨了一个议题：精确地描述学习过程和智能的特征并用机器进行模拟。说人话！就是用机器模拟出人类的智能！</p>
 <p>人工智能发展的初期，研究者致力于将人类的知识表达为一些逻辑规则，然后利用搜索进行逻辑推理，进而实现智能，到后来演变到利用知识库构造专家系统，实现所谓的智能。这期间，比较有名的成就有IBM的国际象棋程序深蓝打败国际象棋冠军。这一阶段的人工智能实现，更像人类的演绎推理，利用少量的规则，加上知识库，进行推演，从而得出结论。但是，规则的归纳需要人类专家干预，限制了这种模式的发展。2000年以后，随着互联网和摩尔定律的发展，产生了大量的数据和计算资源，使得人们可以利用机器从数据中自动归纳出规则，也就是数据驱动的智能。这其中的工具就是机器学习！</p>
 <p>所以，<strong>机器学习就是利用一种程序从数据中自动归纳出有价值的知识的一种方法</strong>。</p>
+<p>所谓演绎推理(Deductive Reasoning)，就是从一般性的前提出发，通过推导即“演绎”，得出具体陈述或个别结论的过程。演绎推理的逻辑形式对于理性的重要意义在于，它对人的思维保持严密性、一贯性有着不可替代的校正作用。我们熟知的很多数学证明方法，例如通过简单的几条公理，推导出整个欧式几何大厦的推理过程，就是典型的演绎推理。 下面是演绎推理里面一个典型的三段论推理的例子：</p>
+<blockquote>
+<ol>
+<li>知识分子都是应该受到尊重的，</li>
+<li>人民教师都是知识分子</li>
+<li>所以，人民教师都是应该受到尊重的。</li>
+</ol>
+</blockquote>
+<p>演绎推理的核心思想就是从一般到特殊，将一些已经为真的通用性结论应用到具体的问题当中，得到具体的情况下的结论。这种推理方式保证了推理的严密性！在上述例子中，前两条就是一般性结论，知识分子是比人民教师更大的概念，第三条的结论就是将第一条结论应用到人民教师这个具体的个体上得到的更具体的结论！有趣的是，柯南道尔的著名小说中《福尔摩斯》中的大侦探福尔摩斯也十分推崇“演绎法”！为此，老美还专门拍了一部剧《福尔摩斯：基本演绎法》！ 只不过，福尔摩斯所声称的一般性结论和推理方式非常人能理解！</p>
+<p>而归纳法是根据一类事物的部分对象具有某种性质的有限观察，推出这类事物的所有对象都具有这种性质的推理，叫做归纳推理（简称归纳）。归纳是从特殊到一般的过程，它属于合情推理。通常归纳法难以保证结论是可靠的，例如，下面就是经典的归纳法的例子：</p>
+<blockquote>
+<p><strong>黑天鹅事件</strong>：17世纪之前，欧洲看到过的天鹅都是白色的，所以当时欧洲人归纳出一个结论：天鹅都是白色的！ 直到后来，欧洲人发现了澳洲，看到了当地的黑天鹅，人们才认识到这个结论是错误的！</p>
+</blockquote>
+<p>从有限的经验归纳出来的结论当然不见得是可靠的，但是数学上也有完全归纳法，可以保证结论是可靠的的例子，我们以前学过的数学归纳法。从逻辑推理的角度来看，我们现在所用的机器学习就是先观察到一些数据，然后从这有限的数据中归纳出一些有用的规律的过程！ 因此，<strong>机器学习本质上就是在做归纳推理，并且是不完全的归纳法</strong>！我们前面说到，这种不完全归纳法无法保证结论的正确性，所以如果机器学习模型预测错了，请不要怪他，因为它是在做不完全归纳，肯定会犯错的！但是这并不意味着就没有用，事实上我们人类很多经验都是通过不完全归纳法归纳出来的，甚至可以说几乎所有实际的经验都来源于不完全归纳，完全归纳法只有在数学上才存在。只要归纳的结论大多数情况下是对的，那么他就是有用的！</p>
 <h3 id="_4">机器学习可以干啥</h3>
 <p>具体来讲，机器学习可以用来做很多事情，目前已经有成功案例的就有很多。例如</p>
 <ul>
@@ -100,16 +114,7 @@
 </ul>
 <p>接下来，我们就用一个实际的例子来解释机器学习是如何从数据中学到有用知识的。</p>
 <h2 id="0">从0开始机器学习</h2>
-<p>接下来，我们将利用一个简单的分类任务，给读者展示机器学习如何从数据中学到有用知识的。强烈建议您跟着这个教程亲自动手操作一遍，为此，您需要做一下准备工作。</p>
-<ul>
-<li>安装 Python <a href="https://www.python.org/downloads/release/python-2713/">https://www.python.org/downloads/release/python-2713/</a></li>
-<li>安装Python包<ul>
-<li>scikit-learn <a href="http://scikit-learn.org/stable/install.html">http://scikit-learn.org/stable/install.html</a></li>
-<li>pandas</li>
-<li>matplotlib, seaborn, graphviz 绘图</li>
-</ul>
-</li>
-</ul>
+<p>接下来，我们将利用一个简单的分类任务，给读者展示机器学习如何从数据中学到有用知识的。</p>
 <h3 id="_5">任务与数据</h3>
 <p>本任务采用鸢尾花(iris)数据集，你可以从UCI网站上下载<a href="https://archive.ics.uci.edu/ml/datasets/Iris">https://archive.ics.uci.edu/ml/datasets/Iris</a>。如果已经安装了 scikit-learn，那么可以利用提供的dataset接口直接调用。鸢尾花数据集是著名的统计学家 Fisher 提供的。下面我们用一段简单的Python代码加载该数据集看一看。</p>
 <div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">load_iris</span>
@@ -345,11 +350,27 @@ $$</p>
 <p>相同数据和目标的情况下，也可以选择不同的模型，决策树是一个久经沙场的模型，它的两个变体<strong>随机森林</strong>和<strong>梯度提升树</strong>应用非常广泛。近年来的深度神经网络，可以利用非常原始的数据进行建模，减少了人工特征工程的工作量。但是本质上，他们都在干同一件事情，学习这样一个函数！</p>
 <h2 id="_12">作业</h2>
 <p>一个编程小练习，探索决策树的深度与预测的准确率的关系，并解释一下观察到的现象的原因。</p>
+<p>在编程之前，请先配置好环境：</p>
+<ul>
+<li>安装 Python <a href="https://www.python.org/downloads/release/python-2713/">https://www.python.org/downloads/release/python-2713/</a></li>
+<li>安装Python包<ul>
+<li>scikit-learn <a href="http://scikit-learn.org/stable/install.html">http://scikit-learn.org/stable/install.html</a></li>
+<li>pandas 数据处理包</li>
+<li>matplotlib 绘图包</li>
+<li>seaborn  可视化包(本作业暂时不用)</li>
+<li>graphviz 可视化包(本作业暂时不用)</li>
+</ul>
+</li>
+</ul>
+<p>可以用python包管理器<code>pip</code>安装相关包，<code>pip</code>默认会使用国外的软件源，在国内下载较慢，建议使用国内的镜像：</p>
+<ul>
+<li>USTC：<a href="https://lug.ustc.edu.cn/wiki/mirrors/help/pypi">https://lug.ustc.edu.cn/wiki/mirrors/help/pypi</a></li>
+<li>THU：<a href="https://mirrors.tuna.tsinghua.edu.cn/help/pypi/">https://mirrors.tuna.tsinghua.edu.cn/help/pypi/</a></li>
+</ul>
 <div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">load_iris</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sn</span>
 <span class="kn">from</span> <span class="nn">sklearn.tree</span> <span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;seaborn-talk&#39;</span><span class="p">)</span>
