@@ -1,0 +1,163 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>策略梯度理论 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning-reinforcement-learning">reinforcement-learning</a>&nbsp;»&nbsp;策略梯度理论</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">策略梯度理论</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">主要结论</a></li>
+<li><a href="#_3">策略梯度基本理论</a><ul>
+<li><a href="#_4">几个概念</a></li>
+<li><a href="#_5">策略梯度公式</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>策略梯度理论早期经典论文笔记：Sutton R S, McAllester D A, Singh S P, et al. Policy gradient methods for reinforcement learning with function approximation[C]//Advances in neural information processing systems. 2000: 1057-1063.</p>
+<p>其中 RS Sutton 就是《Reinforcement Learning - An Introduction》的作者</p>
+<h2 id="_2">主要结论</h2>
+<ol>
+<li>策略函数的梯度可以用经验数据中估计出来的动作-值函数(即Q函数)或者优势函数(Advantage function，即A函数)近似。</li>
+<li>证明了策略梯度近似可以收敛到局部最优策略，这也是策略梯度相比于值函数近似方法的优势，非线性函数的值函数近似方法无法保证收敛到局部最优！（不过线性函数还是可以的）</li>
+</ol>
+<h2 id="_3">策略梯度基本理论</h2>
+<p>用$(\rho)$表示策略的性能测度，即期望回报，用$( \theta )$表示策略函数的参数，即$( \pi = \pi_{\theta}(a| s)   )$。那么策略梯度为</p>
+<p>$$<br />
+\Delta \theta \approx \alpha \frac{\partial \rho}{\partial \theta}<br />
+$$</p>
+<p>因此，当策略梯度趋于0时，可以保证$( \rho )$达到极小值！</p>
+<p>相比值函数近似方法，策略梯度参数的很小变动只会带来很小的策略上的改变，而值函数近似方法可能带啦跳跃式的改变！</p>
+<h3 id="_4">几个概念</h3>
+<p>策略的长期期望单步回报</p>
+<p>$$<br />
+\rho(\pi) = \lim_{n \rightarrow \infty} \frac{1}{n} E[r_1 + r_2 + ... + r_n| \pi] =  \sum_s d^{\pi}(s )\sum_a \pi(s, a) R(s, a) \\<br />
+Q^{\pi}(s, a) = \sum_{kt1}^{\infty}E[  r_t -\rho(\pi)|s_0=s, a_0=a, \pi]<br />
+$$</p>
+<ul>
+<li>$( R(s, a) = E[r_{t+1} | s_t = s, a_t = a] )$是状态s下采取动作a的单步期望回报。</li>
+<li>$( d^{\pi}(s ) = \lim_{n \rightarrow \infty} Pr(s_t =s |s_0, \pi) )$ 是在该策略下状态s的稳态分布。</li>
+</ul>
+<p>这里应该是认为这个马尔科夫链是没有终止态的，所以期望回报会等于稳态分布的单步平均值。</p>
+<p>策略的长期折扣回报</p>
+<p>$$<br />
+\rho(\pi) = E[\sum_{t=1}^{\infty}  \gamma^{t-1} r_t|s_0, \pi] =  \sum_s d^{\pi}(s )\sum_a \pi(s, a) R(s, a) \\<br />
+Q^{\pi}(s, a) = E[\sum_{k=1}^{\infty}  \gamma^{k-1} r_{t+k}|s_t=s, a_t=a, \pi]<br />
+$$</p>
+<ul>
+<li>$( d^{\pi}(s ) = \sum_{t=1}^{\infty} \gamma^{t-1} Pr(s_t =s |s_0, \pi) )$ 是在该策略下状态s的累积折扣次数</li>
+</ul>
+<p>这一种定义是比较常用的一种，马尔科夫链可以有终止状态。</p>
+<h3 id="_5">策略梯度公式</h3>
+<p>$$<br />
+\frac{\partial \rho}{\partial \theta} = \sum_s d^{\pi}(s) \sum_a \frac{\partial \pi(s, a)}{\partial \theta} Q^{\pi}(s, a)<br />
+$$</p>
+</div>
+<div>
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2018-02-05 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: '策略梯度理论',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2018 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+                Fork me in <a href="https://github.com/tracholar/wiki" target="_blank"> github </a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>
