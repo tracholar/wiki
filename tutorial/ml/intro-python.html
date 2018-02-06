@@ -50,12 +50,175 @@
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">关于</a></li>
-<li><a href="#_2"></a></li>
+<li><a href="#_2">安装</a><ul>
+<li><a href="#windows">WINDOWS系统</a></li>
+<li><a href="#mac">MAC</a></li>
+<li><a href="#linux">Linux</a></li>
+</ul>
+</li>
+<li><a href="#_3">编码工具</a></li>
+<li><a href="#hello-word">Hello word</a></li>
+<li><a href="#_4">数据类型</a></li>
+<li><a href="#_5">列表、集合和字典</a><ul>
+<li><a href="#_6">列表推导与字典推导</a></li>
+</ul>
+</li>
+<li><a href="#_7">函数和类</a></li>
+<li><a href="#numpy">科学计算库：numpy</a></li>
+<li><a href="#matplotlib">绘图库：matplotlib</a></li>
+<li><a href="#_8">思考与实践</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
-<p>在本讲中，你讲快速了解python的基本编程语法和工具。</p>
-<h2 id="_2"></h2>
+<p>在本讲中，你讲快速了解python的基本编程语法和工具。本教程是为了给机器学习算法学习提供支持的，除了讲解python语法外，还会涉及做算法相关的工具。</p>
+<h2 id="_2">安装</h2>
+<h3 id="windows">WINDOWS系统</h3>
+<p>对于windows系统，可以从<a href="https://www.python.org/downloads/">官网下载</a>，安装过程可以参考<a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014316090478912dab2a3a9e8f4ed49d28854b292f85bb000">这个教程</a></p>
+<h3 id="mac">MAC</h3>
+<p>MAC自带有python，如果没有可以通过下述两种方式安装</p>
+<ol>
+<li>和window系统一样，通过官网下载安装</li>
+<li>通过brew安装 <code>brew install python</code></li>
+</ol>
+<h3 id="linux">Linux</h3>
+<p>linux一般自带python，如果没有可以通过下述两种方式安装</p>
+<ol>
+<li>通过官网下载安装</li>
+<li>通过包管理器安装，Ubuntu <code>sudo apt-get install python</code>, CentOS <code>yum install python</code></li>
+</ol>
+<h2 id="_3">编码工具</h2>
+<p>用常用的带语法高亮的代码编辑器就行，windows推荐 <a href="">notepad++</a>，mac推荐 atom。</p>
+<p>如果喜欢IDE可以用VS或者IDEA。IDE的好处是有代码提示，写起来方便。</p>
+<p>Python还有一个神奇，叫做IPython、Jupyter，愿意折腾的可以试试。</p>
+<h2 id="hello-word">Hello word</h2>
+<p>和所有编程语言一样，首先来实现一个 Hello word程序，将下面的代码保存到 hello.py 文件中</p>
+<div class="hlcode"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;Hello word!&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>然后打开终端，进入 hello.py 所在目录，执行命令<code>python hello.py</code>就可以看到输出结果了！</p>
+<div class="hlcode"><pre><span></span>Hello word!
+</pre></div>
+
+
+<h2 id="_4">数据类型</h2>
+<p>和很多编程语言一样，python有很多基础数据类型：整型、浮点数、字符串、布尔值(True, False)、空型(None)。</p>
+<div class="hlcode"><pre><span></span><span class="c1"># 整数</span>
+<span class="n">v</span> <span class="o">=</span> <span class="mi">123</span>
+
+<span class="c1"># 浮点数</span>
+<span class="n">pi</span> <span class="o">=</span> <span class="mf">3.14159</span>
+
+<span class="c1"># 字符串，可以用单引号和双引号，两者是等价的</span>
+<span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;Hello word&#39;</span>
+<span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;hello word&quot;</span>
+
+<span class="c1"># 字符串支持格式化, python2.7版本用百分号，python3用format函数</span>
+<span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;v = </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">v</span>
+<span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;v = {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+<span class="c1"># 布尔值</span>
+<span class="n">v</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="k">if</span> <span class="n">v</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;True&#39;</span><span class="p">)</span>
+
+<span class="c1"># 空型</span>
+<span class="n">v</span> <span class="o">=</span> <span class="bp">None</span>
+</pre></div>
+
+
+<h2 id="_5">列表、集合和字典</h2>
+<p>python原生支持3种常用的集合类型：列表、集合和字典。列表就是很多元素的集合，集合和列表一样，只是集合要求元素互不相同，字典是key-value结构。</p>
+<div class="hlcode"><pre><span></span><span class="c1"># 一个列表</span>
+<span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+
+<span class="c1"># 列表遍历</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="c1"># 1 3 5 7 9 3 5</span>
+
+<span class="c1"># 集合</span>
+<span class="n">s</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="c1"># 1 3 5 7 9</span>
+
+<span class="c1"># 字典</span>
+<span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span> <span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span> <span class="p">:</span> <span class="mi">4</span><span class="p">}</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+</pre></div>
+
+
+<h3 id="_6">列表推导与字典推导</h3>
+<p>python对集合的遍历支持更方便的语法，叫做列表推导和字典推导。</p>
+<div class="hlcode"><pre><span></span><span class="c1"># 列表推导</span>
+<span class="n">arr_new</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">]</span> <span class="c1"># 将arr中每个元素乘以2</span>
+
+<span class="c1"># 字典推导</span>
+<span class="n">d_new</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span> <span class="p">:</span> <span class="n">v</span><span class="o">*</span><span class="mi">2</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+</pre></div>
+
+
+<h2 id="_7">函数和类</h2>
+<p>python通过关键字<code>def</code>定义函数，通过关键字class定义类，self代表类自己，类似于其他编程语言中的this。</p>
+<div class="hlcode"><pre><span></span><span class="c1"># 乘以2的函数</span>
+<span class="k">def</span> <span class="nf">times_two</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span>
+
+<span class="c1"># 定义一个类</span>
+<span class="k">class</span> <span class="nc">TimesTwo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">times_two</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">*</span><span class="mi">2</span>
+</pre></div>
+
+
+<h2 id="numpy">科学计算库：numpy</h2>
+<p>利用numpy可以方便地进行向量和矩阵操作。</p>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">3.0</span><span class="p">,</span><span class="mf">5.0</span><span class="p">])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span> <span class="c1"># 计算向量x和y的内积</span>
+</pre></div>
+
+
+<h2 id="matplotlib">绘图库：matplotlib</h2>
+<p>利用matplotlib会图库可以方便地画出各种图形。</p>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">3.0</span><span class="p">,</span><span class="mf">5.0</span><span class="p">])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+
+<h2 id="_8">思考与实践</h2>
+<p>对比for循环方式对数组迭代和用numpy的速度。</p>
+<p>```python<br />
+import numpy as np<br />
+import time</p>
+<p>def for_loop(arr):<br />
+    """实现for循环将数组arr里面所有元素平方</p>
+<div class="hlcode"><pre><span></span><span class="n">arr</span><span class="o">:</span> <span class="n">np</span><span class="o">.</span><span class="na">array</span>
+<span class="s2">&quot;&quot;</span><span class="err">&quot;</span>
+<span class="n">pass</span>
+</pre></div>
+
+
+<p>def np_loop(arr):<br />
+    """实现numpy将arr所有元素平方<br />
+    arr: np.array<br />
+    """<br />
+    pass</p>
+<p>arr = np.random.rand(100000000)<br />
+start = time.clock()<br />
+for_loop(arr)<br />
+print('time for function for_loop: {:.3f}'.format(time.clock() - start))</p>
+<p>start = time.clock()<br />
+np_loop(arr)<br />
+print('time for function np_loop: {:.3f}'.format(time.clock() - start))<br />
+````</p>
 </div>
 <div>
     <ins class="adsbygoogle"
