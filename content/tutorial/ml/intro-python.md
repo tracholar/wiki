@@ -116,7 +116,7 @@ def times_two(x):
 class TimesTwo(object):
     def __init__(self):
         pass
-    def times_two(x):
+    def times_two(self, x):
         return x*2
 ```
 

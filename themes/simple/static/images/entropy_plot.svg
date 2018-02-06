@@ -1,0 +1,20 @@
+<svg width="300px" height="300px" version="1.1" viewBox="-18 -105 120 120"
+	xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<title>Binary entropy plot</title>
+<defs>
+	<pattern id="grid" width="10" height="10" x="0" y="0" patternUnits="userSpaceOnUse">
+		<path d="M0,0 H10 M0,10 V0" stroke="#aaa"/>
+	</pattern>
+</defs>
+<rect x="0" y="-100" width="101" height="100" fill="url(#grid)"/>
+<g fill="none">
+	<path d="M0,-100v100h100" stroke="black"/>
+	<path d="M0,-1.141 Q 5.09,-33.89 10.08,-47.15 15.07,-62.59 20.06,-72.31 25.05,-82.17 30.04,-88.18 35.03,-94.22 40.02,-97.11 45.01,-100 50,-100 54.99,-100 59.98,-97.11 64.97,-94.22 69.96,-88.18 74.95,-82.17 79.94,-72.31 84.93,-62.59 89.92,-47.15 94.91,-33.89 100,-1.141" stroke="blue"/>
+</g>
+<g font-family="New Century Schoolbook" font-size="7" fill="black" text-anchor="middle">
+	<text y="7"><tspan x="0">0</tspan><tspan x="50">0.5</tspan><tspan x="100">1</tspan></text>
+	<text x="-5" y="1">0</text><text x="-6" y="-48">0.5</text><text x="-5" y="-96">1</text>
+	<text x="50" y="13">Pr(<tspan font-style="italic">X</tspan> = 1)</text>
+	<text x="-13" y="-50" transform="rotate(-90,-13,-50)"><tspan font-style="italic">H</tspan>(<tspan font-style="italic">X</tspan>)</text>
+</g>
+</svg>
