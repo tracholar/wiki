@@ -173,4 +173,4 @@ print('time for function for_loop: {:.3f}'.format(time.clock() - start))
 start = time.clock()
 np_loop(arr)
 print('time for function np_loop: {:.3f}'.format(time.clock() - start))
-````
+```
