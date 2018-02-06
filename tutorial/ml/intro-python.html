@@ -195,30 +195,33 @@
 
 <h2 id="_8">思考与实践</h2>
 <p>对比for循环方式对数组迭代和用numpy的速度。</p>
-<p>```python<br />
-import numpy as np<br />
-import time</p>
-<p>def for_loop(arr):<br />
-    """实现for循环将数组arr里面所有元素平方</p>
-<div class="hlcode"><pre><span></span><span class="n">arr</span><span class="o">:</span> <span class="n">np</span><span class="o">.</span><span class="na">array</span>
-<span class="s2">&quot;&quot;</span><span class="err">&quot;</span>
-<span class="n">pass</span>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="k">def</span> <span class="nf">for_loop</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;实现for循环将数组arr里面所有元素平方</span>
+
+<span class="sd">    arr: np.array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+<span class="k">def</span> <span class="nf">np_loop</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;实现numpy将arr所有元素平方</span>
+<span class="sd">    arr: np.array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
+
+<span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100000000</span><span class="p">)</span>
+<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">clock</span><span class="p">()</span>
+<span class="n">for_loop</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;time for function for_loop: {:.3f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">clock</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">))</span>
+
+<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">clock</span><span class="p">()</span>
+<span class="n">np_loop</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;time for function np_loop: {:.3f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">clock</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">))</span>
 </pre></div>
-
-
-<p>def np_loop(arr):<br />
-    """实现numpy将arr所有元素平方<br />
-    arr: np.array<br />
-    """<br />
-    pass</p>
-<p>arr = np.random.rand(100000000)<br />
-start = time.clock()<br />
-for_loop(arr)<br />
-print('time for function for_loop: {:.3f}'.format(time.clock() - start))</p>
-<p>start = time.clock()<br />
-np_loop(arr)<br />
-print('time for function np_loop: {:.3f}'.format(time.clock() - start))<br />
-````</p>
 </div>
 <div>
     <ins class="adsbygoogle"
