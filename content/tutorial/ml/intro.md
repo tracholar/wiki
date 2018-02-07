@@ -17,5 +17,3 @@ date: 2018-02-05
 
 ## 支持与赞助
 最后，如果您觉得这个教程有用，不妨推荐给同学或朋友。如果这个教程对您帮助很大，不妨赞助我一杯咖啡，支持我继续提供更好的教程。
-
-<img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" />

@@ -174,7 +174,3 @@ start = time.clock()
 np_loop(arr)
 print('time for function np_loop: {:.3f}'.format(time.clock() - start))
 ```
-
-
-
-<img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" />

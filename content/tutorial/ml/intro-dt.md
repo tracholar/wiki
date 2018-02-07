@@ -193,5 +193,3 @@ print(T)
 
 print( 'ACC: {}'.format(np.mean(TreePredict(X, T) == iris.target)) )
 ```
-
-<img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" />
