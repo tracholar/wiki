@@ -50,7 +50,30 @@
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">关于</a></li>
-<li><a href="#_2">马尔科夫决策过程</a></li>
+<li><a href="#_2">马尔科夫决策过程</a><ul>
+<li><a href="#_3">确定性环境</a></li>
+<li><a href="#_4">随机策略</a></li>
+</ul>
+</li>
+<li><a href="#-hjb">哈密顿-雅克比-贝尔曼(HJB)方程</a><ul>
+<li><a href="#_5">状态值函数</a></li>
+<li><a href="#_6">动作值函数</a></li>
+<li><a href="#hjb">HJB方程</a><ul>
+<li><a href="#hjb_1">确定性环境的HJB方程</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_7">动态规划</a><ul>
+<li><a href="#_8">值迭代</a><ul>
+<li><a href="#_9">压缩映像原理</a></li>
+</ul>
+</li>
+<li><a href="#_10">策略迭代</a></li>
+</ul>
+</li>
+<li><a href="#_11">强化学习的解释</a></li>
+<li><a href="#_12">思考与实践</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -64,11 +87,11 @@
 </ol>
 <p>我期望您至少有：</p>
 <ol>
-<li>高中数学水平且年满18岁</li>
+<li>高中数学水平且年满18岁，部分内容需要你了解监督学习，你可以通过本教程前面的章节进行学习。</li>
 <li>如果你需要完成实践部分，需要有基本的 python 知识，你可以通过<a href="/wiki/tutorial/ml/intro-python.html">python快速入门</a>快速了解python如何使用。</li>
 </ol>
 <h2 id="_2">马尔科夫决策过程</h2>
-<p>考虑下面的迷宫游戏问题，你控制一个机器人在一个二维迷宫中运动，迷宫中有正常的陆地、火坑、石柱、钻石。你可以控制机器人上下左右运动，机器人不能走到迷宫外面，一次最多只能运动一步，如果不小心掉到火坑中，游戏结束，如果找到了钻石，那么可以得到奖励！由于你的控制是通过语音指令控制，机器人有一定概率会判断出错。比如你说让机器人往左走，机器人有一定概率会往右走，所以机器人的移动和你的指令之间并不是完美匹配的。你的目标是通过设计策略，让机器人尽快地找到钻石，获得奖励。</p>
+<p>考虑下面的迷宫游戏问题，你控制一个机器人在一个二维迷宫中运动，迷宫中有正常的陆地、火坑、石柱、钻石。你可以控制机器人上下左右运动，机器人不能走到迷宫外面，一次最多只能运动一步，如果不小心掉到火坑中，游戏结束，如果找到了钻石，那么可以得到奖励，并且游戏结束！由于你的控制是通过语音指令控制，机器人有一定概率会判断出错。比如你说让机器人往左走，机器人有一定概率会往右走，所以机器人的移动和你的指令之间并不是完美匹配的。你的目标是通过设计策略，让机器人尽快地找到钻石，获得奖励。</p>
 <p><img alt="MDP迷宫" src="/wiki/static/images/mdp-01.png" /></p>
 <p>上述问题有几个关键要素：</p>
 <ol>
@@ -76,8 +99,12 @@
 <li>动作：在每个不是终态的状态下，我们都有4个控制动作，上、下、左、右，我们依次编号为1到4，用A表示动作，那么$A \in \{1,2,3,4 \}$。</li>
 <li>转移概率：因为我们是通过声音控制机器人的，所以机器人可能听错，可以认为是语音识别技术尚不成熟的原因。那么在某个状态S下，采取动作A之后，机器人到达的状态并不是完全确定的。例如当机器人在左上角时，采取“右”这个动作时，机器人也有一定概率会向下移动，进入状态5（假设状态按照从左到右顺序编号）。为了描述机器人的这种不确定运动，可以用一个转移概率来表示。我们用P(S'|S, A)表示在状态S下，采取动作A的条件下，机器人进入状态S'的概率。例如在刚才这个例子中，P(S'=5|S=1, A=4)就表示在状态1（也就是左上角），采取动作4（也就是“右”）的条件下，进入状态5（也就是第二行第一个状态）的概率。所以，这个转移概率描述的是外界环境在我们的控制下变化的规律。</li>
 <li>回报：在机器人每一步运动到下一个状态时，环境会给我们一个奖励或者惩罚，例如如果进入火坑游戏就会结束，而拿到钻石就会得到奖励，这种奖励或者惩罚我们用数量来量化。我们可以用正数表示奖励，负数表示惩罚，这就是回报。一般情况下，回报可能跟状态和动作都有关系，所以我们用一个函数来表示  R(S, A, S')，它表示在在状态S下采取动作A到达状态S'时，获得的回报。</li>
-<li>马尔科夫性：描述环境的转移概率只跟当前状态有关，而与之前经过的状态无关，这种性质叫做马尔科夫性（因为是一个叫马尔科夫的人最早提出来的）。在这个例子中，机器人在我们的控制下要进入的状态只与当前的状态和我们的控制动作有关，而与在这之前机器人经历过的状态无关。并不是所有的决策事情都有马尔科夫性的，比如股票，今天涨跌不但与昨天有关，还与之前的多天有关。</li>
+<li>马尔科夫性：描述环境的转移概率只跟当前状态和动作有关，而与之前经过的状态和动作无关，这种性质叫做马尔科夫性（因为是一个叫马尔科夫的人最早提出来的）。在这个例子中，机器人在我们的控制下要进入的状态只与当前的状态和我们的控制动作有关，而与在这之前机器人经历过的状态无关。并不是所有的决策事情都有马尔科夫性的，比如股票，今天涨跌不但与昨天有关，还与之前的多天有关。如果我们用$S_t, A_t$分别代表t时刻的状态和采用的动作，那么马尔科夫性可以表示为</li>
 </ol>
+<p>$$<br />
+P(S_{t+1}|S_t, A_t, S_{t-1}, A_{t-1}, ...,S_1, A_1) = P(S_{t+1}|S_t, A_t)<br />
+$$</p>
+<p>这个公式的左边是在前面一系列的状态和动作的条件下，下一步转移到状态$S_{t+1}$的概率，右边是在当前状态$S_t$下，采取动作$A_t$后，转移到状态$S_{t+1}$的概率，<strong>而不管更前面的状态和动作是什么</strong>。这两者相等，就是说转移概率只跟当前状态和动作有关，而与之前经过的状态和动作无关，即上面说的马尔科夫性。</p>
 <p><img alt="MDP" src="/wiki/static/images/mdp-02.png" /></p>
 <p>上述问题可以抽象为上述4个要素和1个性质的普遍问题，因为环境具有马尔科夫性，我们需要做出决策对机器人进行控制，所以叫做马尔科夫决策过程(Markov decision process，MDP)。对于这类问题，我们在每一步决定要采取那个动作的策略可以用一个策略函数来表示$\pi(A | S)$，这个函数的意义是在状态S下，采用动作A的概率。对于确定性的策略可以看做它的一个特例，即只有一个动作的概率为1其他为0.例如，我们可以定义一个确定性策略如下：如果右边能走，就往“右”，如果右边不能走，就往“下”。用数学公式表示为</p>
 <p>$$<br />
@@ -86,12 +113,187 @@
             2, S \in \{4,7,11 \}<br />
             \end{cases}<br />
 $$</p>
-<p>MDP问题的目标是找到这样一个策略，在这个策略下，总的折扣回报最大化！总折扣回报定义如下</p>
+<p>MDP问题的目标是找到这样一个策略，在这个策略下，总的期望折扣回报最大化！总期望折扣回报定义如下</p>
 <p>$$<br />
-R = \sum_{t=1}^{\infty} \gamma^{t-1} R(S_t, A_t, S' _ t), \gamma \in (0, 1]<br />
+R = \sum_{t=1}^{\infty} E \gamma^{t-1} R(S_t, A_t, S' _ t), \gamma \in (0, 1]<br />
 $$</p>
-<p>也就是在这个策略下，将所有获得的回报打个折之后全部加起来。越往后的折扣越大，这是因为我们更关心离当前时间更近的回报。这个回报越大，说明这个策略越好，使得回报最大的策略就是最优策略。</p>
-<p>以上述迷宫为例，我们假定游戏结束后回报全部为0，状态也不改变了。那么上述求和只到游戏结束，假设折扣因子为1，跳到火坑的回报为-1，找到钻石的回报为+1，其他情况回报为0。那么一个找到钻石的策略的总回报就是1！而跳到火坑的策略的总回报为-1.</p>
+<p>也就是在这个策略下，将所有获得的回报打个折之后全部加起来。越往后的折扣越大，这是因为我们更关心离当前时间更近的回报。这个回报越大，说明这个策略越好，使得回报最大的策略就是最优策略。因为环境有一定的随机性，所以这个策略下实际的回报是随机的，所以我们对回报求期望，得到期望折扣回报。</p>
+<p>以上述迷宫为例，我们假定游戏结束后回报全部为0，状态也不改变了。那么上述求和只到游戏结束，假设折扣因子为1，跳到火坑的回报为-1，找到钻石的回报为+1，其他情况回报为0。那么一个找到钻石的策略的总回报就是1！而跳到火坑的策略的总回报为-1. 由于环境的随机性，实际的策略下这两种情况都有可能，所以一般期望回报在-1到1之间。一个策略越好，那么期望回报会更接近1，期望回报最大的策略就是我们要寻找的最优策略。</p>
+<h3 id="_3">确定性环境</h3>
+<p>假设我们可以直接控制上述机器人，那么在某个状态S，采用动作A后，机器人到达的状态S'就是确定的，也就是转移概率P(S'|S, A)只可能取0和1两个值！这种情况下，我们说环境是确定的，这就是我们正常的迷宫游戏。</p>
+<p>在环境是确定的，没有随机干扰情况下，我们很容易看出，下图所示的一个策略就是最佳策略，箭头所指的方向就是在当前状态下，应该采取的动作。因为在这个路劲上，除了最终的状态，其他状态回报都是0，只有到达最终状态的时候有一个+1的回报，所以这个策略的总回报等于1。不难想象，这个策略并不是<strong>唯一</strong>最优的策略，例如在这条路径上往回走一段路程之后再往前走，总回报还是等于1，因为中间所有的状态的回报都是0。如果我们想要得到最短的路径，该怎么办呢？方法很简单，我们可以让除了到达终态的步骤外，其他每一步的回报为-1即可！虽然这样一来，总的回报都是负数，但是只有最短路径的策略可以获得最大总回报，容易计算出最大总回报等于-4。另外一个方法是让折扣因子小于1，比如取0.9，那么路径越长，最后得到的那个回报就会被衰减得更多，只有最短路径才能得到最大回报，此时最大回报为</p>
+<p>$$<br />
+R = 0 + 0 + 0 + 0 + 0 + 0.9^6 = 0.531<br />
+$$</p>
+<p>因此，从这个例子来看，在对实际问题建模的时候，合理设计回报也是一个很重要的事情。</p>
+<p><img alt="确定性环境下最优策略" src="/wiki/static/images/mdp-03.png" /></p>
+<h3 id="_4">随机策略</h3>
+<p>这个简单的例子我们很容易利用上帝视角，发现最佳的策略$\pi^ * $使得总回报最大，就是上图中的最短路径。但是，设想一下，我们是图中那个机器人，身在此山中，云深不知处，无法开上帝视角，不知道上下左右分别是什么坑，只知道自己所处的位置是否有坑，因此就不知道采取某个动作之后会得到什么，除非我们去尝试一下。在这种情况下，我们该采用什么策略呢？没有太多的办法，只有采用随机策略去尝试。所谓随机策略就是每个状态下，选择上下左右四个动作的概率都不为0，比如都是1/4。如果我们不知道上下左右分别是什么，但是如果有人告诉我，钻石在最右下角，那么我们可以不用采用那么随机的策略。我们知道的信息越多，可以采用的策略就越不用那么随机。</p>
+<p>如果我们知道每一个状态下每一个动作执行后会转移到哪个状态，并且知道哪些状态是坑，哪些是钻石，也就是知道环境的<strong>转移概率</strong>和环境的<strong>回报函数</strong>，那么我们原则上可以计算出这个最佳的策略。那么问题来了，<strong>在环境的转移概率和回报函数已知的情况下</strong>，怎么求解最佳策略呢？</p>
+<h2 id="-hjb">哈密顿-雅克比-贝尔曼(HJB)方程</h2>
+<p>在回答上述问题之前，我们先来介绍一个方程，叫做哈密顿-雅克比-贝尔曼(HJB)方程，很明显这个方程跟三个人有关，这三个人都是很有名的数学家，哈密顿还是个数学物理学家，是哈密顿力学的创始人。这个方程刻画了最优策略要满足的充分必要条件，一旦这个方程求解出来了，那么最优策略也就知道了。在介绍这个方程之前，我们先来介绍两个在强化学习中非常重要的概念，状态值函数和动作值函数，熟悉这两个概念对以后的学习十分重要，我们会不断的碰到这两个概念。</p>
+<h3 id="_5">状态值函数</h3>
+<p>当我们知道环境的状态转移概率时，那么很直接的想法是查看四周，找到最好的一个状态，然后选择可以到达这个最好的状态的动作。例如在状态8的时候，周围的状态只有3个，12是火坑，5和9是普通的状态，显然12这个状态不能跳，状态9看起来比5好，因为它离钻石更近一些。但是在复杂的问题中，我们很难用这样一个简单的法则来表达状态是好还是坏，因为在复杂的问题中，随机性可能比较大，最短距离可能并不是最佳的。例如在状态14时，不管你采用什么动作，转移到15的概率都很低很低，那么在状态13做决策时，状态14可能不如状态9。那么如何精确评估一个状态好还是坏呢？答案就是状态值函数。</p>
+<p>定义：状态值函数V(S)是从状态S出发，所能获得的最大期望回报！</p>
+<p>$$<br />
+V(S) = \max E \left[ \sum_{t=1}^{\infty} \gamma^{t-1} R(S_t, A_t, S' _ t) | S_1=S \right]<br />
+$$</p>
+<p>我们假设环境是确定性的，没有随机性，这样可以省去求期望的步骤，便于理解状态值函数。对于终止状态，我们定义它们的状态值函数值恒等于0。假设折扣因子等于1，那么除了三个终止状态外，所有的其他状态因为都存在一个策略到达钻石的位置，所以最大能够获得的回报都是1，所以它们的值函数都是1！这表明这些状态都是一样好的，看起来很难理解，但是实际上是因为折扣因子等于1的原因，所以从一个状态转移到另外一个状态的成本是0！这个问题可以通过前面的两个方法来解决，让值函数看起来和我们想象地一样。</p>
+<p>对于某个具体的策略$\pi$，还可以定义在这个具体策略下的状态值函数为：从状态S出发，采用策略$\pi$选择动作，所能获得的期望回报！</p>
+<p>$$<br />
+V^{\pi}(S) = E \left[ \sum_{t=1}^{\infty} \gamma^{t-1} R(S_t, A_t, S' _ t) | S_1=S, A_t \sim \pi \right]<br />
+$$</p>
+<p>显然，对于给定的状态S，如果策略越好，那么状态值函数$V^{\pi}(S)$就越大。因此，状态值函数$V^{\pi}(S)$还可以用来评估一个策略好不好。</p>
+<h3 id="_6">动作值函数</h3>
+<p>前面的状态值函数可以用来评估一个状态好不好，那么在一个给定的状态下，怎么评估某个动作好不好呢？答案是动作值函数！</p>
+<p>定义：动作值函数Q(S, A)是从状态S出发，采用动作A后，所能获得的最大期望回报！动作值函数也称Q函数。</p>
+<p>$$<br />
+Q(S, A) = \max E \left[ \sum_{t=1}^{\infty} \gamma^{t-1} R(S_t, A_t, S' _ t) | S_1=S, A_1=A \right]<br />
+$$</p>
+<p>动作值函数和状态值函数的唯一区别在于计算动作值函数的回报时，第一个采用的动作必须是A，而状态值函数选择的是所有动作里面所能获得最大回报的动作。所以他们有一个简单的关系</p>
+<p>$$<br />
+V(S) = \max_a Q(S, a)<br />
+$$</p>
+<p>并且可以得到最优动作$A^ * = \arg\max_a Q(S, a)$，因为最优动作是最优策略给出的，所以实际上我们也得到了最优策略$\pi^ * (A|S) = \arg\max_a Q(S, a)$。</p>
+<p>例如在确定性环境下，假设每一步的回报是-1，如果到达的是钻石则回报为+1，那么状态14所能获得的最大回报是V(14)=+1，对应于往右走拿到钻石。也是在状态14下，采用动作4的状态值函数Q(14, 4)。而采用动作3（即往左走）所能获得的最大回报是-1，对应于动作序列左-右-右，所以Q(14,3)=-1。显然在状态14下，动作4比动作3好，因为Q(14, 4) &gt; Q(14, 3)！</p>
+<p>反过来，我们根据定义还可以得到另外一个关系</p>
+<p>$$<br />
+Q(S, A) = \sum_{s'} P(s'| S, A)[ R(S, A, s') + \gamma V(s') ]<br />
+$$</p>
+<p>他可以解释为，假设在状态S下采用动作A后跳转到s'，将获得一个回报R(S, A, s')，从s'开始采用最优策略，又可以获得回报V(s')，所以总回报是$R(S, A, s') + \gamma V(s')$。因为s'有很多种可能，所以要对所有的可能按照概率求期望值。</p>
+<p>这两个关系表明，在环境已知的情况下，即转移概率P和回报函数R已知，Q和V可以互相转化，只要求出其中一个，另一个也就求出来了。</p>
+<p>同理可以定义在具体策略$\pi$下的状态值函数为：从状态S出发，采用动作A后，然后在以后的决策中采用策略$\pi$选择动作，所能获得的期望回报！</p>
+<p>$$<br />
+Q^{\pi}(S) = E \left[ \sum_{t=1}^{\infty} \gamma^{t-1} R(S_t, A_t, S' _ t) | S_1=S, A_1=A, A_t \sim \pi \right]<br />
+$$</p>
+<p>与动作值函数的差别在于第一个动作是固定的，只有其他动作按照策略$\pi$给出。</p>
+<h3 id="hjb">HJB方程</h3>
+<p>利用动作值函数可以评估一个动作的好坏，给出最优策略。因此，如果我们能够求出Q函数，那么最优策略也就出来了；如果能够求出状态值函数，根据前面这两个值函数的关系，也可以得到Q函数，从而得到最优策略。那么怎么求出状态值函数呢？答案是利用值函数的递推关系，构建HJB方程。</p>
+<p>利用状态值函数和动作值函数的两个关系可得</p>
+<p>$$<br />
+\begin{align}<br />
+V(s) &amp;= \max_a Q(s, a) \\<br />
+     &amp;= \max_a \sum_{s'} P(s'| s, a)[ R(s, a, s') + \gamma V(s') ]<br />
+\end{align}<br />
+$$</p>
+<p>最后一个式子就是HJB方程，也有叫贝尔曼方程的。这个式子中，未知的是状态值函数V(s)，已知的是环境的状态转移概率P和回报R，由于存在求max操作，使得它是关于状态值函数的非线性方程！如果我们从这个方程中求解出状态值函数V(s)，那么最优策略的问题就引刃而解了！</p>
+<h4 id="hjb_1">确定性环境的HJB方程</h4>
+<p>如果环境是确定性的，即采用某个动作后转移到的状态是唯一的，在迷宫的例子中，相当于我可以直接控制机器人的运动，而不是通过语音来间接控制。那么上述HJB方程的求期望步骤可以省略，HJB方程变为</p>
+<p>$$<br />
+V(s) = \max_a R(s, a, s') + \gamma V(s')<br />
+$$</p>
+<p>s'是在状态s下采用动作a后转移到的状态，在确定性迷宫问题中，考虑s=14的例子，HJB方程就是说(记住 V(15)=0)</p>
+<p>$$<br />
+V(14) = \max \{\gamma V(13), \gamma V(10), 1 \}<br />
+$$</p>
+<p>对每一个状态s，都可以写出上述类似的非线性方程，我们可以得到14个这样的非线性方程构成的非线性方程组。那么怎么求解这种非线性方程呢？可能有些对算法比较熟悉的同学已经从上述表达式看出来了，这就是动态规划！</p>
+<h2 id="_7">动态规划</h2>
+<p>采用动态规划求解HJB方程有两类方法，分别是值迭代和策略迭代。在一定条件下，他们都能收敛到最优解。</p>
+<h3 id="_8">值迭代</h3>
+<p>值迭代的基本思想是，将HJB方程看做如下函数的不动点</p>
+<p>$$<br />
+f(V) = \max_a \sum_{s'} P(s'| s, a)[ R(s, a, s') + \gamma V(s') ]<br />
+$$</p>
+<p>V是一个向量，包含多个元素，这个函数是一个多变量非线性函数。函数f的不动点是指满足方程$f(x) = x$的解。根据<a href="https://en.wikipedia.org/wiki/Banach_fixed-point_theorem">压缩映像原理</a>，如果函数f是压缩映象，那么对任何初始值$V_0$，可以不断地应用函数f迭代下去$V_{k+1} = f(V_{k})$，$V_k$必收敛于函数f的不动点！而f的不动点就是满足HJB方程的状态值函数，所以有值迭代算法</p>
+<ol>
+<li>初始化$V_0(i)=0, i=1,2,...$</li>
+<li>利用HJB方程迭代 $V_{k+1}(s) = \max_a R(s, a, s') + \gamma V_{k}(s')$</li>
+<li>重复第2步直到收敛！</li>
+</ol>
+<p>当$\gamma&lt;1$时，函数f一定是压缩映像，上述算法必收敛于不动点！不动点算法也是一个常用的求解非线性方程或线性方程的算法。下面简单介绍一下它的原理。</p>
+<h4 id="_9">压缩映像原理</h4>
+<p><strong>注意：理解本部分需要本科及以上数学功底，高中数学能力的请跳过，接受上述结论即可！</strong></p>
+<h3 id="_10">策略迭代</h3>
+<h2 id="_11">强化学习的解释</h2>
+<h2 id="_12">思考与实践</h2>
+<ol>
+<li>考虑如下图所示的MDP问题，S是初始状态，G是终止状态，对于非终止状态，每个状态可以采取两个动作：左或者右，其中中间状态，采取的动作和实际运动方向是相反的，也就是动作是向左，而实际运动是向右，其他两个状态正常。一个随机策略$\pi$定义如下：每一次都随机地以概率p选择动作“右”，以概率(1-p)选择动作“左”。试推导$V^{\pi}(S)$的最大值和此时的概率p的值。参考答案：p=0.59, V=-11.6。</li>
+</ol>
+<p><img alt="问题1" src="/wiki/static/images/rl-q-01.png" style="max-width:200px;"/></p>
+<ol>
+<li>编程实现值迭代和策略迭代算法</li>
+</ol>
+<p>构建一个简单的模拟环境，有nS个状态，0，1，...，nS-1；其中nS-1是终止状态。该环境下一共两个动作：0向左运动，1向右运动，每个动作都有概率p0不动，p1的概率会往反方向运动, 1-p0-p1概率正常运动。</p>
+<table>
+<thead>
+<tr>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>...</th>
+<th>9</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>←·→</td>
+<td>←·→</td>
+<td>←·→</td>
+<td>←·→</td>
+<td>终点</td>
+</tr>
+</tbody>
+</table>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="n">nS</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">nA</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1">#不要改这个参数</span>
+<span class="n">Done</span> <span class="o">=</span> <span class="n">nS</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="n">p0</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nS</span><span class="p">,</span> <span class="n">nA</span><span class="p">,</span> <span class="n">nS</span><span class="p">))</span> <span class="c1"># 转移概率</span>
+<span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nS</span><span class="p">,</span> <span class="n">nA</span><span class="p">,</span> <span class="n">nS</span><span class="p">))</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="c1"># 回报都是-1</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="c1"># 环境构建</span>
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nS</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="n">Done</span><span class="p">:</span> <span class="c1"># 终止态转移概率都为0</span>
+        <span class="k">continue</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nA</span><span class="p">):</span>
+        <span class="n">inc</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span> <span class="c1"># 步长        </span>
+        <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">+=</span> <span class="n">p0</span> <span class="c1"># 不动</span>
+        <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span> <span class="o">-</span> <span class="n">inc</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">p1</span> <span class="c1"># 反方向</span>
+        <span class="n">P</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span> <span class="o">+</span> <span class="n">inc</span><span class="p">)]</span> <span class="o">+=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">p0</span> <span class="o">-</span> <span class="n">p1</span> <span class="c1"># 正常运动</span>
+
+
+
+<span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nS</span><span class="p">)</span>
+<span class="c1"># 值迭代</span>
+<span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+
+    <span class="c1">## YOUR CODE HERE</span>
+
+    <span class="c1">## END</span>
+    <span class="k">pass</span>
+
+<span class="k">print</span> <span class="s1">&#39;iteral steps:&#39;</span><span class="p">,</span> <span class="n">it</span>
+<span class="k">print</span> <span class="n">V</span>
+
+
+
+
+
+<span class="c1"># 策略迭代</span>
+
+<span class="n">pi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nS</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span> <span class="c1">#初始策略全部往左</span>
+
+<span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nS</span><span class="p">)</span>
+    <span class="c1"># 策略评估，解线性方程</span>
+
+    <span class="c1">## YOUR CODE HERE</span>
+
+    <span class="c1">## END</span>
+
+    <span class="c1"># 策略提升</span>
+
+    <span class="c1">## YOUR CODE HERE</span>
+
+    <span class="c1">## END</span>
+
+<span class="k">print</span> <span class="s1">&#39;pi =&#39;</span><span class="p">,</span> <span class="n">pi</span>
+<span class="k">print</span> <span class="s1">&#39;V =&#39;</span><span class="p">,</span> <span class="n">V</span>
+</pre></div>
 </div>
 <div>
     <img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" />
