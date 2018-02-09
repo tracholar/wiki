@@ -45,7 +45,7 @@ simiki g
 output
 ```
 即可。此外，需要将output目录push到gh-pages分支，可以利用我写的一个
-批处理脚本[deploy.bat](https://github.com/tracholar/wiki/blob/master/deploy.bat)。
+批处理脚本[deploy.bat](https://github.com/tracholar/wiki/raw/master/deploy.sh)。
 这个脚本提供两个功能，初始化和部署。
 ```
 deploy [option]
