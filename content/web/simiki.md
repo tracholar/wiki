@@ -78,6 +78,8 @@ deploy init-version
 # 我的效果
 请访问[https://tracholar.github.io/wiki](https://tracholar.github.io/wiki)观看。
 
+**请不要FORK我的WIKI！！** 因为这个WIKI里面的内容大多是我原创的，请不要FORK，谢谢。
+
 
 
 
