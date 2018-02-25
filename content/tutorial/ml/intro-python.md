@@ -25,7 +25,7 @@ linux一般自带python，如果没有可以通过下述两种方式安装
 2. 通过包管理器安装，Ubuntu `sudo apt-get install python`, CentOS `yum install python`
 
 ## 编码工具
-用常用的带语法高亮的代码编辑器就行，windows推荐 [notepad++]()，mac推荐 atom。
+用常用的带语法高亮的代码编辑器就行，windows推荐 [notepad++](http://)，mac推荐 atom。
 
 如果喜欢IDE可以用VS或者IDEA。IDE的好处是有代码提示，写起来方便。
 
@@ -38,12 +38,31 @@ Python还有一个神奇，叫做IPython、Jupyter，愿意折腾的可以试试
 print("Hello word!")
 ```
 
-然后打开终端，进入 hello.py 所在目录，执行命令`python hello.py`就可以看到输出结果了！
+然后打开终端，进入 hello.py 所在目录，执行命令`python hello.py`就可以看到输出结果了！没错，你没有看错，整个文件只有这一行！
 
     Hello word!
 
-## 数据类型
-和很多编程语言一样，python有很多基础数据类型：整型、浮点数、字符串、布尔值(True, False)、空型(None)。
+你也可以使用python交互式命令行，在学习python的语法时很方便。使用方法是打开终端(WINDOW 下是CMD程序)，然后输入python并回车即可进入交互式环境
+
+```
+Python 2.7.10 (default, Oct 23 2015, 19:19:21)
+[GCC 4.2.1 Compatible Apple LLVM 7.0.0 (clang-700.0.59.5)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>>|
+```
+
+然后输入Hello Word程序并回车即可看到效果
+
+```python
+>>> print("Hello word!")
+Hello word!
+```
+
+### 小任务
+将问候语改为问候你自己的名字，例如 Hello Jack!
+
+## 数据类型与变量
+和很多编程语言一样，如果你要存储数据，都需要一些基础的数据类型。python有很多基础数据类型：整型、浮点数、字符串、布尔值(True, False)、空型(None)。例如你要表达一个公司有多少人，那么需要一个整数；如果你要表达公司的盈利，那么需要一个浮点数；如果你要表达一个用户是否为管理员，那么你需要一个布尔类型；最后如果你要表达什么都没有，你需要空型。
 
 ```python
 # 整数
