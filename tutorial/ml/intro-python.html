@@ -57,16 +57,19 @@
 </ul>
 </li>
 <li><a href="#_3">编码工具</a></li>
-<li><a href="#hello-word">Hello word</a></li>
-<li><a href="#_4">数据类型</a></li>
-<li><a href="#_5">列表、集合和字典</a><ul>
-<li><a href="#_6">列表推导与字典推导</a></li>
+<li><a href="#hello-word">Hello word</a><ul>
+<li><a href="#_4">小任务</a></li>
 </ul>
 </li>
-<li><a href="#_7">函数和类</a></li>
+<li><a href="#_5">数据类型与变量</a></li>
+<li><a href="#_6">列表、集合和字典</a><ul>
+<li><a href="#_7">列表推导与字典推导</a></li>
+</ul>
+</li>
+<li><a href="#_8">函数和类</a></li>
 <li><a href="#numpy">科学计算库：numpy</a></li>
 <li><a href="#matplotlib">绘图库：matplotlib</a></li>
-<li><a href="#_8">思考与实践</a></li>
+<li><a href="#_9">思考与实践</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -87,7 +90,7 @@
 <li>通过包管理器安装，Ubuntu <code>sudo apt-get install python</code>, CentOS <code>yum install python</code></li>
 </ol>
 <h2 id="_3">编码工具</h2>
-<p>用常用的带语法高亮的代码编辑器就行，windows推荐 <a href="">notepad++</a>，mac推荐 atom。</p>
+<p>用常用的带语法高亮的代码编辑器就行，windows推荐 <a href="http://">notepad++</a>，mac推荐 atom。</p>
 <p>如果喜欢IDE可以用VS或者IDEA。IDE的好处是有代码提示，写起来方便。</p>
 <p>Python还有一个神奇，叫做IPython、Jupyter，愿意折腾的可以试试。</p>
 <h2 id="hello-word">Hello word</h2>
@@ -96,13 +99,29 @@
 </pre></div>
 
 
-<p>然后打开终端，进入 hello.py 所在目录，执行命令<code>python hello.py</code>就可以看到输出结果了！</p>
+<p>然后打开终端，进入 hello.py 所在目录，执行命令<code>python hello.py</code>就可以看到输出结果了！没错，你没有看错，整个文件只有这一行！</p>
 <div class="hlcode"><pre><span></span>Hello word!
 </pre></div>
 
 
-<h2 id="_4">数据类型</h2>
-<p>和很多编程语言一样，python有很多基础数据类型：整型、浮点数、字符串、布尔值(True, False)、空型(None)。</p>
+<p>你也可以使用python交互式命令行，在学习python的语法时很方便。使用方法是打开终端(WINDOW 下是CMD程序)，然后输入python并回车即可进入交互式环境</p>
+<div class="hlcode"><pre><span></span>Python 2.7.10 (default, Oct 23 2015, 19:19:21)
+[GCC 4.2.1 Compatible Apple LLVM 7.0.0 (clang-700.0.59.5)] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;|
+</pre></div>
+
+
+<p>然后输入Hello Word程序并回车即可看到效果</p>
+<div class="hlcode"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Hello word!&quot;</span><span class="p">)</span>
+<span class="n">Hello</span> <span class="n">word</span><span class="err">!</span>
+</pre></div>
+
+
+<h3 id="_4">小任务</h3>
+<p>将问候语改为问候你自己的名字，例如 Hello Jack!</p>
+<h2 id="_5">数据类型与变量</h2>
+<p>和很多编程语言一样，如果你要存储数据，都需要一些基础的数据类型。python有很多基础数据类型：整型、浮点数、字符串、布尔值(True, False)、空型(None)。例如你要表达一个公司有多少人，那么需要一个整数；如果你要表达公司的盈利，那么需要一个浮点数；如果你要表达一个用户是否为管理员，那么你需要一个布尔类型；最后如果你要表达什么都没有，你需要空型。</p>
 <div class="hlcode"><pre><span></span><span class="c1"># 整数</span>
 <span class="n">v</span> <span class="o">=</span> <span class="mi">123</span>
 
@@ -127,7 +146,7 @@
 </pre></div>
 
 
-<h2 id="_5">列表、集合和字典</h2>
+<h2 id="_6">列表、集合和字典</h2>
 <p>python原生支持3种常用的集合类型：列表、集合和字典。列表就是很多元素的集合，集合和列表一样，只是集合要求元素互不相同，字典是key-value结构。</p>
 <div class="hlcode"><pre><span></span><span class="c1"># 一个列表</span>
 <span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
@@ -148,7 +167,7 @@
 </pre></div>
 
 
-<h3 id="_6">列表推导与字典推导</h3>
+<h3 id="_7">列表推导与字典推导</h3>
 <p>python对集合的遍历支持更方便的语法，叫做列表推导和字典推导。</p>
 <div class="hlcode"><pre><span></span><span class="c1"># 列表推导</span>
 <span class="n">arr_new</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">]</span> <span class="c1"># 将arr中每个元素乘以2</span>
@@ -158,7 +177,7 @@
 </pre></div>
 
 
-<h2 id="_7">函数和类</h2>
+<h2 id="_8">函数和类</h2>
 <p>python通过关键字<code>def</code>定义函数，通过关键字class定义类，self代表类自己，类似于其他编程语言中的this。</p>
 <div class="hlcode"><pre><span></span><span class="c1"># 乘以2的函数</span>
 <span class="k">def</span> <span class="nf">times_two</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
@@ -193,7 +212,7 @@
 </pre></div>
 
 
-<h2 id="_8">思考与实践</h2>
+<h2 id="_9">思考与实践</h2>
 <p>对比for循环方式对数组迭代和用numpy的速度。</p>
 <div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">time</span>
@@ -223,7 +242,7 @@
 <span class="k">print</span><span class="p">(</span><span class="s1">&#39;time for function np_loop: {:.3f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">clock</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">))</span>
 </pre></div>
 </div>
-<div>
+<div id="income">
     <img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" />
 
     <ins class="adsbygoogle"

@@ -284,6 +284,10 @@ table.hlcodetable {
     color: #aaa;
 }
 
+#income {
+    border-top: 1px dashed #AAA;
+    padding-top: 1em;
+}
 
 @media screen and (max-width:500px) {
 	.toc {
