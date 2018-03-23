@@ -77,6 +77,7 @@
 </li>
 <li><a href="#hive_2">HIVE 命令</a></li>
 <li><a href="#_9">文件格式</a><ul>
+<li><a href="#textfile">textfile格式</a></li>
 <li><a href="#avro">Avro 格式</a></li>
 <li><a href="#orc">ORC 格式</a></li>
 <li><a href="#parquet">Parquet 格式</a></li>
@@ -332,6 +333,16 @@
 <li><code>add FILE[S] &lt;filepath&gt; &lt;filepath&gt;*</code>, <code>add JAR[S] &lt;filepath&gt; &lt;filepath&gt;*</code>, <code>add ARCHIVE[S] &lt;filepath&gt; &lt;filepath&gt;*</code> 添加文件</li>
 </ul>
 <h2 id="_9">文件格式</h2>
+<h3 id="textfile">textfile格式</h3>
+<p>文本格式</p>
+<div class="hlcode"><pre><span></span><span class="k">ROW</span> <span class="n">FORMAT</span> <span class="n">DELIMITED</span>
+   <span class="n">FIELDS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\001&#39;</span>
+   <span class="n">COLLECTION</span> <span class="n">ITEMS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\002&#39;</span>
+   <span class="k">MAP</span> <span class="n">KEYS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\003&#39;</span>
+ <span class="n">STORED</span> <span class="k">AS</span> <span class="n">TEXTFILE</span><span class="p">;</span>
+</pre></div>
+
+
 <h3 id="avro">Avro 格式</h3>
 <ul>
 <li>要求：Hive 0.9.1+</li>
