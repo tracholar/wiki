@@ -207,6 +207,16 @@ for line in sys.stdin:
 
 
 ## 文件格式
+### textfile格式
+文本格式
+
+```sql
+ROW FORMAT DELIMITED
+   FIELDS TERMINATED BY '\001'
+   COLLECTION ITEMS TERMINATED BY '\002'
+   MAP KEYS TERMINATED BY '\003'
+ STORED AS TEXTFILE;
+```
 ### Avro 格式
 - 要求：Hive 0.9.1+
 - 不同版本要求的语法还不同，具体参看<https://cwiki.apache.org/confluence/display/Hive/AvroSerDe>。
