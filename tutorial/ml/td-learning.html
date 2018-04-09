@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>第11.0讲：时间差分学习 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tutorial">tutorial</a>&nbsp;»&nbsp;<a href="/wiki/#tutorial-ml">ml</a>&nbsp;»&nbsp;第11.0讲：时间差分学习</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">第11.0讲：时间差分学习</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">蒙特卡罗方法</a></li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>强化学习近年大火，最早是因为AlphaGo使用强化学习打败人类围棋冠军引发的。在那之后，强化学习在工业场景应用越来越多，原来很多做搜索、推荐、广告等一直在用监督学习的业务，也开始使用强化学习来优化用户体验和平台收益了。强化学习实际上很早就提出了，事实上，强化学习来源于控制论。控制论之父叫做<a href="https://en.wikipedia.org/wiki/Norbert_Wiener">维纳</a>，学过信号处理的可能知道他，维纳滤波就是用他的名字命名的。控制论最早源于航天，人们要控制火箭发射装置，将火箭发射到地球之外；控制论还源于机器人控制，人们需要用算法对机器人的行为进行控制。所以，很多讲强化学习的文献也会说强化学习是在优化控制策略。</p>
+<p>在这篇文章中，您将学习到</p>
+<ol>
+<li>环境未知情况下的更好的学习方法？</li>
+<li>蒙特卡罗方法和时间差分学习</li>
+<li>SARSA, Q-learning</li>
+<li>on-policy 与 off-policy 学习</li>
+</ol>
+<p>我期望您至少有：</p>
+<ol>
+<li>高中数学水平且年满18岁，部分内容需要你了解监督学习，和强化学习基本概念，你可以通过本教程前面的章节进行学习。</li>
+<li>如果你需要完成实践部分，需要有基本的 python 知识，你可以通过<a href="/wiki/tutorial/ml/intro-python.html">python快速入门</a>快速了解python如何使用。</li>
+</ol>
+<h2 id="_2">蒙特卡罗方法</h2>
+<p>在上一讲中，我们说到，对于一个MDP问题，如果环境已知，也就是知道环境的转移概率P和回报函数R，可以通过求解贝尔曼方程得到最优策略，求解的方法有两种，分别是值迭代和策略迭代。如果环境未知，我们提到一种通过随机尝试的方法，先估计出环境，然后转化为环境已知问题求解。这种随机尝试效率很差，需要尝试很多次，并且随机尝试本身就有成本，而且需要等到尝试很多次之后，才能得到一个比较好的策略。那么，能不能在每一次尝试之后，都能将策略提升到一个更好的策略呢？因为每一次尝试，环境的反馈都会提供一部分对环境的信息，如果我们能利用好这部分信息，就有可能从中获取到有价值的信息来提升我们的策略。</p>
+</div>
+<div id="income">
+    <img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" />
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2018-03-30 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: '第11.0讲：时间差分学习',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2018 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>
