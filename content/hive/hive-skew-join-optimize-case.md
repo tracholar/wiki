@@ -46,7 +46,7 @@ ON A.uid=B.guid
 
 B表用于选择满足条件的uid，然后通过JOIN过滤！问题来了，这个过滤也是JOIN，所以仍然会有数据倾斜的问题！！
 
-由于这样的uid总体上来说比较少，而问题的关键出在不能有JOIN，所以可以利用MAPJOIN来解决
+由于这样的uid总体上来说比较少，而问题的关键出在不能有JOIN的REDUCE操作，所以可以利用MAPJOIN来解决
 
 ```SQL
 select A.* from A
