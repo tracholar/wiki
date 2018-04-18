@@ -93,7 +93,7 @@
 
 
 <p>B表用于选择满足条件的uid，然后通过JOIN过滤！问题来了，这个过滤也是JOIN，所以仍然会有数据倾斜的问题！！</p>
-<p>由于这样的uid总体上来说比较少，而问题的关键出在不能有JOIN，所以可以利用MAPJOIN来解决</p>
+<p>由于这样的uid总体上来说比较少，而问题的关键出在不能有JOIN的REDUCE操作，所以可以利用MAPJOIN来解决</p>
 <div class="hlcode"><pre><span></span><span class="k">select</span> <span class="n">A</span><span class="p">.</span><span class="o">*</span> <span class="k">from</span> <span class="n">A</span>
 <span class="k">LEFT</span> <span class="k">OUTER</span> <span class="k">JOIN</span> <span class="p">(</span>
     <span class="k">select</span> <span class="n">uid</span> <span class="k">as</span> <span class="n">guid</span> <span class="k">from</span> <span class="n">A</span>
