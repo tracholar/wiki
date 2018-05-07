@@ -24,11 +24,13 @@ uid |  f1  | f2
 
 思路二：利用skewjoin的优化选项
 
-```
+```SQL
 set hive.optimize.skewjoin=true;
+set hive.skewjoin.key=1000;   
 ```
 
-将一个join操作变为两个，第一个会将同一个key分散到不同的reduce，从而解决JOIN时数据倾斜问题。原则上这个方案没问题，但是我实验的时候发现，HIVE没有做这个转化，可能是还有其他参数要设置，没设置对。
+
+将一个join操作变为两个，第一个会将同一个key分散到不同的reduce，从而解决JOIN时数据倾斜问题。`hive.skewjoin.key`要设置为需要分散的key最少条数，默认10W条才会做这个操作。
 
 思路三：利用 JOIN 过滤掉那些导致倾斜的uid
 
