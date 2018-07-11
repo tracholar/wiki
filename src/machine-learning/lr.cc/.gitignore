@@ -2,3 +2,4 @@ a.out
 *.txt
 *.dat
 cmake-build-debug/
+*.libsvm

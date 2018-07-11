@@ -1,17 +1,21 @@
+import struct
 
-fp = open("data.dat", 'w')
+fp = open("data.dat", 'wb')
 
 n = 0
-for line in open("/Users/zuoyuan/Documents/code/test_ffm/train"):
+for line in open("digits.libsvm"):
     row = line.split(" ")
-    rs = [row[0]]
+    fp.write(struct.pack('d',  float(row[0])))
+    fp.write(struct.pack('i', len(row) - 1))
     for r in row[1:]:
         fkv = r.split(":")
-        k = int( int(fkv[0]) * 1e6 + int(fkv[1])  )
-        rs.append("%d:1" % k)
-    fp.write(" ".join(rs) + "\n")
+        fp.write(struct.pack('i', int(fkv[0])))
+        fp.write(struct.pack('d', float(fkv[1])))
 
     n += 1
-    if n % 10000 == 0:
-        print '\r ROW %d' % n,
+    if n % 100000 == 0:
+        print '\r ROW %d' % n
+    if n >= 100000:
+        break
+
 fp.close()
