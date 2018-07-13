@@ -7,7 +7,145 @@
 #include<string.h>
 #include<math.h>
 #define MAX_LEN 1024
-#define BATCH_SIZE 32
+
+typedef struct _sv {
+    int size;
+    int capacity;
+    int * idx;
+    double * val;
+} * SparseVector;
+
+typedef struct _dv {
+    int size;
+    int capacity;
+    double * val;
+} * DenseVector;
+
+SparseVector CreateSparseVector(){
+    SparseVector sv = (SparseVector) malloc(sizeof(_sv));
+    sv->size = 0;
+    sv->capacity = 1024;
+    sv->idx = (int *) malloc(sizeof(int) * sv->capacity);
+    sv->val = (double *) malloc(sizeof(double) * sv->capacity);
+    return sv;
+}
+
+void DeleteSparseVector(SparseVector & sv){
+    free(sv->idx);
+    free(sv->val);
+    free(sv);
+    sv = NULL;
+}
+
+void ExpandSparseVector(SparseVector sv){
+    int * idx = sv->idx;
+    double * val = sv->val;
+    sv->idx = (int *) malloc(sizeof(int) * sv->capacity * 2);
+    sv->val = (double *) malloc(sizeof(double) * sv->capacity * 2);
+    memcpy(sv->idx, idx, sizeof(int) * sv->size);
+    memcpy(sv->val, val, sizeof(double) * sv->size);
+    sv->capacity *= 2;
+
+    free(idx);
+    free(val);
+}
+
+inline void SparseVectorApend(SparseVector sv, int id, double v){
+    while(sv->size >= sv->capacity) ExpandSparseVector(sv);
+    sv->idx[sv->size] = id;
+    sv->val[sv->size] = v;
+    sv->size += 1;
+}
+
+
+// sv3 = sv1 + sv2
+SparseVector SparseVectorAdd(SparseVector sv1, SparseVector sv2){
+    SparseVector sv3 = CreateSparseVector();
+    int i=0, j=0;
+    while(i < sv1->size  && j < sv2->size ){
+        if(sv1->idx[i] < sv2->idx[j]) {
+            SparseVectorApend(sv3, sv1->idx[i], sv1->val[i]);
+            i++;
+        }
+        else if(sv1->idx[i] > sv2->idx[j]) {
+            SparseVectorApend(sv3, sv2->idx[j], sv2->val[j]);
+            j++;
+        }else{ // equal
+            SparseVectorApend(sv3, sv2->idx[j], sv1->val[i] + sv2->val[j]);
+            i++;
+            j++;
+        }
+    }
+    if(i == sv1->size) {
+        for(; j<sv2->size; j++) SparseVectorApend(sv3, sv2->idx[j], sv2->val[j]);
+    }
+    if(j == sv2->size){
+        for(; i<sv1->size; i++) SparseVectorApend(sv3, sv1->idx[i], sv1->val[i]);
+    }
+    return sv3;
+}
+
+void ExpandDenseVector(double * &v, int & shape){
+    double * w = (double *) malloc(sizeof(double) * shape * 2);
+    memcpy(w, v, sizeof(double) * shape);
+    free(v);
+    v = w;
+    shape *= 2;
+}
+
+// v = v + lambda * sv
+void SparseVectorAddDense(double * v,  SparseVector sv, double lambda){
+    int i;
+    for(i = 0; i<sv->size; i++) v[ sv->idx[i] ] += lambda * sv->val[i];
+}
+
+void PrintSparseVector(SparseVector sv){
+    if(sv == NULL)
+        return;
+    int i;
+    printf("{size=%d, capacity=%d, data='", sv->size, sv->capacity);
+    for(i = 0; i<sv->size; i++) printf("%d:%g ", sv->idx[i], sv->val[i]);
+    printf("'}\n");
+}
+void PrintDenseVector(double * w, int shape){
+    int i;
+    for(i= 0;i<shape;i++) printf("%g ", w[i]);
+    printf("\n");
+}
+
+
+double sparse_logloss(SparseVector x, double y,
+                      double * w, SparseVector dw){
+    double loss = 0.0, dot = 0.0, delta;
+    dot = w[0];
+    for(int j=0; j<x->size; j++){
+        dot += w[ x->idx[j] ] * x->val[j];
+    }
+    double z = - y *  dot;
+    if(z > 10) loss = z;
+    else loss = log(1.0 + exp(z));
+
+    delta = - y/(1 + exp(y * dot));
+
+    dw->size = 0;
+    SparseVectorApend(dw, 0, delta);
+    for(int j=0; j<x->size; j++){
+        SparseVectorApend(dw, x->idx[j], x->val[j] * delta);
+    }
+
+    return loss;
+}
+
+void apply_sparse_gradient(double *w, SparseVector dw, double lr, double lambda, double beta){
+    int i,j;
+
+    w[0] -= dw->val[0] * lr;
+
+    for(i=1;i<dw->size;i++){
+        w[ dw->idx[i] ] -= dw->val[i] * lr + 0.5 * lambda * w[ dw->idx[i] ];
+        if(w[ dw->idx[i] ] < beta && w[ dw->idx[i] ] > -beta) w[ dw->idx[i] ] = 0.0;
+    }
+}
 
 double logloss(int * idx, double * val, int shape, double y,
     double * weight, double * dw, double * db){ // dw 是稀疏梯度
@@ -74,17 +212,15 @@ int * expand_list(int * origin, int size, int new_size){
 void train(){
 
     int feature_buff_size = MAX_LEN, weight_buff_size = MAX_LEN;
-    int * idx = (int *)malloc(sizeof(int) * feature_buff_size), shape = 0, n_samples = 10, n_feature, n_weight;
+    int idx=0, shape = 0, n_samples = 10, n_feature, n_weight;
 
-    double *val = (double *)malloc(sizeof(double) * feature_buff_size), y = 1,
+    double  val, y = 1,
             *weight = (double *)malloc(sizeof(double) * weight_buff_size),
-            db = 0,
-            *dw = (double *)malloc(sizeof(double) * feature_buff_size); // 稀疏梯度
-
+            db = 0; // 稀疏梯度
+    SparseVector x = CreateSparseVector(), dw = CreateSparseVector(), dwi = CreateSparseVector();
     int i, j;
     double cum_loss = 0.0;
     rand_vector(weight, MAX_LEN);
-    rand_vector(dw, MAX_LEN);
 
     for(j = 0; j < 100; j++) {
         FILE *fp = fopen("/Users/zuoyuan/Documents/code/wiki/src/machine-learning/lr.cc/data.dat", "rb");
@@ -104,50 +240,52 @@ void train(){
             //printf("%f ", y);
             fread(&n_feature, 4, 1, fp); // read size
 
-            // 扩大buff大小
-            while (n_feature > 0 && feature_buff_size < n_feature) {
-                idx = expand_list(idx, feature_buff_size, feature_buff_size * 2);
-                val = expand_list(val, feature_buff_size, feature_buff_size * 2);
-
-                dw = expand_list(dw, feature_buff_size, feature_buff_size * 2);
-                feature_buff_size *= 2;
-            }
-
 
             //读取数据
+            x->size = 0;
             for (i = 0; i < n_feature; i++) {
-                fread(idx + i, 4, 1, fp); //read idx
-                fread(val + i, 8, 1, fp); // read value
+                fread(&idx, 4, 1, fp); //read idx
+                fread(&val, 8, 1, fp); // read value
+                SparseVectorApend(x, idx, val);
                 //printf("%d:%f ", idx[i], val[i]);
             }
 
 
-            n_weight = idx[n_feature - 1] + 1; // 当前需要的weight大小
+            n_weight = idx + 1; // 当前需要的weight大小
             while (n_weight > 0 && weight_buff_size < n_weight) {
                 weight = expand_list(weight, weight_buff_size, weight_buff_size * 2);
 
                 weight_buff_size *= 2;
             }
 
-            cum_loss += logloss(idx, val, n_feature, y, weight, dw, &db);
+            cum_loss += sparse_logloss(x, y, weight, dw);
 
+            apply_sparse_gradient(weight, dw, 0.001, 0.001, 0.000);
+
+
+
+
+/*
             if(nrow % 128 == 0) {
-                apply_gradient(weight, idx, dw, db, n_feature, 0.001, 0.001, 0.01);
-                memset(weight, 0, feature_buff_size * sizeof(double));
-                db = 0;
+                apply_sparse_gradient(weight, dw, 0.1, 0.001, 0.0001);
 
+                dw->size=0; // 归0
                 printf("loss = %f\n", cum_loss);
                 cum_loss = 0;
             }
+            */
         }
 
 
+        printf("%d, loss=%f\n", j, cum_loss);
+        cum_loss = 0;
 
         fclose(fp);
     }
+    PrintDenseVector(weight, n_weight);
 }
 
-int main(){
+void test1(){
     int feature_buff_size = MAX_LEN, weight_buff_size = MAX_LEN;
     int * idx = (int *)malloc(sizeof(int) * feature_buff_size), shape = 0, n_samples = 10, n_feature, n_weight;
 
@@ -170,4 +308,81 @@ int main(){
 
     train();
 
+}
+
+void test_sparse_vector(){
+    SparseVector  sv = CreateSparseVector();
+    SparseVectorApend(sv, 1, 1);
+    SparseVectorApend(sv, 1024, 1);
+    PrintSparseVector(sv);
+
+    int i;
+    for(i = 0; i< 2048; i++) SparseVectorApend(sv, i, rand_d());
+    PrintSparseVector(sv);
+
+    DeleteSparseVector(sv);
+    PrintSparseVector(sv);
+}
+
+void test_sparse_vector_add(){
+    SparseVector sv1 = CreateSparseVector(), sv2 = CreateSparseVector();
+    SparseVectorApend(sv1, 1, 1);
+    SparseVectorApend(sv1, 10, 1);
+    SparseVectorApend(sv1, 1024, 1);
+
+    SparseVectorApend(sv2, 2, 1);
+    SparseVectorApend(sv2, 1024, 1);
+
+    PrintSparseVector(sv1);
+    PrintSparseVector(sv2);
+    PrintSparseVector(SparseVectorAdd(sv1, sv2));
+}
+
+void teset_dense_sparse_add(){
+    SparseVector sv1 = CreateSparseVector();
+    SparseVectorApend(sv1, 1, 1);
+    SparseVectorApend(sv1, 10, 1);
+    PrintSparseVector(sv1);
+
+    double * w = new double[16];
+    rand_vector(w, 16);
+    int i;
+    for(i=0;i<16;i++) printf("%g,", w[i]);
+    printf("\n");
+
+    SparseVectorAddDense(w, sv1, 0.5);
+    for(i=0;i<16;i++) printf("%g,", w[i]);
+    printf("\n");
+}
+
+void test_sparse_log_loss(){
+    SparseVector dw = CreateSparseVector(), x = CreateSparseVector();
+    double * w = new double[1024], y = 1.0;
+
+    rand_vector(w, 1024);
+
+    PrintDenseVector(w, 8);
+
+    SparseVectorApend(x, 1, 1);
+    SparseVectorApend(x, 6, 0.5);
+    PrintSparseVector(x);
+    printf("loss=%f\n", sparse_logloss(x, y, w, dw));
+    PrintSparseVector(dw);
+
+    apply_sparse_gradient(w, dw, 0.1, 0.0, 0.0);
+    PrintDenseVector(w, 8);
+
+
+}
+int main(){
+    test_sparse_vector();
+    test_sparse_vector_add();
+
+    printf("test teset_dense_sparse_add\n");
+    teset_dense_sparse_add();
+
+    printf("test_sparse_log_loss\n");
+    test_sparse_log_loss();
+
+    train();
 }
