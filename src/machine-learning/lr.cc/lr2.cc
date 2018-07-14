@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#include <pthread.h>
 #define MALLOC(type, n) (type *) malloc(sizeof(type) * n)
 
 typedef struct _fn {
@@ -15,6 +16,13 @@ typedef struct _fn {
 } sparse_node;
 int x_buff_size = 16, dw_buff_size = 16;
 
+double rand_d(){
+    return (rand() % 1000000)/1000000.0;
+}
+void rand_vector(double * list, int shape){
+    int i;
+    for(i = 0; i<shape; i++) list[i] = (rand_d() - 0.5)*2;
+}
 
 void read_libsvm_row(FILE *fp, sparse_node * &x, int & x_shape, double &y){
     fread(&y, 8, 1, fp); // read y
@@ -51,31 +59,126 @@ double logloss(sparse_node *x, int x_shape, double y, double *w, int w_shape, do
     // dot
     for(i=0; i<x_shape; i++) z += x[i].val * w[ x[i].idx ];
     loss = log(1 + exp(-y*z));
-    db = -y/(1 + exp(-y*z));
-    for(i=0; i<x_shape; i++) {
-        dw[i].idx = x[i].idx;
-        dw[i].val = x[i].val * db;
+
+    if(w != NULL) {
+        db = -y * exp(-y * z) / (1 + exp(-y * z));
+        for (i = 0; i < x_shape; i++) {
+            dw[i].idx = x[i].idx;
+            dw[i].val = x[i].val * db;
+        }
     }
     return loss;
 }
 
-int main(){
-    FILE *fp = fopen("/Users/zuoyuan/Documents/code/wiki/src/machine-learning/lr.cc/data.dat", "rb");
+void apply_gradient(double *w, sparse_node *dw, int dw_shape, double &b, double db, double lr){
+    int i;
+    b -= lr * db;
+    for(i=0; i<dw_shape; i++){
+        w[ dw[i].idx ] -= lr * dw[i].val;
+    }
+}
+
+
+int w_shape;
+double * w, *b;
+
+typedef struct _params {
+    int tid;
+    char * fn;
+}params;
+
+void * train(void * tid){
+    params p = * (params *)tid;
+    printf("start thread %d\n", p.tid);
+
+    FILE *fp = fopen(p.fn, "rb");
     if (fp == NULL) {
         fprintf(stderr, "OPEN FILE FAILED!\n");
         exit(1);
     }
     sparse_node * x = MALLOC(sparse_node, x_buff_size), *dw = MALLOC(sparse_node, dw_buff_size);
     int x_shape;
-    double y, *w = MALLOC(double, 1024), b, db;
+    double y, db;
 
+    double cumloss = 0.0;
+    int nrow = 0;
     while(!feof(fp)){
+        nrow ++;
         read_libsvm_row(fp, x, x_shape, y);
 
-        printf("%g\t", y);
-        print_libsvm_row(x, x_shape);
 
-        printf("logloss = %g\n", logloss(x, x_shape, y, w, 1024, b, dw, db));
+        while(dw_buff_size < x_shape){
+            free(dw);
+            dw = MALLOC(sparse_node, dw_buff_size * 2);
+            dw_buff_size *= 2;
+        }
+
+        cumloss += logloss(x, x_shape, y, w, w_shape, *b, dw, db);
+
+        apply_gradient(w, dw, x_shape, *b, db, 0.01);
+
+        if(nrow % 10240 == 0){
+            printf("@%d logloss = %g\n", p.tid, cumloss/10240);
+            cumloss = 0;
+        }
 
     }
+
+    fclose(fp);
+    free(dw);
+    free(x);
+}
+
+int read_weight_size(char * str){
+    sparse_node * x = MALLOC(sparse_node, x_buff_size);
+    int x_shape;
+    double y;
+
+    FILE *fp = fopen(str, "rb");
+    if (fp == NULL) {
+        fprintf(stderr, "OPEN FILE FAILED!\n");
+        exit(1);
+    }
+
+    int size = 1;
+    while(!feof(fp)){
+        read_libsvm_row(fp, x, x_shape, y);
+        if(x[x_shape-1].idx > size - 1) size = x[x_shape-1].idx + 1;
+    }
+    fclose(fp);
+    free(x);
+    return size;
+
+}
+
+int main(){
+    char * fn = "/Users/zuoyuan/Documents/code/wiki/src/machine-learning/lr.cc/data.dat";
+    w_shape = read_weight_size(fn);
+    printf("weight size=%d\n", w_shape);
+
+    w = MALLOC(double, w_shape);
+    rand_vector(w, w_shape);
+    b = MALLOC(double, 1);
+    *b = rand_d();
+
+    int i, thread_number = 1;
+    pthread_t *pt = MALLOC(pthread_t, thread_number);
+    params *p = MALLOC(params, thread_number);
+    for(i=0; i<thread_number; i++) {
+        p[i].tid = i;
+        p[i].fn = fn;
+
+        pthread_create(&pt[i], NULL, train, (void *) &p[i]);
+    }
+    for(i=0; i<thread_number; i++) pthread_join(pt[i], NULL);
+    free(pt);
+    free(p);
+
+    FILE *fp = fopen("w.txt", "w");
+    fprintf(fp, "b\t%g\n", b);
+    fprintf(fp, "w\n-----------------\n");
+    for(i=0; i<w_shape; i++){
+        fprintf(fp, "%d\t%g\n", i, w[i]);
+    }
+    fclose(fp);
 }
