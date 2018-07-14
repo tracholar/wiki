@@ -6,13 +6,18 @@
 #include<stdlib.h>
 #include<string.h>
 #include<math.h>
+#include<list>
 #define MAX_LEN 1024
+using namespace std;
+
+typedef struct _fn {
+    int idx;
+    double val;
+} sparse_node;
 
 typedef struct _sv {
     int size;
-    int capacity;
-    int * idx;
-    double * val;
+    sparse_node * x;
 } * SparseVector;
 
 typedef struct _dv {
@@ -24,66 +29,23 @@ typedef struct _dv {
 SparseVector CreateSparseVector(){
     SparseVector sv = (SparseVector) malloc(sizeof(_sv));
     sv->size = 0;
-    sv->capacity = 1024;
-    sv->idx = (int *) malloc(sizeof(int) * sv->capacity);
-    sv->val = (double *) malloc(sizeof(double) * sv->capacity);
     return sv;
 }
 
 void DeleteSparseVector(SparseVector & sv){
-    free(sv->idx);
-    free(sv->val);
     free(sv);
     sv = NULL;
 }
 
-void ExpandSparseVector(SparseVector sv){
-    int * idx = sv->idx;
-    double * val = sv->val;
-    sv->idx = (int *) malloc(sizeof(int) * sv->capacity * 2);
-    sv->val = (double *) malloc(sizeof(double) * sv->capacity * 2);
-    memcpy(sv->idx, idx, sizeof(int) * sv->size);
-    memcpy(sv->val, val, sizeof(double) * sv->size);
-    sv->capacity *= 2;
-
-    free(idx);
-    free(val);
-}
 
 inline void SparseVectorApend(SparseVector sv, int id, double v){
-    while(sv->size >= sv->capacity) ExpandSparseVector(sv);
-    sv->idx[sv->size] = id;
-    sv->val[sv->size] = v;
+    sv->x[sv->size].idx = id;
+    sv->x[sv->size].val = v;
     sv->size += 1;
 }
 
 
 // sv3 = sv1 + sv2
-SparseVector SparseVectorAdd(SparseVector sv1, SparseVector sv2){
-    SparseVector sv3 = CreateSparseVector();
-    int i=0, j=0;
-    while(i < sv1->size  && j < sv2->size ){
-        if(sv1->idx[i] < sv2->idx[j]) {
-            SparseVectorApend(sv3, sv1->idx[i], sv1->val[i]);
-            i++;
-        }
-        else if(sv1->idx[i] > sv2->idx[j]) {
-            SparseVectorApend(sv3, sv2->idx[j], sv2->val[j]);
-            j++;
-        }else{ // equal
-            SparseVectorApend(sv3, sv2->idx[j], sv1->val[i] + sv2->val[j]);
-            i++;
-            j++;
-        }
-    }
-    if(i == sv1->size) {
-        for(; j<sv2->size; j++) SparseVectorApend(sv3, sv2->idx[j], sv2->val[j]);
-    }
-    if(j == sv2->size){
-        for(; i<sv1->size; i++) SparseVectorApend(sv3, sv1->idx[i], sv1->val[i]);
-    }
-    return sv3;
-}
 
 void ExpandDenseVector(double * &v, int & shape){
     double * w = (double *) malloc(sizeof(double) * shape * 2);
@@ -127,7 +89,6 @@ double sparse_logloss(SparseVector x, double y,
 
     delta = - y/(1 + exp(y * dot));
 
-    dw->size = 0;
     SparseVectorApend(dw, 0, delta);
     for(int j=0; j<x->size; j++){
         SparseVectorApend(dw, x->idx[j], x->val[j] * delta);
@@ -209,6 +170,25 @@ int * expand_list(int * origin, int size, int new_size){
     return data;
 }
 
+int bs__data_buff_size = 1024;
+void read_libsvm_data(SparseVector sv, double &y, FILE *fp){
+    fread(&y, 8, 1, fp); // read y
+    if(y == 0.0) y = -1.0;
+    //printf("%f ", y);
+    int n_feature;
+    fread(&n_feature, 4, 1, fp); // read size
+
+    int i, idx;
+    double val;
+    //读取数据
+    for (i = 0; i < n_feature; i++) {
+        fread(&idx, 4, 1, fp); //read idx
+        fread(&val, 8, 1, fp); // read value
+        SparseVectorApend(sv, idx, val);
+        //printf("%d:%f ", idx[i], val[i]);
+    }
+}
+
 void train(){
 
     int feature_buff_size = MAX_LEN, weight_buff_size = MAX_LEN;
@@ -235,28 +215,8 @@ void train(){
         int nrow = 0;
         while (!feof(fp)) {
             nrow += 1;
-            fread(&y, 8, 1, fp); // read y
-            if(y == 0.0) y = -1.0;
-            //printf("%f ", y);
-            fread(&n_feature, 4, 1, fp); // read size
 
-
-            //读取数据
-            x->size = 0;
-            for (i = 0; i < n_feature; i++) {
-                fread(&idx, 4, 1, fp); //read idx
-                fread(&val, 8, 1, fp); // read value
-                SparseVectorApend(x, idx, val);
-                //printf("%d:%f ", idx[i], val[i]);
-            }
-
-
-            n_weight = idx + 1; // 当前需要的weight大小
-            while (n_weight > 0 && weight_buff_size < n_weight) {
-                weight = expand_list(weight, weight_buff_size, weight_buff_size * 2);
-
-                weight_buff_size *= 2;
-            }
+            read_libsvm_data(x, y, fp);
 
             cum_loss += sparse_logloss(x, y, weight, dw);
 
