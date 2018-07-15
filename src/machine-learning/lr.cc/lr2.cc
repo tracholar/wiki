@@ -51,9 +51,12 @@ void print_libsvm_row(sparse_node * x, int x_shape){
     putchar('\n');
 }
 
+int w_shape;
+double * w, *b;
+pthread_mutex_t w_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-double logloss(sparse_node *x, int x_shape, double y, double *w, int w_shape, double b, sparse_node *dw, double &db){
-    double loss = 0.0, z=b;
+double logloss(sparse_node *x, int x_shape, double y, sparse_node *dw, double &db){
+    double loss = 0.0, z = *b;
     int i = 0;
 
     // dot
@@ -70,17 +73,24 @@ double logloss(sparse_node *x, int x_shape, double y, double *w, int w_shape, do
     return loss;
 }
 
-void apply_gradient(double *w, sparse_node *dw, int dw_shape, double &b, double db, double lr){
+
+
+
+
+void apply_gradient(sparse_node *dw, int dw_shape, double db, double lr){
     int i;
-    b -= lr * db;
+
+    pthread_mutex_lock(&w_mutex);
+
+    *b -= lr * db;
     for(i=0; i<dw_shape; i++){
         w[ dw[i].idx ] -= lr * dw[i].val;
     }
+
+    pthread_mutex_unlock(&w_mutex);
 }
 
 
-int w_shape;
-double * w, *b;
 
 typedef struct _params {
     int tid;
@@ -102,31 +112,39 @@ void * train(void * tid){
 
     double cumloss = 0.0;
     int nrow = 0;
-    while(!feof(fp)){
-        nrow ++;
-        read_libsvm_row(fp, x, x_shape, y);
+    int iter;
+
+    for(iter=0; iter<10; iter++) {
+        while (!feof(fp)) {
+            nrow++;
+            read_libsvm_row(fp, x, x_shape, y);
 
 
-        while(dw_buff_size < x_shape){
-            free(dw);
-            dw = MALLOC(sparse_node, dw_buff_size * 2);
-            dw_buff_size *= 2;
+            while (dw_buff_size < x_shape) {
+                free(dw);
+                dw = MALLOC(sparse_node, dw_buff_size * 2);
+                dw_buff_size *= 2;
+            }
+
+            cumloss += logloss(x, x_shape, y, dw, db);
+
+            apply_gradient(dw, x_shape, db, 0.01);
+
+            if (nrow % 10240 == 0) {
+                printf("@%d logloss = %g\n", p.tid, cumloss / 10240);
+                cumloss = 0;
+            }
+
         }
-
-        cumloss += logloss(x, x_shape, y, w, w_shape, *b, dw, db);
-
-        apply_gradient(w, dw, x_shape, *b, db, 0.01);
-
-        if(nrow % 10240 == 0){
-            printf("@%d logloss = %g\n", p.tid, cumloss/10240);
-            cumloss = 0;
-        }
-
+        fseek(fp, 0, SEEK_SET);
+        printf("Thread %d finished %dth iteration.\n", p.tid, iter);
     }
 
     fclose(fp);
     free(dw);
     free(x);
+
+    pthread_exit(NULL);
 }
 
 int read_weight_size(char * str){
@@ -161,7 +179,7 @@ int main(){
     b = MALLOC(double, 1);
     *b = rand_d();
 
-    int i, thread_number = 1;
+    int i, thread_number = 16;
     pthread_t *pt = MALLOC(pthread_t, thread_number);
     params *p = MALLOC(params, thread_number);
     for(i=0; i<thread_number; i++) {
@@ -175,7 +193,7 @@ int main(){
     free(p);
 
     FILE *fp = fopen("w.txt", "w");
-    fprintf(fp, "b\t%g\n", b);
+    fprintf(fp, "b\t%g\n", *b);
     fprintf(fp, "w\n-----------------\n");
     for(i=0; i<w_shape; i++){
         fprintf(fp, "%d\t%g\n", i, w[i]);
