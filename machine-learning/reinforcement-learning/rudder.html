@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>短中长期规划 - tracholar's personal knowledge wiki</title>
+        <title>延迟回报分解 - tracholar's personal knowledge wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -52,37 +52,20 @@
         <div id="container">
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#about">about</a>&nbsp;»&nbsp;短中长期规划</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning-reinforcement-learning">reinforcement-learning</a>&nbsp;»&nbsp;延迟回报分解</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">短中长期规划</div>
+<div id="title">延迟回报分解</div>
 <div id="content">
-  <h2 id="_1">短期</h2>
-<ul>
-<li>熟悉spark开发流程，学会使用mllib在线上建模 ✅</li>
-<li>cs224d  ✅</li>
-<li>cs231n  ✅</li>
-<li>cs294, cs234 RL</li>
-<li>GAN</li>
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#bias-variance-for-mdp">Bias-Variance for MDP</a></li>
 </ul>
-<h2 id="_2">中期</h2>
-<ul>
-<li>deep learning overview ： Bengio 的书及相关论文</li>
-<li>machine learning overview ： 周志华的书，prml, element of ml</li>
-<li>分布式工具和环境， Spark， Hbase， Hadoop， Hive</li>
-<li>分布式算法，优化算法等</li>
-</ul>
-<h2 id="_3">长期</h2>
-<ul>
-<li>ML 技术栈，从工程到算法到系统</li>
-<li>金融学基础知识</li>
-<li>从财务和技术两方面分析主流IT企业</li>
-</ul>
-<h2 id="2018">2018年</h2>
-<ul>
-<li>6篇深入思考博客</li>
-<li>10篇 关键论文结果的复现</li>
-</ul>
+</div>
+<h2 id="bias-variance-for-mdp">Bias-Variance for MDP</h2>
+<p>动作值函数的偏差和方差</p>
+<p>$$<br />
+q^{\pi}(s,a) = \sum<br />
+$$</p>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -94,7 +77,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2016-07-17 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2018-07-08 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -102,7 +85,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: '短中长期规划',
+  title: '延迟回报分解',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
