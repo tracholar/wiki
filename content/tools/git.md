@@ -158,3 +158,40 @@ fast-forward模式：如果其中当前分支是另一个分支的上游，那�
 
 ## Hook
 在 `.git/hooks/` 目录下的可执行脚本，支持`bash, ruby, python`等。
+
+
+## 常见案例汇总
+
+1. 已经在本地有个仓库了,怎么关联到远程仓库地址 <git@github.com:xxxx/xx.git>
+
+```bash
+git remote add origin  git@github.com:xxxx/xx.git
+```
+
+这里 origin 代表远程仓库的名字
+
+2. 如何合并远程分支 branch1 到本地分支 branch2
+
+```bash
+$git fetch origin branch1
+From github.com:tracholar/wiki
+ * branch            master     -> FETCH_HEAD
+ 
+$git merge FETCH_HEAD
+```
+
+FETCH_HEAD 是一个特殊的临时分支,这两个操作可以合并到一个操作
+
+```bash 
+git pull origin branch1
+```
+
+注意,以上操作都是在本地分支 branch2 上操作!
+
+3. 远程仓库太大,只想获取master分支最后一次提交的代码,怎么操作?
+
+```bash
+git clone git@github.com:xxxx/xx.git  --depth=1 --branch=master --single-branch
+```
+
+`--depth=1` 表示克隆深度为1,即只克隆最后一次提交的结果, `--branch=master` 表示克隆主分支, 还要加上 `--single-branch` 参数,才会只克隆单一分支!

@@ -1,0 +1,42 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "test_multi_thread",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-g",
+                "test_multi_thread.cc",
+                "-o",
+                "test_multi_thread"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "libsvm2bin",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-g",
+                "libsvm2bin.cc",
+                "-o",
+                "libsvm2bin"
+            ]
+        },
+        {
+            "label": "lr",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-g", "lr2.cc",
+                "-o", "lr2"
+            ]
+        }
+    ]
+}
