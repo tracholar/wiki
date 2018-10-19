@@ -1,0 +1,205 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>个性化价格推荐 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;个性化价格推荐</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">个性化价格推荐</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#paper">paper</a></li>
+<li><a href="#_1">基本思想</a></li>
+</ul>
+</div>
+<h2 id="paper">paper</h2>
+<p>Personalized Pricing Recommender System</p>
+<h2 id="_1">基本思想</h2>
+<ul>
+<li>将用户分为三类：标准类型 Standard, 折扣类型 Discount, 不关注类型 Indifferent</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>价格</th>
+<th>标准</th>
+<th>折扣</th>
+<th>不关注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>标准价格</td>
+<td>买</td>
+<td>买</td>
+<td>不买</td>
+</tr>
+<tr>
+<td>折扣价格</td>
+<td>买</td>
+<td>不买</td>
+<td>不买</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>每一类人的购买行为对应一个回报，对标准和折扣是支付金额 $(\alpha)$和$(\beta)$，而对于 Indifferent 类型，购买的话会将产品转卖，导致需要的用户买不到，存在一定损失，这里将购买的收益置0，不购买相比购买存在正的收益 $(\gamma &lt;&lt; \alpha)$</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>响应</th>
+<th>标准</th>
+<th>折扣</th>
+<th>不关注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>买</td>
+<td>$(\alpha)$</td>
+<td>$(\beta)$</td>
+<td>0</td>
+</tr>
+<tr>
+<td>不买</td>
+<td>0</td>
+<td>0</td>
+<td>$(\gamma)$</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>观测歧意：<ul>
+<li>对于采用标准价格用户，其中观测为支付的用户为标准用户，但是无法区分折扣用户和不关注用户；</li>
+<li>如果采用折扣价格，则不支付的用户是不关注用户，但是无法区分标准用户和折扣用户。</li>
+</ul>
+</li>
+<li>解决方法：多步分类器。<ul>
+<li>prescreening 预赛选过程，过滤掉明显是 Indifferent 类型的用户，减轻类别不均衡。即通过预测用户是否会下单，如果下单率特别低，那么就是 Indifferent 用户</li>
+<li>standard stage：区分标准用户和其他两类用户。<ul>
+<li>正样本（即标准用户）：展示标准价格并且以标准价格下单的用户</li>
+<li>负样本：展示标准价格但是并没有下单的用户；展示折扣价格但是并没有下单的用户</li>
+</ul>
+</li>
+<li>discounted classifier：在非标准用户中区分折扣用户和不关注用户<ul>
+<li>正样本：展示折扣价格下单的非标准用户</li>
+<li>负样本：展示折扣价格未下单的非标准用户</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img alt="多步分类器" src="/wiki/static/images/multi-stage-clf.png" /></p>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2018-09-27 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: '个性化价格推荐',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2018 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>

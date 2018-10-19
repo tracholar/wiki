@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>强化学习2018年论文阅读笔记 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning-reinforcement-learning">reinforcement-learning</a>&nbsp;»&nbsp;强化学习2018年论文阅读笔记</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">强化学习2018年论文阅读笔记</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#robust-dqn">Robust DQN</a></li>
+</ul>
+</div>
+<h2 id="robust-dqn">Robust DQN</h2>
+<ul>
+<li>Stabilizing Reinforcement Learning in Dynamic Environment with Application to Online Recommendation, Shi-Yong Chen, Yang Yu etc</li>
+<li>南京大学跟阿里巴巴合作的论文, KDD18</li>
+<li>传统RL方法在静态环境中比较适合,本文方法主要解决在动态环境(环境参数分布会随时间变化)中,实现稳定的回报(reward)估计: Robust DQN(Double DQN)。</li>
+<li>相比于Atari游戏、alpha go,实际的推荐问题中最大的不同是高度动态,环境参数和分布随时间的变化,使得对reward的估计方差很大,并且有偏: 因为reward的增大可能是策略提升带来的,也可能是时间变化带来的。</li>
+<li>两个关键策略改进<ol>
+<li>解决方差较大:用分层采样回放(stratified sampling replay) 代替传统的经验回放。使用一个先验的用户分布,根据这个先验分布采样每一个batch</li>
+<li>解决时变偏差:实现近似的 regret reward</li>
+</ol>
+</li>
+<li>分层采样回放<ul>
+<li>通过长时间的数据统计,选出一些用户分布稳定的属性:性别、年龄、地理信息,通过这些属性对用户分层</li>
+<li>在回放的时候,用固定比例的分层采样代替对短期用户的均匀采样</li>
+</ul>
+</li>
+<li>Approximate Regretted Reward<ul>
+<li>利用一个离线模型的线上回报估计环境随时间的动态变动, 然后利用估计出来的环境变动补偿线上的DQN</li>
+<li>用 $(\tile(r)_t = r_t - r_b)$ 代替 $(r_t)$</li>
+<li>r_b 估计方法: 随机选择一些用户,利用离线训练好的模型进行决策,然后实时统计这些用户的平均reward作为 r_b</li>
+</ul>
+</li>
+<li>应用案例: Tip 推荐<ul>
+<li>Q(S, a) 将动作(20000种Tip,对应动作空间20000)embedding后,作为神经网络的输入</li>
+<li>$(r = r_1 + \alpha r_2 + \beta r_3)$ <ul>
+<li>第一部分回报是点击回报$(r_1 = I * (1 + \rho * e^{-x})$ I代表是否点击,x是当前tip展示的页面数量</li>
+<li>第二部分回报是描述用户点击tip的偏好, $(r_2 = I * e^{-y})$ y是用户最近100次PV中对tip的点击次数</li>
+<li>第三部分回报是用户交易 $(r_3 = c)$ c代表是否交易</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2018-07-22 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: '强化学习2018年论文阅读笔记',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2018 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>

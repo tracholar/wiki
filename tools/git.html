@@ -72,6 +72,7 @@
 </ul>
 </li>
 <li><a href="#hook">Hook</a></li>
+<li><a href="#_10">常见案例汇总</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -212,6 +213,40 @@ git有一个<code>HEAD</code>指针，指向当前分支指针的指针！<br />
 <h3 id="_9">远程分支</h3>
 <h2 id="hook">Hook</h2>
 <p>在 <code>.git/hooks/</code> 目录下的可执行脚本，支持<code>bash, ruby, python</code>等。</p>
+<h2 id="_10">常见案例汇总</h2>
+<ol>
+<li>已经在本地有个仓库了,怎么关联到远程仓库地址 <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#103;&#105;&#116;&#64;&#103;&#105;&#116;&#104;&#117;&#98;&#46;&#99;&#111;&#109;&#58;&#120;&#120;&#120;&#120;&#47;&#120;&#120;&#46;&#103;&#105;&#116;">&#103;&#105;&#116;&#64;&#103;&#105;&#116;&#104;&#117;&#98;&#46;&#99;&#111;&#109;&#58;&#120;&#120;&#120;&#120;&#47;&#120;&#120;&#46;&#103;&#105;&#116;</a></li>
+</ol>
+<div class="hlcode"><pre><span></span>git remote add origin  git@github.com:xxxx/xx.git
+</pre></div>
+
+
+<p>这里 origin 代表远程仓库的名字</p>
+<ol>
+<li>如何合并远程分支 branch1 到本地分支 branch2</li>
+</ol>
+<div class="hlcode"><pre><span></span><span class="nv">$git</span> fetch origin branch1
+From github.com:tracholar/wiki
+ * branch            master     -&gt; FETCH_HEAD
+
+<span class="nv">$git</span> merge FETCH_HEAD
+</pre></div>
+
+
+<p>FETCH_HEAD 是一个特殊的临时分支,这两个操作可以合并到一个操作</p>
+<div class="hlcode"><pre><span></span>git pull origin branch1
+</pre></div>
+
+
+<p>注意,以上操作都是在本地分支 branch2 上操作!</p>
+<ol>
+<li>远程仓库太大,只想获取master分支最后一次提交的代码,怎么操作?</li>
+</ol>
+<div class="hlcode"><pre><span></span>git clone git@github.com:xxxx/xx.git  --depth<span class="o">=</span><span class="m">1</span> --branch<span class="o">=</span>master --single-branch
+</pre></div>
+
+
+<p><code>--depth=1</code> 表示克隆深度为1,即只克隆最后一次提交的结果, <code>--branch=master</code> 表示克隆主分支, 还要加上 <code>--single-branch</code> 参数,才会只克隆单一分支!</p>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
