@@ -1,0 +1,177 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>Tensorflow 数据读取 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tensorflow">tensorflow</a>&nbsp;»&nbsp;Tensorflow 数据读取</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">Tensorflow 数据读取</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#tfrecorddataset">TFRecordDataset</a><ul>
+<li><a href="#tfrecorddataset_1">TFRecordDataset的生成</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>TensorFlow 导入数据的基本机制有两种,一种是利用 <code>placeholder</code>,一种是将数据读取也作为一个OP。<br />
+如果在GPU上执行计算图的计算,那么前一种方式会因为从CPU拷贝数据到GPU而堵塞,后一种方式可以利用多线程提升性能。</p>
+<h2 id="tfrecorddataset">TFRecordDataset</h2>
+<p><code>TFRecordDataset</code> 是Tensorflow中标准格式,</p>
+<h3 id="tfrecorddataset_1">TFRecordDataset的生成</h3>
+<p>如果利用Spark可以利用 <a href="https://github.com/tensorflow/ecosystem/tree/master/spark/spark-tensorflow-connector">spark-tensorflow-connector</a>,<br />
+可以直接下载编译好的jar包,通过 <code>--jars path-to-spark-tensorflow-connector.jar</code> 导入这个包,然后就可以直接将<code>DataFrame</code>转换成分布式TFRecord文件。<br />
+不过这个包要 Spark2.0 以上才支持。</p>
+<div class="hlcode"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.commons.io.FileUtils</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.</span><span class="o">{</span> <span class="nc">DataFrame</span><span class="o">,</span> <span class="nc">Row</span> <span class="o">}</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.catalyst.expressions.GenericRow</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.types._</span>
+
+<span class="k">val</span> <span class="n">path</span> <span class="k">=</span> <span class="s">&quot;test-output.tfrecord&quot;</span>
+<span class="k">val</span> <span class="n">testRows</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">Row</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">(</span>
+<span class="k">new</span> <span class="nc">GenericRow</span><span class="o">(</span><span class="nc">Array</span><span class="o">[</span><span class="kt">Any</span><span class="o">](</span><span class="mi">11</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">23L</span><span class="o">,</span> <span class="mf">10.0F</span><span class="o">,</span> <span class="mf">14.0</span><span class="o">,</span> <span class="nc">List</span><span class="o">(</span><span class="mf">1.0</span><span class="o">,</span> <span class="mf">2.0</span><span class="o">),</span> <span class="s">&quot;r1&quot;</span><span class="o">)),</span>
+<span class="k">new</span> <span class="nc">GenericRow</span><span class="o">(</span><span class="nc">Array</span><span class="o">[</span><span class="kt">Any</span><span class="o">](</span><span class="mi">21</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">24L</span><span class="o">,</span> <span class="mf">12.0F</span><span class="o">,</span> <span class="mf">15.0</span><span class="o">,</span> <span class="nc">List</span><span class="o">(</span><span class="mf">2.0</span><span class="o">,</span> <span class="mf">2.0</span><span class="o">),</span> <span class="s">&quot;r2&quot;</span><span class="o">)))</span>
+<span class="k">val</span> <span class="n">schema</span> <span class="k">=</span> <span class="nc">StructType</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="nc">StructField</span><span class="o">(</span><span class="s">&quot;id&quot;</span><span class="o">,</span> <span class="nc">IntegerType</span><span class="o">),</span> 
+                             <span class="nc">StructField</span><span class="o">(</span><span class="s">&quot;IntegerCol&quot;</span><span class="o">,</span> <span class="nc">IntegerType</span><span class="o">),</span>
+                             <span class="nc">StructField</span><span class="o">(</span><span class="s">&quot;LongCol&quot;</span><span class="o">,</span> <span class="nc">LongType</span><span class="o">),</span>
+                             <span class="nc">StructField</span><span class="o">(</span><span class="s">&quot;FloatCol&quot;</span><span class="o">,</span> <span class="nc">FloatType</span><span class="o">),</span>
+                             <span class="nc">StructField</span><span class="o">(</span><span class="s">&quot;DoubleCol&quot;</span><span class="o">,</span> <span class="nc">DoubleType</span><span class="o">),</span>
+                             <span class="nc">StructField</span><span class="o">(</span><span class="s">&quot;VectorCol&quot;</span><span class="o">,</span> <span class="nc">ArrayType</span><span class="o">(</span><span class="nc">DoubleType</span><span class="o">,</span> <span class="kc">true</span><span class="o">)),</span>
+                             <span class="nc">StructField</span><span class="o">(</span><span class="s">&quot;StringCol&quot;</span><span class="o">,</span> <span class="nc">StringType</span><span class="o">)))</span>
+
+<span class="k">val</span> <span class="n">rdd</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">testRows</span><span class="o">)</span>
+
+<span class="c1">//Save DataFrame as TFRecords</span>
+<span class="k">val</span> <span class="n">df</span><span class="k">:</span> <span class="kt">DataFrame</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="o">(</span><span class="n">rdd</span><span class="o">,</span> <span class="n">schema</span><span class="o">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&quot;tfrecords&quot;</span><span class="o">).</span><span class="n">option</span><span class="o">(</span><span class="s">&quot;recordType&quot;</span><span class="o">,</span> <span class="s">&quot;Example&quot;</span><span class="o">).</span><span class="n">save</span><span class="o">(</span><span class="n">path</span><span class="o">)</span>
+
+<span class="c1">//Read TFRecords into DataFrame.</span>
+<span class="c1">//The DataFrame schema is inferred from the TFRecords if no custom schema is provided.</span>
+<span class="k">val</span> <span class="n">importedDf1</span><span class="k">:</span> <span class="kt">DataFrame</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&quot;tfrecords&quot;</span><span class="o">).</span><span class="n">option</span><span class="o">(</span><span class="s">&quot;recordType&quot;</span><span class="o">,</span> <span class="s">&quot;Example&quot;</span><span class="o">).</span><span class="n">load</span><span class="o">(</span><span class="n">path</span><span class="o">)</span>
+<span class="n">importedDf1</span><span class="o">.</span><span class="n">show</span><span class="o">()</span>
+
+<span class="c1">//Read TFRecords into DataFrame using custom schema</span>
+<span class="k">val</span> <span class="n">importedDf2</span><span class="k">:</span> <span class="kt">DataFrame</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&quot;tfrecords&quot;</span><span class="o">).</span><span class="n">schema</span><span class="o">(</span><span class="n">schema</span><span class="o">).</span><span class="n">load</span><span class="o">(</span><span class="n">path</span><span class="o">)</span>
+<span class="n">importedDf2</span><span class="o">.</span><span class="n">show</span><span class="o">()</span>
+</pre></div>
+
+
+<p>提交命令</p>
+<div class="hlcode"><pre><span></span><span class="c1">## jar包在本地</span>
+<span class="nv">$SPARK_HOME</span>/bin/spark-shell --jars target/spark-tensorflow-connector_2.11-1.10.0.jar
+
+<span class="c1">## jar包在HDFS上</span>
+<span class="nv">$SPARK_HOME</span>/bin/spark-shell --jars viewfs://xxxx/path/to/spark/tensorflow/connector.jar
+</pre></div>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2018-10-22 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: 'Tensorflow 数据读取',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2018 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>
