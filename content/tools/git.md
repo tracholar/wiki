@@ -195,3 +195,23 @@ git clone git@github.com:xxxx/xx.git  --depth=1 --branch=master --single-branch
 ```
 
 `--depth=1` 表示克隆深度为1,即只克隆最后一次提交的结果, `--branch=master` 表示克隆主分支, 还要加上 `--single-branch` 参数,才会只克隆单一分支!
+
+但是, 在 git 1.7.10之前的版本不支持 `--single-branch` 选项,可以采用如下方式(参考so上问题[How do I clone a single branch in Git?](https://stackoverflow.com/questions/1778088/how-do-i-clone-a-single-branch-in-git))
+
+```bash
+# 创建一个用于存放代码的目录
+mkdir code_dir
+cd code_dir
+
+# 初始化一个空的本地git仓库
+git init .
+
+# 将本地仓库关联上远程仓库
+git remote add origin git@git.xx.xx
+
+# 拉取远程分支 branch1 到本地分支 branch1 
+git fetch origin branch1:branch1 
+
+# 如果你只需要最后一次提交的结果,同样可以加上 --depth=1 这个参数
+git fetch origin branch1:branch1 --depth=1
+```

@@ -60,3 +60,27 @@ $SPARK_HOME/bin/spark-shell --jars target/spark-tensorflow-connector_2.11-1.10.0
 ## jar包在HDFS上
 $SPARK_HOME/bin/spark-shell --jars viewfs://xxxx/path/to/spark/tensorflow/connector.jar
 ```
+
+## Dataset读取
+
+```python
+# 定义转换函数,输入时序列化的
+def parse_tfrecords_function(example_proto):
+    features = {
+        'label' : tf.FixedLenFeature([1], tf.float32),
+        'idx' : tf.VarLenFeature(tf.int64),
+        'value' : tf.VarLenFeature(tf.float32)
+    }
+    
+    # tf.parse_single_example 将序列化的数据解码成张量
+    parsed_features = tf.parse_single_example(example_proto, features)
+    return parsed_features["idx"], parsed_features["value"], parsed_features['label']
+
+dataset = tf.data.TFRecordDataset(filenames)
+# map, repeat, prefetch, shuffle, batch 都是可选的,可以直接 make_initializable_iterator
+it = dataset.map(parse_tfrecords_function).repeat(10).prefetch(10240).shuffle(10240).batch(128).make_initializable_iterator()
+idx_op, value_op, label_op = it.get_next()
+
+# 需要初始化
+sess.run(it.initializer)  
+```
