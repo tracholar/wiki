@@ -247,6 +247,23 @@ From github.com:tracholar/wiki
 
 
 <p><code>--depth=1</code> 表示克隆深度为1,即只克隆最后一次提交的结果, <code>--branch=master</code> 表示克隆主分支, 还要加上 <code>--single-branch</code> 参数,才会只克隆单一分支!</p>
+<p>但是, 在 git 1.7.10之前的版本不支持 <code>--single-branch</code> 选项,可以采用如下方式(参考so上问题<a href="https://stackoverflow.com/questions/1778088/how-do-i-clone-a-single-branch-in-git">How do I clone a single branch in Git?</a>)</p>
+<div class="hlcode"><pre><span></span><span class="c1"># 创建一个用于存放代码的目录</span>
+mkdir code_dir
+<span class="nb">cd</span> code_dir
+
+<span class="c1"># 初始化一个空的本地git仓库</span>
+git init .
+
+<span class="c1"># 将本地仓库关联上远程仓库</span>
+git remote add origin git@git.xx.xx
+
+<span class="c1"># 拉取远程分支 branch1 到本地分支 branch1 </span>
+git fetch origin branch1:branch1 
+
+<span class="c1"># 如果你只需要最后一次提交的结果,同样可以加上 --depth=1 这个参数</span>
+git fetch origin branch1:branch1 --depth<span class="o">=</span><span class="m">1</span>
+</pre></div>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->

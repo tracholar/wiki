@@ -62,6 +62,7 @@
 <li><a href="#tfrecorddataset_1">TFRecordDataset的生成</a></li>
 </ul>
 </li>
+<li><a href="#dataset">Dataset读取</a></li>
 </ul>
 </div>
 <p>TensorFlow 导入数据的基本机制有两种,一种是利用 <code>placeholder</code>,一种是将数据读取也作为一个OP。<br />
@@ -112,6 +113,29 @@
 
 <span class="c1">## jar包在HDFS上</span>
 <span class="nv">$SPARK_HOME</span>/bin/spark-shell --jars viewfs://xxxx/path/to/spark/tensorflow/connector.jar
+</pre></div>
+
+
+<h2 id="dataset">Dataset读取</h2>
+<div class="hlcode"><pre><span></span><span class="c1"># 定义转换函数,输入时序列化的</span>
+<span class="k">def</span> <span class="nf">parse_tfrecords_function</span><span class="p">(</span><span class="n">example_proto</span><span class="p">):</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;label&#39;</span> <span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">FixedLenFeature</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
+        <span class="s1">&#39;idx&#39;</span> <span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">VarLenFeature</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+        <span class="s1">&#39;value&#39;</span> <span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">VarLenFeature</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="c1"># tf.parse_single_example 将序列化的数据解码成张量</span>
+    <span class="n">parsed_features</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">parse_single_example</span><span class="p">(</span><span class="n">example_proto</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">parsed_features</span><span class="p">[</span><span class="s2">&quot;idx&quot;</span><span class="p">],</span> <span class="n">parsed_features</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">],</span> <span class="n">parsed_features</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">TFRecordDataset</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
+<span class="c1"># map, repeat, prefetch, shuffle, batch 都是可选的,可以直接 make_initializable_iterator</span>
+<span class="n">it</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">parse_tfrecords_function</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">prefetch</span><span class="p">(</span><span class="mi">10240</span><span class="p">)</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="mi">10240</span><span class="p">)</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span><span class="o">.</span><span class="n">make_initializable_iterator</span><span class="p">()</span>
+<span class="n">idx_op</span><span class="p">,</span> <span class="n">value_op</span><span class="p">,</span> <span class="n">label_op</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="n">get_next</span><span class="p">()</span>
+
+<span class="c1"># 需要初始化</span>
+<span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">it</span><span class="o">.</span><span class="n">initializer</span><span class="p">)</span>  
 </pre></div>
 </div>
 <div id="income">
