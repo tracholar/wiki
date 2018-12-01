@@ -1,0 +1,199 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>Tensorflow 编译吐血历史 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tensorflow">tensorflow</a>&nbsp;»&nbsp;Tensorflow 编译吐血历史</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">Tensorflow 编译吐血历史</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#java8">安装Java8</a></li>
+<li><a href="#bazel">编译Bazel</a></li>
+<li><a href="#tensorflow">编译TensorFlow</a></li>
+<li><a href="#_2">运行测试</a></li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>因为要在CentOS6中运行TensorFlow,但是TensorFlow依赖的Glibc版本都比较高,所以只能从源码编译,蛋疼!</p>
+<p>因为编译TensorFlow需要bazel,而bazel官方编译好的包也需要CentOS7,所以bazel也需要从源码编译!</p>
+<p>bazel 需要Java8,所以如果没有安装Java8的还需要先安装Java8</p>
+<h2 id="java8">安装Java8</h2>
+<ol>
+<li>去Oracle官网下一个:<a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html</a> <br />
+   或者用我的百度云镜像 <a href="https://pan.baidu.com/s/161G0d3GYsw5dY6En4SHpjA">https://pan.baidu.com/s/161G0d3GYsw5dY6En4SHpjA</a></li>
+<li>下载完解压即可,然后配置JAVA_HOME环境变量,鉴于你的系统可能有多个JAVA版本,建议你只在脚本中或者在命令行中临时设置这个变量</li>
+</ol>
+<div class="hlcode"><pre><span></span><span class="nb">export</span> <span class="nv">JAVA_HOME</span><span class="o">=</span>path-to-java-directory
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span>path-to-java-directory/bin:<span class="nv">$PATH</span>
+</pre></div>
+
+
+<p>我的做法是将上述保存到env.sh中,然后在 compile.sh 中加载 <code>source env.sh</code></p>
+<p>通过 <code>java -version</code> 确认当前使用的是刚下载的java8,而不是系统的java7等版本。</p>
+<h2 id="bazel">编译Bazel</h2>
+<p>参考:<a href="https://docs.bazel.build/versions/master/install-compile-source.html">https://docs.bazel.build/versions/master/install-compile-source.html</a></p>
+<p>设置好JAVA8环境变量之后, GCC版本也不能太低,安装高版本GCC6.0</p>
+<p>执行编译命令 <code>./compile.sh</code>,然后发现错误:</p>
+<div class="hlcode"><pre><span></span>bazel-out/host/bin/third_party/protobuf/3.4.0/js_embed: /usr/lib64/libstdc++.so.6: version <span class="sb">`</span>GLIBCXX_3.4.21<span class="err">&#39;</span> not found <span class="o">(</span>required by bazel-out/host/bin/third_party/protobuf/3.4.0/js_embed<span class="o">)</span>
+</pre></div>
+
+
+<p>参考文章<a href="https://www.jianshu.com/p/6f9652a9410d">https://www.jianshu.com/p/6f9652a9410d</a>将libstdc++改为静态链接</p>
+<div class="hlcode"><pre><span></span>tools/cpp/unix_cc_configure.bzl:222
+  <span class="s2">&quot;-lstdc++&quot;</span>     改为          <span class="s2">&quot;-l:libstdc++.a&quot;</span>
+</pre></div>
+
+
+<h2 id="tensorflow">编译TensorFlow</h2>
+<ol>
+<li>运行配置<code>./configure</code></li>
+<li>编译pip包 <code>bazel build --config=opt //tensorflow/tools/pip_package:build_pip_package</code></li>
+</ol>
+<p>配置的时候,OPENCL关闭,jemalloc也要关闭,将所有都关闭,哈哈</p>
+<p>编译时增加 -lrt 参数,参考 <a href="https://www.cnblogs.com/lasclocker/p/9578623.html">https://www.cnblogs.com/lasclocker/p/9578623.html</a></p>
+<h2 id="_2">运行测试</h2>
+<p>将上述编译好的三个文件 <code>libtensorflow_framework.so, libtensorflow.jar, libtensorflow_jni.so</code> 复制到一个目录中,然后创建测试代码 <code>HelloTF.java</code></p>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">org.tensorflow.Graph</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.tensorflow.Session</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.tensorflow.Tensor</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.tensorflow.TensorFlow</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloTF</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+    <span class="k">try</span> <span class="o">(</span><span class="n">Graph</span> <span class="n">g</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Graph</span><span class="o">())</span> <span class="o">{</span>
+      <span class="kd">final</span> <span class="n">String</span> <span class="n">value</span> <span class="o">=</span> <span class="s">&quot;Hello from &quot;</span> <span class="o">+</span> <span class="n">TensorFlow</span><span class="o">.</span><span class="na">version</span><span class="o">();</span>
+
+      <span class="c1">// Construct the computation graph with a single operation, a constant</span>
+      <span class="c1">// named &quot;MyConst&quot; with a value &quot;value&quot;.</span>
+      <span class="k">try</span> <span class="o">(</span><span class="n">Tensor</span> <span class="n">t</span> <span class="o">=</span> <span class="n">Tensor</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">value</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(</span><span class="s">&quot;UTF-8&quot;</span><span class="o">)))</span> <span class="o">{</span>
+        <span class="c1">// The Java API doesn&#39;t yet include convenience functions for adding operations.</span>
+        <span class="n">g</span><span class="o">.</span><span class="na">opBuilder</span><span class="o">(</span><span class="s">&quot;Const&quot;</span><span class="o">,</span> <span class="s">&quot;MyConst&quot;</span><span class="o">).</span><span class="na">setAttr</span><span class="o">(</span><span class="s">&quot;dtype&quot;</span><span class="o">,</span> <span class="n">t</span><span class="o">.</span><span class="na">dataType</span><span class="o">()).</span><span class="na">setAttr</span><span class="o">(</span><span class="s">&quot;value&quot;</span><span class="o">,</span> <span class="n">t</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
+      <span class="o">}</span>
+
+      <span class="c1">// Execute the &quot;MyConst&quot; operation in a Session.</span>
+      <span class="k">try</span> <span class="o">(</span><span class="n">Session</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Session</span><span class="o">(</span><span class="n">g</span><span class="o">);</span>
+           <span class="n">Tensor</span> <span class="n">output</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">runner</span><span class="o">().</span><span class="na">fetch</span><span class="o">(</span><span class="s">&quot;MyConst&quot;</span><span class="o">).</span><span class="na">run</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">))</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="n">output</span><span class="o">.</span><span class="na">bytesValue</span><span class="o">(),</span> <span class="s">&quot;UTF-8&quot;</span><span class="o">));</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>编译 <code>javac -cp libtensorflow.jar HelloTF.java</code></p>
+<p>执行 <code>java -cp libtensorflow.jar:.    -Djava.library.path=.  HelloTF</code> 如果加载so失败,可以增加参数 <code>-Dorg.tensorflow.NativeLibrary.DEBUG=1</code></p>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2018-11-07 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: 'Tensorflow 编译吐血历史',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2018 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>

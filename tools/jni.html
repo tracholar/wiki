@@ -1,0 +1,252 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>开发JNI native程序 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tools">tools</a>&nbsp;»&nbsp;开发JNI native程序</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">开发JNI native程序</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">实战</a></li>
+<li><a href="#_3">加载动态库的两个方法</a></li>
+<li><a href="#jni">JNI 数据类型</a></li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>JAVA可以通过JNI即 Java Native Interface 来调用原生库,下面以一个例子展示使用方法。</p>
+<h2 id="_2">实战</h2>
+<ol>
+<li>创建Java类<code>Hello.java</code></li>
+</ol>
+<div class="hlcode"><pre><span></span><span class="kn">package</span> <span class="nn">com.tracholar.jni.demo</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Hello</span> <span class="o">{</span>
+    <span class="c1">// 声明native方法, 遵循Java类型和声明方法</span>
+    <span class="kd">public</span> <span class="kd">native</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">say_hi</span><span class="o">();</span>
+
+    <span class="kd">static</span> <span class="o">{</span>
+        <span class="c1">// 加载动态库, 动态库后面会生成, 库名字和文件名之间对应关系是</span>
+        <span class="c1">// 库名:   hello</span>
+        <span class="c1">// 文件名(windows): libhello.dll</span>
+        <span class="c1">//        mac     : libhello.dylib</span>
+        <span class="c1">//        linux   : libhello.so</span>
+
+        <span class="n">System</span><span class="o">.</span><span class="na">loadLibrary</span><span class="o">(</span><span class="s">&quot;hello&quot;</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
+        <span class="n">say_hi</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<ol>
+<li>生成头文件 </li>
+</ol>
+<div class="hlcode"><pre><span></span>javac -d . src/main/java/com/tracholar/jni/demo/Hello.java
+javah com.tracholar.jni.demo.Hello
+</pre></div>
+
+
+<p>将生成一个头文件 <code>com_tracholar_jni_demo_Hello.h</code></p>
+<div class="hlcode"><pre><span></span><span class="cm">/* DO NOT EDIT THIS FILE - it is machine generated */</span>
+<span class="cp">#include</span> <span class="cpf">&lt;jni.h&gt;</span><span class="cp"></span>
+<span class="cm">/* Header for class com_tracholar_jni_demo_Hello */</span>
+
+<span class="cp">#ifndef _Included_com_tracholar_jni_demo_Hello</span>
+<span class="cp">#define _Included_com_tracholar_jni_demo_Hello</span>
+<span class="cp">#ifdef __cplusplus</span>
+<span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
+<span class="cp">#endif</span>
+<span class="cm">/*</span>
+<span class="cm"> * Class:     com_tracholar_jni_demo_Hello</span>
+<span class="cm"> * Method:    say_hi</span>
+<span class="cm"> * Signature: ()V</span>
+<span class="cm"> */</span>
+<span class="n">JNIEXPORT</span> <span class="kt">void</span> <span class="n">JNICALL</span> <span class="n">Java_com_tracholar_jni_demo_Hello_say_1hi</span>
+  <span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="p">,</span> <span class="n">jclass</span><span class="p">);</span>
+
+<span class="cp">#ifdef __cplusplus</span>
+<span class="p">}</span>
+<span class="cp">#endif</span>
+<span class="cp">#endif</span>
+</pre></div>
+
+
+<ol>
+<li>编写C/C++代码,实现这个函数</li>
+</ol>
+<div class="hlcode"><pre><span></span><span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;com_tracholar_jni_demo_Hello.h&quot;</span><span class="cp"></span>
+
+
+<span class="n">JNIEXPORT</span> <span class="kt">void</span> <span class="n">JNICALL</span> <span class="nf">Java_com_sankuai_itc_dmspa_tool_demo_Hello_say_1hi</span>
+  <span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span> <span class="n">env</span><span class="p">,</span> <span class="n">jclass</span> <span class="n">c</span><span class="p">){</span>
+    <span class="c1">//jcharArray arr = (*env)-&gt;NewCharArray(env, 14);</span>
+    <span class="c1">//(*env)-&gt;SetCharArrayRegion(env, &amp;arr, 0, 14, &quot;hello world!\n&quot;);</span>
+    <span class="c1">//return arr;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;hello world!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+</pre></div>
+
+
+<ol>
+<li>编译C代码, 编译时需要包含 jni.h 所在的目录,在 MAC系统下, 是 <code>/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/System/Library/Frameworks/JavaVM.framework/Versions/A/Headers/</code>,<br />
+   在其他系统一般在JDK所在的某个子目录,可以自行搜索。</li>
+</ol>
+<div class="hlcode"><pre><span></span><span class="c1"># 只编译生成目标代码, 便于后续生成动态链接库</span>
+gcc  -c -fPIC hello.c  -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/System/Library/Frameworks/JavaVM.framework/Versions/A/Headers/ -o hello.o
+
+<span class="c1"># 生成动态库</span>
+<span class="c1"># (linux) </span>
+<span class="c1"># gcc hello.o -shared -o libhello.so</span>
+<span class="c1"># (MAC)</span>
+gcc hello.o -dynamiclib -o libhello.dylib
+</pre></div>
+
+
+<ol>
+<li>执行Java类,指定 <code>java.library.path</code> 参数为动态链接库所在目录</li>
+</ol>
+<p><code>java  -Djava.library.path=.  com.tracholar.jni.demo.Hello</code></p>
+<blockquote>
+<p>hello world!</p>
+</blockquote>
+<h2 id="_3">加载动态库的两个方法</h2>
+<ol>
+<li>第一个方法是用 <code>System.loadLibrary(String libname)</code> libname会通过一个native方法<code>public static native String mapLibraryName(String libname);</code><br />
+   转换成文件名,在MAC系统下<code>hello</code>会转换成 <code>libhello.dylib</code></li>
+<li>第二个方法是用 <code>System.load(String filename)</code> 加载,注意这里的filename必须是绝对路径! MAC下也可以直接加载so文件。</li>
+</ol>
+<div class="hlcode"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Hello</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">native</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">say_hi</span><span class="o">();</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">String</span> <span class="n">filename</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;.&quot;</span><span class="o">).</span><span class="na">getCanonicalPath</span><span class="o">()</span> <span class="o">+</span> <span class="n">File</span><span class="o">.</span><span class="na">separator</span> <span class="o">+</span> <span class="s">&quot;hello.so&quot;</span><span class="o">;</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">load</span><span class="o">(</span><span class="n">filename</span><span class="o">);</span>
+            <span class="n">say_hi</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h2 id="jni">JNI 数据类型</h2>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2018-11-29 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: '开发JNI native程序',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2018 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>

@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>短中长期规划 - tracholar's personal knowledge wiki</title>
+        <title>Tensorflow 未归档知识点 - tracholar's personal knowledge wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -52,38 +52,36 @@
         <div id="container">
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#about">about</a>&nbsp;»&nbsp;短中长期规划</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tensorflow">tensorflow</a>&nbsp;»&nbsp;Tensorflow 未归档知识点</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">短中长期规划</div>
+<div id="title">Tensorflow 未归档知识点</div>
 <div id="content">
-  <h2 id="_1">短期</h2>
-<ul>
-<li>熟悉spark开发流程，学会使用mllib在线上建模 ✅</li>
-<li>cs224d  ✅</li>
-<li>cs231n  ✅</li>
-<li>cs294, cs234 RL</li>
-<li>GAN</li>
-<li>TensorFlow 系统性学习,并完成记录和博客 [TODO]</li>
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#gfile">GFile</a></li>
+<li><a href="#auc">AUC计算</a></li>
+<li><a href="#tfnnembedding_lookup_sparse">tf.nn.embedding_lookup_sparse</a></li>
 </ul>
-<h2 id="_2">中期</h2>
-<ul>
-<li>deep learning overview ： Bengio 的书及相关论文</li>
-<li>machine learning overview ： 周志华的书，prml, element of ml</li>
-<li>分布式工具和环境， Spark， Hbase， Hadoop， Hive</li>
-<li>分布式算法，优化算法等</li>
-</ul>
-<h2 id="_3">长期</h2>
-<ul>
-<li>ML 技术栈，从工程到算法到系统</li>
-<li>金融学基础知识</li>
-<li>从财务和技术两方面分析主流IT企业</li>
-</ul>
-<h2 id="2018">2018年</h2>
-<ul>
-<li>6篇深入思考博客</li>
-<li>10篇 关键论文结果的复现</li>
-</ul>
+</div>
+<h2 id="gfile">GFile</h2>
+<p>TensorFlow 提供GFile API,用于操作文件系统,包括本地文件,google云存储 <code>gs://</code>,以及HDFS <code>hdfs://</code>。</p>
+<blockquote>
+<p>File I/O wrappers without thread locking</p>
+</blockquote>
+<div class="hlcode"><pre><span></span><span class="n">text_dir</span> <span class="o">=</span> <span class="s1">&#39;hdfs://user/xxx/data/dir&#39;</span>
+<span class="nb">file</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">gfile</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="n">text_dir</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;hello world!&#39;</span>
+<span class="nb">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="nb">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+
+<h2 id="auc">AUC计算</h2>
+<p>Tensorflow 提供AUC计算的方法<code>tf.contrib.metrics.streaming_auc(predict, label)</code> 或者 <code>tf.metrics.streaming_auc(label, predict)</code></p>
+<h2 id="tfnnembedding_lookup_sparse">tf.nn.embedding_lookup_sparse</h2>
+<p>如果输入样本有空值,那么会出现shape不匹配错误。当输入存在特征idx和val都是空的样本,那么就会出现这个问题。此时应该补0!</p>
+<div class="hlcode"><pre><span></span>InvalidArgumentError (see above for traceback): Incompatible shapes: [17,1] vs. [32,1]
+</pre></div>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -95,7 +93,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2016-07-17 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2018-11-01 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -103,7 +101,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: '短中长期规划',
+  title: 'Tensorflow 未归档知识点',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {

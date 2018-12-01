@@ -762,6 +762,16 @@ combine matches and write to output
 <div class="hlcode"><pre><span></span><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="k">input</span><span class="p">.</span><span class="n">format</span><span class="o">=</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">HiveInputFormat</span><span class="p">;</span>   <span class="c1">--- 不融合</span>
 <span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="k">input</span><span class="p">.</span><span class="n">format</span><span class="o">=</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">hadoop</span><span class="p">.</span><span class="n">hive</span><span class="p">.</span><span class="n">ql</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">CombineHiveInputFormat</span><span class="p">;</span>  <span class="c1">--- 融合</span>
 </pre></div>
+
+
+<ul>
+<li>动态分区设置</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="k">exec</span><span class="p">.</span><span class="k">dynamic</span><span class="p">.</span><span class="n">partition</span><span class="p">.</span><span class="k">mode</span><span class="o">=</span><span class="n">nonstrict</span><span class="p">;</span>
+<span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="k">exec</span><span class="p">.</span><span class="k">dynamic</span><span class="p">.</span><span class="n">partition</span><span class="o">=</span><span class="k">true</span><span class="p">;</span>
+<span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="k">exec</span><span class="p">.</span><span class="k">max</span><span class="p">.</span><span class="k">dynamic</span><span class="p">.</span><span class="n">partitions</span><span class="o">=&lt;</span><span class="err">最大总的分区数目</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="k">exec</span><span class="p">.</span><span class="k">max</span><span class="p">.</span><span class="k">dynamic</span><span class="p">.</span><span class="n">partitions</span><span class="p">.</span><span class="n">pernode</span><span class="o">=&lt;</span><span class="err">每一个</span><span class="n">MR</span><span class="err">节点创建的最大分区数目</span><span class="o">&gt;</span><span class="p">;</span>
+</pre></div>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->

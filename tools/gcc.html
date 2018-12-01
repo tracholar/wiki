@@ -61,6 +61,7 @@
 <li><a href="#gcc6">源码安装gcc6</a></li>
 <li><a href="#python27">源码安装 Python27</a></li>
 <li><a href="#tensorflow">安装 TensorFlow</a></li>
+<li><a href="#gcc">gcc常用选项</a></li>
 </ul>
 </div>
 <h2 id="gcc6">源码安装gcc6</h2>
@@ -101,6 +102,13 @@ rpm2cpio libstdc++-4.8.5-11.el7.x86_64.rpm<span class="p">|</span> cpio -idmv
 <p>最后一步，我安装python的时候忘记指定<code>--enable-unicode=ucs4</code>，导致报错 <code>undefined symbol: PyUnicodeUCS4_AsUTF8String</code>，重新编译 python即可！对此的解释可以参考 <a href="http://blog.csdn.net/taolinke/article/details/50472451">http://blog.csdn.net/taolinke/article/details/50472451</a></p>
 <p>运行时要指定环境变量，你也可以通过shell函数来做</p>
 <p><code>LD_LIBRARY_PATH="$HOME/libcenv/lib/x86_64-linux-gnu/:$HOME/libcenv/usr/lib64/" $HOME/libcenv/lib/x86_64-linux-gnu/ld-2.17.so $HOME/local/usr/Python-2.7.13/bin/python</code></p>
+<h2 id="gcc">gcc常用选项</h2>
+<ul>
+<li><code>-I&lt;path&gt;</code> 增加 include 目录,可以多次使用</li>
+<li><code>-L&lt;path&gt;</code> 增加动态库搜索目录,可以多次使用,链接时的目录</li>
+<li><code>-Wl,-rpath,&lt;path&gt;</code> 增加动态库搜索目录,可以多次使用,运行时的目录</li>
+</ul>
+<p>参考<a href="http://www.runoob.com/w3cnote/gcc-parameter-detail.html">http://www.runoob.com/w3cnote/gcc-parameter-detail.html</a></p>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
