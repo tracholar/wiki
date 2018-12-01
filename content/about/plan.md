@@ -10,6 +10,7 @@ date: 2016-07-17
 - cs231n  ✅
 - cs294, cs234 RL
 - GAN
+- TensorFlow 系统性学习,并完成记录和博客 [TODO]
 
 ## 中期
 - deep learning overview ： Bengio 的书及相关论文

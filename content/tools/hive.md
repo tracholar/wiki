@@ -656,3 +656,12 @@ from (
 set hive.input.format=org.apache.hadoop.hive.ql.io.HiveInputFormat;   --- 不融合
 set hive.input.format=org.apache.hadoop.hive.ql.io.CombineHiveInputFormat;  --- 融合
 ```
+
+- 动态分区设置
+
+```sql 
+set hive.exec.dynamic.partition.mode=nonstrict;
+set hive.exec.dynamic.partition=true;
+set hive.exec.max.dynamic.partitions=<最大总的分区数目>;
+set hive.exec.max.dynamic.partitions.pernode=<每一个MR节点创建的最大分区数目>;
+```

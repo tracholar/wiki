@@ -48,3 +48,12 @@ done！
 运行时要指定环境变量，你也可以通过shell函数来做
 
 `LD_LIBRARY_PATH="$HOME/libcenv/lib/x86_64-linux-gnu/:$HOME/libcenv/usr/lib64/" $HOME/libcenv/lib/x86_64-linux-gnu/ld-2.17.so $HOME/local/usr/Python-2.7.13/bin/python`
+
+
+## gcc常用选项
+- `-I<path>` 增加 include 目录,可以多次使用
+- `-L<path>` 增加动态库搜索目录,可以多次使用,链接时的目录
+- `-Wl,-rpath,<path>` 增加动态库搜索目录,可以多次使用,运行时的目录
+
+
+参考<http://www.runoob.com/w3cnote/gcc-parameter-detail.html>
