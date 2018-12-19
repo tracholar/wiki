@@ -665,3 +665,6 @@ set hive.exec.dynamic.partition=true;
 set hive.exec.max.dynamic.partitions=<最大总的分区数目>;
 set hive.exec.max.dynamic.partitions.pernode=<每一个MR节点创建的最大分区数目>;
 ```
+
+- bigint 和 string 比较是否相等的时候, 会将他们都转换为double进行比较,会损失精度,尤其是在JOIN的时候,问题比较大,建议把bigint转成string再比较!
+- UDAF 在 ` Cannot recognize return type class  terminatePartial()`

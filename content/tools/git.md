@@ -215,3 +215,11 @@ git fetch origin branch1:branch1
 # 如果你只需要最后一次提交的结果,同样可以加上 --depth=1 这个参数
 git fetch origin branch1:branch1 --depth=1
 ```
+
+4. 回滚远程代码
+```bash
+# 回滚本地代码到特定commit
+git reset --hard <commit_id>
+# 强制推送到远程
+git push -f origin <branch>
+```
