@@ -59,6 +59,7 @@
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">几个重要概念</a></li>
+<li><a href="#objectinspector">ObjectInspector 常用方法</a></li>
 <li><a href="#udf">UDF</a></li>
 <li><a href="#udaf">UDAF</a></li>
 <li><a href="#udtf">UDTF</a></li>
@@ -72,6 +73,45 @@
 </ul>
 </li>
 </ul>
+<h2 id="objectinspector">ObjectInspector 常用方法</h2>
+<ul>
+<li>创建基础类型的OI</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="n">PrimitiveObjectInspectorFactory</span><span class="o">.</span><span class="na">writableDoubleObjectInspector</span>
+</pre></div>
+
+
+<ul>
+<li>创建复杂的OI</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">ObjectInspector</span><span class="o">&gt;</span> <span class="n">foi</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">ObjectInspector</span><span class="o">&gt;();</span>
+
+<span class="n">foi</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">PrimitiveObjectInspectorFactory</span><span class="o">.</span><span class="na">writableLongObjectInspector</span><span class="o">);</span>
+<span class="n">foi</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">PrimitiveObjectInspectorFactory</span><span class="o">.</span><span class="na">writableDoubleObjectInspector</span><span class="o">);</span>
+<span class="n">foi</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">PrimitiveObjectInspectorFactory</span><span class="o">.</span><span class="na">writableDoubleObjectInspector</span><span class="o">);</span>
+
+<span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">fname</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+<span class="n">fname</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&quot;count&quot;</span><span class="o">);</span>
+<span class="n">fname</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&quot;sum&quot;</span><span class="o">);</span>
+<span class="n">fname</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&quot;variance&quot;</span><span class="o">);</span>
+
+<span class="n">ObjectInspectorFactory</span><span class="o">.</span><span class="na">getStandardStructObjectInspector</span><span class="o">(</span><span class="n">fname</span><span class="o">,</span> <span class="n">foi</span><span class="o">);</span>
+</pre></div>
+
+
+<ul>
+<li>利用<code>ObjectInspector</code>将 <code>Object</code> 转换成基础类型</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="n">PrimitiveObjectInspectorUtils</span><span class="o">.</span><span class="na">getXXX</span><span class="o">(</span><span class="n">obj</span><span class="o">,</span> <span class="n">oi</span><span class="o">)</span>
+</pre></div>
+
+
+<ul>
+<li>区分 <code>javaXXXObjectInspector</code> 与 <code>writableXXXXObjectInspector</code>;</li>
+</ul>
+<p>很简单 <code>javaXXXObjectInspector</code> 对应的是 Java原生的数据类型, 而 <code>writableXXXXObjectInspector</code> 对应 Hive 可序列化的数据类型。<br />
+以 <code>javaStringObjectInspector</code> 和 <code>writableStringObjectInspector</code> 为例,前者对应 <code>String</code> 而后者对应 <code>Text</code>。<br />
+因此,如果你的UDF返回的是java原生类型,那么你的输出 ObjectInspector 必须是前者, 否则将会报错!</p>
 <h2 id="udf">UDF</h2>
 <h2 id="udaf">UDAF</h2>
 <h2 id="udtf">UDTF</h2>

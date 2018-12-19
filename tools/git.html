@@ -264,6 +264,16 @@ git fetch origin branch1:branch1
 <span class="c1"># 如果你只需要最后一次提交的结果,同样可以加上 --depth=1 这个参数</span>
 git fetch origin branch1:branch1 --depth<span class="o">=</span><span class="m">1</span>
 </pre></div>
+
+
+<ol>
+<li>回滚远程代码</li>
+</ol>
+<div class="hlcode"><pre><span></span><span class="c1"># 回滚本地代码到特定commit</span>
+git reset --hard &lt;commit_id&gt;
+<span class="c1"># 强制推送到远程</span>
+git push -f origin &lt;branch&gt;
+</pre></div>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->

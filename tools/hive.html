@@ -772,6 +772,12 @@ combine matches and write to output
 <span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="k">exec</span><span class="p">.</span><span class="k">max</span><span class="p">.</span><span class="k">dynamic</span><span class="p">.</span><span class="n">partitions</span><span class="o">=&lt;</span><span class="err">最大总的分区数目</span><span class="o">&gt;</span><span class="p">;</span>
 <span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="k">exec</span><span class="p">.</span><span class="k">max</span><span class="p">.</span><span class="k">dynamic</span><span class="p">.</span><span class="n">partitions</span><span class="p">.</span><span class="n">pernode</span><span class="o">=&lt;</span><span class="err">每一个</span><span class="n">MR</span><span class="err">节点创建的最大分区数目</span><span class="o">&gt;</span><span class="p">;</span>
 </pre></div>
+
+
+<ul>
+<li>bigint 和 string 比较是否相等的时候, 会将他们都转换为double进行比较,会损失精度,尤其是在JOIN的时候,问题比较大,建议把bigint转成string再比较!</li>
+<li>UDAF 在 <code>Cannot recognize return type class  terminatePartial()</code></li>
+</ul>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
