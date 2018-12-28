@@ -1,0 +1,225 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>protobuff 快速入门 - tracholar's personal knowledge wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tools">tools</a>&nbsp;»&nbsp;protobuff 快速入门</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">protobuff 快速入门</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">定义消息结构</a><ul>
+<li><a href="#field-rules">Field Rules</a></li>
+<li><a href="#_2">基础数据类型</a></li>
+</ul>
+</li>
+<li><a href="#_3">编译生成目标语言代码</a></li>
+</ul>
+</div>
+<h2 id="_1">定义消息结构</h2>
+<p>libsvm.proto libffm数据, field可选, rowid和label也是可选项。</p>
+<div class="hlcode"><pre><span></span><span class="na">syntax</span> <span class="o">=</span> <span class="s">&quot;proto2&quot;</span><span class="p">;</span>
+
+<span class="kn">package</span> <span class="nn">tutorial</span><span class="p">;</span>
+
+<span class="k">option</span> <span class="na">java_package</span> <span class="o">=</span> <span class="s">&quot;com.tracholar.protobuf&quot;</span><span class="p">;</span>
+<span class="k">option</span> <span class="na">java_outer_classname</span> <span class="o">=</span> <span class="s">&quot;Libsvm&quot;</span><span class="p">;</span>
+
+
+<span class="kd">message</span> <span class="nc">LabelPoint</span> <span class="p">{</span>
+    <span class="kd">message</span> <span class="nc">Point</span> <span class="p">{</span>
+        <span class="k">required</span> <span class="kt">int32</span> <span class="na">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// idx</span>
+        <span class="k">required</span> <span class="kt">float</span> <span class="na">y</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="c1">// value</span>
+        <span class="k">optional</span> <span class="kt">int32</span> <span class="na">f</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span> <span class="c1">// field</span>
+    <span class="p">}</span>
+    <span class="k">repeated</span> <span class="n">Point</span> <span class="na">feature</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">optional</span> <span class="kt">float</span> <span class="na">label</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+    <span class="k">optional</span> <span class="kt">string</span> <span class="na">rowid</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">message</span> <span class="nc">DataSet</span> <span class="p">{</span>
+    <span class="k">repeated</span> <span class="n">LabelPoint</span> <span class="na">lp</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3 id="field-rules">Field Rules</h3>
+<ul>
+<li>required: 必须有的字段.</li>
+<li>optional: 可选的字段.</li>
+<li>repeated: 可以有多个的字段,对应于 List, 保序.</li>
+</ul>
+<h3 id="_2">基础数据类型</h3>
+<p><a href="https://developers.google.com/protocol-buffers/docs/proto">https://developers.google.com/protocol-buffers/docs/proto</a></p>
+<p>int32, float, string, 枚举类型</p>
+<div class="hlcode"><pre><span></span><span class="kd">enum</span> <span class="n">EnumNotAllowingAlias</span> <span class="p">{</span>
+  <span class="na">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="na">STARTED</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="_3">编译生成目标语言代码</h2>
+<p>编译生成Java 代码 <code>protoc --java_out=&lt;JAVA代码输出路径&gt;  libsvm.proto</code>。</p>
+<p>编译器 <code>protoc</code> 可以直接从官网下载 <a href="https://github.com/protocolbuffers/protobuf/releases">https://github.com/protocolbuffers/protobuf/releases</a> <br />
+找到 <code>protoc-x.x.x-&lt;OS&gt;.zip</code> 下载解压即可。</p>
+<p>把编译器输出的文件拖到合适的目录即可,也可以在 <code>--java_out</code> 参数中指定输出目录。</p>
+<p>以JAVA为例,需要在工程的pom.xml文件中添加依赖才能使用protobuf的API</p>
+<div class="hlcode"><pre><span></span><span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>com.google.protobuf<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>protobuf-java<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>3.5.1<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+
+
+<p>测试序列化与反序列化, 序列化的对象都是通过 <code>Builder</code> 来创建。</p>
+<ul>
+<li>序列化</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestLibsvm</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Libsvm</span><span class="o">.</span><span class="na">DataSet</span><span class="o">.</span><span class="na">Builder</span> <span class="n">dataSet</span> <span class="o">=</span> <span class="n">Libsvm</span><span class="o">.</span><span class="na">DataSet</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">();</span>
+        <span class="n">Random</span> <span class="n">r</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Random</span><span class="o">();</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span> <span class="mi">1000</span><span class="o">;</span> <span class="n">i</span><span class="o">++){</span>
+            <span class="n">Libsvm</span><span class="o">.</span><span class="na">LabelPoint</span><span class="o">.</span><span class="na">Builder</span> <span class="n">lp</span> <span class="o">=</span> <span class="n">Libsvm</span><span class="o">.</span><span class="na">LabelPoint</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">();</span>
+            <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">j</span><span class="o">&lt;</span><span class="mi">5</span><span class="o">;</span> <span class="n">j</span><span class="o">++){</span>
+                <span class="n">Libsvm</span><span class="o">.</span><span class="na">LabelPoint</span><span class="o">.</span><span class="na">Point</span> <span class="n">pb</span> <span class="o">=</span> <span class="n">Libsvm</span><span class="o">.</span><span class="na">LabelPoint</span><span class="o">.</span><span class="na">Point</span>
+                        <span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+                        <span class="o">.</span><span class="na">setF</span><span class="o">(</span><span class="n">j</span><span class="o">)</span>
+                        <span class="o">.</span><span class="na">setX</span><span class="o">(</span><span class="n">r</span><span class="o">.</span><span class="na">nextInt</span><span class="o">())</span>
+                        <span class="o">.</span><span class="na">setY</span><span class="o">(</span><span class="n">r</span><span class="o">.</span><span class="na">nextFloat</span><span class="o">())</span>
+                        <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+                <span class="n">lp</span><span class="o">.</span><span class="na">addFeature</span><span class="o">(</span><span class="n">pb</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="c1">//lp.setRowid(r.nextLong() + &quot;&quot;);</span>
+            <span class="n">dataSet</span><span class="o">.</span><span class="na">addLp</span><span class="o">(</span><span class="n">lp</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="n">Libsvm</span><span class="o">.</span><span class="na">DataSet</span> <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataSet</span><span class="o">.</span><span class="na">build</span><span class="o">();</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">dataset</span><span class="o">.</span><span class="na">writeTo</span><span class="o">(</span><span class="k">new</span> <span class="n">FileOutputStream</span><span class="o">(</span><span class="s">&quot;train.data&quot;</span><span class="o">));</span>
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<ul>
+<li>反序列化: 反序列化非常简单,直接调用消息对象的静态方法 <code>parseFrom</code> 即可, </li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="n">Libsvm</span><span class="o">.</span><span class="na">DataSet</span><span class="o">.</span><span class="na">parseFrom</span><span class="o">(</span><span class="k">new</span> <span class="n">FileInputStream</span><span class="o">(</span><span class="s">&quot;train.data&quot;</span><span class="o">))</span>
+</pre></div>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2018-12-17 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: 'protobuff 快速入门',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2018 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>

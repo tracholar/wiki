@@ -57,7 +57,332 @@
 <div class="clearfix"></div>
 <div id="title">Spring 快速入门</div>
 <div id="content">
-  
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">概念</a></li>
+<li><a href="#bean">Bean 可重用对象</a></li>
+<li><a href="#springboot-web-app">SpringBoot 简单 Web APP</a></li>
+<li><a href="#_2">定时执行任务</a></li>
+<li><a href="#_3">文件上传</a></li>
+<li><a href="#_4">页面模板</a></li>
+<li><a href="#bean_1">Bean 自动配置</a></li>
+<li><a href="#_5">表单认证</a></li>
+</ul>
+</div>
+<h2 id="_1">概念</h2>
+<ul>
+<li>Bean: Java可重用对象, 可以复用, 单例模式</li>
+<li>IOC（控制反转，Inverse Of Control）, DI（依赖注入，Dependency Injection），两者是一样的</li>
+</ul>
+<h2 id="bean">Bean 可重用对象</h2>
+<p>下述BasicBean的属性value可以通过 getter 和 setter 获取和设置。</p>
+<div class="hlcode"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">BasicBean</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getValue</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">value</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setValue</span><span class="o">(</span><span class="n">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">value</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>如果我们要创建一个 <code>BasicBean</code> 对象,并设置<code>value</code>的值为 <code>Hello Test Bean</code>, 可以按照Java的基本语法实现如下</p>
+<div class="hlcode"><pre><span></span><span class="n">BasicBean</span> <span class="n">bean</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BasicBean</span><span class="o">();</span>
+<span class="n">bean</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="s">&quot;Hello Test Bean&quot;</span><span class="o">);</span>
+</pre></div>
+
+
+<p>但是,如果我们要在很多不同的函数中使用同一个 <code>BasicBean</code> 对象,我们就需要实现单例模式来做。</p>
+<p>Spring里面提供一种更方便的方式, 通过XML配置文件和<code>BeanFactory</code>实现对象可重用。</p>
+<div class="hlcode"><pre><span></span><span class="cp">&lt;?xml version = &quot;1.0&quot; encoding = &quot;UTF-8&quot;?&gt;</span>
+
+<span class="nt">&lt;beans</span> <span class="na">xmlns =</span> <span class="s">&quot;http://www.springframework.org/schema/beans&quot;</span>
+       <span class="na">xmlns:xsi =</span> <span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+       <span class="na">xsi:schemaLocation =</span> <span class="s">&quot;http://www.springframework.org/schema/beans</span>
+<span class="s">   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;bean</span> <span class="na">id =</span> <span class="s">&quot;test_bean&quot;</span> <span class="na">class=</span><span class="s">&quot;com.tracholar.web.demo.BasicBean&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;value&quot;</span> <span class="na">value=</span><span class="s">&quot;Hello Test Bean&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/bean&gt;</span>
+<span class="nt">&lt;/beans&gt;</span>
+</pre></div>
+
+
+<p><code>id</code> 是唯一标识, <code>class</code> 对应该对象的类, <code>property</code> 对应的是属性。有了这个配置文件后, 重复使用这个对象就很方便了。</p>
+<div class="hlcode"><pre><span></span><span class="n">BeanFactory</span> <span class="n">factory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ClassPathXmlApplicationContext</span><span class="o">(</span><span class="s">&quot;Beans.xml&quot;</span><span class="o">);</span>
+<span class="n">BasicBean</span> <span class="n">bean</span> <span class="o">=</span> <span class="o">(</span><span class="n">BasicBean</span><span class="o">)</span> <span class="n">factory</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">&quot;test_bean&quot;</span><span class="o">);</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">bean</span><span class="o">.</span><span class="na">getValue</span><span class="o">());</span> <span class="c1">// Hello Test Bean</span>
+</pre></div>
+
+
+<p>当然,Bean也可以配置成多例模式,这样每次得到的都是一个新的对象。</p>
+<p>利用 <code>@Autowired</code> 注解,可以避免属性的 <code>get</code> 和 <code>set</code> 方法</p>
+<div class="hlcode"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">BasicBean</span> <span class="o">{</span>
+    <span class="nd">@Autowired</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">value</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h2 id="springboot-web-app">SpringBoot 简单 Web APP</h2>
+<p>HTTP的Get, POST 等请求最终是由 Controller 处理, 首先实现一个这样的处理类</p>
+<div class="hlcode"><pre><span></span><span class="nd">@RestController</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">GreetingController</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">template</span> <span class="o">=</span> <span class="s">&quot;Hello, %s!&quot;</span><span class="o">;</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&quot;/greeting&quot;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">BasicBean</span> <span class="nf">greeting</span><span class="o">(</span><span class="nd">@RequestParam</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="s">&quot;name&quot;</span><span class="o">,</span> <span class="n">defaultValue</span><span class="o">=</span><span class="s">&quot;World&quot;</span><span class="o">)</span> <span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">BasicBean</span> <span class="n">bean</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BasicBean</span><span class="o">();</span>
+        <span class="n">bean</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">template</span><span class="o">,</span> <span class="n">name</span><span class="o">));</span>
+
+        <span class="k">return</span> <span class="n">bean</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Annotation <code>@RestController</code> 表明这个类用于处理HTTP请求, <code>@RequestMapping("/greeting")</code>表明处理的路径为 <code>/greeting</code>,<br />
+<code>RequestParam</code>可以帮你配置一些参数的属性,比如默认值。SpringBoot 会自动将返回的对象转换成JSON,所以请求返回的结果将是一个JSON。</p>
+<p><code>@RequestMapping</code> 会将GET请求和POST请求都发到这个方法,如果要分别处理,可以用 <code>@GetMapping</code> 和 <code>@PostMapping</code> 分别指定。<br />
+<code>@RequestMapping</code> 也可以加到整个类, 比如对整个类加上注解 <code>@RequestMapping("/home")</code>, 那么这个类的方法都是在子路径下, <code>greeting</code>对应的路径就是 <code>/home/greeting</code>。</p>
+<p>有了 Controller 之后,我们启动一个简单的Server,就可以测试了。</p>
+<div class="hlcode"><pre><span></span><span class="nd">@SpringBootApplication</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestWebDemo</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
+        <span class="n">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">TestWebDemo</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+    <span class="o">}</span>
+
+
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="n">EmbeddedServletContainerFactory</span> <span class="nf">servletContainer</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">TomcatEmbeddedServletContainerFactory</span> <span class="n">factory</span> <span class="o">=</span>
+                <span class="k">new</span> <span class="n">TomcatEmbeddedServletContainerFactory</span><span class="o">();</span>
+        <span class="k">return</span> <span class="n">factory</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="cm">/* 上述方法等同于在配置文件中的设置</span>
+<span class="cm">    &lt;bean id=&quot;xxx&quot; class = &quot;org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory&quot; /&gt;</span>
+
+<span class="cm">    */</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p><code>@SpringBootApplication</code> Annotation 相当于以下3个Annotation共同的效果:</p>
+<ol>
+<li><code>@Configuration</code> 将这个类作为Bean的定义类, Bean的定义不但可以通过配置文件,也可以通过配置类中用<code>@Bean</code>标记的方法, 返回的结果就是一个Bean。</li>
+<li><code>@EnableAutoConfiguration</code>   作用从classpath中搜索所有META-INF/spring.factories配置文件然后，将其中<br />
+    org.springframework.boot.autoconfigure.EnableAutoConfiguration key对应的配置项加载到spring容器。</li>
+<li><code>@EnableWebMvc</code></li>
+<li><code>@ComponentScan</code> 在同一个包中扫描其他组件, 例如Controller。</li>
+</ol>
+<p>Spring会自动查找所有的Controller, 所以不用做额外的配置。启动运行后, 从浏览器打开 <code>localhost:8080</code>,可以看到返回的JSON</p>
+<div class="hlcode"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Hello, World!&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="_2">定时执行任务</h2>
+<p>参考: <a href="https://spring.io/guides/gs/scheduling-tasks/">https://spring.io/guides/gs/scheduling-tasks/</a></p>
+<p>首先创建一个定时执行模块, 用 <code>@Scheduled</code> 注解标注定是执行的方法, <code>fixedRate</code> 参数指定间隔毫秒数。</p>
+<div class="hlcode"><pre><span></span><span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ScheduledTasks</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Logger</span> <span class="n">log</span> <span class="o">=</span> <span class="n">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">ScheduledTasks</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">SimpleDateFormat</span> <span class="n">dateFormat</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;HH:mm:ss&quot;</span><span class="o">);</span>
+
+    <span class="nd">@Scheduled</span><span class="o">(</span><span class="n">fixedRate</span> <span class="o">=</span> <span class="mi">1000</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">reportTime</span><span class="o">(){</span>
+        <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;Now: {}&quot;</span><span class="o">,</span> <span class="n">dateFormat</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="k">new</span> <span class="n">Date</span><span class="o">()));</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>但是spring默认不起用Scheduled模块,需要在 <code>TestWebDemo</code> 上再加个<code>@EnableScheduling</code>注解。执行后结果如下</p>
+<div class="hlcode"><pre><span></span><span class="m">2018</span>-12-27 <span class="m">15</span>:04:04.568  INFO <span class="m">76968</span> --- <span class="o">[</span>pool-1-thread-1<span class="o">]</span> com.tracholar.web.demo.ScheduledTasks    : Now: <span class="m">15</span>:04:04
+<span class="m">2018</span>-12-27 <span class="m">15</span>:04:05.567  INFO <span class="m">76968</span> --- <span class="o">[</span>pool-1-thread-1<span class="o">]</span> com.tracholar.web.demo.ScheduledTasks    : Now: <span class="m">15</span>:04:05
+<span class="m">2018</span>-12-27 <span class="m">15</span>:04:06.567  INFO <span class="m">76968</span> --- <span class="o">[</span>pool-1-thread-1<span class="o">]</span> com.tracholar.web.demo.ScheduledTasks    : Now: <span class="m">15</span>:04:06
+<span class="m">2018</span>-12-27 <span class="m">15</span>:04:07.567  INFO <span class="m">76968</span> --- <span class="o">[</span>pool-1-thread-1<span class="o">]</span> com.tracholar.web.demo.ScheduledTasks    : Now: <span class="m">15</span>:04:07
+<span class="m">2018</span>-12-27 <span class="m">15</span>:04:08.568  INFO <span class="m">76968</span> --- <span class="o">[</span>pool-1-thread-1<span class="o">]</span> com.tracholar.web.demo.ScheduledTasks    : Now: <span class="m">15</span>:04:08
+<span class="m">2018</span>-12-27 <span class="m">15</span>:04:09.568  INFO <span class="m">76968</span> --- <span class="o">[</span>pool-1-thread-1<span class="o">]</span> com.tracholar.web.demo.ScheduledTasks    : Now: <span class="m">15</span>:04:09
+</pre></div>
+
+
+<h2 id="_3">文件上传</h2>
+<p>参考: <a href="https://spring.io/guides/gs/uploading-files/">https://spring.io/guides/gs/uploading-files/</a></p>
+<div class="hlcode"><pre><span></span><span class="nd">@Controller</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FileUploader</span> <span class="o">{</span>
+    <span class="n">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="n">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">getClass</span><span class="o">());</span>
+
+    <span class="nd">@PostMapping</span><span class="o">(</span><span class="s">&quot;/upload&quot;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">uploadHandler</span><span class="o">(</span><span class="nd">@RequestParam</span><span class="o">(</span><span class="s">&quot;file&quot;</span><span class="o">)</span> <span class="n">MultipartFile</span> <span class="n">file</span><span class="o">,</span>
+                                <span class="n">RedirectAttributes</span> <span class="n">redirectAttributes</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">{</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="n">file</span><span class="o">.</span><span class="na">getOriginalFilename</span><span class="o">());</span>
+        <span class="n">File</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;/tmp/www_upload/&quot;</span> <span class="o">+</span> <span class="n">file</span><span class="o">.</span><span class="na">getOriginalFilename</span><span class="o">());</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;Move to &quot;</span> <span class="o">+</span> <span class="n">f</span><span class="o">.</span><span class="na">getAbsolutePath</span><span class="o">());</span>
+        <span class="n">file</span><span class="o">.</span><span class="na">transferTo</span><span class="o">(</span><span class="n">f</span><span class="o">);</span>
+        <span class="n">redirectAttributes</span><span class="o">.</span><span class="na">addFlashAttribute</span><span class="o">(</span><span class="s">&quot;message&quot;</span><span class="o">,</span> <span class="s">&quot;You successfully upload &quot;</span> <span class="o">+</span> <span class="n">file</span><span class="o">.</span><span class="na">getOriginalFilename</span><span class="o">());</span>
+        <span class="k">return</span> <span class="s">&quot;redirect:/&quot;</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p><code>MultipartFile</code> 对象用于表示文件, <code>@Controller</code> 注解和 <code>@RestController</code> 都表示这个类是一个控制器, <br />
+但是<code>@Controller</code>返回的是一个 <code>ModelAndView</code>,如果方法返回的是string,表示是页面名字, 参考下面的 <strong>页面模板</strong>。<br />
+<code>@RestController</code> 等于加了 <code>@ResponseBody</code> 注解的 <code>@Controller</code>, 也就是方法返回的是内容本身,不会加载某个页面。</p>
+<h2 id="_4">页面模板</h2>
+<p>Spring Boot 的页面模板和资源文件放在 <code>resources</code> 下面,</p>
+<ul>
+<li><code>resources/templates</code> 存放前端html页面</li>
+<li><code>resources/static</code> 存放静态文件, <strong>这个目录对应于HTTP请求时的根目录</strong>。例如: <code>resources/static/style.css</code> 可以通过URL <code>/style.css</code>直接引用!</li>
+</ul>
+<p>如果没有这两个文件夹,可以自己创建。<br />
+在Controller中返回一个页面非常简单, 返回页面的文件名(不包含后缀)即可, 也可以返回 <code>ModelAndView</code> 对象。<br />
+但是,要使得引擎生效,需要增加<code>spring-boot-starter-thymeleaf</code>的依赖。<code>thymeleaf</code> 引擎语法参考 <a href="https://www.thymeleaf.org/doc/tutorials/2.1/thymeleafspring.html">https://www.thymeleaf.org/doc/tutorials/2.1/thymeleafspring.html</a></p>
+<div class="hlcode"><pre><span></span><span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-thymeleaf<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>1.5.15.RELEASE<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+
+
+<div class="hlcode"><pre><span></span><span class="nd">@Controller</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FileUploader</span> <span class="o">{</span>
+    <span class="n">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="n">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">getClass</span><span class="o">());</span>
+
+    <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">&quot;/upload&quot;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">ModelAndView</span> <span class="nf">showUploadPage</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="n">ModelAndView</span><span class="o">(</span><span class="s">&quot;upload_file&quot;</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="nd">@PostMapping</span><span class="o">(</span><span class="s">&quot;/upload&quot;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">uploadHandler</span><span class="o">(</span><span class="nd">@RequestParam</span><span class="o">(</span><span class="s">&quot;file&quot;</span><span class="o">)</span> <span class="n">MultipartFile</span> <span class="n">file</span><span class="o">,</span>
+                                <span class="n">RedirectAttributes</span> <span class="n">redirectAttributes</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">{</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="n">file</span><span class="o">.</span><span class="na">getOriginalFilename</span><span class="o">());</span>
+        <span class="n">File</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;/tmp/www_upload/&quot;</span> <span class="o">+</span> <span class="n">file</span><span class="o">.</span><span class="na">getOriginalFilename</span><span class="o">());</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;Move to &quot;</span> <span class="o">+</span> <span class="n">f</span><span class="o">.</span><span class="na">getAbsolutePath</span><span class="o">());</span>
+        <span class="n">file</span><span class="o">.</span><span class="na">transferTo</span><span class="o">(</span><span class="n">f</span><span class="o">);</span>
+        <span class="n">redirectAttributes</span><span class="o">.</span><span class="na">addFlashAttribute</span><span class="o">(</span><span class="s">&quot;message&quot;</span><span class="o">,</span> <span class="s">&quot;You successfully upload &quot;</span> <span class="o">+</span> <span class="n">file</span><span class="o">.</span><span class="na">getOriginalFilename</span><span class="o">());</span>
+        <span class="k">return</span> <span class="s">&quot;redirect:/&quot;</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h2 id="bean_1">Bean 自动配置</h2>
+<p>配置文件: <code>resources/application.properties</code> 配置文件的语法参考 <a href="http://blog.didispace.com/springbootproperties/">http://blog.didispace.com/springbootproperties/</a></p>
+<div class="hlcode"><pre><span></span>my.conf.files=www.baidu.com,www.google.com
+</pre></div>
+
+
+<div class="hlcode"><pre><span></span><span class="nd">@Component</span>
+<span class="nd">@ConfigurationProperties</span><span class="o">(</span><span class="n">prefix</span> <span class="o">=</span> <span class="s">&quot;my.conf&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyConfig</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">getFiles</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">files</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setFiles</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">files</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">files</span> <span class="o">=</span> <span class="n">files</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">files</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+
+<span class="o">}</span>
+
+<span class="nd">@RestController</span>
+<span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&quot;/conf&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyConfigController</span> <span class="o">{</span>
+    <span class="nd">@Autowired</span>
+    <span class="kd">private</span> <span class="n">MyConfig</span> <span class="n">myConfig</span><span class="o">;</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&quot;/&quot;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getConf</span><span class="o">(){</span>
+        <span class="k">return</span> <span class="n">myConfig</span><span class="o">.</span><span class="na">getFiles</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>注解<code>ConfigurationProperties</code>表明对这个类属性进行配置,配置文件中key的前缀是<code>my.conf</code>, <br />
+在使用这个类时,加上 <code>@Autowired</code> 注解, spring就会从注册组件中寻找对应的类,并创建对象,这个过程叫自动装配, 对象统一由spring来管理。<br />
+参考 spring 依赖注入 <a href="https://www.jianshu.com/p/3942cce05f71">https://www.jianshu.com/p/3942cce05f71</a>。</p>
+<blockquote>
+<p>首先想说说IoC（Inversion of Control，控制倒转）。这是spring的核心，贯穿始终。<br />
+所谓IoC，对于spring框架来说，就是由spring来负责控制对象的生命周期和对象间的关系。<br />
+这是什么意思呢，举个简单的例子，我们是如何找女朋友的？常见的情况是，我们到处去看哪里有长得漂亮身材又好的mm，<br />
+然后打听她们的兴趣爱好、qq号、电话号、ip号、iq号………，想办法认识她们，投其所好送其所要，然后嘿嘿……这个过程是复杂深奥的，<br />
+我们必须自己设计和面对每个环节。传统的程序开发也是如此，在一个对象中，如果要使用另外的对象，就必须得到它（自己new一个，或者从JNDI中查询一个），<br />
+使用完之后还要将对象销毁（比如Connection等），对象始终会和其他的接口或类藕合起来</p>
+<p>那么IoC是如何做的呢？有点像通过婚介找女朋友，在我和女朋友之间引入了一个第三者：婚姻介绍所。<br />
+婚介管理了很多男男女女的资料，我可以向婚介提出一个列表，告诉它我想找个什么样的女朋友，比如长得像李嘉欣，身材像林熙雷，唱歌像周杰伦，<br />
+速度像卡洛斯，技术像齐达内之类的，然后婚介就会按照我们的要求，提供一个mm，我们只需要去和她谈恋爱、结婚就行了。<br />
+简单明了，如果婚介给我们的人选不符合要求，我们就会抛出异常。整个过程不再由我自己控制，而是有婚介这样一个类似容器的机构来控制。<br />
+Spring所倡导的开发方式就是如此，所有的类都会在spring容器中登记，告诉spring你是个什么东西，你需要什么东西，<br />
+然后spring会在系统运行到适当的时候，把你要的东西主动给你，同时也把你交给其他需要你的东西。所有的类的创建、销毁都由 spring来控制，<br />
+也就是说控制对象生存周期的不再是引用它的对象，而是spring。对于某个具体的对象而言，以前是它控制其他对象，现在是所有对象都被spring控制，<br />
+所以这叫控制反转。如果你还不明白的话，我决定放弃。</p>
+</blockquote>
+<h2 id="_5">表单认证</h2>
+<p>创建可认证表单数据对象, 用 <code>javax.validation.constraints.*</code> 中的Annotation标注约束条件。</p>
+<div class="hlcode"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">PersonData</span> <span class="o">{</span>
+    <span class="nd">@NotNull</span>
+    <span class="nd">@Size</span><span class="o">(</span><span class="n">min</span> <span class="o">=</span> <span class="mi">5</span><span class="o">,</span> <span class="n">max</span> <span class="o">=</span> <span class="mi">30</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">getAge</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">age</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAge</span><span class="o">(</span><span class="n">Integer</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@NotNull</span>
+    <span class="nd">@Min</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
+    <span class="nd">@Max</span><span class="o">(</span><span class="mi">100</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">Integer</span> <span class="n">age</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>利用 <code>@Valid</code> 注解对请求参数标注, 用<code>BindingResult</code>获取约束条件判断结果。</p>
+<div class="hlcode"><pre><span></span><span class="nd">@Controller</span>
+<span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&quot;/person&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PersonController</span> <span class="o">{</span>
+    <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">&quot;/&quot;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">form</span><span class="o">(){</span>
+        <span class="k">return</span> <span class="s">&quot;person&quot;</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="nd">@PostMapping</span><span class="o">(</span><span class="s">&quot;/&quot;</span><span class="o">)</span>
+    <span class="nd">@ResponseBody</span>
+    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">checkPersonInfo</span><span class="o">(</span><span class="nd">@Valid</span> <span class="n">PersonData</span> <span class="n">person</span><span class="o">,</span> <span class="n">BindingResult</span> <span class="n">bindingResult</span><span class="o">){</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">bindingResult</span><span class="o">.</span><span class="na">hasErrors</span><span class="o">())</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">bindingResult</span><span class="o">.</span><span class="na">getAllErrors</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">person</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>问题: 为什么Controller的方法可以自动指定这么多不同类型的参数?</p>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->

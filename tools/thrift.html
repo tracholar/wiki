@@ -57,18 +57,82 @@
 <div class="clearfix"></div>
 <div id="title">Thrift 快速入门</div>
 <div id="content">
-  <p>Thrift是一种接口描述语言和二进制通讯协议，它被用来定义和创建跨语言的服务。<br />
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">安装</a></li>
+<li><a href="#helloword">Helloword</a></li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>Thrift是一种接口描述语言和二进制通讯协议，它被用来定义和创建跨语言的服务。<br />
 它被当作一个远程过程调用框架来使用，是由Facebook为“大规模跨语言服务开发”而开发的。</p>
 <blockquote>
 <p>远过程调用(RPC), 可以通过像调用本地函数一样,调用远程服务。</p>
 </blockquote>
+<h2 id="_2">安装</h2>
+<p>MAC <code>brew install thrift</code></p>
+<p>thrift采用thrift文件 + 编译器的方式, 最后生成目标语言的代码,这些代码直接嵌入到你的项目中就可以使用了。</p>
 <h2 id="helloword">Helloword</h2>
+<p>参考: <a href="https://thrift.apache.org/">https://thrift.apache.org/</a> <a href="https://www.ibm.com/developerworks/cn/java/j-lo-apachethrift/index.html">https://www.ibm.com/developerworks/cn/java/j-lo-apachethrift/index.html</a></p>
 <p>helloword.thrift</p>
 <div class="hlcode"><pre><span></span><span class="kd">service</span><span class="w"> </span><span class="nc">HelloWorldServer</span><span class="w"></span>
 <span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="nf">call</span><span class="o">(</span><span class="mi">1</span><span class="p">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">name</span><span class="p">)</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
+
+
+<p>编译 <code>thrift --gen &lt;language&gt; &lt;Thrift filename&gt;</code></p>
+<p>以JAVA为例, 执行编译命令 <code>thrift --gen java helloword.thrift</code> 可以得到一个 <code>HelloWorldServer.java</code> 文件, 将它放到适当的目录即可。<br />
+在JAVA工程的pom.xml文件中,增加 libthrift 依赖。</p>
+<div class="hlcode"><pre><span></span><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.apache.thrift<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>libthrift<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>0.11.0<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+
+
+<p>服务端实现 <code>HelloWorldServerImpl.java</code> 实现接口</p>
+<div class="hlcode"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloWorldServerImpl</span> <span class="kd">implements</span> <span class="n">HelloWorldServer</span><span class="o">.</span><span class="na">Iface</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">call</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">TException</span><span class="o">{</span>
+        <span class="k">return</span> <span class="s">&quot;Hello, &quot;</span> <span class="o">+</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>启动一个简单的服务器</p>
+<div class="hlcode"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloWorldServerThread</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">port</span> <span class="o">=</span> <span class="mi">9120</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span><span class="o">{</span>
+        <span class="n">ServerSocket</span> <span class="n">socket</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServerSocket</span><span class="o">(</span><span class="n">port</span><span class="o">);</span>
+        <span class="n">TServerSocket</span> <span class="n">tsocket</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TServerSocket</span><span class="o">(</span><span class="n">socket</span><span class="o">);</span>
+        <span class="n">HelloWorldServer</span><span class="o">.</span><span class="na">Processor</span> <span class="n">processor</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HelloWorldServer</span><span class="o">.</span><span class="na">Processor</span><span class="o">(</span><span class="k">new</span> <span class="n">HelloWorldServerImpl</span><span class="o">());</span>
+        <span class="n">TServer</span> <span class="n">server</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TSimpleServer</span><span class="o">(</span><span class="k">new</span> <span class="n">TServer</span><span class="o">.</span><span class="na">Args</span><span class="o">(</span><span class="n">tsocket</span><span class="o">).</span><span class="na">processor</span><span class="o">(</span><span class="n">processor</span><span class="o">));</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Starting the simple server...&quot;</span><span class="o">);</span>
+        <span class="n">server</span><span class="o">.</span><span class="na">serve</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>启动一个简单的客户端</p>
+<div class="hlcode"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloWorldClient</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span><span class="o">{</span>
+        <span class="n">TTransport</span> <span class="n">transport</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TSocket</span><span class="o">(</span><span class="s">&quot;localhost&quot;</span><span class="o">,</span>  <span class="n">HelloWorldServerThread</span><span class="o">.</span><span class="na">port</span><span class="o">);</span>
+        <span class="n">transport</span><span class="o">.</span><span class="na">open</span><span class="o">();</span>
+
+        <span class="n">TProtocol</span> <span class="n">protocol</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TBinaryProtocol</span><span class="o">(</span><span class="n">transport</span><span class="o">);</span>
+        <span class="n">HelloWorldServer</span><span class="o">.</span><span class="na">Client</span> <span class="n">client</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HelloWorldServer</span><span class="o">.</span><span class="na">Client</span><span class="o">(</span><span class="n">protocol</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">client</span><span class="o">.</span><span class="na">call</span><span class="o">(</span><span class="s">&quot;world!&quot;</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>输出结果: <code>Hello, world!</code></p>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
