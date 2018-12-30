@@ -77,6 +77,7 @@
 <li><a href="#_2">试验</a></li>
 </ul>
 </li>
+<li><a href="#_3">问题</a></li>
 </ul>
 </div>
 <h2 id="_1">摘要 &amp; 导言</h2>
@@ -276,7 +277,7 @@ $$</p>
 <li>计算候选的listing的向量与每一个中心的相似度(距离), 得到多个距离,然后取相似度的最大值(最小距离), max pooling</li>
 </ol>
 </li>
-<li>EmbLastLonдClickSim 是从Hlc中找到最近点击的listing id,计算的相似度,最后一个影响大</li>
+<li>EmbLastLongClickSim 是从Hlc中找到最近点击的listing id,计算的相似度,最后一个影响大</li>
 <li>UserTypeListingTypeSim 直接拿type的embedding向量计算的余弦相似度</li>
 </ul>
 </li>
@@ -286,12 +287,20 @@ $$</p>
 </ul>
 </li>
 <li>
-<p>NDCU提升 2.27%, 指标就不列了</p>
+<p>NDCU(Discounted Cumulative Utility)提升 2.27%, 指标就不列了</p>
+<ul>
+<li>NDCU 相当于用y作为Gain, 计算的NDCG, 而不是用 $(2^r - 1)$ 作为Gain ?</li>
+</ul>
 </li>
 </ul>
 <p><img alt="embedding 特征" src="/wiki/static/images/embedding-feature-airbnb-kdd2018.png" />          <br />
 <img alt="emb-click-sim" src="/wiki/static/images/emb-click-sim.png" /></p>
 <p><a href="https://medium.com/airbnb-engineering/listing-embeddings-for-similar-listing-recommendations-and-real-time-personalization-in-search-601172f7603e">https://medium.com/airbnb-engineering/listing-embeddings-for-similar-listing-recommendations-and-real-time-personalization-in-search-601172f7603e</a></p>
+<h2 id="_3">问题</h2>
+<ol>
+<li>wor2vec 如何嵌入到MapReduce中?怎么实现?</li>
+<li>NDCU ?</li>
+</ol>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
