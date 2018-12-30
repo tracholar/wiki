@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>【KDD2018-Airbnb】Real-time Personalization using Embeddings for Search Ranking at Airbnb - tracholar's personal knowledge wiki</title>
+        <title>【KDD2018-Airbnb】Real-time Personalization using Embeddings for Search Ranking at Airbnb - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -50,6 +50,18 @@
 
     <body>
         <div id="container">
+            <div id="google-search" style="width:200px; float:right; margin: 20px 0;">
+                <form action="//cse.google.com/cse" method="get" id="search-form">
+                    <input type="hidden" name="cx" value="015970462532790426975:gqlen38ywus"/>
+                    <input type="text" name="q"  style="line-height:20px; padding:4px;" placeholder="站内搜索"/>
+                    <svg width="13" height="13" viewBox="0 0 13 13" style="position:relative; left: -20px;" onclick="document.getElementById('search-form').submit()">
+                        <title>搜索</title>
+                        <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z">
+                        </path>
+                    </svg>
+                </form>
+
+            </div>
             
 <div id="header">
   <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;【KDD2018-Airbnb】Real-time Personalization using Embeddings for Search Ranking at Airbnb</div>
@@ -62,6 +74,7 @@
 <li><a href="#methodology">METHODOLOGY</a><ul>
 <li><a href="#listing-embeddingslist">Listing Embeddings(List指一个项目?还是列表?)</a></li>
 <li><a href="#user-type-listing-type-embeddings">User-type &amp; Listing-type Embeddings</a></li>
+<li><a href="#_2">试验</a></li>
 </ul>
 </li>
 </ul>
@@ -182,9 +195,9 @@ $$</p>
   这导致模型难以学到市场内的相似性差异,所以可以额外加入一些同一个市场中的负例对。</li>
 </ul>
 <p>$$<br />
-\sum_{(l, m_n) \in D_m_n} \log \frac{1}{1 + e^{v' _ m_n v_l}}<br />
+\sum_{(l, m_n) \in D_{m_n}} \log \frac{1}{1 + e^{v' _ {m_n} v_l}}<br />
 $$</p>
-<p>$( D_m_n )$ 是采样自l同一个市场中的负例对。</p>
+<p>$( D_{ m_n })$ 是采样自l同一个市场中的负例对。</p>
 <ul>
 <li>冷启动问题: 选出新房源地点附近10miles半径范围内,相同房屋类型,相同价格带的3个有embedding向量的其他房屋,用它们的均值代表新房源的向量</li>
 <li>listing embedding检验: 向量维度32, session数量800M!</li>
@@ -200,6 +213,85 @@ $$</p>
 <li>由于时间跨度长,原来假设的相邻两个listing是相似的假设并成立,因为用户的偏好、价格等因素以及发生了改变</li>
 </ol>
 <p>用 User-type &amp; Listing-type 而不是ID</p>
+<p>上下文是 (User-type, Listing-type) 对, 购买的对是正例, 没有购买的对是负例, 被拒绝的对也是负例。</p>
+<p>session是同一个用户的购买序列 user-type, listing-type 序列, s =(ut1, lt1, ..., utM, ltM)<br />
+这样可以复用 word2vec 代码, 并在同一个空间投影, 让向量距离具有可比性!</p>
+<h3 id="_2">试验</h3>
+<ul>
+<li>session构建: 按照登录用户ID, 将点击的listing id按照点击时间排序, 然后按照30分钟不活跃划分成多个session , session数量800M, listing数量 4.5M</li>
+<li>过滤掉在listing页面停留少于30s的事件(认为是噪音), 保留至少2个listing的session</li>
+<li>过采样 booked session, x5</li>
+<li>每天定期训练配置:<ul>
+<li>离线训练、评估、调参</li>
+<li>滑动窗构建数据集, 数月的数据</li>
+<li>每次都是重新开始训练(相同的随机数种子),随机初始化每一个向量; 发现比增量训练效果要好</li>
+<li>每天都在变的向量对效果没有影响,因为最后使用的是余弦相似度作为特征</li>
+<li>d=32, 主要是性能和相似度检索的性能之间的权衡</li>
+<li>上下文窗口为5, 10次遍历整个训练集</li>
+<li>修改了<a href="https://code.google.com/p/word2vec">word2vec</a></li>
+<li>使用 MapReduce 训练: 300个mapper读数据, 1个reducer训练模型, 多线程训练 ?</li>
+<li>Airflow2 <a href="http://airbnb.io/projects/airflow">http://airbnb.io/projects/airflow</a></li>
+</ul>
+</li>
+<li>离线评估<ul>
+<li>设最后一次点击的listing是A, 待排序的listing列表是: BCDEFG。。。,待排序的列表需要包含了最终订购的listing,<br />
+  我们可以计算A和这些listing的余弦相似度, 然后根据相似度排序,从而得到订购的listing排序的rank, rank越小,说明越靠前。</li>
+<li>这种排序得到的订购listing的rank,取决于两个重要因素,一是当前距离最后订购之间还有几次点击, 显然越接近订购行为,相关性越强;<br />
+  二是embedding向量的好坏, 这正是要评估的东西。</li>
+<li>为了评估两种embedding向量好坏,可以固定距离最终订购之间的点击次数,来比较排序, 排序越靠前, 说明学到的embedding向量跟最终的排序目标越接近。</li>
+</ul>
+</li>
+</ul>
+<p><img alt="离线评估结果图" src="/wiki/static/images/offline-eval-airbnb-kdd2018.png" /></p>
+<ul>
+<li>
+<p>相似listing推荐</p>
+<ul>
+<li>现有的方法是在给定的listing附近,根据是否可定购、价格范围、房屋类型筛选出候选集,然后调用搜索排序模块</li>
+<li>从同一个market中, 在相同的日期内可订购的房屋中, 利用embedding向量直接找K近邻, 用余弦相似度度量距离</li>
+<li>CTR 提升了21%</li>
+</ul>
+</li>
+<li>
+<p>实时个性化 </p>
+<ul>
+<li>排序模型: <ul>
+<li>标签: $( y_i \in \{ 0, 0.01, 0.25, 1, -0.4 \} )$ 分别代表,只曝光,曝光后只有点击, 曝光后用户联系了但是没订购, 1订购, -0.4房东拒绝了。</li>
+<li>特征: listing features, user features, query features and cross-features</li>
+<li>曝光后用一周的观测时间获得label, 只保留那些曝光列表中有订购的房屋的数据。</li>
+<li>利用<a href="https://github.com/yarny/gbdt">GBDT</a>进行 pairwise regression, lambda rank损失, NDCG metric。</li>
+<li>Listing Embedding Features: <ul>
+<li>对于每个用户ID, 用Kafka收集用户近两周的房屋id集合<ol>
+<li>Hc 近两周点击过的listing id</li>
+<li>Hlc 点击过且页面停留时间超过60s的listing id</li>
+<li>Hs 用户跳过的曝光靠前的listing id</li>
+<li>Hw 用户近两周加到心愿单的listing id</li>
+<li>Hi 用户近两周咨询过的listing id</li>
+<li>Hb 用户近两周订购过的listing id</li>
+</ol>
+</li>
+<li>将上述每一个集合进一步分成同market的子集, 例如: Hc 里面有 New York 和 Los Angeles两个市场,那么就会分成两个子集 Hc(NY), Hc(LA)</li>
+<li>以EmbClickSim为例,说明这个特征的构造过程:<ol>
+<li>先计算每一个market的embedding中心, 也就是按照Market对 listing id的vector做average Pooling</li>
+<li>计算候选的listing的向量与每一个中心的相似度(距离), 得到多个距离,然后取相似度的最大值(最小距离), max pooling</li>
+</ol>
+</li>
+<li>EmbLastLonдClickSim 是从Hlc中找到最近点击的listing id,计算的相似度,最后一个影响大</li>
+<li>UserTypeListingTypeSim 直接拿type的embedding向量计算的余弦相似度</li>
+</ul>
+</li>
+<li>特征单因素分析,固定其他特征,改变单个特征,分析单个特征变化对排序分数影响, (跟我的想法一模一样)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>NDCU提升 2.27%, 指标就不列了</p>
+</li>
+</ul>
+<p><img alt="embedding 特征" src="/wiki/static/images/embedding-feature-airbnb-kdd2018.png" />          <br />
+<img alt="emb-click-sim" src="/wiki/static/images/emb-click-sim.png" /></p>
+<p><a href="https://medium.com/airbnb-engineering/listing-embeddings-for-similar-listing-recommendations-and-real-time-personalization-in-search-601172f7603e">https://medium.com/airbnb-engineering/listing-embeddings-for-similar-listing-recommendations-and-real-time-personalization-in-search-601172f7603e</a></p>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
