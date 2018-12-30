@@ -167,11 +167,12 @@ session是同一个用户的购买序列 user-type, listing-type 序列, s =(ut1
             - 以EmbClickSim为例,说明这个特征的构造过程:
                 1. 先计算每一个market的embedding中心, 也就是按照Market对 listing id的vector做average Pooling
                 2. 计算候选的listing的向量与每一个中心的相似度(距离), 得到多个距离,然后取相似度的最大值(最小距离), max pooling
-            - EmbLastLonдClickSim 是从Hlc中找到最近点击的listing id,计算的相似度,最后一个影响大
+            - EmbLastLongClickSim 是从Hlc中找到最近点击的listing id,计算的相似度,最后一个影响大
             - UserTypeListingTypeSim 直接拿type的embedding向量计算的余弦相似度
         - 特征单因素分析,固定其他特征,改变单个特征,分析单个特征变化对排序分数影响, (跟我的想法一模一样)
         
-- NDCU提升 2.27%, 指标就不列了
+- NDCU(Discounted Cumulative Utility)提升 2.27%, 指标就不列了
+    - NDCU 相当于用y作为Gain, 计算的NDCG, 而不是用 $(2^r - 1)$ 作为Gain ?
                 
         
     
@@ -179,3 +180,8 @@ session是同一个用户的购买序列 user-type, listing-type 序列, s =(ut1
 ![emb-click-sim](/wiki/static/images/emb-click-sim.png)
 
 <https://medium.com/airbnb-engineering/listing-embeddings-for-similar-listing-recommendations-and-real-time-personalization-in-search-601172f7603e>
+
+
+## 问题
+1. wor2vec 如何嵌入到MapReduce中?怎么实现?
+2. NDCU ?
