@@ -91,7 +91,7 @@ public class HelloWorldClient {
 ### python实现
 需要安装 `pip install thrift`
 
-```server
+```python
 from helloword import HelloWorldServer
 
 from thrift import Thrift
