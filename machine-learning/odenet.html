@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>ODENet - Neural Ordinary Differential Equations - Tracholar的个人wiki</title>
+        <title>【NIPS2018】ODENet - Neural Ordinary Differential Equations - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,20 +64,23 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;ODENet - Neural Ordinary Differential Equations</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;【NIPS2018】ODENet - Neural Ordinary Differential Equations</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">ODENet - Neural Ordinary Differential Equations</div>
+<div id="title">【NIPS2018】ODENet - Neural Ordinary Differential Equations</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">论文笔记</a></li>
+<li><a href="#_1">参考</a></li>
+<li><a href="#_2">摘要</a></li>
+<li><a href="#_3">反模式的自动微分</a></li>
 </ul>
 </div>
+<h2 id="_1">参考</h2>
 <ul>
 <li>论文: Ricky T. Q. Chen, Yulia Rubanova, Jesse Bettencourt, David Duvenaud. "Neural Ordinary Differential Equations." Advances in Neural Processing Information Systems. 2018. <a href="https://arxiv.org/abs/1806.07366">arxiv</a></li>
 <li>代码: <a href="https://github.com/rtqichen/torchdiffeq">https://github.com/rtqichen/torchdiffeq</a></li>
 </ul>
-<h2 id="_1">论文笔记</h2>
+<h2 id="_2">摘要</h2>
 <ul>
 <li>用神经网络拟合隐态的梯度, 通过ODE Solver 求解输出</li>
 </ul>
@@ -92,7 +95,32 @@ $$</p>
 \frac{d h(t)}{d t} = f(h(t), \theta, t) \\<br />
 h_0 = input<br />
 $$</p>
-<p>相当于在不同的时间上,参数共享!</p>
+<p>相当于在不同的时间上,参数共享! 所以 <strong>参数/内存复杂度跟步长/层数无关</strong>!</p>
+<p>另外,由于现代的 ODE solver 可以自适应调整以达到给定的精度。</p>
+<p>此外, 可以应用到连续时间动态系统的优化中!</p>
+<p><img alt="ODENet" src="/wiki/static/images/odenet01.png" style="width:400px; float:right;"/></p>
+<h2 id="_3">反模式的自动微分</h2>
+<p>假设标量损失函数$( L() )$的输入是 ODE solver 的输出, 也就是把 z(t) (你可以理解为神经网络最后一层隐向量)输入到损失函数中(例如logloss,rankloss等)<br />
+$$<br />
+L(z(t_1)) = L \left( \int_{t_0}^{t_1} f(z(t)), t, \theta dt  \right) = L(ODESolver(z(t_0), f, t_0, t_1, \theta))\\<br />
+\frac{d z(t)}{d t} = f(z(t), \theta, t) <br />
+$$</p>
+<p>为了优化L,需要计算L对参数的梯度。</p>
+<p>adjoin $( a(t) = \partial{L} / \partial{z(t)} )$ 满足如下ODE(两边对t求导), 注意标量场L的散度等于0<br />
+$$<br />
+\frac{d a(t)} {d t} = - a(t)^T \frac{\partial f(z(t), t, \theta)}{\partial z}<br />
+$$</p>
+<p>这表明,我们可以从a(t1)反向计算积分得到a(t0)<br />
+$$<br />
+a(t_0) = \int_{t_1}^{t_0} - a(t)^T \frac{\partial f(z(t), t, \theta)}{\partial z} dt<br />
+$$<br />
+这个类似于多层神经网络的BP过程。</p>
+<p>L对参数$(\theta)$的梯度<br />
+$$<br />
+- \frac{d L} {d \theta} = \int_{t_0}^{t_1} a(t)^T \frac{\partial f(z(t), t, \theta )}{\partial \theta} dt<br />
+$$</p>
+<p><img alt="ODENet algorithm" src="/wiki/static/images/odenet-algo.png" /></p>
+<p>算法参考文献: <a href="https://www.biorxiv.org/content/biorxiv/early/2018/02/27/272005.full.pdf">Optimization and uncertainty analysis of ODE models using second order adjoint sensitivity analysis</a></p>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -112,7 +140,7 @@ $$</p>
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: 'ODENet - Neural Ordinary Differential Equations',
+  title: '【NIPS2018】ODENet - Neural Ordinary Differential Equations',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
@@ -133,7 +161,7 @@ gitment.render('comments')
         </div>
         <div id="footer">
             <span>
-                Copyright © 2018 tracholar.
+                Copyright © 2019 tracholar.
                 Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
             </span>
         </div>

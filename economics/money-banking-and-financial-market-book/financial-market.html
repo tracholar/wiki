@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>自动微分 - Tracholar的个人wiki</title>
+        <title>第二篇 金融市场 - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,33 +64,67 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;自动微分</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#economics">economics</a>&nbsp;»&nbsp;<a href="/wiki/#economics-money-banking-and-financial-market-book">money-banking-and-financial-market-book</a>&nbsp;»&nbsp;第二篇 金融市场</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">自动微分</div>
+<div id="title">第二篇 金融市场</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">论文</a></li>
-<li><a href="#_2">要点</a></li>
+<li><a href="#_1">理解利率</a><ul>
+<li><a href="#present-value">现值(present value)</a></li>
+<li><a href="#_2">四种信用市场工具</a></li>
+<li><a href="#_3">到期收益率</a></li>
+</ul>
+</li>
 </ul>
 </div>
-<h2 id="_1">论文</h2>
-<p>自动微分综述: Automatic differentiation in machine learning- a survey.pdf</p>
-<h2 id="_2">要点</h2>
+<h2 id="_1">理解利率</h2>
+<h3 id="present-value">现值(present value)</h3>
+<p>现值(折现值) 是为了未来的现金流量折算成当前的现金价值,从而可以进行比较。</p>
+<p>第n期到期的现金流CF折现的现值PV为</p>
+<p>$$<br />
+PV = \frac{CF}{(1+i)^n}<br />
+$$</p>
+<p>i是利率/收益率等。</p>
+<p>直观解释: n年后给你CF元, 市场利率为i,那么这笔钱的在现在的价值就是现值PV。</p>
+<h3 id="_2">四种信用市场工具</h3>
 <ul>
-<li>前向模式<ul>
-<li>令 dx=r, 在计算图中向前冒泡,可以方便计算函数f在x处沿r方向的方向导数。</li>
-<li>令r为单位向量,就可以计算f对任意自变量的偏导,如果有n个自变量,那么要计算n次</li>
-<li>适合从低维到高维的函数计算偏导数</li>
-<li>对偶数</li>
+<li>普通贷款, 到期偿还本息: 普通一次性贷款</li>
+<li>固定支付贷款, 定期偿付部分本金和利息: 例如房贷, 分期贷</li>
+<li>息票债券, 每期偿还利息, 到期偿还票债券面值的债券: 国债</li>
+<li>贴现发行的债券, 没有利息, 到期偿还票债券面值的债券。所以一般要以低于票面价格卖出, 一般的公司债券都是这样</li>
 </ul>
-</li>
-<li>反向模式<ul>
-<li>适合从高维到低维的函数计算偏导数</li>
+<h3 id="_3">到期收益率</h3>
+<p>将债务工具未来所有的现金流CF按照收益率 i 折算的现值如果等于价格,那么i就是到期收益率。</p>
+<ul>
+<li>一次性借款N元,一年后偿付本息, 假设利息为i, 那么收益率就是i</li>
+<li>如果分两年, 方案一,每年都按照利率i偿还利息,到期后偿还本金; 方案二,到期后一次性安年利率i还本付息, 这两种收益率还是i吗? 显然第一年的利息如果存银行或搞理财, 第二年还可以获得额外的收益, 但是第二年的利息并没有这个优势,这说明虽然每年的利率是一样的, 但是第一种方案收益率应该高一些, 这正是因为现金的时间价值不一样。在这个例子中, 假设每年的收益率为r(与利率i区分), 对于方案一,第一年的利息现值为 $( i N / (1+r) )$, 第二年的利息现值为 $( i N / (1+r)^2 )$,确实不一样, 第二年的本金的现值为 $( N/(1+r)^2 )$, 根据等式,未来全部的现金流的现值等于价格(也就是本金), 那么有</li>
 </ul>
-</li>
-<li>前向+反向 可以直接计算海森矩阵与向量乘积???? [&gt;<strong><em>_</em></strong><strong><em>_</em></strong>____]</li>
-</ul>
+<p>$$<br />
+    N = \frac{i N }{(1+r)} + \frac{i N} {(1+r)^2} + \frac{N}{(1+r)^2} <br />
+  $$</p>
+<p>所以到期收益率满足 <br />
+  $$<br />
+   1 = \frac{i} { 1+r } + \frac{1+i}{(1+r)^2 }<br />
+  $$<br />
+  可以通过解这个方程解出到期收益率 $(r = i)$, 也就是说 <strong>到期收益率是把债务等效于按照每年付息, 到期偿还本金,这种还款方式的利率</strong>!!再来看第二种方案, 很容易列出方程<br />
+  $$<br />
+  N = \frac{2i N} {(1+r)^2} + \frac{N}{(1+r)^2} <br />
+  $$<br />
+  解出<br />
+  $$<br />
+  r = \sqrt{1 + 2i} - 1 \approx i - i^2 &lt; i<br />
+  $$<br />
+  实际收益率是比年利率i小的。<br />
+- 等额本息, 到期收益率案例。以房贷为例, 100万元本金LV借款, 假设年利率为i, 按照每月等额本息方式还款n年, 每月还钱金额FP计算。<br />
+  $$<br />
+  LV = \frac{FP}{1+i} + \frac{FP}{(1+i)^2} + \frac{FP}{(1+i)^3} + ... + + \frac{FP}{(1+i)^{12n}}<br />
+  $$<br />
+  所以<br />
+  $$<br />
+  FP = LV / (\frac{1}{1+i} + \frac{1}{(1+i)^2} + \frac{1}{(1+i)^3} + ... + + \frac{1}{(1+i)^{12n}})<br />
+  $$<br />
+  以LV=1000000为例,年利率为i=4.9%, 那么可以就算出 FP=</p>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -102,7 +136,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2018-07-25 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2018-12-30 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -110,7 +144,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: '自动微分',
+  title: '第二篇 金融市场',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
