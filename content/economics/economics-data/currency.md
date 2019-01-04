@@ -54,5 +54,8 @@ date: 2019-01-03
 - M1增速比较快, 应该就是单位活期存款增速快, 这说明投资比较旺盛
 - M2增速比较快,就要看具体是哪一部分增速快了, 如果M1增速并没有加快,而是居民存款加快
 
+![M1](/wiki/static/images/m1.png)
+![M2](/wiki/static/images/m2.png)
+
 ## 参考资料
 - [深入解读M0、M1、M2](https://zhuanlan.zhihu.com/p/27423241)
