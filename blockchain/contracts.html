@@ -149,7 +149,7 @@
 <p>关于solc和编译Solidity合同代码的更多信息可以在这里找到。</p>
 <h3 id="gethsolidity">在geth中设置solidity编译器</h3>
 <p>如果你启动你的geth节点，你可以检查哪些编译器 可用。</p>
-<div class="hlcode"><pre><span></span>&gt; web3.eth.getCompilers();
+<div class="hlcode"><pre><span></span>&amp;gt; web3.eth.getCompilers();
 [&quot;lll&quot;, &quot;solidity&quot;, &quot;serpent&quot;]
 </pre></div>
 
@@ -163,7 +163,7 @@
 
 
 <p>或者，您可以通过控制台在运行时设置此选项：</p>
-<div class="hlcode"><pre><span></span>&gt; admin.setSolc(&quot;/usr/local/bin/solc&quot;)
+<div class="hlcode"><pre><span></span>&amp;gt; admin.setSolc(&quot;/usr/local/bin/solc&quot;)
 solc, the solidity compiler commandline interface
 Version: 0.2.2-02bb315d/.-Darwin/appleclang/JIT linked to libethereum-1.2.0-8007cef0/.-Darwin/appleclang/JIT
 path: /usr/local/bin/solc
@@ -172,13 +172,13 @@ path: /usr/local/bin/solc
 
 <h3 id="_6">编译一个简单的合同¶</h3>
 <p>我们来编一个简单的合同来源：</p>
-<div class="hlcode"><pre><span></span>&gt; source = &quot;contract test { function multiply(uint a) returns(uint d) { return a * 7; } }&quot;
+<div class="hlcode"><pre><span></span>&amp;gt; source = &quot;contract test { function multiply(uint a) returns(uint d) { return a * 7; } }&quot;
 </pre></div>
 
 
 <p>这个合同提供了一个单一的方法乘以a 正整数a并返回* 7。</p>
 <p>您已经准备好使用geth JS控制台来编译solidity代码 eth.compile.solidity（）：</p>
-<div class="hlcode"><pre><span></span><span class="o">&gt;</span> <span class="nt">contract</span> <span class="o">=</span> <span class="nt">eth</span><span class="p">.</span><span class="nc">compile</span><span class="p">.</span><span class="nc">solidity</span><span class="o">(</span><span class="nt">source</span><span class="o">)</span><span class="p">.</span><span class="nc">test</span>
+<div class="hlcode"><pre><span></span><span class="o">&amp;</span><span class="nt">gt</span><span class="o">;</span> <span class="nt">contract</span> <span class="o">=</span> <span class="nt">eth</span><span class="p">.</span><span class="nc">compile</span><span class="p">.</span><span class="nc">solidity</span><span class="o">(</span><span class="nt">source</span><span class="o">)</span><span class="p">.</span><span class="nc">test</span>
 <span class="p">{</span>
   <span class="n">code</span><span class="p">:</span> <span class="s1">&#39;605280600c6000396000f3006000357c010000000000000000000000000000000000000000000000000000000090048063c6888fa114602e57005b60376004356041565b8060005260206000f35b6000600782029050604d565b91905056&#39;</span><span class="p">,</span>
   <span class="n">info</span><span class="o">:</span> <span class="err">{</span>
@@ -270,7 +270,7 @@ var contract = MyContract.new(arg1, arg2, ..., {from: primaryAddress, data: evmB
 成块。过了一段时间，你的交易应该出现在一个 确认它所带来的状态是一个共识。你的合同 现在居住在区块链上。</p>
 <p>异步的做法是这样的：</p>
 <div class="hlcode"><pre><span></span>MyContract.new([arg1, arg2, ...,]{from: primaryAccount, data: evmCode}, function(err, contract) {
-  if (!err &amp;&amp; contract.address)
+  if (!err &amp;amp;&amp;amp; contract.address)
     console.log(contract.address);
 });
 </pre></div>
@@ -286,9 +286,9 @@ var myMultiply7 = Multiply7.at(address);
 
 
 <p>现在在ABI中指定的所有函数调用都可用 合同实例。您可以在合同实例上调用这些方法 以两种方式之一。</p>
-<div class="hlcode"><pre><span></span>&gt; myMultiply7.multiply.sendTransaction(3, {from: address})
+<div class="hlcode"><pre><span></span>&amp;gt; myMultiply7.multiply.sendTransaction(3, {from: address})
 &quot;0x12345&quot;
-&gt; myMultiply7.multiply.call(3)
+&amp;gt; myMultiply7.multiply.call(3)
 21
 </pre></div>
 
@@ -338,7 +338,7 @@ var MyContract = eth.contract(contract.info.abiDefinition)
 contenthash = admin.saveInfo(contract.info, &quot;~/dapps/shared/contracts/test/info.json&quot;)
 // send off the contract to the blockchain
 MyContract.new({from: primaryAccount, data: contract.code}, function(error, contract){
-  if(!error &amp;&amp; contract.address) {
+  if(!error &amp;amp;&amp;amp; contract.address) {
     // calculates the content hash and registers it with the code hash in `HashReg`
     // it uses address to send the transaction.
     // returns the content hash that we use to register a url
@@ -354,7 +354,7 @@ MyContract.new({from: primaryAccount, data: contract.code}, function(error, cont
 <p>通常你需要采取低级别的测试和调试策略 合同和交易。本节介绍一些调试工具和 您可以使用的做法。为了测试合同和交易没有<br />
 真正的结果，你最好在私人区块链上测试它。这可以 通过配置替代网络ID（选择唯一的整数）来实现 和/或禁用对等体。建议练习，为了测试你使用一个<br />
 替代数据目录和端口，以便您甚至不会意外冲突 与您的实时运行的节点（假设使用默认运行 你的虚拟机调试模式下的配置文件和最高的日志记录 详细级别建议：</p>
-<div class="hlcode"><pre><span></span>geth --datadir ~/dapps/testing/00/ --port 30310 --rpcport 8110 --networkid 4567890 --nodiscover --maxpeers 0 --vmdebug --verbosity 6 --pprof --pprofport 6110 console 2&gt;&gt; ~/dapp/testint/00/00.log
+<div class="hlcode"><pre><span></span>geth --datadir ~/dapps/testing/00/ --port 30310 --rpcport 8110 --networkid 4567890 --nodiscover --maxpeers 0 --vmdebug --verbosity 6 --pprof --pprofport 6110 console 2&amp;gt;&amp;gt; ~/dapp/testint/00/00.log
 </pre></div>
 
 

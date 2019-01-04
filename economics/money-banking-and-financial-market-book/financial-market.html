@@ -74,8 +74,11 @@
 <li><a href="#present-value">现值(present value)</a></li>
 <li><a href="#_2">四种信用市场工具</a></li>
 <li><a href="#_3">到期收益率</a></li>
+<li><a href="#_4">回报率</a></li>
+<li><a href="#_5">名义利率与实际利率</a></li>
 </ul>
 </li>
+<li><a href="#_6">利率行为</a></li>
 </ul>
 </div>
 <h2 id="_1">理解利率</h2>
@@ -116,15 +119,128 @@ $$</p>
   r = \sqrt{1 + 2i} - 1 \approx i - i^2 &lt; i<br />
   $$<br />
   实际收益率是比年利率i小的。<br />
-- 等额本息, 到期收益率案例。以房贷为例, 100万元本金LV借款, 假设年利率为i, 按照每月等额本息方式还款n年, 每月还钱金额FP计算。<br />
+- 等额本息, 到期收益率案例。以房贷为例, 100万元本金LV借款, 假设月利率为i, 按照每月等额本息方式还款n年, 每月还钱金额FP计算。<br />
   $$<br />
-  LV = \frac{FP}{1+i} + \frac{FP}{(1+i)^2} + \frac{FP}{(1+i)^3} + ... + + \frac{FP}{(1+i)^{12n}}<br />
+  LV = \frac{FP}{1+i} + \frac{FP}{(1+i)^2} + \frac{FP}{(1+i)^3} + ... + \frac{FP}{(1+i)^{12n}}<br />
   $$<br />
   所以<br />
   $$<br />
-  FP = LV / (\frac{1}{1+i} + \frac{1}{(1+i)^2} + \frac{1}{(1+i)^3} + ... + + \frac{1}{(1+i)^{12n}})<br />
+  FP = LV / (\frac{1}{1+i} + \frac{1}{(1+i)^2} + \frac{1}{(1+i)^3} + ... + \frac{1}{(1+i)^{12n}})<br />
   $$<br />
-  以LV=1000000为例,年利率为i=4.9%, 那么可以就算出 FP=</p>
+  以LV=1000000元为例,年利率为4.9%,那么月利率i=0.40833%,那么可以就算出 FP=5307元</p>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="nf">calc_fp</span><span class="p">(</span><span class="n">lv</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+  <span class="n">r</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="nb">pow</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+  <span class="k">return</span> <span class="n">lv</span> <span class="o">/</span> <span class="n">r</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+  <span class="k">print</span> <span class="n">calc_fp</span><span class="p">(</span><span class="mi">726000</span><span class="p">,</span> <span class="mf">0.0325</span><span class="o">/</span><span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="o">*</span><span class="mi">30</span><span class="p">)</span> <span class="c1"># 实际值 3159.60</span>
+  <span class="k">print</span> <span class="n">calc_fp</span><span class="p">(</span><span class="mi">940000</span><span class="p">,</span> <span class="mf">0.0539</span><span class="o">/</span><span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="o">*</span><span class="mi">30</span><span class="p">)</span> <span class="c1"># 实际值 5272.48</span>
+</pre></div>
+
+
+<p>假设以等额本金方式还款, 那么每月还款金额很好算, 就是等额本金+当月的剩余借款产生的利息。<br />
+  房贷计算参考<a href="https://github.com/tracholar/wiki/blob/master/src/ecomic/loan_calc.py">loan_calc.py</a>。<br />
+- 息票债券, 用P表示息票现期价格, C表示每期支付利息, F为债券面值,也就是到期后支付的金额,那么有<br />
+$$<br />
+P = \frac{C}{1+i} + \frac{C}{(1+i)^2} + \frac{C}{(1+i)^3} + ... + \frac{C}{(1+i)^{n}} + \frac{F}{(1+i)^{n}}<br />
+$$<br />
+C与F的比值也是息票利率, 如果息票现期价格P等于面值F,那么息票相当于每期还息到期还本的借款, 到期收益率就是票面利率。实际中,价格P往往和面值F不相等,如果价格P低于面值,那么到期收益率显然高于票面利率。这说明, <strong>息票价格P与到期收益率负相关</strong>!!<br />
+- 永续债券, 就是指n等于无穷的息票债券, 类似于固定股息的股票。有 <br />
+$$<br />
+P = \frac{C}{i}<br />
+$$<br />
+可以看到, 价格跟利率成反比!! 这也相当于一个简单的股票价格模型, 当市场无风险利率升高了, 股东要求的到期收益率也会相应提高, 也就是i会提高(这种情况下容易验证到期收益率就等于票面利率,你可以认为F=P,实际上在n无限大时,只要F为有限值,都没有影响), 那么股票价格就会下跌, 这样才能让当下的买家获得相应的收益率,这样交易才能完成!<br />
+- 当利率下降到很低的时候, 国库券/银行利率可能出现负利率!!因为大额的资金持有现金不方便。</p>
+<h3 id="_4">回报率</h3>
+<ul>
+<li>对任何证券来说, 回报率(R)既包含了利率(ic)也包括价格变动率g(也叫资本利得率)!<br />
+$$<br />
+R = i_c + g<br />
+$$<br />
+不分红的股票就只有资本利得率g, 价格不变的债券就只有利率。由于价格波动可能为负的,这会导致回报率为负值!!</li>
+<li>利率风险: 债券期限越长,价格变动幅度受利率影响会越大,这会加大长期债券的投资风险! 股票可以认为就是一种无限期的债券!</li>
+<li>距离到期日期限 和 持有期限 相同的债券是没有利率风险的。因为它的回报只有利息,到期时的价格就是约定的票面价格,也就是当初买的价格!</li>
+</ul>
+<h3 id="_5">名义利率与实际利率</h3>
+<p>实际利率是指从名义利率(票面利率)扣除通货膨胀之后的利率。费雪方程(Fisher Equation)</p>
+<p>$$<br />
+i (\text{名义利率}) = i_r (\text{实际利率}) + \pi^e (通货膨胀)<br />
+$$</p>
+<p>据此,我们来测算一下2008年-2018年10年期间, 5年期定期存款的实际利率, 2008年时3年以上定期存款的基准利率为4.14%, 10年间年均通货膨胀率估计值约为7%(用M2增长率 - GDP增长率),这表明我们的名义利率为 -2.86%!!! 这跟我们直观感受一致, 「把钱存银行, 越存越没钱!」</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>2017年</th>
+<th>2016年</th>
+<th>2015年</th>
+<th>2014年</th>
+<th>2013年</th>
+<th>2012年</th>
+<th>2011年</th>
+<th>2010年</th>
+<th>2009年</th>
+<th>2008年</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>国民总收入(亿元)</td>
+<td>824828.4</td>
+<td>740598.7</td>
+<td>686449.6</td>
+<td>644791.1</td>
+<td>590422.4</td>
+<td>539116.5</td>
+<td>484753.2</td>
+<td>411265.2</td>
+<td>348498.5</td>
+<td>321500.5</td>
+</tr>
+<tr>
+<td>货币和准货币(M2)供应量(亿元)</td>
+<td>1690235.31</td>
+<td>1550066.67</td>
+<td>1392278.11</td>
+<td>1228374.81</td>
+<td>1106524.98</td>
+<td>974148.8</td>
+<td>851590.9</td>
+<td>725851.8</td>
+<td>610224.5</td>
+<td>475166.6</td>
+</tr>
+<tr>
+<td>GDP指数</td>
+<td>257%</td>
+<td>230%</td>
+<td>214%</td>
+<td>201%</td>
+<td>184%</td>
+<td>168%</td>
+<td>151%</td>
+<td>128%</td>
+<td>108%</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>M2指数</td>
+<td>356%</td>
+<td>326%</td>
+<td>293%</td>
+<td>259%</td>
+<td>233%</td>
+<td>205%</td>
+<td>179%</td>
+<td>153%</td>
+<td>128%</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table>
+<p>从<a href="http://data.stats.gov.cn/easyquery.htm?cn=C01">国家统计局</a>的数据来看, GDP年均增长率为</p>
+<p>名义利率无法直接观测到,1997年,美国财政部发行了<strong>指数化债券TIPS(全称通货膨胀保值债券)</strong>,债券的利率按照物价水平变化进行调整。</p>
+<h2 id="_6">利率行为</h2>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->

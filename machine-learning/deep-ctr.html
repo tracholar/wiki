@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>短中长期规划 - Tracholar的个人wiki</title>
+        <title>CTR预估中的深度模型 - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,49 +64,62 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#about">about</a>&nbsp;»&nbsp;短中长期规划</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;CTR预估中的深度模型</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">短中长期规划</div>
+<div id="title">CTR预估中的深度模型</div>
 <div id="content">
-  <h2 id="_1">短期</h2>
-<ul>
-<li>熟悉spark开发流程，学会使用mllib在线上建模 ✅</li>
-<li>cs224d  ✅</li>
-<li>cs231n  ✅</li>
-<li>cs294, cs234 RL</li>
-<li>GAN</li>
-<li>TensorFlow 系统性学习,并完成记录和博客 [TODO]</li>
-<li>《货币金融学》</li>
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">数据集</a></li>
+<li><a href="#_2">数据预处理</a></li>
 </ul>
-<h2 id="_2">中期</h2>
+</div>
+<h2 id="_1">数据集</h2>
+<p>Electronics Dataset, 亚马逊1996-2014年间的评论数据, Electronics 只是其中电子产品这个类别的数据,它包括两个文件,一个是评论数据,另一个是电子产品的元数据。</p>
 <ul>
-<li>deep learning overview ： Bengio 的书及相关论文</li>
-<li>machine learning overview ： 周志华的书，prml, element of ml</li>
-<li>分布式工具和环境， Spark， Hbase， Hadoop， Hive</li>
-<li>分布式算法，优化算法等</li>
-<li>金融学基础知识</li>
+<li>评论数据:<ul>
+<li>reviewerID 评论用户ID</li>
+<li>asin 产品ID</li>
+<li>reviewerName 评论用户名字</li>
+<li>helpful 有用的评分</li>
+<li>reviewText 评论文本</li>
+<li>overall 对产品的打分</li>
+<li>summary 评论摘要</li>
+<li>unixReviewTime 评论时间戳</li>
+<li>reviewTime 评论时间</li>
 </ul>
-<h2 id="_3">长期</h2>
+</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="p">{</span><span class="nt">&quot;reviewerID&quot;</span><span class="p">:</span> <span class="s2">&quot;A3BY5KCNQZXV5U&quot;</span><span class="p">,</span> <span class="nt">&quot;asin&quot;</span><span class="p">:</span> <span class="s2">&quot;0594451647&quot;</span><span class="p">,</span> <span class="nt">&quot;reviewerName&quot;</span><span class="p">:</span> <span class="s2">&quot;Matenai&quot;</span><span class="p">,</span> <span class="nt">&quot;helpful&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="nt">&quot;reviewText&quot;</span><span class="p">:</span> <span class="s2">&quot;This product really works great but I found the following items you need to keep in mind:- You must have your power adapter connected for it to work...it plugs in the the bottom. It appears it needs power from the nook power adapter to operate.- The plug fits in loosely and you cannot move the Nook around much without holding the adapter in place.- On initial plugin it seems you need to rock it around to get the connection but then it seems solid.- It works with a 25ft high quality HDMI cable so you can put the NOOK across the room with you. Not tested with cheap cables.Warning...I found that my LG SmartTV 3D from a few years back does not work with this adapter but it does not seem to work with many things...bad software. This adapter works fine with other HDMI devices I have used like monitors and I am sure other TVs.Gave it five stars because it really is nice to extend the screen and use your Nook as a streaming server to your TV. Nice they made such a device.&quot;</span><span class="p">,</span> <span class="nt">&quot;overall&quot;</span><span class="p">:</span> <span class="mf">5.0</span><span class="p">,</span> <span class="nt">&quot;summary&quot;</span><span class="p">:</span> <span class="s2">&quot;This works great but read the details...&quot;</span><span class="p">,</span> <span class="nt">&quot;unixReviewTime&quot;</span><span class="p">:</span> <span class="mi">1390176000</span><span class="p">,</span> <span class="nt">&quot;reviewTime&quot;</span><span class="p">:</span> <span class="s2">&quot;01 20, 2014&quot;</span><span class="p">}</span>
+</pre></div>
+
+
 <ul>
-<li>ML 技术栈，从工程到算法到系统</li>
-<li>金融学基础知识</li>
-<li>从财务和技术两方面分析主流IT企业</li>
+<li>产品元数据:<ul>
+<li>asin 产品ID</li>
+<li>title 产品名字</li>
+<li>price 价格</li>
+<li>imUrl 图片URL</li>
+<li>related 相关产品(推荐结果)</li>
+<li>salesRank </li>
+<li>brand 品牌</li>
+<li>categories 类别</li>
 </ul>
-<h2 id="2018">2018年</h2>
+</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="p">{</span><span class="s1">&#39;asin&#39;</span><span class="o">:</span> <span class="s1">&#39;0594287995&#39;</span><span class="p">,</span> <span class="s1">&#39;imUrl&#39;</span><span class="o">:</span> <span class="s1">&#39;http://g-ecx.images-amazon.com/images/G/01/x-site/icons/no-img-sm._CB192198896_.gif&#39;</span><span class="p">,</span> <span class="s1">&#39;categories&#39;</span><span class="o">:</span> <span class="p">[[</span><span class="s1">&#39;Electronics&#39;</span><span class="p">,</span> <span class="s1">&#39;eBook Readers &amp; Accessories&#39;</span><span class="p">,</span> <span class="s1">&#39;Covers&#39;</span><span class="p">]],</span> <span class="s1">&#39;title&#39;</span><span class="o">:</span> <span class="s1">&#39;Kate Spade Rain or Shine Magazine Cover for Nook Simple Touch&#39;</span><span class="p">}</span>
+</pre></div>
+
+
 <ul>
-<li>6篇深入思考博客 [完成30%]</li>
-<li>10篇 关键论文结果的复现 [未完成]</li>
+<li><a href="http://jmcauley.ucsd.edu/data/amazon/">http://jmcauley.ucsd.edu/data/amazon/</a></li>
+<li>评论数据 <a href="http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Electronics_5.json.gz">http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Electronics_5.json.gz</a></li>
+<li>元数据 <a href="http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/meta_Electronics.json.gz">http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/meta_Electronics.json.gz</a></li>
 </ul>
-<p>总结: 缺乏短期规划, 和短期不断的调整与反馈</p>
-<h2 id="2019">2019年</h2>
-<ul>
-<li>3篇深入思考博客</li>
-<li>10篇重要论文中的关键部分复现</li>
-<li>3篇金融学书</li>
-<li>10 项宏观经济数据及分析报告</li>
-<li>每周计划、调整与反馈</li>
-</ul>
+<h2 id="_2">数据预处理</h2>
+<p>在这次实验中, 只用到 reviewerID, asin, unixReviewTime, categories 这4个字段, 并且简单起见, categories只用到最后一个类别。对每一个用户,评论的产品作为正样本, 再随机采样相等数量的其他产品作为负样本, 最后按照时间对他评论的产品排序,最后一个作为测试集(正样本和负样本一致)。这样,保证正样本和负样本都覆盖了所有用户。</p>
+<p>预处理流程参考代码,我复用了来自DIN论文的代码 &lt;&gt;</p>
+<p>基本信息: user_count: 192403    item_count: 63001   cate_count: 801 example_count: 1689188</p>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -118,7 +131,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2016-07-17 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2019-01-01 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -126,7 +139,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: '短中长期规划',
+  title: 'CTR预估中的深度模型',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
