@@ -38,6 +38,10 @@ date: 2019-01-03
 - 微信、支付宝等可以直接支付的是不是算在「可开支票进行支付的单位活期存款」中,因为那些钱本质上还是以活期存在银行,只不过主体是企业,而不是我们用户?
 
 ## M1和M2经济指标解读
+
+<img alt="M1" src="/wiki/static/images/m1.png" style="width:400px; float:right"/>
+<img alt="M2" src="/wiki/static/images/m2.png" style="width:400px; float:right" />
+
 - 相关文章
     - [货币供应与股票价格关系的实证分析](http://value500.com/m1m2_6.htm)
     - [M1对股市、房地产市场的影响](http://value500.com/m1m2_5.htm)
@@ -53,9 +57,6 @@ date: 2019-01-03
 - 对比10年以后的M1同步增速和上证指数发现, M1增速超过10%是在2015年9月到2018年1月, 而上证指数的峰值是在12年6月!! 根本不同步!
 - M1增速比较快, 应该就是单位活期存款增速快, 这说明投资比较旺盛
 - M2增速比较快,就要看具体是哪一部分增速快了, 如果M1增速并没有加快,而是居民存款加快
-
-![M1](/wiki/static/images/m1.png)
-![M2](/wiki/static/images/m2.png)
 
 ## 参考资料
 - [深入解读M0、M1、M2](https://zhuanlan.zhihu.com/p/27423241)
