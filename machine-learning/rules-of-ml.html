@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>CTR预估中的深度模型 - Tracholar的个人wiki</title>
+        <title>翻译: Rules of Machine Learning: Best Practices for ML Engineering - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,62 +64,17 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;CTR预估中的深度模型</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;翻译: Rules of Machine Learning: Best Practices for ML Engineering</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">CTR预估中的深度模型</div>
+<div id="title">翻译: Rules of Machine Learning: Best Practices for ML Engineering</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">数据集</a></li>
-<li><a href="#_2">数据预处理</a></li>
+<li><a href="#_1">关于</a></li>
 </ul>
 </div>
-<h2 id="_1">数据集</h2>
-<p>Electronics Dataset, 亚马逊1996-2014年间的评论数据, Electronics 只是其中电子产品这个类别的数据,它包括两个文件,一个是评论数据,另一个是电子产品的元数据。</p>
-<ul>
-<li>评论数据:<ul>
-<li>reviewerID 评论用户ID</li>
-<li>asin 产品ID</li>
-<li>reviewerName 评论用户名字</li>
-<li>helpful 有用的评分</li>
-<li>reviewText 评论文本</li>
-<li>overall 对产品的打分</li>
-<li>summary 评论摘要</li>
-<li>unixReviewTime 评论时间戳</li>
-<li>reviewTime 评论时间</li>
-</ul>
-</li>
-</ul>
-<div class="hlcode"><pre><span></span><span class="p">{</span><span class="nt">&quot;reviewerID&quot;</span><span class="p">:</span> <span class="s2">&quot;A3BY5KCNQZXV5U&quot;</span><span class="p">,</span> <span class="nt">&quot;asin&quot;</span><span class="p">:</span> <span class="s2">&quot;0594451647&quot;</span><span class="p">,</span> <span class="nt">&quot;reviewerName&quot;</span><span class="p">:</span> <span class="s2">&quot;Matenai&quot;</span><span class="p">,</span> <span class="nt">&quot;helpful&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="nt">&quot;reviewText&quot;</span><span class="p">:</span> <span class="s2">&quot;This product really works great but I found the following items you need to keep in mind:- You must have your power adapter connected for it to work...it plugs in the the bottom. It appears it needs power from the nook power adapter to operate.- The plug fits in loosely and you cannot move the Nook around much without holding the adapter in place.- On initial plugin it seems you need to rock it around to get the connection but then it seems solid.- It works with a 25ft high quality HDMI cable so you can put the NOOK across the room with you. Not tested with cheap cables.Warning...I found that my LG SmartTV 3D from a few years back does not work with this adapter but it does not seem to work with many things...bad software. This adapter works fine with other HDMI devices I have used like monitors and I am sure other TVs.Gave it five stars because it really is nice to extend the screen and use your Nook as a streaming server to your TV. Nice they made such a device.&quot;</span><span class="p">,</span> <span class="nt">&quot;overall&quot;</span><span class="p">:</span> <span class="mf">5.0</span><span class="p">,</span> <span class="nt">&quot;summary&quot;</span><span class="p">:</span> <span class="s2">&quot;This works great but read the details...&quot;</span><span class="p">,</span> <span class="nt">&quot;unixReviewTime&quot;</span><span class="p">:</span> <span class="mi">1390176000</span><span class="p">,</span> <span class="nt">&quot;reviewTime&quot;</span><span class="p">:</span> <span class="s2">&quot;01 20, 2014&quot;</span><span class="p">}</span>
-</pre></div>
-
-
-<ul>
-<li>产品元数据:<ul>
-<li>asin 产品ID</li>
-<li>title 产品名字</li>
-<li>price 价格</li>
-<li>imUrl 图片URL</li>
-<li>related 相关产品(推荐结果)</li>
-<li>salesRank </li>
-<li>brand 品牌</li>
-<li>categories 类别</li>
-</ul>
-</li>
-</ul>
-<div class="hlcode"><pre><span></span><span class="p">{</span><span class="s1">&#39;asin&#39;</span><span class="o">:</span> <span class="s1">&#39;0594287995&#39;</span><span class="p">,</span> <span class="s1">&#39;imUrl&#39;</span><span class="o">:</span> <span class="s1">&#39;http://g-ecx.images-amazon.com/images/G/01/x-site/icons/no-img-sm._CB192198896_.gif&#39;</span><span class="p">,</span> <span class="s1">&#39;categories&#39;</span><span class="o">:</span> <span class="p">[[</span><span class="s1">&#39;Electronics&#39;</span><span class="p">,</span> <span class="s1">&#39;eBook Readers &amp; Accessories&#39;</span><span class="p">,</span> <span class="s1">&#39;Covers&#39;</span><span class="p">]],</span> <span class="s1">&#39;title&#39;</span><span class="o">:</span> <span class="s1">&#39;Kate Spade Rain or Shine Magazine Cover for Nook Simple Touch&#39;</span><span class="p">}</span>
-</pre></div>
-
-
-<ul>
-<li><a href="http://jmcauley.ucsd.edu/data/amazon/">http://jmcauley.ucsd.edu/data/amazon/</a></li>
-<li>评论数据 <a href="http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Electronics_5.json.gz">http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Electronics_5.json.gz</a></li>
-<li>元数据 <a href="http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/meta_Electronics.json.gz">http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/meta_Electronics.json.gz</a></li>
-</ul>
-<h2 id="_2">数据预处理</h2>
-<p>在这次实验中, 只用到 reviewerID, asin, unixReviewTime, categories 这4个字段, 并且简单起见, categories只用到最后一个类别。对每一个用户,照时间对他评论的产品排序, 评论的产品作为正样本, 之前评论的产品列表作为历史, 再随机采样相等数量的其他产品(不在历史评论中也不在未来的评论列表中)作为负样本, 最后按最后一个评论的样本作为测试集(正样本和负样本一致, 实际评论的作为正样本, 采样的其他产品作为负样本)。这样,保证正样本和负样本都覆盖了所有用户。</p>
-<p>预处理流程参考代码,我复用了来自DIN论文的代码 </p>
-<p>基本信息: user_count: 192403    item_count: 63001   cate_count: 801 example_count: 1689188</p>
+<h2 id="_1">关于</h2>
+<p>原文 <a href="https://developers.google.com/machine-learning/guides/rules-of-ml/">https://developers.google.com/machine-learning/guides/rules-of-ml/</a></p>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -131,7 +86,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2019-01-01 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2019-01-02 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -139,7 +94,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: 'CTR预估中的深度模型',
+  title: '翻译: Rules of Machine Learning: Best Practices for ML Engineering',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
