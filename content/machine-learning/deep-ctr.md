@@ -46,8 +46,19 @@ Electronics Dataset, 亚马逊1996-2014年间的评论数据, Electronics 只是
 ## 数据预处理
 在这次实验中, 只用到 reviewerID, asin, unixReviewTime, categories 这4个字段, 并且简单起见, categories只用到最后一个类别。对每一个用户,照时间对他评论的产品排序, 评论的产品作为正样本, 之前评论的产品列表作为历史, 再随机采样相等数量的其他产品(不在历史评论中也不在未来的评论列表中)作为负样本, 最后按最后一个评论的样本作为测试集(正样本和负样本一致, 实际评论的作为正样本, 采样的其他产品作为负样本)。这样,保证正样本和负样本都覆盖了所有用户。
 
-预处理流程参考代码,我复用了来自DIN论文的代码 
+预处理流程参考代码,我复用了来自DIN论文的代码 <https://github.com/zhougr1993/DeepInterestNetwork>
 
 基本信息: user_count: 192403	item_count: 63001	cate_count: 801	example_count: 1689188
 
+```
+# 训练数据集合
+# reviewerID, hist,    asin,  label
+104760, [3737, 19450], 18486, 1
 
+# 测试数据集合
+# reviewerID,  hist,       (review asin,  no review asin)
+91788, [16942, 42346, 38112, 36550, 45547, 31289, 48828], (57905, 11716)
+
+# asin的类别映射表 cate_list, key 是asin ID, value 是 cate_id
+[738 157 571 ...  63 674 351]
+```
