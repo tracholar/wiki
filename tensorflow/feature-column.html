@@ -1,0 +1,284 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>Feature Column 特征变换 - Tracholar的个人wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="google-search" style="width:200px; float:right; margin: 20px 0;">
+                <form action="//cse.google.com/cse" method="get" id="search-form">
+                    <input type="hidden" name="cx" value="015970462532790426975:gqlen38ywus"/>
+                    <input type="text" name="q"  style="line-height:20px; padding:4px;" placeholder="站内搜索"/>
+                    <svg width="13" height="13" viewBox="0 0 13 13" style="position:relative; left: -20px;" onclick="document.getElementById('search-form').submit()">
+                        <title>搜索</title>
+                        <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z">
+                        </path>
+                    </svg>
+                </form>
+
+            </div>
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tensorflow">tensorflow</a>&nbsp;»&nbsp;Feature Column 特征变换</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">Feature Column 特征变换</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#numeric-column">Numeric column</a></li>
+<li><a href="#bucketized-column">Bucketized column</a></li>
+<li><a href="#categorical-identity-column">Categorical identity column</a></li>
+<li><a href="#categorical-vocabulary-column">Categorical vocabulary column</a></li>
+<li><a href="#hashed-column">Hashed Column</a></li>
+<li><a href="#crossed-column">Crossed column</a></li>
+<li><a href="#indicator-and-embedding-columns">Indicator and embedding columns</a></li>
+<li><a href="#passing-feature-columns-to-estimators">Passing feature columns to Estimators</a></li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p><img alt="特征列" src="/wiki/static/images/some_constructors.jpg" /></p>
+<h2 id="numeric-column">Numeric column</h2>
+<p>创建单个标量特征列</p>
+<div class="hlcode"><pre><span></span><span class="c1"># Defaults to a tf.float32 scalar.</span>
+<span class="n">numeric_feature_column</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">numeric_column</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;SepalLength&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+</pre></div>
+
+
+<p>创建向量特征列</p>
+<div class="hlcode"><pre><span></span><span class="c1"># Represent a 10-element vector in which each cell contains a tf.float32.</span>
+<span class="n">vector_feature_column</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">numeric_column</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;Bowling&quot;</span><span class="p">,</span>
+                                                         <span class="n">shape</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+
+<h2 id="bucketized-column">Bucketized column</h2>
+<p>分桶的列,将数值按照桶划分成多个类别特征</p>
+<div class="hlcode"><pre><span></span><span class="c1"># First, convert the raw input to a numeric column.</span>
+<span class="n">numeric_feature_column</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">numeric_column</span><span class="p">(</span><span class="s2">&quot;Year&quot;</span><span class="p">)</span>
+
+<span class="c1"># Then, bucketize the numeric column on the years 1960, 1980, and 2000.</span>
+<span class="n">bucketized_feature_column</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">bucketized_column</span><span class="p">(</span>
+    <span class="n">source_column</span> <span class="o">=</span> <span class="n">numeric_feature_column</span><span class="p">,</span>
+    <span class="n">boundaries</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1960</span><span class="p">,</span> <span class="mi">1980</span><span class="p">,</span> <span class="mi">2000</span><span class="p">])</span>
+</pre></div>
+
+
+<h2 id="categorical-identity-column">Categorical identity column</h2>
+<p>相当于对整数做 onehot</p>
+<div class="hlcode"><pre><span></span><span class="c1"># Create categorical output for an integer feature named &quot;my_feature_b&quot;,</span>
+<span class="c1"># The values of my_feature_b must be &gt;= 0 and &lt; num_buckets</span>
+<span class="n">identity_feature_column</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">categorical_column_with_identity</span><span class="p">(</span>
+    <span class="n">key</span><span class="o">=</span><span class="s1">&#39;my_feature_b&#39;</span><span class="p">,</span>
+    <span class="n">num_buckets</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="c1"># Values [0, 4)</span>
+
+<span class="c1"># In order for the preceding call to work, the input_fn() must return</span>
+<span class="c1"># a dictionary containing &#39;my_feature_b&#39; as a key. Furthermore, the values</span>
+<span class="c1"># assigned to &#39;my_feature_b&#39; must belong to the set [0, 4).</span>
+<span class="k">def</span> <span class="nf">input_fn</span><span class="p">():</span>
+    <span class="o">...</span>
+    <span class="k">return</span> <span class="p">({</span> <span class="s1">&#39;my_feature_a&#39;</span><span class="p">:[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;my_feature_b&#39;</span><span class="p">:[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="p">},</span>
+            <span class="p">[</span><span class="n">Label_values</span><span class="p">])</span>
+</pre></div>
+
+
+<h2 id="categorical-vocabulary-column">Categorical vocabulary column</h2>
+<p>对字符串做字典映射,然后 onehot, 可以指定列表,或者文件</p>
+<div class="hlcode"><pre><span></span><span class="c1"># Given input &quot;feature_name_from_input_fn&quot; which is a string,</span>
+<span class="c1"># create a categorical feature by mapping the input to one of</span>
+<span class="c1"># the elements in the vocabulary list.</span>
+<span class="n">vocabulary_feature_column</span> <span class="o">=</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">categorical_column_with_vocabulary_list</span><span class="p">(</span>
+        <span class="n">key</span><span class="o">=</span><span class="n">feature_name_from_input_fn</span><span class="p">,</span>
+        <span class="n">vocabulary_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;kitchenware&quot;</span><span class="p">,</span> <span class="s2">&quot;electronics&quot;</span><span class="p">,</span> <span class="s2">&quot;sports&quot;</span><span class="p">])</span>
+
+<span class="c1"># Given input &quot;feature_name_from_input_fn&quot; which is a string,</span>
+<span class="c1"># create a categorical feature to our model by mapping the input to one of</span>
+<span class="c1"># the elements in the vocabulary file</span>
+<span class="n">vocabulary_feature_column</span> <span class="o">=</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">categorical_column_with_vocabulary_file</span><span class="p">(</span>
+        <span class="n">key</span><span class="o">=</span><span class="n">feature_name_from_input_fn</span><span class="p">,</span>
+        <span class="n">vocabulary_file</span><span class="o">=</span><span class="s2">&quot;product_class.txt&quot;</span><span class="p">,</span>
+        <span class="n">vocabulary_size</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>        
+</pre></div>
+
+
+<h2 id="hashed-column">Hashed Column</h2>
+<p>Hash取模, 返回 category column</p>
+<div class="hlcode"><pre><span></span><span class="c1"># pseudocode</span>
+<span class="n">feature_id</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">(</span><span class="n">raw_feature</span><span class="p">)</span> <span class="o">%</span> <span class="n">hash_bucket_size</span>
+</pre></div>
+
+
+<div class="hlcode"><pre><span></span><span class="n">hashed_feature_column</span> <span class="o">=</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">categorical_column_with_hash_bucket</span><span class="p">(</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;some_feature&quot;</span><span class="p">,</span>
+        <span class="n">hash_bucket_size</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="c1"># The number of categories</span>
+</pre></div>
+
+
+<h2 id="crossed-column">Crossed column</h2>
+<p>特征交叉</p>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="nf">make_dataset</span><span class="p">(</span><span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">latitude</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">longitude</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">labels</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="n">features</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;latitude&#39;</span><span class="p">:</span> <span class="n">latitude</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
+                <span class="s1">&#39;longitude&#39;</span><span class="p">:</span> <span class="n">longitude</span><span class="o">.</span><span class="n">flatten</span><span class="p">()}</span>
+    <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="o">.</span><span class="n">from_tensor_slices</span><span class="p">((</span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">))</span>
+
+
+<span class="c1"># Bucketize the latitude and longitude using the `edges`</span>
+<span class="n">latitude_bucket_fc</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">bucketized_column</span><span class="p">(</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">numeric_column</span><span class="p">(</span><span class="s1">&#39;latitude&#39;</span><span class="p">),</span>
+    <span class="nb">list</span><span class="p">(</span><span class="n">atlanta</span><span class="o">.</span><span class="n">latitude</span><span class="o">.</span><span class="n">edges</span><span class="p">))</span>
+
+<span class="n">longitude_bucket_fc</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">bucketized_column</span><span class="p">(</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">numeric_column</span><span class="p">(</span><span class="s1">&#39;longitude&#39;</span><span class="p">),</span>
+    <span class="nb">list</span><span class="p">(</span><span class="n">atlanta</span><span class="o">.</span><span class="n">longitude</span><span class="o">.</span><span class="n">edges</span><span class="p">))</span>
+
+<span class="c1"># Cross the bucketized columns, using 5000 hash bins.</span>
+<span class="n">crossed_lat_lon_fc</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">crossed_column</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">latitude_bucket_fc</span><span class="p">,</span> <span class="n">longitude_bucket_fc</span><span class="p">],</span> <span class="mi">5000</span><span class="p">)</span>
+
+<span class="n">fc</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">latitude_bucket_fc</span><span class="p">,</span>
+    <span class="n">longitude_bucket_fc</span><span class="p">,</span>
+    <span class="n">crossed_lat_lon_fc</span><span class="p">]</span>
+
+<span class="c1"># Build and train the Estimator.</span>
+<span class="n">est</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">LinearRegressor</span><span class="p">(</span><span class="n">fc</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+</pre></div>
+
+
+<h2 id="indicator-and-embedding-columns">Indicator and embedding columns</h2>
+<p>onehot编码</p>
+<div class="hlcode"><pre><span></span><span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">indicator_column</span><span class="p">(</span><span class="n">categorical_column</span><span class="p">)</span>
+</pre></div>
+
+
+<p>embedding列</p>
+<div class="hlcode"><pre><span></span><span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">embedding_column</span><span class="p">(</span>
+    <span class="n">categorical_column</span><span class="o">=</span><span class="n">categorical_column</span><span class="p">,</span>
+    <span class="n">dimension</span><span class="o">=</span><span class="n">embedding_dimensions</span><span class="p">)</span>
+</pre></div>
+
+
+<h2 id="passing-feature-columns-to-estimators">Passing feature columns to Estimators</h2>
+<ul>
+<li><code>tf.estimator.LinearClassifier</code> 和 <code>tf.estimator.LinearRegressor</code>: 所有的特征列.</li>
+<li><code>tf.estimator.DNNClassifier</code> 和 <code>tf.estimator.DNNRegressor</code>: 只支持 dense 列. 其他特征列必须转成 <code>indicator_column</code>或者<code>embedding_column</code>.</li>
+<li><code>tf.estimator.DNNLinearCombinedClassifier</code> 和 <code>tf.estimator.DNNLinearCombinedRegressor</code>:<ul>
+<li>The linear_feature_columns argument accepts any feature column type.</li>
+<li>The dnn_feature_columns argument only accepts dense columns.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2019-01-12 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: 'Feature Column 特征变换',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2019 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>
