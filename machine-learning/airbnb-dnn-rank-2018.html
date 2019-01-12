@@ -79,13 +79,16 @@
 <li><a href="#deep-nn">Deep NN</a></li>
 </ul>
 </li>
-<li><a href="#failed-models">FAILED MODELS</a><ul>
+<li><a href="#_4">错误的模型</a><ul>
 <li><a href="#listing-id">Listing ID</a></li>
 <li><a href="#multi-task-learning">Multi-task learning</a></li>
 </ul>
 </li>
-<li><a href="#_4">特征工程</a></li>
-<li><a href="#_5">参考</a></li>
+<li><a href="#_5">特征工程</a></li>
+<li><a href="#_6">系统工程</a></li>
+<li><a href="#_7">超参数</a></li>
+<li><a href="#_8">特征重要性</a></li>
+<li><a href="#_9">参考</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -145,10 +148,9 @@
 <span class="sd">    column a listing in the search result. Column 0 is the booked listing, while columns 1 through</span>
 <span class="sd">    NUM_SAMPLES - 1 the not-booked listings. &#39;&#39;&#39;</span>
     <span class="n">logit_vals</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">logit_op</span><span class="p">)</span> 
-    <span class="n">ranks</span> <span class="o">=</span> <span class="n">NUM_SAMPLES</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span>
-    <span class="n">logit_vals</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> 
-    <span class="n">discounted_non_booking</span> <span class="o">=</span> <span class="n">apply_discount</span><span class="p">(</span><span class="n">ranks</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:])</span> <span class="n">discounted_booking</span> <span class="o">=</span>
-    <span class="n">apply_discount</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">ranks</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span> 
+    <span class="n">ranks</span> <span class="o">=</span> <span class="n">NUM_SAMPLES</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">logit_vals</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> 
+    <span class="n">discounted_non_booking</span> <span class="o">=</span> <span class="n">apply_discount</span><span class="p">(</span><span class="n">ranks</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:])</span> 
+    <span class="n">discounted_booking</span> <span class="o">=</span> <span class="n">apply_discount</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">ranks</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span> 
     <span class="n">discounted_weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">discounted_booking</span> <span class="o">-</span> <span class="n">discounted_non_booking</span><span class="p">)</span> 
     <span class="k">return</span> <span class="n">discounted_weight</span>
 
@@ -184,7 +186,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="failed-models">FAILED MODELS</h2>
+<h2 id="_4">错误的模型</h2>
 <ul>
 <li>两个流行的方法,但是实际没有效果</li>
 </ul>
@@ -201,7 +203,7 @@
 <li>试验结果发现对长时间浏览任务有较大帮助,但是对订购没有帮助</li>
 </ul>
 <p>Xing Yi, Liangjie Hong, Erheng Zhong, Nanthan Nan Liu, and Suju Rajan. 2014. Beyond Clicks: Dwell Time for Personalization. In Proceedings of the 8th ACM Conference on Recommender Systems (RecSys ’14). ACM, New York, NY, USA,</p>
-<h2 id="_4">特征工程</h2>
+<h2 id="_5">特征工程</h2>
 <ul>
 <li>对于NN, 是为了让特征具有某些特殊的性质, 让NN能够学到复杂的计算逻辑</li>
 <li>特征归一化, 均值方差归一化;  对于幂率分布, 用$(log(\frac{1 + v}{1 + median}))$归一化。为什么不用cdf?</li>
@@ -215,13 +217,56 @@
 </ol>
 </li>
 </ul>
-<p><img alt="DNN输出分布" src="/wiki/static/images/distribute_nn_out.png" /><br />
-<img alt="经纬度的变换" src="/wiki/static/images/lat_lng_transform.png" /><br />
-<img alt="入住率" src="/wiki/static/images/occupancy-distribution.png" /></p>
+<p><img alt="DNN输出分布" src="/wiki/static/images/distribute_nn_out.png" style="width:350px; float:left;"/><br />
+<img alt="经纬度的变换" src="/wiki/static/images/lat_lng_transform.png" style="width:350px; float:left;"/></p>
+<p><img alt="入住率" src="/wiki/static/images/occupancy-distribution.png" /></p>
 <ul>
-<li>高维类别特征</li>
+<li>高维类别特征<ul>
+<li>对附近城市的偏好是一个重要的位置信息,然而在GDBT中需要耗费很多力气来做这特特征,而且还没有考虑价格等关键因素。在DNN中,直接将查询的城市与listing的第12级S2 cell一起,hash到一个整数即可。例如,query城市为「San Francisco」,listing在Embarcadero附近,对应的S2 cell是539058204, hash({"San Francisco", 539058204}) = 71829521 作为输入DNN的类别特征。我的理解是,其实就是「两个离散特征交叉得到另外一个更高维的离散特征」嘛!</li>
+<li>下图可视化了query=San Francisco时,不同位置的embedding values的大小(取模?),可以看到,不仅San Francisco附近的值很高,而且在一些靠南的地方也很高。</li>
 </ul>
-<h2 id="_5">参考</h2>
+</li>
+</ul>
+<p><img alt="位置偏好" src="/wiki/static/images/location-prefer-embedding.png" /></p>
+<ul>
+<li>S2 <a href="https://s2geometry.io/">https://s2geometry.io/</a></li>
+</ul>
+<h2 id="_6">系统工程</h2>
+<ul>
+<li>目的:加速模型训练和在线打分</li>
+<li>
+<p>系统架构:</p>
+<ul>
+<li>Java服务提供查询接口和打分, 该服务同时记录日志,日志格式使用序列化后的 Thrift 对象</li>
+<li>日志通过Spark处理,得到训练数据</li>
+<li>模型训练使用的是 TensorFlow</li>
+<li>用Scala 和 Java实现了一些工具评估模型和计算离线指标</li>
+<li>然后,模型上传到服务中实现检索和打分</li>
+<li>所有的都运行在AWS上</li>
+</ul>
+</li>
+<li>
+<p>一开始用的是CSV格式作为训练集(迁移自GBDT),通过 <code>feed_dict</code> 将数据喂给GPU,GPU使用率只有25%, 后来改为<code>protobuf</code>和<code>DataSet</code> 方式,速度快了17倍,GPU使用率也达到了90%。</p>
+</li>
+<li>listing很多特征都是静态的,每次读取数据会有大量磁盘读取,作者将这些特征作为listing id的embedding向量,而用listing id作为输入特征,和普通的embedding向量不同的是,这个向量在训练的过程中保持不变。相当于用内存做cache。</li>
+<li>Java NN lib, 在2017年早期的时候,还没有好用的Java NN打分的库,作者自己写了一个,降低了延时。话说现在能通过JNI的 TensorFlow Java API了</li>
+</ul>
+<h2 id="_7">超参数</h2>
+<ul>
+<li>Dropout 没啥用</li>
+<li>NN权重用 Xavier 初始化; Embedding用[-1, 1]均匀初始化</li>
+<li>Adam默认参数就很好了,现在用的是 <a href="https://www.tensorflow.org/versions/r1.9/api_docs/python/tf/contrib/opt/LazyAdamOptimizer">LazyAdam</a>,在大embedding时更快一些</li>
+<li>用固定的batchsize=200,对训练速度影响挺大的</li>
+</ul>
+<h2 id="_8">特征重要性</h2>
+<ul>
+<li>GBDT的部分依赖图 <a href="https://scikit-learn.org/stable/auto_examples/ensemble/plot_partial_dependence.html">https://scikit-learn.org/stable/auto_examples/ensemble/plot_partial_dependence.html</a></li>
+<li>Ablation Test 一次去掉一个特征, 观察对模型性能的影响</li>
+<li>Permutation Test 选择一个特征,将测试集中的该特征在整个测试集中重新随机排列,观察模型在测试集上效果的差异。越重要的特征,这个差异就越大。但是,实际上只能证明随机排列如果对效果影响不大,特征没啥效果;但是如果影响约大,并不能说明特征约重要,因为随机排列生成的数据在真实实际并不存在,特征间并不独立。</li>
+<li>TopBot Analysis 作者自己开发的一个工具, top-bottom analyzer。对于一个query,将listing排序,分析某一个特征在TOP listing的分布和Bottom的分布,分布上如果有明显差异,则说明模型对这个特征比较敏感。图14就是一个例子,说明模型对price比较敏感,对评论数量不敏感,说明模型对评论数据的拟合不符合预期,说明在评论数据使用上需要进一步研究。</li>
+</ul>
+<p><img alt="TopBot Analysis" src="/wiki/static/images/topbot-analysis.png" /></p>
+<h2 id="_9">参考</h2>
 <ol>
 <li><a href="https://developers.google.com/machine-learning/guides/rules-of-ml/">https://developers.google.com/machine-learning/guides/rules-of-ml/</a></li>
 <li>Daria Sorokina and Erick Cantu-Paz. 2016. Amazon Search: The Joy of Rank- ing Products. In Proceedings of the 39th International ACM SIGIR Conference on Research and Development in Information Retrieval (SIGIR ’16). 459–460.</li>
