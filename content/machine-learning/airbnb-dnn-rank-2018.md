@@ -55,10 +55,9 @@ def compute_weights(logit_op, session):
     column a listing in the search result. Column 0 is the booked listing, while columns 1 through
     NUM_SAMPLES - 1 the not-booked listings. '''
     logit_vals = session.run(logit_op) 
-    ranks = NUM_SAMPLES - 1 -
-    logit_vals.argsort(axis=1).argsort(axis=1) 
-    discounted_non_booking = apply_discount(ranks[:, 1:]) discounted_booking =
-    apply_discount(np.expand_dims(ranks[:, 0], axis=1)) 
+    ranks = NUM_SAMPLES - 1 - logit_vals.argsort(axis=1).argsort(axis=1) 
+    discounted_non_booking = apply_discount(ranks[:, 1:]) 
+    discounted_booking = apply_discount(np.expand_dims(ranks[:, 0], axis=1)) 
     discounted_weights = np.abs(discounted_booking - discounted_non_booking) 
     return discounted_weight
    
@@ -89,7 +88,7 @@ loss = tf.reduce_mean(tf.multiply(pairwise_loss, weights))
     - 智能定价价格
     - listing和该用户历史看过的listing的相似度 (就是KDD2018 best paper那篇文章)
 
-## FAILED MODELS
+## 错误的模型
 - 两个流行的方法,但是实际没有效果
     
 ### Listing ID
@@ -118,11 +117,50 @@ Xing Yi, Liangjie Hong, Erheng Zhong, Nanthan Nan Liu, and Suju Rajan. 2014. Bey
     3. **Checking feature completeness** 用listing的未来可订购天数作为特征, 但是原始的入住天数分布不平滑(图12 a)。通过调研,作者发现另外一个影响因素: listing有最小停留时间要求,有一些要求至少一个月!因此,他们有不同的入住率,但是我们又不能将这个作为特征放进去,因为它跟日期有关而且也太复杂了。作者添加了平均入住时长作为特征,一旦入住天数用平均入住时长归一化后,它们的比值竟然具有平滑的分布了(图12 b)!!
 
     
-![DNN输出分布](/wiki/static/images/distribute_nn_out.png)
-![经纬度的变换](/wiki/static/images/lat_lng_transform.png)
+<img alt="DNN输出分布" src="/wiki/static/images/distribute_nn_out.png" style="width:350px; float:left;"/>
+<img alt="经纬度的变换" src="/wiki/static/images/lat_lng_transform.png" style="width:350px; float:left;"/>
+
 ![入住率](/wiki/static/images/occupancy-distribution.png)
 
 - 高维类别特征
+    - 对附近城市的偏好是一个重要的位置信息,然而在GDBT中需要耗费很多力气来做这特特征,而且还没有考虑价格等关键因素。在DNN中,直接将查询的城市与listing的第12级S2 cell一起,hash到一个整数即可。例如,query城市为「San Francisco」,listing在Embarcadero附近,对应的S2 cell是539058204, hash({"San Francisco", 539058204}) = 71829521 作为输入DNN的类别特征。我的理解是,其实就是「两个离散特征交叉得到另外一个更高维的离散特征」嘛!
+    - 下图可视化了query=San Francisco时,不同位置的embedding values的大小(取模?),可以看到,不仅San Francisco附近的值很高,而且在一些靠南的地方也很高。
+    
+![位置偏好](/wiki/static/images/location-prefer-embedding.png)
+    
+- S2 <https://s2geometry.io/>
+
+## 系统工程
+- 目的:加速模型训练和在线打分
+- 系统架构:
+    - Java服务提供查询接口和打分, 该服务同时记录日志,日志格式使用序列化后的 Thrift 对象
+    - 日志通过Spark处理,得到训练数据
+    - 模型训练使用的是 TensorFlow
+    - 用Scala 和 Java实现了一些工具评估模型和计算离线指标
+    - 然后,模型上传到服务中实现检索和打分
+    - 所有的都运行在AWS上
+    
+- 一开始用的是CSV格式作为训练集(迁移自GBDT),通过 `feed_dict` 将数据喂给GPU,GPU使用率只有25%, 后来改为`protobuf`和`DataSet` 方式,速度快了17倍,GPU使用率也达到了90%。
+- listing很多特征都是静态的,每次读取数据会有大量磁盘读取,作者将这些特征作为listing id的embedding向量,而用listing id作为输入特征,和普通的embedding向量不同的是,这个向量在训练的过程中保持不变。相当于用内存做cache。
+- Java NN lib, 在2017年早期的时候,还没有好用的Java NN打分的库,作者自己写了一个,降低了延时。话说现在能通过JNI的 TensorFlow Java API了
+
+## 超参数
+- Dropout 没啥用
+- NN权重用 Xavier 初始化; Embedding用[-1, 1]均匀初始化
+- Adam默认参数就很好了,现在用的是 [LazyAdam](https://www.tensorflow.org/versions/r1.9/api_docs/python/tf/contrib/opt/LazyAdamOptimizer),在大embedding时更快一些
+- 用固定的batchsize=200,对训练速度影响挺大的
+
+## 特征重要性
+- GBDT的部分依赖图 <https://scikit-learn.org/stable/auto_examples/ensemble/plot_partial_dependence.html>
+- Ablation Test 一次去掉一个特征, 观察对模型性能的影响
+- Permutation Test 选择一个特征,将测试集中的该特征在整个测试集中重新随机排列,观察模型在测试集上效果的差异。越重要的特征,这个差异就越大。但是,实际上只能证明随机排列如果对效果影响不大,特征没啥效果;但是如果影响约大,并不能说明特征约重要,因为随机排列生成的数据在真实实际并不存在,特征间并不独立。
+- TopBot Analysis 作者自己开发的一个工具, top-bottom analyzer。对于一个query,将listing排序,分析某一个特征在TOP listing的分布和Bottom的分布,分布上如果有明显差异,则说明模型对这个特征比较敏感。图14就是一个例子,说明模型对price比较敏感,对评论数量不敏感,说明模型对评论数据的拟合不符合预期,说明在评论数据使用上需要进一步研究。
+
+![TopBot Analysis](/wiki/static/images/topbot-analysis.png)
+
+
+    
+
 
 ## 参考
 1. <https://developers.google.com/machine-learning/guides/rules-of-ml/>
