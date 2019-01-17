@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>【2018-Airbnb】Customized Regression Model for Airbnb Dynamic Pricing - Tracholar的个人wiki</title>
+        <title>Java 挖坑记录 - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,106 +64,22 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;【2018-Airbnb】Customized Regression Model for Airbnb Dynamic Pricing</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tools">tools</a>&nbsp;»&nbsp;Java 挖坑记录</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">【2018-Airbnb】Customized Regression Model for Airbnb Dynamic Pricing</div>
+<div id="title">Java 挖坑记录</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">摘要与间接</a></li>
-<li><a href="#_2">动态价格模型</a><ul>
-<li><a href="#_3">需求估计</a></li>
-<li><a href="#_4">价格策略模型</a></li>
-</ul>
-</li>
-<li><a href="#_5">定价系统</a><ul>
-<li><a href="#booking-probability-model">Booking Probability Model</a></li>
-<li><a href="#_6">评估建议价格</a></li>
-<li><a href="#strategy-model">Strategy Model</a></li>
-</ul>
-</li>
-<li><a href="#_7">参考</a></li>
+<li><a href="#_1">字符串相关</a></li>
 </ul>
 </div>
-<h2 id="_1">摘要与间接</h2>
-<ul>
-<li>3个模型组成<ul>
-<li>每个listing订购概率, 二分类</li>
-<li>自定义损失函数的回归模型,拟合最优价格</li>
-<li>额外的个性化逻辑</li>
-</ul>
-</li>
-<li>产品:<ul>
-<li>Price Tips 价格建议</li>
-<li>Smart Pricing 智能价格</li>
-</ul>
-</li>
-</ul>
-<p><img alt="smart price" src="/wiki/static/images/smart-pricing.png" /></p>
-<h2 id="_2">动态价格模型</h2>
-<h3 id="_3">需求估计</h3>
-<ul>
-<li>如果能够估计出需求曲线(需求函数) $(F(P) )$ P是价格,那么,最大化 $(P F(P))$ 即可得到最优价格P。</li>
-<li>在 Airbnb场景下,需求还跟其他因素有关,所以作者估计的是这样一个需求函数 $( F(P, t, id) )$ t是时间,id是listing id。</li>
-<li>时变因素:<ul>
-<li>季节因素</li>
-<li>订购时间与入住时间的距离,距离越短,订购成功的概率越低</li>
-</ul>
-</li>
-<li>Listing-varying, 也就是listing 是唯一的,可替代性比酒店弱</li>
-<li>
-<p>预估的价格只有部分被采用</p>
-</li>
-<li>
-<p>需求估计相关论文:</p>
-<ol>
-<li>PatrickBajari,DenisNekipelov,StephenP.Ryan,andMiaoyuYang.2015.Demand estimation with machine learning and model combination. National Bureau of Economic Research (2015).</li>
-<li>H. Varian. 2014. Big data: New tricks for econometrics. Journal of Economic Perspectives 28, 2 (2014), 3 – 28.</li>
-</ol>
-</li>
-</ul>
-<h3 id="_4">价格策略模型</h3>
-<ul>
-<li>模型: GBM</li>
-<li>目标函数: 自定义函数, 借鉴 SVR, $(\epsilon)$ 提供一个范围区间, 认为最优价格是在这个区间里面,因为实际上观察不到最优价格</li>
-</ul>
-<h2 id="_5">定价系统</h2>
-<p>Booking Probability Model -&gt; Strategy Model -&gt; Personalization</p>
-<h3 id="booking-probability-model">Booking Probability Model</h3>
-<ul>
-<li>预估函数 Pro(id, t, ctx, P) </li>
-<li>特征<ul>
-<li>Listing Features: listing price per night, room type, person capacity, the number of bedrooms/bathrooms, amenities, locations, reviews, historical occupancy rate, instant booking enabled, etc.</li>
-<li>Temporal Features: seasonality (the day of the year, day of the week, etc), the calendar availability (e.g. the gap between check in and check out), distance between ds and ds_night, etc.</li>
-<li>Supply and demand dynamics: number of available listings in the neighborhood, listing views, searches/contacts rates, etc.</li>
-</ul>
-</li>
-<li>相比所有市场用一个GBM,每个市场单独使用一个,并采用不同的采样率会更好</li>
-<li>预估需求曲线的问题<ul>
-<li>数据稀疏: 很多listing价格不怎么变, 价格变化的listing变动也很少,导致探索困难。 也就是数据分布不到所有空间。 这个也是我们在做的时候遇到的问题</li>
-<li>样本的唯一性: 不存在同时处于两种价格的listing, 不同的listing又难以互相替代</li>
-<li>特征依赖: 我们希望价格P和其他特征是独立的,然而很多其他特征是依赖价格的, 比如订购率。 这导致需求曲线预估的精度很差</li>
-</ul>
-</li>
-</ul>
-<h3 id="_6">评估建议价格</h3>
-<ul>
-<li>无法观测到最优价格</li>
-<li>但是可以观察到订购的样本的下界(即最优价格不低于订购价格)和未订购样本的上界(即最优价格不高于未订购价格)</li>
-<li>订购样本的上界可以估计为订购价格 P 的c1倍,c1&gt;1是超参数</li>
-<li>未订购样本的下界可以估计为未订购价格 P 的 c2 倍, c2&lt;1是超参数</li>
-<li>损失函数为区间损失,即在这个区间,损失为0,否则损失为距离这个区间的距离</li>
-</ul>
-<p>$$<br />
-L = \min \sum_i (L(P_i, y_i) - f_{\theta}(x))^+ + (f_{\theta}(x) - U(P_i, y_i))^+<br />
-$$</p>
-<p>L 和 U 分别代表下界和上界</p>
-<h3 id="strategy-model">Strategy Model</h3>
-<h2 id="_7">参考</h2>
-<ol>
-<li><a href="https://www.kdd.org/kdd2018/accepted-papers/view/customized-regression-model-for-airbnb-dynamic-pricing">https://www.kdd.org/kdd2018/accepted-papers/view/customized-regression-model-for-airbnb-dynamic-pricing</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/46288070">https://zhuanlan.zhihu.com/p/46288070</a></li>
-</ol>
+<h2 id="_1">字符串相关</h2>
+<p><code>String.split</code> 默认会去掉收尾的多余字符</p>
+<div class="hlcode"><pre><span></span><span class="n">String</span> <span class="n">args</span> <span class="o">=</span> <span class="s">&quot;0.035635684\t\t13001002926\t\t&quot;</span><span class="o">;</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">args</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">&quot;\t&quot;</span><span class="o">).</span><span class="na">length</span><span class="o">);</span> <span class="c1">//结果是3</span>
+
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">args</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">&quot;\t&quot;</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">).</span><span class="na">length</span><span class="o">);</span> <span class="c1">//结果是5</span>
+</pre></div>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -175,7 +91,7 @@ $$</p>
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2018-12-23 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2019-01-08 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -183,7 +99,7 @@ $$</p>
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: '【2018-Airbnb】Customized Regression Model for Airbnb Dynamic Pricing',
+  title: 'Java 挖坑记录',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {

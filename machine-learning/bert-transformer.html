@@ -1,0 +1,236 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>BERT与Transformer - Tracholar的个人wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="google-search" style="width:200px; float:right; margin: 20px 0;">
+                <form action="//cse.google.com/cse" method="get" id="search-form">
+                    <input type="hidden" name="cx" value="015970462532790426975:gqlen38ywus"/>
+                    <input type="text" name="q"  style="line-height:20px; padding:4px;" placeholder="站内搜索"/>
+                    <svg width="13" height="13" viewBox="0 0 13 13" style="position:relative; left: -20px;" onclick="document.getElementById('search-form').submit()">
+                        <title>搜索</title>
+                        <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z">
+                        </path>
+                    </svg>
+                </form>
+
+            </div>
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;BERT与Transformer</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">BERT与Transformer</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#transformer">Transformer要点</a></li>
+<li><a href="#transform">Transform用作语言模型</a></li>
+<li><a href="#openai">OpenAI</a></li>
+<li><a href="#bert">BERT论文要点</a></li>
+<li><a href="#_2">相关关键论文</a></li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>被BERT和Transformer刷屏了,研究一下。</p>
+<p>关键论文:</p>
+<ul>
+<li>Devlin J, Chang M W, Lee K, et al. Bert: Pre-training of deep bidirectional transformers for language understanding[J]. arXiv preprint arXiv:1810.04805, 2018.</li>
+<li>Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Lukasz Kaiser, and Illia Polosukhin. 2017. Attention is all you need. In Advances in Neural Information Pro- cessing Systems, pages 6000–6010.</li>
+</ul>
+<h2 id="transformer">Transformer要点</h2>
+<ul>
+<li>Attention可以抽象为 (Q, K, V)三元组, Q代表query,在具体场景中可以是搜索的query, 推荐排序中的候选 item, 广告点击率预估中的候选广告etc 对应的 embedding 向量; K 和 V一般都是用户历史行为序列,比如用户的查询query序列,过去一段时间点击过的item序列, 过去一段时间点击过的广告序列 对应的 embedding 向量。(如下图所示)</li>
+<li>KV存储作为一个特殊的Attention机制: hard attention<ul>
+<li>KV存储查询的时候,可以看做一个Attention机制,一个query过来,先计算Attention score,Attention score可以定义为如果k=q,那么Attention score ai=1, 否则ai=0。最终的输出可以看做所有的V按照Attention score的加权和。即只有等于q的那个k对应的v才被输出来</li>
+<li>KV这种可以看做hard Attention,即只输出其中一个</li>
+<li>在NLP中也有这种hard Attention,计算q和k的相似度,然后只输出相似度最大的k对应的v。</li>
+</ul>
+</li>
+<li>一般的Attention都是这种soft Attention,不是取最匹配的那个,而是计算一个匹配程度权重(即Attention score),然后按照这个权重对所有的v做加权和,如下图所示,在推荐系统中,可以用候选item和用户历史点击过的item计算相似度,得到Attention score,然后计算得到的加权和作为最终的输出。soft Attention一般会对Attention score用softmax 归一化, 而不是直接除以他们的和来归一化。</li>
+</ul>
+<p><img alt="attention" src="/wiki/static/images/attention.png" /></p>
+<ul>
+<li>对应的矩阵计算过程就是, 除了一个 $(\sqrt{d_k})$ 也就是向量的维度,是为了防止softmax和内积导致差异太大。比如,如果向量维度非常大,那么相似度得分很容易非常大,比例跟维度$(d_k)$正相关,除以维度后,可以在一定程度上解决这个问题。参考下图,蓝色箭头表示对k和q做内积,黑色+表示用橙色的作为权重对v做加权和。注意<strong>attention的输出序列长度跟query序列长度一致, key 和 value 序列长度一致,实际上大多数情况K=V, 在self-attention的情况下, Q = K = V</strong></li>
+</ul>
+<p>$$<br />
+Attention(Q, K, V) = softmax(\frac{Q K^T}{\sqrt{d_k}}) V<br />
+$$</p>
+<p><img alt="attention2" src="/wiki/static/images/attention2.png" /></p>
+<ul>
+<li>多头Attention, 一个Attention只在原始的向量空间中操作,可以将Q,K,V投影到不同的子空间甚至更高维度空间中(数学上就是分别乘以一个矩阵),再计算Attention向量,每一种投影就会有这样一个Attention向量,搞多个投影就得到多个Attention向量了。将多个向量拼接再投影,或者直接叫做线性组合,因为concat + 投影(乘以一个矩阵) 等价于分别投影到一个共同的空间中然后求和(也就是线性组合)。也就是说,多头Attention的输出和Attention输出是一样的, 所以能用Attention的地方就能用多头Attention。</li>
+</ul>
+<p>$$<br />
+MultiHead(Q, K, V) = Concat(head_1, ..., head_h)W^O \\<br />
+head_i = Attention(QW_i^Q , KW_i^K , VW_i^V )<br />
+$$</p>
+<p><img alt="multi head attention" src="/wiki/static/images/multi-head-attention.png" /></p>
+<ul>
+<li>
+<p>self-attention, Q=K=V时,就是self-attention。self-attention时,不论是单头还是多头,输入一个向量序列,输出是一个相同长度的向量序列,每一个向量的维度可以不同,但是向量的数目是相同的。这恰好是一层RNN和一层CNN做的事情,这说明,self-attention可以实现RNN和CNN相同的事情,并且可以不断堆叠。</p>
+</li>
+<li>
+<p>Position-wise Feed-Forward Networks: 输入已经attention模块的输出不都是向量序列吗?可以在这些地方插入所谓的PFFN,也就是用同一个神经网络对每一个向量做一个变换。相当于对这个向量序列使用了kernel size=1的一维卷积(下面这个式子实际上代表了两层这种卷积,第一层带了非线性激活函数,第二层是一个线性层)</p>
+</li>
+</ul>
+<p>$$<br />
+FFN(x) = \max(0, xW_1 + b_1) W_2 + b_2<br />
+$$</p>
+<ul>
+<li>
+<p>transformer也是Encoder-Decoder架构</p>
+<ul>
+<li>Encoder包含多个multi-head attention + FFN的子模块,Encoder的attention是self-attention。</li>
+<li>Decoder模块是由以下这三个模块重复堆叠N次<ul>
+<li>输入是将output往右移一位之后的向量序列,为了让当前的输出只依赖之前,所以会用一个mask将未来的序列给干掉。</li>
+<li>output的输入encode完了之后,与Encoder的输出一起放到一个multi-head attention中,这个attention的K和V由Encoder的输出向量序列提供,Q由Decoder的输入提供。</li>
+<li>attention输出在经过一个FFN变换。</li>
+</ul>
+</li>
+<li>输出是softmax,相当于一个多分类任务,每一个词就是一个类别,所以类别数量特别多</li>
+</ul>
+</li>
+<li>
+<p>position Encoder, 将位置编码加入输入向量中。一种是直接embedding,文中用的是固定向量,v(t, i) = f(w_i t), t是偶数是就是cos,t是奇数时是sin, w_i 都很小,相当于在多个正弦波/余弦波中同一时刻(位置)采样一个值作为位置编码的向量。</p>
+</li>
+</ul>
+<p><img alt="Transfomer" src="/wiki/static/images/transformer.png" /></p>
+<h2 id="transform">Transform用作语言模型</h2>
+<ul>
+<li>P. J. Liu, M. Saleh, E. Pot, B. Goodrich, R. Sepassi, L. Kaiser, and N. Shazeer. Generating wikipedia by summarizing long sequences. ICLR, 2018.</li>
+</ul>
+<h2 id="openai">OpenAI</h2>
+<ul>
+<li>Alec Radford, Karthik Narasimhan, Tim Salimans, and Ilya Sutskever. 2018. Improving language understanding with unsupervised learning. Technical report, OpenAI.</li>
+<li>Decoder中的Transform block可以看做对输入的向量序列做一个变换,变成另外一个向量序列,并且可以不断堆叠,堆叠后的最后一层再。如果把用上下文的那个attention模块改成self-attention就不用Encoder的输入了。那么Decoder就是一个语言模型的预测器!!</li>
+<li>用语言模型预训练Transform的参数,并调优,就是这篇文章的核心要点。</li>
+<li>Decoder最后的输出全连接层可以替换成具体任务的全连接层,重新训练。</li>
+<li>训练的时候可以将语言模型和监督任务联合训练,用语言模型做辅助损失,相当于正则项提高泛化能力</li>
+</ul>
+<h2 id="bert">BERT论文要点</h2>
+<ul>
+<li>之前的工作都是用相同的目标函数, 使用单向语言模型学习通用的语义表示</li>
+<li>作者认为这种单向的目标函数是制约 pre-trained 方法的表达能力的关键, 所以,作者搞了个双向语言模型, 即 <strong>B</strong>idirectional <strong>E</strong>ncoder <strong>R</strong>epresentations from <strong>T</strong>ransformers。还是基于 Transformers</li>
+<li>新的目标函数: masked language model(MLM 马赛克语言模型?) 随机mask输入句子中的一些词, 然后让模型根据上下文推断mask掉的这些词</li>
+</ul>
+<blockquote>
+<p>Input: the man went to the [MASK1] . he bought a [MASK2] of milk.<br />
+Labels: [MASK1] = store; [MASK2] = gallon</p>
+</blockquote>
+<ul>
+<li>"next sentence prediction"</li>
+</ul>
+<h2 id="_2">相关关键论文</h2>
+<ul>
+<li>Matthew Peters, Mark Neumann, Mohit Iyyer, Matt Gardner, Christopher Clark, Kenton Lee, and Luke Zettlemoyer. 2018. Deep contextualized word representations. In NAACL.</li>
+<li>Alec Radford, Karthik Narasimhan, Tim Salimans, and Ilya Sutskever. 2018. Improving language understanding with unsupervised learning. Technical report, OpenAI.</li>
+</ul>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2019-01-16 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: 'BERT与Transformer',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2019 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>
