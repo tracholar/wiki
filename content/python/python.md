@@ -332,3 +332,12 @@ from inspect import getmembers
 for k,v in (getmembers(object)):
     print k,':', v
 ```
+
+
+## logging
+python打日志模块
+
+```python
+import logging
+logging.
+```

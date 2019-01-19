@@ -25,3 +25,5 @@ Linux 安装，一般自带python。这里介绍一个local模式。
 ### List
 - 可以用来做stack，使用 `append`, `pop` 方法！
 - 也可以用来做队列，但是不够高效！可以使用 `collections.deque`，它被设计为在双向`append,pop`都很高效！
+
+
