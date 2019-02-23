@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>GAN: 生成对抗网络 - Tracholar的个人wiki</title>
+        <title>Python Subprocess - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,86 +64,58 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;GAN: 生成对抗网络</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#python">python</a>&nbsp;»&nbsp;Python Subprocess</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">GAN: 生成对抗网络</div>
+<div id="title">Python Subprocess</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#gan">GAN</a><ul>
-<li><a href="#_1">理论结论</a></li>
-</ul>
-</li>
-<li><a href="#dcgan">DCGAN</a><ul>
-<li><a href="#_2">生成自然图像</a></li>
-</ul>
-</li>
-<li><a href="#vae-gan">VAE-GAN</a></li>
+<li><a href="#_1">基本函数</a></li>
 </ul>
 </div>
-<h2 id="gan">GAN</h2>
-<p>论文：Generative Adversarial Nets，an J. Goodfellow, Jean Pouget-Abadie∗, Mehdi Mirza, Bing Xu, David Warde-Farley, Sherjil Ozair†, Aaron Courville, Yoshua Bengio‡，2014</p>
-<ul>
-<li>生成模型G，对于随机noise z，分布$(p_z(z))$，生成一个样本 $(G(z; \theta_g))$</li>
-<li>判别模型D，是一个常规的二分类模型，输出是样本来自真实数据的概率，$(D(x; \theta_d))$</li>
-<li>极大似然估计，来自样本的认为是正例，来自生成模型的认为是负例</li>
-<li>minmax value function $(V(D, G))$</li>
-</ul>
-<p>$$<br />
-\min_G \max_D V(D, G) = \mathbf{E} _ {x \in p_{data}(x)}[\log D(x)] + \mathbf{E} _ {x \in p_{z}(z)}[\log(1-D(G(z)))]<br />
-$$</p>
-<p>训练算法：</p>
-<p><img src="/wiki/static/images/gan-algo.png" alt="GAN-GLAORITHM"/></p>
-<h3 id="_1">理论结论</h3>
-<ul>
-<li>全局最优：$(p_g = p_{data})$</li>
-<li>对固定的G，</li>
-</ul>
-<p>$$<br />
-V(G,D) = \int_x dx p_{data}(x) \log(D(x)) + p_g(x) \log(1 - D(x))<br />
-$$</p>
-<p>容易验证，最优的D满足</p>
-<p>$$<br />
-D^* _ G(x) = \frac{p_{data}(x)}{p_{data}(x) + p_g(x)}<br />
-$$</p>
-<p>最优 value function为</p>
-<p>$$<br />
-C(G) = \mathbf{E} _ {x \in p_{data}(x)}[\log \frac{p_{data}(x)}{p_{data}(x) + p_g(x)}] + \mathbf{E} _ {x \in p_{z}(z)}[\log(\frac{p_{g}(x)}{p_{data}(x) + p_g(x)})] \\<br />
-= - \log 4 + 2 JSD(p_{data} || p_g)<br />
-$$</p>
-<p>JSD 是 Jensen–Shannon divergence. 上式最优的结果是 $(-\log4)$，当 $(p_g = p_{data})$ 取得。</p>
-<ul>
-<li>算法 Algorithm 1 的收敛性,结论是:如果G和D有足够的容量(可以拟合任意函数),那么算法1可以保证$(p_g)$收敛到$(p_{data})$</li>
-</ul>
-<h2 id="dcgan">DCGAN</h2>
-<ul>
-<li>论文: Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks</li>
-<li>通过GAN进行无监督学习, 学习到图像的层级的特征表示</li>
-<li>将GAN 的一部分作为特征抽取器用于监督学习的任务</li>
-<li>贡献:<ol>
-<li>对模型结构做了一些约束,使得模型在大多数情况下都能稳定的快速收敛</li>
-<li>生成器的算术性质</li>
+<p>处理子进程, 可以替代 <code>os.system</code>,并提供更丰富的操作。</p>
+<p>参考: </p>
+<ol>
+<li><a href="https://docs.python.org/2/library/subprocess.html">https://docs.python.org/2/library/subprocess.html</a></li>
+<li><a href="https://segmentfault.com/a/1190000009176351">https://segmentfault.com/a/1190000009176351</a></li>
 </ol>
+<h2 id="_1">基本函数</h2>
+<ul>
+<li><code>subprocess.call(args, *, stdin=None, stdout=None, stderr=None, shell=False)</code></li>
+<li>
+<p><code>class subprocess.Popen(args, bufsize=0, executable=None, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=False, shell=False, cwd=None, env=None, universal_newlines=False, startupinfo=None, creationflags=0)</code></p>
+</li>
+<li>
+<p>执行基本的shell命令</p>
 </li>
 </ul>
-<h3 id="_2">生成自然图像</h3>
+<div class="hlcode"><pre><span></span><span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;ls -l&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s1">&#39;ls&#39;</span><span class="p">,</span> <span class="s1">&#39;-l&#39;</span><span class="p">])</span>
+<span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="s1">&#39;ls -l&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s1">&#39;ls&#39;</span><span class="p">,</span> <span class="s1">&#39;-l&#39;</span><span class="p">])</span>
+</pre></div>
+
+
 <ul>
-<li>之前生成的自然图像都比较模糊</li>
-<li>LAPGAN</li>
-<li>几个技巧:<ol>
-<li>将全连接层去掉不要</li>
-<li>用 strided convolution 替换Pooling操作</li>
-</ol>
-</li>
+<li>和子进程交互</li>
 </ul>
-<p><img alt="LSUN" src="/wiki/static/images/lsun.png" /></p>
+<div class="hlcode"><pre><span></span><span class="c1"># 读取子进程的stdout</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="s1">&#39;ls -l&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">p</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="c1"># 发送数据给子进程的stdin</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+<span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">communicate</span><span class="p">(</span><span class="s1">&#39;data1</span><span class="se">\n</span><span class="s1">data2</span><span class="se">\n</span><span class="s1">data3&#39;</span><span class="p">)</span>
+</pre></div>
+
+
 <ul>
-<li>图像去重: 3072-128-3072 de-noising dropout regularized RELU autoencoder on 32x32 downsampled center-crops of training examples. 得到编码后,二值化作为hash值,用于去重。</li>
-<li>图像算术, 对输入空间Z进行算术运算, 运算的结果再通过生成模型生成图像。</li>
+<li>返回值</li>
 </ul>
-<p><img alt="图像算术运算" src="/wiki/static/images/gan-vec-arithm.png" /></p>
-<h2 id="vae-gan">VAE-GAN</h2>
-<p>UNsupervised Image-to-image Translation Networks</p>
+<div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">output</span> <span class="o">=</span> <span class="n">check_output</span><span class="p">([</span><span class="s2">&quot;mycmd&quot;</span><span class="p">,</span> <span class="s2">&quot;myarg&quot;</span><span class="p">])</span> <span class="c1"># output=`mycmd myarg`</span>
+</pre></div>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -155,7 +127,7 @@ $$</p>
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2017-04-15 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2019-02-20 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -163,7 +135,7 @@ $$</p>
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: 'GAN: 生成对抗网络',
+  title: 'Python Subprocess',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
