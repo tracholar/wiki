@@ -44,4 +44,31 @@ $$
 
 JSD 是 Jensen–Shannon divergence. 上式最优的结果是 $(-\log4)$，当 $(p_g = p_{data})$ 取得。
 
-- 算法 Algorithm 1 的收敛性
+- 算法 Algorithm 1 的收敛性,结论是:如果G和D有足够的容量(可以拟合任意函数),那么算法1可以保证$(p_g)$收敛到$(p_{data})$
+
+
+## DCGAN
+- 论文: Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks
+- 通过GAN进行无监督学习, 学习到图像的层级的特征表示
+- 将GAN 的一部分作为特征抽取器用于监督学习的任务
+- 贡献:
+    1. 对模型结构做了一些约束,使得模型在大多数情况下都能稳定的快速收敛
+    2. 生成器的算术性质
+
+### 生成自然图像
+- 之前生成的自然图像都比较模糊
+- LAPGAN
+- 几个技巧:
+    1. 将全连接层去掉不要
+    2. 用 strided convolution 替换Pooling操作
+    
+![LSUN](/wiki/static/images/lsun.png)
+
+- 图像去重: 3072-128-3072 de-noising dropout regularized RELU autoencoder on 32x32 downsampled center-crops of training examples. 得到编码后,二值化作为hash值,用于去重。
+- 图像算术, 对输入空间Z进行算术运算, 运算的结果再通过生成模型生成图像。
+
+![图像算术运算](/wiki/static/images/gan-vec-arithm.png)
+
+## VAE-GAN
+UNsupervised Image-to-image Translation Networks
+

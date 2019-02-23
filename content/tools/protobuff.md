@@ -109,3 +109,13 @@ public class TestLibsvm {
 ```java
 Libsvm.DataSet.parseFrom(new FileInputStream("train.data"))
 ```
+
+上述序列化与反序列化都是针对中间结果是二进制数据,如果中间数据使用文本格式,需要用 TextFormat 对象转换。以python为例
+
+```python
+text_format.MessageToString(message[, as_one_line=True[, as_utf8=True]])
+text_format.Parse(pbstring, message)
+```
+
+而在Java和C++中,可以直接调用 `toString()` 和 `toDebugString()` 这种方法实现。<https://stackoverflow.com/questions/33557965/print-human-friendly-protobuf-message>
+
