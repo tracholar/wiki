@@ -79,6 +79,7 @@
 </ul>
 </li>
 <li><a href="#vae-gan">VAE-GAN</a></li>
+<li><a href="#2016">训练技巧2016</a></li>
 </ul>
 </div>
 <h2 id="gan">GAN</h2>
@@ -144,6 +145,17 @@ $$</p>
 <p><img alt="图像算术运算" src="/wiki/static/images/gan-vec-arithm.png" /></p>
 <h2 id="vae-gan">VAE-GAN</h2>
 <p>UNsupervised Image-to-image Translation Networks</p>
+<h2 id="2016">训练技巧2016</h2>
+<ul>
+<li>论文: Improved Techniques for Training GANs</li>
+<li>代码: <a href="https://github.com/openai/improved-gan">https://github.com/openai/improved-gan</a></li>
+<li>GAN与纳什均衡的关系?</li>
+<li>梯度交替优化的问题: 比如优化目标是 xy, 第一个player可以修改x,目标是使xy尽可能大, 第二个player可以修改y,目标是使xy尽可能小。均衡解是 x=y=0, 但是基于梯度优化的会不收敛。</li>
+<li>特征匹配: 让判别器的中间层的特征的期望值,在真实数据和生成器生成的数据中,尽可能相同<ul>
+<li>新目标函数 $(||E_{x \in p_{data}f(x) - E_{z \in p_{z}} f(G(z))}||)$</li>
+</ul>
+</li>
+</ul>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
