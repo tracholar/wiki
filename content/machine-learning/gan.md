@@ -72,3 +72,11 @@ JSD 是 Jensen–Shannon divergence. 上式最优的结果是 $(-\log4)$，当 $
 ## VAE-GAN
 UNsupervised Image-to-image Translation Networks
 
+
+## 训练技巧2016
+- 论文: Improved Techniques for Training GANs
+- 代码: <https://github.com/openai/improved-gan>
+- GAN与纳什均衡的关系?
+- 梯度交替优化的问题: 比如优化目标是 xy, 第一个player可以修改x,目标是使xy尽可能大, 第二个player可以修改y,目标是使xy尽可能小。均衡解是 x=y=0, 但是基于梯度优化的会不收敛。
+- 特征匹配: 让判别器的中间层的特征的期望值,在真实数据和生成器生成的数据中,尽可能相同
+    - 新目标函数 $(||E_{x \in p_{data}f(x) - E_{z \in p_{z}} f(G(z))}||)$

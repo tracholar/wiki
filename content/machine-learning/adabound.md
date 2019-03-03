@@ -26,7 +26,9 @@ date: 2019-02-27
 - $(\phi_t: \mathcal{F}^t \rightarrow \mathbf{R}^d)$ 相当于梯度的一阶矩,它是历史上t个梯度的函数
 - $(\psi_t: \mathcal{F}^t \rightarrow \mathbf{S} _ +^d)$ $(\mathbf{S} _+^d)$是d阶正定方阵, 相当于二阶矩, 不过是一个方阵, 常见的那种二阶矩是一个向量,可以看做对角方阵, 那么向量的元素除法就可以看做对对角矩阵的除法了
 - $(\Pi_{\mathcal{F}, M}(y) = \arg\min_{x \in \mathcal{F}} ||M^{\frac{1}{2}}(x - y)||)$ 即点y向空间$(\mathcal{F})$中的投影,M可以理解为空间的度规。
+- 这个框架可以将主流的基于一阶梯度的优化算法统一起来, 如下表所示
 
+![optimization-generic-framework](/wiki/static/images/optimization-generic-framework.png)
 
 
 
