@@ -574,6 +574,9 @@ combine matches and write to output
 <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">adid</span><span class="p">;</span>
 
 <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">src</span> <span class="k">LATERAL</span> <span class="k">VIEW</span> <span class="k">OUTER</span> <span class="n">explode</span><span class="p">(</span><span class="nb">array</span><span class="p">())</span> <span class="k">C</span> <span class="k">AS</span> <span class="n">a</span> <span class="k">limit</span> <span class="mi">10</span><span class="p">;</span>
+
+<span class="k">select</span> <span class="n">uid</span><span class="p">,</span> <span class="k">key</span><span class="p">,</span> <span class="n">val</span>
+<span class="k">from</span> <span class="k">table</span> <span class="k">LATERAL</span> <span class="k">VIEW</span> <span class="n">explode</span><span class="p">(</span><span class="n">kv</span><span class="p">)</span> <span class="n">adTable</span> <span class="k">AS</span> <span class="k">key</span><span class="p">,</span> <span class="n">val</span>
 </pre></div>
 
 
