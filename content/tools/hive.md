@@ -442,6 +442,9 @@ FROM pageAds LATERAL VIEW explode(adid_list) adTable AS adid
 GROUP BY adid;
 
 SELECT * FROM src LATERAL VIEW OUTER explode(array()) C AS a limit 10;
+
+select uid, key, val
+from table LATERAL VIEW explode(kv) adTable AS key, val
 ```
 
 FROM 语句里面可以包含多个 Lateral View。通过 `OUTER` 关键字可以让 `explode` 输出为NULL的时候，
