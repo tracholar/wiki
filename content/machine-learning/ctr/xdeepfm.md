@@ -27,4 +27,4 @@ $$
 - 作者提出的 Compressed Interaction Network(CIN) 实现向量级别的交叉, 模型复杂度跟交叉次数指数增长(这个怎么验证)
 - 
 
-![xDeepFM](/wiki/static/image/xdeepfm.png)
+![xDeepFM](/wiki/static/images/xdeepfm.png)
