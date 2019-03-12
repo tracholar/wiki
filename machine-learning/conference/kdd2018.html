@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems - Tracholar的个人wiki</title>
+        <title>KDD2018论文集 - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,46 +64,44 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning-ctr">ctr</a>&nbsp;»&nbsp;xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning-conference">conference</a>&nbsp;»&nbsp;KDD2018论文集</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems</div>
+<div id="title">KDD2018论文集</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">关于</a></li>
-<li><a href="#_2">主要结论</a></li>
+<li><a href="#real-time-personalization-using-embeddings-for-search-ranking-at-airbnb">Real-time Personalization using Embeddings for Search Ranking at Airbnb</a></li>
+<li><a href="#adversarial-attacks-on-classification-models-for-graphs">Adversarial attacks on classification models for Graphs</a></li>
+<li><a href="#xiaoice-band-a-melody-and-arrangement-generation-framework-for-pop-music">XiaoIce Band: A Melody and Arrangement Generation Framework for Pop Music</a></li>
+<li><a href="#_1">待阅读</a></li>
+<li><a href="#_2">参考</a></li>
 </ul>
 </div>
-<h2 id="_1">关于</h2>
-<p>论文: xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems<br />
-作者单位: 科大、微软</p>
-<h2 id="_2">主要结论</h2>
+<h2 id="real-time-personalization-using-embeddings-for-search-ranking-at-airbnb">Real-time Personalization using Embeddings for Search Ranking at Airbnb</h2>
+<p>参考精读笔记</p>
+<h2 id="adversarial-attacks-on-classification-models-for-graphs">Adversarial attacks on classification models for Graphs</h2>
 <ul>
-<li>学习特征的显式、向量级别的高阶交叉</li>
-<li>DCN学到的是标量级的高阶交叉, 因为每一层的输出向量都是最原始输入向量的标量积, 只是这个标量系数是输入向量的高阶非线性函数</li>
-<li>推荐系统的数据主要是 multi-field 的离散特征,假设经过embedding层之后, 得到的向量是多个embedding向量的concat的结果 $( e = [e_1, e_2, ..., e_m] )$</li>
-<li>隐式高阶交叉: FNN, DNN 等模型,直接将上述得到的向量 e 放到MLP中,学习特征间的高阶交叉</li>
-<li>embedding + concat 相当于对直接embedding的权重矩阵施加了自由度限制,权值矩阵的某些部分限制为0</li>
-<li>
-<p>显式高阶交叉DCN<br />
-$$<br />
-x_{k+1} = x_0 x_k^T w_{k+1} + b_k + x_0<br />
-$$</p>
-</li>
-<li>
-<p>$(x_k)$是列向量, 第一项的 $(x_k^T w_{k+1})$是一个标量,相当于将上一层的向量做了个线性组合得到一个系数,重新乘以$(x_0)$, 这一项加上残差项相当于对原始输入$(x_0)$乘以了一个系数 $(x_k^T w_{k+1} + 1)$ 所以说是标量级的交叉, 而常数项(非齐次项)在迭代中的作用,相当于引入k,k-1,k-2,...,1阶交叉,否则就只有 k+1 阶项了。相比于直接的二项式, DCN的参数数目跟阶数k是线性关系,而一般多项式是k次方关系</p>
-</li>
-<li>作者认为这种DCN的交叉只实现某种特定的交叉:<ul>
-<li>隐层是输入的标量乘法</li>
-<li>交互限制在向量的位级别, 即输入向量 x0的不同位之间通过权值向量w实现交叉??</li>
+<li>图分类模型的对抗攻击</li>
+<li>图是离散的,无法利用图像的基于梯度的方法</li>
 </ul>
-</li>
-<li>作者提出的 Compressed Interaction Network(CIN) 实现向量级别的交叉, 模型复杂度跟交叉次数指数增长(这个怎么验证)</li>
-<li>CIN每一层都是Hk个D维向量,D保持不变,Hk可以变。生成方式是,将他们看做D个Hk维向量,和D个m维向量,然后依次将上一层的每一个向量和第0层(最原始的向量X0)的每一个向量做张量积,升维到 $(K = H_{k-1} \times m)$维向量,然后用一个 $(H_k \times K)$的矩阵投影到 $(H_k)$维。就得到了 $(H_k \times D)$维矩阵。这个操作实质上是在D方向上的每一维上做了一个双线性变换,让他们互相交叉。</li>
-<li>如果双线性变换是张量积+sum Pooling,那么就是FM的操作了</li>
-<li>最后在D方向上做了一个sum Pooling操作得到一个向量,每一层都有这样一个向量,这这些向量都拼接起来,形成一个特征向量,再送入逻辑回归</li>
+<h2 id="xiaoice-band-a-melody-and-arrangement-generation-framework-for-pop-music">XiaoIce Band: A Melody and Arrangement Generation Framework for Pop Music</h2>
+<ul>
+<li>流行音乐编曲框架</li>
+<li>Google的先驱工作, GANSynth: Adversarial Neural Audio Synthesis</li>
 </ul>
-<p><img alt="xDeepFM" src="/wiki/static/images/xdeepfm.png" /></p>
+<h2 id="_1">待阅读</h2>
+<ul>
+<li>XiaoIce Band: A Melody and Arrangement Generation Framework for Pop Music</li>
+<li>ActiveRemediation: The Search for Lead Pipes in Flint, Michigan???什么鬼</li>
+<li>STAMP: Short-Term Attention/Memory Priority Model for Session-based Recommendation</li>
+<li>R2SDH: Robust Rotated Supervised Discrete Hashing</li>
+<li>StockAssIstant: A Stock AI Assistant for Reliability Modeling of Stock Comments</li>
+</ul>
+<h2 id="_2">参考</h2>
+<ul>
+<li>Paper list <a href="https://www.kdd.org/kdd2018/accepted-papers">https://www.kdd.org/kdd2018/accepted-papers</a></li>
+<li>Tutorial <a href="https://www.kdd.org/kdd2018/hands-on-tutorials">https://www.kdd.org/kdd2018/hands-on-tutorials</a></li>
+</ul>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -123,7 +121,7 @@ $$</p>
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: 'xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems',
+  title: 'KDD2018论文集',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
