@@ -157,7 +157,15 @@ $$</p>
 </li>
 <li>GAN模型折叠, 总是输出一个固定的结果, 我还真碰到过</li>
 <li>标签平滑, 用0.1,0.9代替0和1作为标签, 可以减少对抗样本的漏洞, 但是会使得p_data为0的区域不为0, 所以作者认为用单边平滑,只讲1用一个小于1的数替代</li>
-<li>virtual batch normalization, 不是基于当前batch的统计信息,而是用一个固定的batch??</li>
+<li>
+<p>virtual batch normalization, 不是基于当前batch的统计信息,而是用一个固定的batch??</p>
+</li>
+<li>
+<p>半监督学习</p>
+<ul>
+<li>以K分类的MNIST数据集为例,将生成模型生成的样本的标签作为K+1, 这样交叉熵损失函数就可以分解为K类的交叉熵损失函数和GAN的判别模型损失函数之和。</li>
+</ul>
+</li>
 </ul>
 </div>
 <div id="income">
