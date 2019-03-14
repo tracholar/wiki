@@ -87,3 +87,36 @@ UNsupervised Image-to-image Translation Networks
 
 - 半监督学习
     - 以K分类的MNIST数据集为例,将生成模型生成的样本的标签作为K+1, 这样交叉熵损失函数就可以分解为K类的交叉熵损失函数和GAN的判别模型损失函数之和。
+
+
+## CGAN2014
+- 基于label生成,而不是随意生成
+- D(x) 替换成 D(x|y), G(z) 替换成 G(z|y)
+
+```python
+def discriminator(x, y):
+    inputs = tf.concat(axis=1, values=[x, y])
+    D_h1 = tf.nn.relu(tf.matmul(inputs, D_W1) + D_b1)
+    D_logit = tf.matmul(D_h1, D_W2) + D_b2
+    D_prob = tf.nn.sigmoid(D_logit)
+
+    return D_prob, D_logit
+    
+def generator(z, y):
+    inputs = tf.concat(axis=1, values=[z, y])
+    G_h1 = tf.nn.relu(tf.matmul(inputs, G_W1) + G_b1)
+    G_log_prob = tf.matmul(G_h1, G_W2) + G_b2
+    G_prob = tf.nn.sigmoid(G_log_prob)
+
+    return G_prob
+```
+
+
+## Image-to-image translation with conditional adversarial nets(pix2pix)
+- 伯克利AI实验室
+- 损失函数, x是草图, z是随机噪声, y是真实的图像
+$$
+L_{cGAN}(G, D) = E_{x,y}[log D(x, y)] + E_{x, z}[1 - log D(x, G(z))]
+$$
+
+![pix2pix01](/wiki/static/images/pix2pix01.png)

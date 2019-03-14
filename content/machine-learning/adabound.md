@@ -15,11 +15,19 @@ date: 2019-02-27
     1. Robbins & Monro 1951年发明了SGD
     2. SGD在所有方向的缩放是相同的,对于稀疏优化不太适合
     3. 所以,人们发明了自适应方法, 在不同的方向上以累积梯度的均方根成反比的缩放学习率
-        - ADAM
         - ADAgrad
+            - 用累积的二阶梯度计算学习率
         - RMSProp
+            - 用指数平均的二阶梯度计算学习率
+        - ADAM
+            - 在RMSProp基础上,用指数平均的一阶梯度计算动量
+        
+        
 - 自适应学习率方法在初始的时候, 学习的很快, 但是很快在测试集上的效果出现饱和, 反而是最原始的SGD收敛的更好
 - AMSGRAD
+    - 在ADAM基础上,让学习率不增,实现方法也很简单,取上一次二阶梯度和本次二阶梯度的最大值
+
+![AMSGrad](/wiki/static/images/amsgrad.png)
 
 ![generic-optimize-algorithm](/wiki/static/images/generic-optimize-algorithm.png)
 
