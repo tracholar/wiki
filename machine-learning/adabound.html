@@ -81,20 +81,37 @@
 <h2 id="_2">摘要与间接</h2>
 <ul>
 <li>关键点: 解决Adam的不收敛问题,动态地调整学习率的界,实现平滑地从Adam和AMSGRAD演变为SGD</li>
-<li>历史进程<ol>
+<li>
+<p>历史进程</p>
+<ol>
 <li>Robbins &amp; Monro 1951年发明了SGD</li>
 <li>SGD在所有方向的缩放是相同的,对于稀疏优化不太适合</li>
 <li>所以,人们发明了自适应方法, 在不同的方向上以累积梯度的均方根成反比的缩放学习率<ul>
-<li>ADAM</li>
-<li>ADAgrad</li>
-<li>RMSProp</li>
+<li>ADAgrad<ul>
+<li>用累积的二阶梯度计算学习率</li>
+</ul>
+</li>
+<li>RMSProp<ul>
+<li>用指数平均的二阶梯度计算学习率</li>
+</ul>
+</li>
+<li>ADAM<ul>
+<li>在RMSProp基础上,用指数平均的一阶梯度计算动量</li>
+</ul>
+</li>
 </ul>
 </li>
 </ol>
 </li>
-<li>自适应学习率方法在初始的时候, 学习的很快, 但是很快在测试集上的效果出现饱和, 反而是最原始的SGD收敛的更好</li>
-<li>AMSGRAD</li>
+<li>
+<p>自适应学习率方法在初始的时候, 学习的很快, 但是很快在测试集上的效果出现饱和, 反而是最原始的SGD收敛的更好</p>
+</li>
+<li>AMSGRAD<ul>
+<li>在ADAM基础上,让学习率不增,实现方法也很简单,取上一次二阶梯度和本次二阶梯度的最大值</li>
 </ul>
+</li>
+</ul>
+<p><img alt="AMSGrad" src="/wiki/static/images/amsgrad.png" /></p>
 <p><img alt="generic-optimize-algorithm" src="/wiki/static/images/generic-optimize-algorithm.png" /></p>
 <ul>
 <li>$(\phi_t: \mathcal{F}^t \rightarrow \mathbf{R}^d)$ 相当于梯度的一阶矩,它是历史上t个梯度的函数</li>

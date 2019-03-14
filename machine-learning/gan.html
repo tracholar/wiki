@@ -80,6 +80,8 @@
 </li>
 <li><a href="#vae-gan">VAE-GAN</a></li>
 <li><a href="#2016">训练技巧2016</a></li>
+<li><a href="#cgan2014">CGAN2014</a></li>
+<li><a href="#image-to-image-translation-with-conditional-adversarial-netspix2pix">Image-to-image translation with conditional adversarial nets(pix2pix)</a></li>
 </ul>
 </div>
 <h2 id="gan">GAN</h2>
@@ -167,6 +169,38 @@ $$</p>
 </ul>
 </li>
 </ul>
+<h2 id="cgan2014">CGAN2014</h2>
+<ul>
+<li>基于label生成,而不是随意生成</li>
+<li>D(x) 替换成 D(x|y), G(z) 替换成 G(z|y)</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="nf">discriminator</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">])</span>
+    <span class="n">D_h1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">D_W1</span><span class="p">)</span> <span class="o">+</span> <span class="n">D_b1</span><span class="p">)</span>
+    <span class="n">D_logit</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">D_h1</span><span class="p">,</span> <span class="n">D_W2</span><span class="p">)</span> <span class="o">+</span> <span class="n">D_b2</span>
+    <span class="n">D_prob</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">D_logit</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">D_prob</span><span class="p">,</span> <span class="n">D_logit</span>
+
+<span class="k">def</span> <span class="nf">generator</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">])</span>
+    <span class="n">G_h1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">G_W1</span><span class="p">)</span> <span class="o">+</span> <span class="n">G_b1</span><span class="p">)</span>
+    <span class="n">G_log_prob</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">G_h1</span><span class="p">,</span> <span class="n">G_W2</span><span class="p">)</span> <span class="o">+</span> <span class="n">G_b2</span>
+    <span class="n">G_prob</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">G_log_prob</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">G_prob</span>
+</pre></div>
+
+
+<h2 id="image-to-image-translation-with-conditional-adversarial-netspix2pix">Image-to-image translation with conditional adversarial nets(pix2pix)</h2>
+<ul>
+<li>伯克利AI实验室</li>
+<li>损失函数, x是草图, z是随机噪声, y是真实的图像<br />
+$$<br />
+L_{cGAN}(G, D) = E_{x,y}[log D(x, y)] + E_{x, z}[1 - log D(x, G(z))]<br />
+$$</li>
+</ul>
+<p><img alt="pix2pix01" src="/wiki/static/images/pix2pix01.png" /></p>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
