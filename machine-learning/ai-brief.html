@@ -1,0 +1,206 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>人工智能介绍 - Tracholar的个人wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="google-search" style="width:200px; float:right; margin: 20px 0;">
+                <form action="//cse.google.com/cse" method="get" id="search-form">
+                    <input type="hidden" name="cx" value="015970462532790426975:gqlen38ywus"/>
+                    <input type="text" name="q"  style="line-height:20px; padding:4px;" placeholder="站内搜索"/>
+                    <svg width="13" height="13" viewBox="0 0 13 13" style="position:relative; left: -20px;" onclick="document.getElementById('search-form').submit()">
+                        <title>搜索</title>
+                        <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z">
+                        </path>
+                    </svg>
+                </form>
+
+            </div>
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;人工智能介绍</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">人工智能介绍</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">人工智能具体是做什么?</a><ul>
+<li><a href="#_3">数据挖掘</a></li>
+<li><a href="#_4">机器视觉/图像处理</a></li>
+<li><a href="#_5">自然语言处理</a></li>
+<li><a href="#_6">语音交互</a></li>
+<li><a href="#_7">自动驾驶</a></li>
+<li><a href="#ai">游戏AI</a></li>
+</ul>
+</li>
+<li><a href="#_8">人工智能的价值</a></li>
+<li><a href="#_9">知识储备与获取</a></li>
+<li><a href="#_10">个人观点:对未来的展望</a></li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>本文主要面向哪些想了解以及想从事人工智能相关领域研究、工作的入门人士,在踏入这个领域之前,通过3W(「是什么」,「为什么」,「怎么办」)了解一下人工智能的概貌。</p>
+<h2 id="_2">人工智能具体是做什么?</h2>
+<p>目前从事人工智能的有两部分人,一部分在学术界,以大学和研究所教授为代表,另一部分在企业当中,以各种算法工程师为代表。目前来看,人工智能的几个比较热门的主题主要有:<br />
+1. 数据挖掘(Data Mining)<br />
+2. 机器视觉(CV)<br />
+3. 自然语言处理(NLP)<br />
+4. 语音交互<br />
+5. 自动驾驶<br />
+6. 游戏AI</p>
+<h3 id="_3">数据挖掘</h3>
+<p>数据挖掘属于特别古老,而且在工业界落地特别成熟的一个领域了,而且现在几乎每个人都受益于它。数据挖掘机器学习跟早期的数据分析很相似,通过从数据中找到某种规律,用这种规律来改善产品等的用户体验,实现个性化。</p>
+<p>具体而言,它的应用场景包括<br />
+1. 个性化推荐, 比如各种APP里面的"猜你喜欢","看了又看","为你推荐",淘宝、京东、美团、亚马逊等电商相关的公司; 头条、腾讯等新闻媒体的个性化咨询推荐。<a href="https://tech.meituan.com/2018/03/29/recommend-dnn.html">https://tech.meituan.com/2018/03/29/recommend-dnn.html</a><br />
+2. 个性化搜索, 你知道吗?即使你跟别人在百度中同时搜索相同的内容,出现的内容和排序结果也是不完全一样的,利用数据挖掘可以实现千人千面的排序来提高用户体验。现在Google、百度、淘宝等搜索都使用了个性化排序,提升用户体验。<br />
+3. 个性化广告, 目前你在社交媒体上和网页上看到的绝大多数广告,都是个性化的,比如百度、Google广告、微信朋友圈广告。<br />
+4. 打车调度, 滴滴用数据挖掘的方法,对平台上的订单进行分发,提升总体的接单成功率。<a href="https://www.leiphone.com/news/201808/7ZbAz8REosn3L8kT.html">https://www.leiphone.com/news/201808/7ZbAz8REosn3L8kT.html</a><br />
+5. 外卖配送, 美团外卖用数据挖掘的方法, 估计订单配送时长。 <a href="https://tech.meituan.com/2018/12/13/machine-learning-in-distribution-practice.html">https://tech.meituan.com/2018/12/13/machine-learning-in-distribution-practice.html</a><br />
+6. 智能定价, Airbnb用算法为房东根据时间不同智能地调整价格。<a href="https://www.kdd.org/kdd2018/accepted-papers/view/customized-regression-model-for-airbnb-dynamic-pricing">https://www.kdd.org/kdd2018/accepted-papers/view/customized-regression-model-for-airbnb-dynamic-pricing</a></p>
+<h3 id="_4">机器视觉/图像处理</h3>
+<p>机器视觉是指用计算机算法去理解图像,多年以前,普通人唯一能扯得上关系的也只有PS,然而随着近几年的发展,机器视觉方面的应用已经深入到日常的很多方面了。</p>
+<ol>
+<li>图像处理软件, Photoshop等软件已经集成了很多视觉方面的算法,Adobe公司近几年也一直在投入很多精力研发新的更智能的图像处理算法。<ul>
+<li>自动抠图: <a href="https://sites.google.com/view/deepimagematting">https://sites.google.com/view/deepimagematting</a></li>
+<li>图像风格转换: <a href="https://zhuanlan.zhihu.com/p/26746283">https://zhuanlan.zhihu.com/p/26746283</a></li>
+<li>图像超分辨重建, 将720p的图片变成4K高清图片: <a href="https://zhuanlan.zhihu.com/p/25532538">https://zhuanlan.zhihu.com/p/25532538</a></li>
+</ul>
+</li>
+<li>图像识别与检测, 现在到银行办事,或者在APP上认证, 都可以基于人脸识别的方式进行检验。<a href="https://faceid.com/">https://faceid.com/</a></li>
+<li>自动驾驶中的识别, 需要及时地从摄像头捕获的图片中识别出障碍和行人。<a href="https://yq.aliyun.com/articles/228194">https://yq.aliyun.com/articles/228194</a></li>
+<li>AI相机, 各种美颜算法,瘦脸等算法相比也不陌生了。</li>
+<li>各种AI换脸, 搜一下 deepfake 有惊喜哦。</li>
+</ol>
+<h3 id="_5">自然语言处理</h3>
+<p>自然语言处理指的是计算机通过算法理解人们日常的语言。我们每天用的翻译工具、输入法等软件都涉及到自然语言处理相关的算法。</p>
+<ol>
+<li>联想输入法, 现在的输入法越来越智能了,背后是自然语言处理算法的提升,代表公司就是搜狗。</li>
+<li>机器翻译, google翻译不用多讲了</li>
+<li>智能问答/客服, 相信你或多或少都用过一些网站的智能客服, 淘宝、京东等电商都有, 一些简单的问题通过这些机器人客服就可以解决。此外,各种聊天机器人和助手,比如Siri要理解你的话,也是先转成文本后,然后通过自然语言处理算法来处理。GMail还搞了一个只能生成邮件回复的工具,背后也是自然语言处理的算法在驱动。</li>
+<li>搜索引擎, 搜索引擎应该是最成功的应用自然语言处理的商业产品了, 代表产品是百度和Google。</li>
+<li>垃圾邮件过滤, 这个也是很古老的自然语言处理算法的一个应用场景了,不过现在关注的人不多了。</li>
+</ol>
+<h3 id="_6">语音交互</h3>
+<p>语音交互应该也是近几年火起来的, 从Siri、Google Now、亚马逊 Echo,再到国内各种智能音箱和AI手机助手。目前还处于幼儿期,不够成熟,但未来潜力很大,结合自然语言处理可以搞出很多大新闻。著名的科技导师李开复就是做语音识别的。</p>
+<ol>
+<li>语音识别, 国内以科大讯飞为龙头,BAT各家也都有</li>
+<li>AI助手/客服, 中国移动跟讯飞合作搞了机器人客服, 各大长的AI音箱。</li>
+<li>同声翻译, 目前虽然还不成熟, 未来还是有可能商用的。</li>
+<li>语音降噪/语音合成, 有些降噪耳机中也用到了先进的降噪算法, 语音合成就不必说了, 很多电子书阅读软件都可以体验到, 智能客服输出的语音也是合成的。</li>
+</ol>
+<h3 id="_7">自动驾驶</h3>
+<p>自动驾驶应该是目前的风口行业了, 最早是由Google带起来的, 国内厂商百度跟进,然后一大堆自动驾驶公司冒出来了,很多汽车制造商也加入了竞争。自动驾驶要用到上面几乎所有的AI技术,包括视(机器视觉)听(语音识别)说(语言合成)读(自然语言理解)写(自然语言合成)。</p>
+<h3 id="ai">游戏AI</h3>
+<p>游戏AI随着游戏的诞生就有了,早期的游戏AI很菜,所以玩单机游戏都称之为「虐电脑」,但是现在就不一定了哦。这个标志性事件是从AlphaGo开始的,在这之前AI只能在一些简单游戏上胜过人类选手, 但是从这以后,各种游戏AI横空出世,甚至魔兽这种复杂的游戏AI也出来了。<a href="https://www.zhihu.com/question/41176911">https://www.zhihu.com/question/41176911</a></p>
+<h2 id="_8">人工智能的价值</h2>
+<h2 id="_9">知识储备与获取</h2>
+<h2 id="_10">个人观点:对未来的展望</h2>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2019-03-20 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: '人工智能介绍',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2019 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>

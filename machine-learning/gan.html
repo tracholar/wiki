@@ -82,6 +82,9 @@
 <li><a href="#2016">训练技巧2016</a></li>
 <li><a href="#cgan2014">CGAN2014</a></li>
 <li><a href="#image-to-image-translation-with-conditional-adversarial-netspix2pix">Image-to-image translation with conditional adversarial nets(pix2pix)</a></li>
+<li><a href="#gan-srgan">GAN单图像超分辨 SRGAN</a></li>
+<li><a href="#hing-loss">Hing loss</a></li>
+<li><a href="#_3">参考</a></li>
 </ul>
 </div>
 <h2 id="gan">GAN</h2>
@@ -201,6 +204,25 @@ L_{cGAN}(G, D) = E_{x,y}[log D(x, y)] + E_{x, z}[1 - log D(x, G(z))]<br />
 $$</li>
 </ul>
 <p><img alt="pix2pix01" src="/wiki/static/images/pix2pix01.png" /></p>
+<ul>
+<li>在GAN损失函数的基础上,加上L1损失函数可以帮助减少模糊。需要将x和y关联起来,x是草图,y是groundtruth,z是采样值,为啥还要z?不直接训练{x, y},用L1损失函数就行。</li>
+<li>解释: GAN损失函数可以让模型更具泛化能力,相当于一种正则</li>
+</ul>
+<h2 id="gan-srgan">GAN单图像超分辨 SRGAN</h2>
+<ul>
+<li>Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network</li>
+<li>重新设计了损失函数,低分辨图像通过生成网络G后的输出与groundtruth之间的损失函数</li>
+<li>损失函数包括内容损失和对抗损失</li>
+<li>内容损失不但包括了在图像空间中的MSE,还包括了在VGG不同特征层上了MSE</li>
+<li>对抗损失主要是G生成的高清图像的对数损失 - log[D(G(I_LR))]</li>
+</ul>
+<p><img alt="SISR-GAN" src="/wiki/static/images/sisr-gan.png" /></p>
+<h2 id="hing-loss">Hing loss</h2>
+<h2 id="_3">参考</h2>
+<ul>
+<li>Generative Adversarial Networks (GANs), Ian Goodfellow, OpenAI Research Scientist NIPS 2016 tutorial</li>
+<li>Introduction to GANs, Ian Goodfellow, Staff Research Scientist, Google Brain, CVPR Tutorial on GANs</li>
+</ul>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
