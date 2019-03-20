@@ -120,3 +120,26 @@ L_{cGAN}(G, D) = E_{x,y}[log D(x, y)] + E_{x, z}[1 - log D(x, G(z))]
 $$
 
 ![pix2pix01](/wiki/static/images/pix2pix01.png)
+
+- 在GAN损失函数的基础上,加上L1损失函数可以帮助减少模糊。需要将x和y关联起来,x是草图,y是groundtruth,z是采样值,为啥还要z?不直接训练{x, y},用L1损失函数就行。
+- 解释: GAN损失函数可以让模型更具泛化能力,相当于一种正则
+
+
+## GAN单图像超分辨 SRGAN
+- Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network
+- 重新设计了损失函数,低分辨图像通过生成网络G后的输出与groundtruth之间的损失函数
+- 损失函数包括内容损失和对抗损失
+- 内容损失不但包括了在图像空间中的MSE,还包括了在VGG不同特征层上了MSE
+- 对抗损失主要是G生成的高清图像的对数损失 - log[D(G(I_LR))]
+
+![SISR-GAN](/wiki/static/images/sisr-gan.png)
+
+## Hing loss
+
+
+
+
+
+## 参考
+- Generative Adversarial Networks (GANs), Ian Goodfellow, OpenAI Research Scientist NIPS 2016 tutorial
+- Introduction to GANs, Ian Goodfellow, Staff Research Scientist, Google Brain, CVPR Tutorial on GANs
