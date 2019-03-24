@@ -1,0 +1,350 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>升入理解TensorFlow - Tracholar的个人wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="google-search" style="width:200px; float:right; margin: 20px 0;">
+                <form action="//cse.google.com/cse" method="get" id="search-form">
+                    <input type="hidden" name="cx" value="015970462532790426975:gqlen38ywus"/>
+                    <input type="text" name="q"  style="line-height:20px; padding:4px;" placeholder="站内搜索"/>
+                    <svg width="13" height="13" viewBox="0 0 13 13" style="position:relative; left: -20px;" onclick="document.getElementById('search-form').submit()">
+                        <title>搜索</title>
+                        <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z">
+                        </path>
+                    </svg>
+                </form>
+
+            </div>
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning-softpackage">softpackage</a>&nbsp;»&nbsp;升入理解TensorFlow</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">升入理解TensorFlow</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">架构与设计</a></li>
+<li><a href="#_2">关键模块篇</a><ul>
+<li><a href="#_3">数据处理方法</a></li>
+<li><a href="#tensorflow">TensorFlow编程框架</a></li>
+<li><a href="#tensorboard">TensorBoard</a></li>
+</ul>
+</li>
+<li><a href="#tensorflow-serving">模型托管 Tensorflow Serving</a></li>
+</ul>
+</div>
+<h2 id="_1">架构与设计</h2>
+<ul>
+<li>数据流图, 前向图和后向图, 前向和后向计算图是分开的<ul>
+<li>节点, 操作 operator: 数学运算</li>
+<li>变量 Variable, 有内部状态</li>
+<li>占位符 placeholder, 用于输入数据</li>
+<li>梯度值</li>
+<li>更新参数操作</li>
+<li>更新后的参数</li>
+</ul>
+</li>
+<li>有向边: <ul>
+<li>数据边,传输数据</li>
+<li>控制依赖,控制执行顺序</li>
+</ul>
+</li>
+<li>执行原理:<ol>
+<li>创建散列表,节点名字做key,入度做value</li>
+<li>创建可执行节点队列, 将入度为0的节点放入队列并从散列表中删除</li>
+<li>依次执行队列中的节点, 每次执行都将执行节点的输出指向的所有节点的入度减1, 更新到散列表中</li>
+<li>重复2-3直到所有节点都计算完毕</li>
+</ol>
+</li>
+<li>数据载体: 张量<ul>
+<li>Tensor, 张量实现的时候是通过句柄的方式, 实现复用, 通过引用计数实现内存释放.<ol>
+<li>属性: <code>name</code>, <code>dtype</code>, <code>graph</code>, <code>op</code>, <code>shape</code>, <code>value_index</code>(张量在该前置操作中所有输出值中的索引)</li>
+<li>方法: <code>eval</code>, <code>get_shape</code>, <code>set_shape</code>, <code>consumers</code>(张量的后置操作) </li>
+<li>创建, <code>tf.constant</code> 以及操作 <code>tf.add</code> 都可以创建张量</li>
+<li>执行, <code>sess.run</code> 和 <code>tensorf.eval</code></li>
+</ol>
+</li>
+<li>SparseTensor, 稀疏张量, 包含 <code>indices</code> (N, ndims), <code>values</code> (N), <code>dense_shape</code> (ndims) 三个属性<ol>
+<li>创建, <code>tf.SparseTensor(indices=[[1],[3],[8]], values=[1,1,1], dense_shape=[10])</code></li>
+<li>操作, </li>
+</ol>
+</li>
+</ul>
+</li>
+<li>模型载体: 操作<ul>
+<li>计算节点<ol>
+<li>属性: <code>name</code>, <code>type</code>, <code>inputs</code>, <code>control_inputs</code>, <code>outpus</code>, <code>device</code>, <code>graph</code>, <code>traceback</code>(调用栈)</li>
+<li>典型操作<ul>
+<li>算术: <code>add</code>, <code>multiply</code>, <code>mod</code>, <code>sqrt</code>, <code>sin</code>, <code>trace</code>, <code>fft</code>, <code>argmin</code> 已及numpy类似的矩阵操作</li>
+<li>数组: <code>size</code>, <code>rank</code>, <code>split</code>,<code>reverse</code>, <code>cast</code>, <code>one_hot</code>, <code>quantize</code></li>
+<li>梯度裁剪: <code>clip_by_value</code>, <code>clip_by_norm</code>, <code>clip_by_global_norm</code></li>
+<li>逻辑控制和调试: <code>identity</code>, <code>logical_and</code>, <code>equal</code>, <code>less</code>, <code>is_finite</code>, <code>is_nan</code></li>
+<li>数据流控制: <code>enqueue</code>, <code>dequeue</code>, <code>size</code>, <code>take_grad</code>, <code>apply_grad</code></li>
+<li>初始化操作: <code>zeros_initializer</code>, <code>random_normal_initializer</code>, <code>orthogonal_initializer</code></li>
+<li>神经网络操作: <code>convolution</code>, <code>pool</code>, <code>dropout</code></li>
+<li>随机运算: <code>random_normal</code>, <code>random_shuffle</code></li>
+<li>字符串运算: <code>string_to_hash_bucket</code>, <code>reduce_join</code>, <code>substr</code>, <code>encode_base64</code></li>
+<li>图像处理: <code>encode_png</code>, <code>resize_images</code>, <code>rot90</code>, <code>hsv_to_rgb</code>, <code>adjust_gamma</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>存储节点: 变量<ul>
+<li>变量a其实由 <code>(a)</code>, <code>Assign</code>, <code>read</code>, <code>initial_value</code> 四个节点组成, <code>tf.add(a, b)</code>操作实际上读的是 <code>read</code> 子节点的值, 而 <code>tf.global_variables_initializer</code> 实际上是将 <code>initial_value</code> 传入 <code>Assign</code> 节点,实现初始化的</li>
+<li>变量操作, 支持两种初始化<ol>
+<li>用户指定的初始值</li>
+<li>VariableDef, 用protobuff定义的变量初始化, 用于继续训练场景</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>数据节点: Placeholder<ul>
+<li><code>tf.placeholder</code> , <code>tf.sparse_placeholder</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>运行环境 : 会话<ul>
+<li>普通会话, <code>sess = tf.Session(), sess.run, sess.close</code></li>
+<li>通过 <code>tf.ConfigProto</code> 设置会话配置, 包括但不限于, GPU使用, 分布式环境RPC地址 etc</li>
+<li><code>with</code>语句可以不用指定session,就可以直接调用 <code>eval</code> 方法计算张量的值</li>
+<li>交互式会话 <code>tf.InteractiveSession</code> 会默认的将 <code>eval</code> 的会话设置为当前会话</li>
+<li><code>reset</code> 方法用于会话的资源释放</li>
+</ul>
+</li>
+<li>训练工具: 优化器<ul>
+<li><code>_use_locking</code> 在并发更新的时候是否加锁</li>
+<li>子类实现 <code>_apply_dense</code> 和 <code>_apply_sparse</code> 方法, 这两个方法都返回数据流图上的操作</li>
+<li><code>minimize</code>方法调用 <code>compute_gradients</code> 和 <code>apply_gradients</code> 方法</li>
+<li><code>gate_gradients</code> 梯度计算的异步/同步控制</li>
+<li>更自由地控制优化过程</li>
+</ul>
+</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="n">grads_and_vars</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">compute_gradients</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">grads_and_vars</span><span class="p">):</span> 
+    <span class="k">if</span> <span class="n">g</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span> 
+        <span class="n">grads_and_vars</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">clip_by_norm</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">v</span><span class="p">)</span> <span class="c1"># 裁剪梯度</span>
+<span class="n">train_op</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="n">grads_and_vars</span><span class="p">)</span>
+</pre></div>
+
+
+<h2 id="_2">关键模块篇</h2>
+<h3 id="_3">数据处理方法</h3>
+<ul>
+<li>输入流水线<ul>
+<li>创建文件名列表<ul>
+<li>python列表 或者 <code>tf.train.match_filenames_once</code></li>
+</ul>
+</li>
+<li>创建文件名队列<ul>
+<li><code>tf.train.string_input_producer</code></li>
+</ul>
+</li>
+<li>Reader 和 Decoder<ul>
+<li>CSV文件, <code>tf.TextLineReader</code>, <code>tf.decode_csv</code></li>
+<li>TFRecords 文件, <code>tf.TFRecordReader</code>, <code>tf.parse_single_example</code></li>
+<li>自由格式, <code>tf.FixedLengthRecordReader</code>, <code>tf.decode_raw</code></li>
+</ul>
+</li>
+<li>创建样本队列<ul>
+<li>使用 <code>tf.train.start_queue_runners</code> 启动后台线程读取队列</li>
+<li>使用后台线程协调器 <code>tf.train.Coordinator</code> 管理线程</li>
+<li>创建批量数据 <code>tf.train.shuffle_batch</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>模型参数<ul>
+<li>参数创建、初始化、更新  <code>tf.Variable</code> 实现</li>
+<li>模型文件存储和恢复 <code>tf.train.Saver</code> 实现</li>
+<li>初始化方法 <code>tf.global_variables_initilizer</code> 和 <code>tf.variables_initilizer(var_list)</code>, <code>var_list</code> 是变量集合, 创建变量时,可以通过 <code>collections</code> 参数指定不同的集合, 默认是 <code>GraphKeys.GLOBAL_VARIABLES</code>, 即全局变量集合, 如果显式指定 <code>trainable=True</code>,那么会加到 <code>TRAINABLE_VARABLES</code> 集合, 内置5类变量集合(最新版本支持更多了)<ul>
+<li><code>GraphKeys.GLOBAL_VARIABLES</code></li>
+<li><code>GraphKeys.LOCAL_VARIABLES</code></li>
+<li><code>GraphKeys.TRAINABLE_VARABLES</code></li>
+<li><code>GraphKeys.MODEL_VARIABLES</code></li>
+<li><code>GraphKeys.MOVING_AVERAGE_VARIABLES</code></li>
+<li><code>GraphKeys.REGULARIZATION_LOSSES</code></li>
+</ul>
+</li>
+<li>更新模型参数<ul>
+<li>赋值, <code>tf.assign</code>, <code>tf.assign_add</code>, <code>tf.assign_sub</code>, 注意等于号没法实现变量赋值, 它只是创建了一个新的张量, 并没有改变变量的值</li>
+</ul>
+</li>
+<li>使用 <code>tf.train.Saver</code> 保存和恢复模型<ul>
+<li><code>saver = tf.train.Saver({'w' : W})</code> 要保存的模型, 通过变量名字来标示和恢复</li>
+<li><code>saver.restore</code></li>
+</ul>
+</li>
+<li>变量作用域 <code>tf.variable_scope</code>, <code>reuse</code> 参数表明是否可以复用, <code>initializer</code>指定该变量作用域下统一的初始化方法</li>
+</ul>
+</li>
+<li>命令行参数<ul>
+<li><code>argparse</code> 和 <code>tf.app.flags</code>, 后者的好处: 自动生成使用方法信息, 自动生成帮组信息, 自动生成错误信息</li>
+</ul>
+</li>
+</ul>
+<h3 id="tensorflow">TensorFlow编程框架</h3>
+<ul>
+<li>显式创建数据流图 <code>tf.Graph()</code>, <code>with tf.Graph().as_default()</code> 语句添加作用域</li>
+<li>ps-worker: 模型分发,参数更新由PS实现; 模型推断和梯度计算由worker实现</li>
+<li>分布式模型脚本需要从命令行参数获取集群配置参数</li>
+<li><code>tf.ClusterSpec</code>, <code>tf.train.Server</code></li>
+<li>同步的梯度更新比异步的更快?</li>
+<li>同步训练: 梯度聚合器</li>
+<li>异步训练: 靠内部的锁机制实现</li>
+<li>supervisor: 管理模型训练<ul>
+<li>定期保存模型到checkpoint</li>
+<li>重启的时候从checkpoint文件恢复,继续训练</li>
+<li>异常发生时,清理现场</li>
+<li>执行步骤<ol>
+<li>创建Supervisor实例,传入checkpoint文件路径和日志路径</li>
+<li>获取会话实例 session<ul>
+<li>检查点服务, 定期保存</li>
+<li>汇总服务, 汇总日志, 追加到logdir</li>
+<li>步数计数器</li>
+</ul>
+</li>
+<li>使用会话实例执行训练, 并检查停止条件</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="tensorboard">TensorBoard</h3>
+<ul>
+<li><code>tf.Summary</code><ul>
+<li><code>audio</code>, <code>image</code>, <code>scalar</code>, <code>histogram</code>, <code>merge_all</code></li>
+<li><code>FileWriter</code><ul>
+<li><code>add_summary</code>, <code>add_event</code>, <code>add_graph</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>名字作用域与抽象节点, 抽象节点是一个子图, 通过name_scope可以将该scope下的所有节点自动汇聚到一个子图</li>
+<li>汇总数据 summary.proto</li>
+<li>折线图 <code>tf.summary.scalar(name, tensor)</code>, 汇总操作都会放到KEY:  GraphKeys.SUMMARIES 下</li>
+<li>分布图 <code>tf.summary.histogram(name, tensor)</code></li>
+<li>图像 <code>tf.summary.image(name, tensor, max_outputs)</code>, tensor 是4阶张量 [batch_size, height, width, channels], channels 可取1(灰度图), 3(彩色图), 4(带Alpha通道的彩色图)</li>
+<li>音频 <code>tf.summary.image(name, tensor, sample_rate, max_outputs)</code> tensor 是3阶张量 [batch_size, frames, channels] 或者2阶张量 [batch_size, frames], frames是音频的值-1到1之间 <a href="https://magenta.tensorflow.org/">https://magenta.tensorflow.org/</a></li>
+<li>可视化高维数据, embeddings: 支持t-SNE和PCA两种降维方式</li>
+</ul>
+<h2 id="tensorflow-serving">模型托管 Tensorflow Serving</h2>
+<ul>
+<li>流水线<ul>
+<li>持续训练, 即在线学习</li>
+<li>模型服务, gRPC协议</li>
+<li>客户端访问</li>
+</ul>
+</li>
+<li>自动感知模型更新</li>
+</ul>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2019-03-21 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: '升入理解TensorFlow',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2019 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>

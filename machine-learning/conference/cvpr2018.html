@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>2018-KDD论文集 - Tracholar的个人wiki</title>
+        <title>2018-CVPR论文集 - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,43 +64,73 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning-conference">conference</a>&nbsp;»&nbsp;2018-KDD论文集</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning-conference">conference</a>&nbsp;»&nbsp;2018-CVPR论文集</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">2018-KDD论文集</div>
+<div id="title">2018-CVPR论文集</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#real-time-personalization-using-embeddings-for-search-ranking-at-airbnb">Real-time Personalization using Embeddings for Search Ranking at Airbnb</a></li>
-<li><a href="#adversarial-attacks-on-classification-models-for-graphs">Adversarial attacks on classification models for Graphs</a></li>
-<li><a href="#xiaoice-band-a-melody-and-arrangement-generation-framework-for-pop-music">XiaoIce Band: A Melody and Arrangement Generation Framework for Pop Music</a></li>
-<li><a href="#_1">待阅读</a></li>
-<li><a href="#_2">参考</a></li>
+<li><a href="#_1">关于</a></li>
+<li><a href="#senet">SENet</a></li>
+<li><a href="#shuffle-net">shuffle-net</a></li>
+<li><a href="#learning-transferable-architectures-for-scalable-image-recognition">Learning Transferable Architectures for Scalable Image Recognition</a></li>
+<li><a href="#mobilenetv2">MobileNetV2</a></li>
+<li><a href="#bottom-up-and-top-down-attention-for-image-captioning-and-visual-question-answering">Bottom-Up and Top-Down Attention for Image Captioning and Visual Question Answering</a></li>
 </ul>
 </div>
-<h2 id="real-time-personalization-using-embeddings-for-search-ranking-at-airbnb">Real-time Personalization using Embeddings for Search Ranking at Airbnb</h2>
-<p>参考精读笔记</p>
-<h2 id="adversarial-attacks-on-classification-models-for-graphs">Adversarial attacks on classification models for Graphs</h2>
+<h2 id="_1">关于</h2>
+<p>CVPR2018论文简读笔记</p>
+<h2 id="senet">SENet</h2>
 <ul>
-<li>图分类模型的对抗攻击</li>
-<li>图是离散的,无法利用图像的基于梯度的方法</li>
+<li>论文: Squeeze-and-Excitation Networks, 中科院软件所</li>
+<li>ILSVRC 2017 冠军模型</li>
+<li>代码: https://github.com/hujie-frank/SENet</li>
+<li>相关解读: <a href="https://zhuanlan.zhihu.com/p/32733549">https://zhuanlan.zhihu.com/p/32733549</a></li>
+<li>主要创新点是在普通的卷积层后面增加了一个模块: Squeeze-and-Excitation block</li>
 </ul>
-<h2 id="xiaoice-band-a-melody-and-arrangement-generation-framework-for-pop-music">XiaoIce Band: A Melody and Arrangement Generation Framework for Pop Music</h2>
+<p><img alt="Squeeze-and-Excitation block" src="/wiki/static/images/squeeze-excitatioin.png" /></p>
 <ul>
-<li>流行音乐编曲框架</li>
-<li>Google的先驱工作, GANSynth: Adversarial Neural Audio Synthesis</li>
+<li>模块解读<ol>
+<li>对输入 H'xW'xC 的特征图, 首先进行正常的卷积层变换成 HxWxC</li>
+<li>然后对每一个通道(即C这个维度)加权, 用来提升重要的特征通道, 抑制不重要的特征通道, 作者称之为 feature recalibration, 其实就是通道维度的attention机制嘛</li>
+<li>通道权重计算<ol>
+<li>squeeze操作: 将 HxWxC 特征图通过全局平均池化,变成 1x1xC 的向量</li>
+<li>excitation: 通过一个单隐层的神经网络变成一个recalibration后的C维向量</li>
+</ol>
+</li>
+</ol>
+</li>
 </ul>
-<h2 id="_1">待阅读</h2>
+<h2 id="shuffle-net">shuffle-net</h2>
 <ul>
-<li>XiaoIce Band: A Melody and Arrangement Generation Framework for Pop Music</li>
-<li>ActiveRemediation: The Search for Lead Pipes in Flint, Michigan???什么鬼</li>
-<li>STAMP: Short-Term Attention/Memory Priority Model for Session-based Recommendation</li>
-<li>R2SDH: Robust Rotated Supervised Discrete Hashing</li>
-<li>StockAssIstant: A Stock AI Assistant for Reliability Modeling of Stock Comments</li>
+<li>face++</li>
+<li>略, 有精度笔记, 关键点是通道shuffle, 将通道间的全连接变成部分连接, 又通过通道shuffle, 避免通道间的完全隔离</li>
 </ul>
-<h2 id="_2">参考</h2>
+<h2 id="learning-transferable-architectures-for-scalable-image-recognition">Learning Transferable Architectures for Scalable Image Recognition</h2>
 <ul>
-<li>Paper list <a href="https://www.kdd.org/kdd2018/accepted-papers">https://www.kdd.org/kdd2018/accepted-papers</a></li>
-<li>Tutorial <a href="https://www.kdd.org/kdd2018/hands-on-tutorials">https://www.kdd.org/kdd2018/hands-on-tutorials</a></li>
+<li>Googlebrain</li>
+<li>创新点: 用算法学习模型结构, 先用个小数据集搜索一个比较好的结构,然后在大数据集上重新训练</li>
+<li>NASNet搜索空间 B. Zoph and Q. V. Le. Neural architecture search with rein- forcement learning. In International Conference on Learning Representations, 2017.<ul>
+<li>用一个RNN来输出神经网络每一层的参数序列(见图),即动作A,RNN输出的是动作序列</li>
+<li>RNN的参数当做策略函数的参数</li>
+<li>用当前层之前层的超参数作为状态S?</li>
+<li>模型的层数超过一个阈值就停止</li>
+<li>用RNN输出的参数作为模型超参数的NN在验证集上的准确率作为回报R</li>
+<li>采用策略梯度算法REINFORCE对RNN的参数进行优化</li>
+</ul>
+</li>
+</ul>
+<p><img alt="NASNet" src="/wiki/static/images/nasnet.png" /></p>
+<h2 id="mobilenetv2">MobileNetV2</h2>
+<ul>
+<li>论文: MobileNetV2: Inverted Residuals and Linear Bottlenecks</li>
+<li>Google</li>
+<li>创新点: 新的模块层, 先用一个1x1卷积层升维, 然而利用深度分离卷积在每一个通道上单独做卷积, 然后又用1x1卷积降维, 还增加了残差模块</li>
+<li>TensorFlow-slim 官方实现</li>
+</ul>
+<h2 id="bottom-up-and-top-down-attention-for-image-captioning-and-visual-question-answering">Bottom-Up and Top-Down Attention for Image Captioning and Visual Question Answering</h2>
+<ul>
+<li>JD、微软、澳大利亚大学etc</li>
 </ul>
 </div>
 <div id="income">
@@ -121,7 +151,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: '2018-KDD论文集',
+  title: '2018-CVPR论文集',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
