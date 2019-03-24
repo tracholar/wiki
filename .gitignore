@@ -9,4 +9,4 @@ output
 *.gz
 *.data
 logs/
-
+tmp/
