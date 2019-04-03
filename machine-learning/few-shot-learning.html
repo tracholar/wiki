@@ -1,0 +1,200 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>少样本学习 - Tracholar的个人wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="google-search" style="width:200px; float:right; margin: 20px 0;">
+                <form action="//cse.google.com/cse" method="get" id="search-form">
+                    <input type="hidden" name="cx" value="015970462532790426975:gqlen38ywus"/>
+                    <input type="text" name="q"  style="line-height:20px; padding:4px;" placeholder="站内搜索"/>
+                    <svg width="13" height="13" viewBox="0 0 13 13" style="position:relative; left: -20px;" onclick="document.getElementById('search-form').submit()">
+                        <title>搜索</title>
+                        <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z">
+                        </path>
+                    </svg>
+                </form>
+
+            </div>
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;少样本学习</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">少样本学习</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">问题</a></li>
+<li><a href="#_3">基于模型的方法</a></li>
+<li><a href="#_4">基于度量的方法</a><ul>
+<li><a href="#_5">孪生网络</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<blockquote>
+<p>人类非常擅长通过极少量的样本识别一个新物体，比如小孩子只需要书中的一些图片就可以认识什么是“斑马”，什么是“犀牛”。在人类的快速学习能力的启发下，研究人员希望机器学习模型在学习了一定类别的大量数据后，对于新的类别，只需要少量的样本就能快速学习，这就是 Few-shot Learning 要解决的问题。 <br />
+<a href="https://mp.weixin.qq.com/s/sp03pzg-Ead-sxm4sWyaXg">https://mp.weixin.qq.com/s/sp03pzg-Ead-sxm4sWyaXg</a></p>
+</blockquote>
+<h2 id="_2">问题</h2>
+<ul>
+<li>flow-shot学习和one-shot学习本质上的问题是,给你C个类别,但是每个类别只有K个样本,现在有个新的样本,要你识别这个样本是哪个类别, 这种就叫C-way K-shot学习</li>
+<li>一般的分类问题,每个类别的样本数目K一般很大,几百到几万, 这里一般只有几个,所以很难正常建立一个分类模型去识别是哪个类别</li>
+<li>这个类似于人脸匹配的任务,数据库中只有人脸的1张图片,有个新的人脸来了,要识别是谁</li>
+</ul>
+<h2 id="_3">基于模型的方法</h2>
+<ul>
+<li>没看懂,比较复杂</li>
+</ul>
+<h2 id="_4">基于度量的方法</h2>
+<ul>
+<li>对样本间距离建模,同类靠近,不同类的远离</li>
+</ul>
+<h3 id="_5">孪生网络</h3>
+<ul>
+<li>论文: Siamese Neural Networks for One-shot Image Recognition</li>
+<li>训练好的网络不但可以预测未见过的样本但是见过的类别的数据,还可以预测没有见过类别的数据?</li>
+<li>问题: 预测那些我们只见过一次的类别 one-shot learning<ul>
+<li>区别于 zero-shot learning, 一次都不见</li>
+</ul>
+</li>
+<li>相关论文:<ul>
+<li>Fe-Fei, Li, Fergus, Robert, and Perona, Pietro. A bayesian approach to unsupervised one-shot learning of object categories. In Computer Vision, 2003. Proceedings. Ninth IEEE International Conference on, pp. 1134– 1141. IEEE, 2003.</li>
+<li>Fei-Fei, Li, Fergus, Robert, and Perona, Pietro. One-shot learning of object categories. Pattern Analysis and Ma- chine Intelligence, IEEE Transactions on, 28(4):594– 611, 2006.</li>
+<li>Lake, Brenden M, Salakhutdinov, Ruslan, Gross, Jason, and Tenenbaum, Joshua B. One shot learning of simple visual concepts. In Proceedings of the 33rd Annual Con- ference of the Cognitive Science Society, volume 172, 2011.</li>
+</ul>
+</li>
+<li>基本方法<ol>
+<li>不是降图片作为多分类来做,而是将<strong>图片对</strong>当做二分类问题</li>
+<li>对每一对有标注的图片(a, b) 用同一个CNN抽取特征向量va, vb</li>
+<li>计算加权距离  |alpha(va - vb)| (L1, L2 距离), alpha是这个模型的参数,用来给不同维度加权</li>
+<li>用 sigmoid(加权距离) 作为这两个图片属于同一类别的概率</li>
+<li>利用二分类损失函数进行训练</li>
+</ol>
+</li>
+<li>数据集的构造<ol>
+<li>有标注的同一类别的图片不能太少,否则无法构造相同类别的图片对</li>
+<li>成对构造同类和不同类别的图片对,也就是最终模型预测的正负例是1:1,其他比例影响是什么?</li>
+<li>测试集的构造,选取一类图片的两张,把其中一张用来预测,其他类别抽出一张,除了用来预测的那1张外,剩下的C张用作支撑集,让模型预测那一张是跟支撑集里面的哪个类比一致!</li>
+</ol>
+</li>
+</ul>
+<p>$$<br />
+y \sigma(\alpha^T(v_a - v_b)) + (1-y)\sigma(-\alpha^t(v_a - v_b))<br />
+$$</p>
+<ul>
+<li>其他损失函数, 相似损失直接用距离, 不像似损失要求距离大于某个数值<br />
+$$<br />
+y D(a, b) + (1-y) (max(0, m - D(a, b)))^2<br />
+$$</li>
+</ul>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2019-04-01 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: '少样本学习',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2019 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>
