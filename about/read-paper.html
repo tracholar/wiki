@@ -1,0 +1,163 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>关于阅读论文的几点个人经验 - Tracholar的个人wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="google-search" style="width:200px; float:right; margin: 20px 0;">
+                <form action="//cse.google.com/cse" method="get" id="search-form">
+                    <input type="hidden" name="cx" value="015970462532790426975:gqlen38ywus"/>
+                    <input type="text" name="q"  style="line-height:20px; padding:4px;" placeholder="站内搜索"/>
+                    <svg width="13" height="13" viewBox="0 0 13 13" style="position:relative; left: -20px;" onclick="document.getElementById('search-form').submit()">
+                        <title>搜索</title>
+                        <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z">
+                        </path>
+                    </svg>
+                </form>
+
+            </div>
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#about">about</a>&nbsp;»&nbsp;关于阅读论文的几点个人经验</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">关于阅读论文的几点个人经验</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">保持阅读论文重要性</a></li>
+<li><a href="#10">第一步 精读10篇以上经典论文</a></li>
+<li><a href="#_2">第二步 快速阅读多个领域类的文章</a></li>
+<li><a href="#_3">第三步 有选择地阅读</a></li>
+</ul>
+</div>
+<h2 id="_1">保持阅读论文重要性</h2>
+<p>对于从事数据挖掘、人工智能相关领域的从业人员来说,保持对新知识的热情很重要。学习新的算法和模型的一个重要途径就是阅读论文。本文将自己从研究生三年到工作这三年的阅读论文的个人经验和体会记录下来,希望对读者有所帮助。</p>
+<h2 id="10">第一步 精读10篇以上经典论文</h2>
+<p>对于一个积累不足的读者来说,想要实现快速阅读论文、快速掌握公众号里面的算法和模型实际上是很困难的。所以我建议的第一步,先精读10篇以上经典论文。</p>
+<p>有几点需要解释一下:<br />
+1. 10篇只是一个大概的数字,不一定要完全按照这个数字来<br />
+2. 阅读的时候做好笔记,记录你认为有价值的、重要的知识点,以及不太明白的知识点,以及自己的思考和体会。这一步非常重要,很多人不注意就会把精读变成快读了,或者根本读不下去。<br />
+3. 有相关的重要文献,也一起读一下,重点是跟你精读论文相关的部分,其他部分可以不用深究,看个人情况就好。<br />
+4. 经典论文可以找人推荐、或者在知乎上找一些人推荐的文章, 一般看引用量就能知道,有一个很好的地方可以找到经典论文, 一些著名的公开课如CS231n, CS224n, CS234 等都会提供很多参考文献,而课程的PPT可以当做很好的索引将这些论文串联起来<br />
+5. 自己动手实现里面重要的算法。这一点也是很重要的,完全复现论文是一件工作量很大的事情,而且对于刚开始学习不久的人也很困难,但是我们可以只实现里面比较重要的核心算法,或者你自己觉得有趣的点。这一步的核心精神是通过动手,加深理解<br />
+6. 当阅读一定量的时候要形成自己的理解,形成自己的知识结构,知识点之间缺乏联系那是知识孤岛,所以平常要多想想不同算法、模型之间的联系,比如思考: 是否存在一种通用的方法把它们都归类到一起,是否两种模型一种是另外一种的特例? 新的算法和经典算法之间的关系是什么? 等等这些问题</p>
+<h2 id="_2">第二步 快速阅读多个领域类的文章</h2>
+<p>有了第一步的基础后,就有一些积累了,可以开始泛读快速扩大自己的知识面了。论文可以通过inference、公开课、网上有心人收集的论文列表、综述等方式。</p>
+<p>有几点需要解释一下:<br />
+1. 泛读的重点,理解论文的核心创新点,记录笔记<br />
+2. 通过大量阅读,总结出更一般化的经验,极大地扩充知识面<br />
+3. 泛读的同时,发现值得精读的文章也要按照精读的方法阅读</p>
+<h2 id="_3">第三步 有选择地阅读</h2>
+<p>有了第二步之后,有了一定知识储备,可以有选择地选择一些文章进行精读和复现论文结论,很多论文的结论并不一定靠谱,这一步可以帮助你真正成为领域专家,并且可以创造新的知识、算法和模型。</p>
+<p>有几点需要解释一下:<br />
+1. 选读的同事也要一定的泛读<br />
+2. 积极跟踪最新论文,重要的国际会议,建议每篇文章的标题至少刷一遍,其次最好刷一遍摘要,筛选出感兴趣的文章<br />
+3. 这一步的目的是建立自己的知识网,并牢固他们,甚至为别人创造新的知(挖)识(新)点(坑)。</p>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2019-04-04 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: '关于阅读论文的几点个人经验',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2019 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>
