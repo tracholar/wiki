@@ -44,7 +44,7 @@ $$
 - 无偏数据收集, 随机对一组用户设定投放次数,收集反馈作为数据
 - 前两个模型的样本构建都没啥问题,注意构建退订模型的时候,k要选择分配的通知预算,而不是实际收到的数目,a代表活跃,而不是点击
 - 第3个模型是长期活跃,作者选了第4周之后的一周是否活跃构造label
-- 
+
 
 ## 相关文献
 - Rupesh Gupta, Guanfeng Liang, and Rómer Rosales. 2017. Optimizing Email Volume For Sitewide Engagement. In Proceedings of the 2017 ACM on Conference on Information and Knowledge Management, CIKM 2017, Singapore, November 06 - 10, 2017. 1947–1955
