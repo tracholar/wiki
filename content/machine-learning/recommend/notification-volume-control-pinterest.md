@@ -1,12 +1,16 @@
 ---
-title: "Notification Volume Control and Optimization System at Pinterest"
+title: "PUSH优化"
 layout: page
 date: 2019-04-05
 ---
 
 [TOC]
 
-## 论文摘要
+
+## Notification Volume Control and Optimization System at Pinterest
+- Pinterest
+
+### 论文摘要
 - 通知系统的几个关键问题:
     - 什么时候投放
     - 通过哪个通道投放
@@ -45,6 +49,15 @@ $$
 - 前两个模型的样本构建都没啥问题,注意构建退订模型的时候,k要选择分配的通知预算,而不是实际收到的数目,a代表活跃,而不是点击
 - 第3个模型是长期活跃,作者选了第4周之后的一周是否活跃构造label
 
+
+## Near Real-time Optimization of Activity-based Notifications
+- LinkedIn
+- push文案有点像推荐理由
+- 简单的点击率预估模型
+- 点击率评估,将点击率排序分成10个桶(每个桶人数一样多),然后评估每个桶里面预测的PCTR和实际的CTR之间的差异
+- 通道关闭模型很难优化,因为不知道是因为哪条push或者哪几条push导致用户关闭的
+- push最优解是p超过某个阈值,或者每个人有个个性化阈值
+- 需要仔细阅读,暂时先放过
 
 ## 相关文献
 - Rupesh Gupta, Guanfeng Liang, and Rómer Rosales. 2017. Optimizing Email Volume For Sitewide Engagement. In Proceedings of the 2017 ACM on Conference on Information and Knowledge Management, CIKM 2017, Singapore, November 06 - 10, 2017. 1947–1955
