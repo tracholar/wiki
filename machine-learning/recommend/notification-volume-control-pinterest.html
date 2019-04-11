@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>Notification Volume Control and Optimization System at Pinterest - Tracholar的个人wiki</title>
+        <title>PUSH优化 - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,17 +64,25 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning-recommend">recommend</a>&nbsp;»&nbsp;Notification Volume Control and Optimization System at Pinterest</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning-recommend">recommend</a>&nbsp;»&nbsp;PUSH优化</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">Notification Volume Control and Optimization System at Pinterest</div>
+<div id="title">PUSH优化</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#notification-volume-control-and-optimization-system-at-pinterest">Notification Volume Control and Optimization System at Pinterest</a><ul>
 <li><a href="#_1">论文摘要</a></li>
+</ul>
+</li>
+<li><a href="#near-real-time-optimization-of-activity-based-notifications">Near Real-time Optimization of Activity-based Notifications</a></li>
 <li><a href="#_2">相关文献</a></li>
 </ul>
 </div>
-<h2 id="_1">论文摘要</h2>
+<h2 id="notification-volume-control-and-optimization-system-at-pinterest">Notification Volume Control and Optimization System at Pinterest</h2>
+<ul>
+<li>Pinterest</li>
+</ul>
+<h3 id="_1">论文摘要</h3>
 <ul>
 <li>通知系统的几个关键问题:<ul>
 <li>什么时候投放</li>
@@ -133,6 +141,16 @@ $$</li>
 <li>前两个模型的样本构建都没啥问题,注意构建退订模型的时候,k要选择分配的通知预算,而不是实际收到的数目,a代表活跃,而不是点击</li>
 <li>第3个模型是长期活跃,作者选了第4周之后的一周是否活跃构造label</li>
 </ul>
+<h2 id="near-real-time-optimization-of-activity-based-notifications">Near Real-time Optimization of Activity-based Notifications</h2>
+<ul>
+<li>LinkedIn</li>
+<li>push文案有点像推荐理由</li>
+<li>简单的点击率预估模型</li>
+<li>点击率评估,将点击率排序分成10个桶(每个桶人数一样多),然后评估每个桶里面预测的PCTR和实际的CTR之间的差异</li>
+<li>通道关闭模型很难优化,因为不知道是因为哪条push或者哪几条push导致用户关闭的</li>
+<li>push最优解是p超过某个阈值,或者每个人有个个性化阈值</li>
+<li>需要仔细阅读,暂时先放过</li>
+</ul>
 <h2 id="_2">相关文献</h2>
 <ul>
 <li>Rupesh Gupta, Guanfeng Liang, and Rómer Rosales. 2017. Optimizing Email Volume For Sitewide Engagement. In Proceedings of the 2017 ACM on Conference on Information and Knowledge Management, CIKM 2017, Singapore, November 06 - 10, 2017. 1947–1955</li>
@@ -157,7 +175,7 @@ $$</li>
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: 'Notification Volume Control and Optimization System at Pinterest',
+  title: 'PUSH优化',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
