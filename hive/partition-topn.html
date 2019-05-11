@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>关于搜索栏目 - Tracholar的个人wiki</title>
+        <title>分区取TOP N问题 - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,23 +64,74 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#-search">search</a>&nbsp;»&nbsp;关于搜索栏目</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#hive">hive</a>&nbsp;»&nbsp;分区取TOP N问题</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">关于搜索栏目</div>
+<div id="title">分区取TOP N问题</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">关于</a></li>
+<li><a href="#_1">问题背景</a></li>
+<li><a href="#_2">基本方法</a></li>
+<li><a href="#_3">改进方法</a></li>
 </ul>
 </div>
-<h2 id="_1">关于</h2>
-<ul>
-<li>本栏目主要收集以下资源<ul>
-<li>国际会议论文笔记</li>
-<li>工业界各公司的一些方案调研</li>
-</ul>
-</li>
-</ul>
+<h2 id="_1">问题背景</h2>
+<p>设想你对用户在不同品类上的行为打分聚合后得到这样一个表 user_cate_score</p>
+<table>
+<thead>
+<tr>
+<th>uid</th>
+<th>cate</th>
+<th>score</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>0.3</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2</td>
+<td>0.5</td>
+</tr>
+<tr>
+<td>8</td>
+<td>3</td>
+<td>0.9</td>
+</tr>
+</tbody>
+</table>
+<p>现在,你想将每个品类的TOP 100W 用户取出来,这种场景在推荐、营销中很常见。</p>
+<h2 id="_2">基本方法</h2>
+<p>这个很容易通过窗函数写出如下解法</p>
+<div class="hlcode"><pre><span></span><span class="k">select</span> <span class="n">uid</span><span class="p">,</span> <span class="n">cate</span><span class="p">,</span> <span class="n">score</span>
+<span class="k">from</span><span class="p">(</span>
+    <span class="k">select</span> <span class="n">uid</span><span class="p">,</span> <span class="n">cate</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">row_number</span><span class="p">()</span> <span class="n">over</span> <span class="p">(</span><span class="n">partition</span> <span class="k">by</span> <span class="n">cate</span> <span class="k">order</span> <span class="k">by</span> <span class="n">score</span> <span class="k">desc</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span>
+    <span class="k">from</span> <span class="n">user_cate_score</span>
+<span class="p">)</span><span class="n">T</span> 
+<span class="k">where</span> <span class="n">r</span> <span class="o">&lt;=</span> <span class="mi">1000000</span>
+</pre></div>
+
+
+<p>通过窗函数<code>row_number()</code>在每个cate分区上按照score排序,得到row_number,然后取TOP 100W即可。</p>
+<p>问题: HIVE在执行的时候由于每个partition会分到一个reducer上,这导致单个reducer处理的数据量非常大,严重拖慢执行时间,没法充分利用到分布式的效率。</p>
+<h2 id="_3">改进方法</h2>
+<p>近似取TOP 100W</p>
+<div class="hlcode"><pre><span></span><span class="k">select</span> <span class="n">uid</span><span class="p">,</span> <span class="n">cate</span><span class="p">,</span> <span class="n">score</span>
+<span class="k">from</span><span class="p">(</span>
+    <span class="k">select</span> <span class="n">uid</span><span class="p">,</span> <span class="n">cate</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">row_number</span><span class="p">()</span> <span class="n">over</span> <span class="p">(</span><span class="n">partition</span> <span class="k">by</span> <span class="n">cate</span><span class="p">,</span><span class="n">rnd</span>  <span class="k">order</span> <span class="k">by</span> <span class="n">score</span> <span class="k">desc</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span>
+    <span class="k">from</span><span class="p">(</span>
+        <span class="k">select</span> <span class="o">*</span><span class="p">,</span> <span class="k">cast</span><span class="p">(</span><span class="n">rand</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span> <span class="k">as</span> <span class="nb">int</span><span class="p">)</span> <span class="k">as</span> <span class="n">rnd</span>
+        <span class="k">from</span> <span class="n">user_cate_score</span>
+    <span class="p">)</span><span class="n">Ta</span>
+<span class="p">)</span><span class="n">Tb</span>
+<span class="k">where</span> <span class="n">r</span> <span class="o">&lt;=</span> <span class="mi">10000</span>
+</pre></div>
+
+
+<p>思路: 加上一个0-100的随机数进行partition,可以将一个cate分散到100个reducer上执行,然后对每个cate的每个reducer取TOP 1W,就近似实现了对每个cate取TOP 100W。好处,速度快了很多。</p>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -92,7 +143,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2019-04-04 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2019-05-10 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -100,7 +151,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: '关于搜索栏目',
+  title: '分区取TOP N问题',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {

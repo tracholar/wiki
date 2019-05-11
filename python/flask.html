@@ -1,0 +1,706 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>Flask - Tracholar的个人wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="google-search" style="width:200px; float:right; margin: 20px 0;">
+                <form action="//cse.google.com/cse" method="get" id="search-form">
+                    <input type="hidden" name="cx" value="015970462532790426975:gqlen38ywus"/>
+                    <input type="text" name="q"  style="line-height:20px; padding:4px;" placeholder="站内搜索"/>
+                    <svg width="13" height="13" viewBox="0 0 13 13" style="position:relative; left: -20px;" onclick="document.getElementById('search-form').submit()">
+                        <title>搜索</title>
+                        <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z">
+                        </path>
+                    </svg>
+                </form>
+
+            </div>
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#python">python</a>&nbsp;»&nbsp;Flask</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">Flask</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">快速入门</a><ul>
+<li><a href="#_3">简单应用</a></li>
+<li><a href="#_4">路由</a></li>
+</ul>
+</li>
+<li><a href="#_5">教程</a></li>
+<li><a href="#blueprints-and-views">Blueprints and Views</a><ul>
+<li><a href="#blueprint">Blueprint</a></li>
+</ul>
+</li>
+<li><a href="#templates">Templates</a></li>
+<li><a href="#static-files">Static Files</a></li>
+<li><a href="#_6">项目安装</a></li>
+<li><a href="#_7">测试</a></li>
+<li><a href="#flask-sqlalchemy">flask-sqlalchemy</a></li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>Flask <a href="http://flask.pocoo.org/docs/1.0/">http://flask.pocoo.org/docs/1.0/</a></p>
+<h2 id="_2">快速入门</h2>
+<h3 id="_3">简单应用</h3>
+<div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s2">&quot;Hello World!&quot;</span>
+</pre></div>
+
+
+<ul>
+<li>运行命令 <code>export FLASK_APP=hello.py flask run</code></li>
+<li>外网可见 <code>flask run --host=0.0.0.0</code></li>
+<li>Debug模式 <code>export FLASK_ENV=development</code></li>
+</ul>
+<h3 id="_4">路由</h3>
+<ul>
+<li>使用 <code>route()</code> 装饰, <code>@app.route('/')</code>, <code>@app.route('/hello')</code></li>
+<li>变量规则, <code>&lt;variable_name&gt;</code> 或者指定转化类型 <code>&lt;converter:variable_name&gt;</code></li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/user/&lt;username&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">show_user_profile</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+    <span class="c1"># show the user profile for that user</span>
+    <span class="k">return</span> <span class="s1">&#39;User </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">username</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/post/&lt;int:post_id&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">show_post</span><span class="p">(</span><span class="n">post_id</span><span class="p">):</span>
+    <span class="c1"># show the post with the given id, the id is an integer</span>
+    <span class="k">return</span> <span class="s1">&#39;Post </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">post_id</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/path/&lt;path:subpath&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">show_subpath</span><span class="p">(</span><span class="n">subpath</span><span class="p">):</span>
+    <span class="c1"># show the subpath after /path/</span>
+    <span class="k">return</span> <span class="s1">&#39;Subpath </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">subpath</span>
+</pre></div>
+
+
+<ul>
+<li>转换类型包括:<ul>
+<li><code>string</code> 默认类型,不包括<code>/</code></li>
+<li><code>int</code> 整数</li>
+<li><code>float</code></li>
+<li><code>path</code> 包括 <code>/</code></li>
+<li><code>uuid</code> UUID?</li>
+</ul>
+</li>
+<li>路由<code>/projects/</code> 和 <code>/projects</code> 的区别: 后者可以通过前者访问,但是前者无法通过后者访问</li>
+<li>URL Building <code>url_for(func_name, **kwargs)</code>,  <code>test_request_context()</code> 可以用于模拟request</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">url_for</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s1">&#39;index&#39;</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">login</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s1">&#39;login&#39;</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/user/&lt;username&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">profile</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s1">&#39;{}</span><span class="se">\&#39;</span><span class="s1">s profile&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">test_request_context</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">,</span> <span class="nb">next</span><span class="o">=</span><span class="s1">&#39;/&#39;</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;profile&#39;</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="s1">&#39;John Doe&#39;</span><span class="p">))</span>
+
+<span class="o">/</span>
+<span class="o">/</span><span class="n">login</span>
+<span class="o">/</span><span class="n">login</span><span class="err">?</span><span class="nb">next</span><span class="o">=/</span>
+<span class="o">/</span><span class="n">user</span><span class="o">/</span><span class="n">John</span><span class="o">%</span><span class="mi">20</span><span class="n">Doe</span>
+</pre></div>
+
+
+<ul>
+<li>HTTP Methods, 默认的路由只响应GET请求, 可以通过<code>methods</code>参数指定其他请求, <code>@app.route('/login', methods=['GET', 'POST'])</code></li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">login</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">do_the_login</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">show_the_login_form</span><span class="p">()</span>
+</pre></div>
+
+
+<ul>
+<li>Static Files, <code>static</code> 目录用于放置静态文件, <code>url_for('static', filename='style.css')</code></li>
+<li>模板, 使用jinja2模板引擎, <code>render_template()</code>,模板目录 <code>templates/</code>,<a href="http://jinja.pocoo.org/docs/templates">模板引擎参考</a></li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">render_template</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/hello/&#39;</span><span class="p">)</span>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/hello/&lt;name&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;hello.html&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+
+
+<ul>
+<li>在模板内部, 可以访问的对象: <code>request</code>, <code>session</code>, <a href="http://flask.pocoo.org/docs/1.0/api/#flask.g"><code>g</code></a> 和函数<code>get_flashed_messages()</code></li>
+<li>模板中的变量会自动转移HTML特殊字符, 如果不想转义,可以使用 <code>Markup()</code> 或者 <code>|safe</code> filter</li>
+<li>访问<code>request</code>数据: 通过全局对象 <a href="http://flask.pocoo.org/docs/1.0/api/#flask.Request"><code>request</code></a> 实现<ul>
+<li><code>method</code> 请求方法 <code>'GET','POST'</code></li>
+<li><code>form</code> 表单数据字典</li>
+<li><code>args</code> GET参数字典</li>
+</ul>
+</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span>
+<span class="n">searchword</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;key&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<ul>
+<li>文件上传, HTML中指定form编码 <code>enctype="multipart/form-data"</code>, 通过 <code>request.files</code> 字典访问文件,key是文件名, value是<code>file</code>对象,可以通过<code>.save()</code>方法保存文件</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span>
+<span class="kn">from</span> <span class="nn">werkzeug.utils</span> <span class="kn">import</span> <span class="n">secure_filename</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/upload&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">upload_file</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s1">&#39;the_file&#39;</span><span class="p">]</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;/var/www/uploads/&#39;</span> <span class="o">+</span> <span class="n">secure_filename</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+</pre></div>
+
+
+<ul>
+<li>Cookies, <ul>
+<li><code>response.set_cookie(key, val)</code> 设置cookie, <code>response</code> 对象可以通过<code>make_response</code>创建</li>
+<li><code>request.cookies</code> 字典获取cookie</li>
+</ul>
+</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">cookies</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">)</span>
+    <span class="c1"># use cookies.get(key) instead of cookies[key] to not get a</span>
+    <span class="c1"># KeyError if the cookie is missing.</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">make_response</span><span class="p">(</span><span class="n">render_template</span><span class="p">(</span><span class="o">...</span><span class="p">))</span>
+    <span class="n">resp</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;the username&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">resp</span>
+</pre></div>
+
+
+<ul>
+<li>重定向与错误, <code>redirect(url)</code>, <code>abort(code)</code>, 错误的自定义处理通过装饰器<code>@app.errorhandler(int code)</code>实现</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">abort</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">url_for</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">))</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">login</span><span class="p">():</span>
+    <span class="n">abort</span><span class="p">(</span><span class="mi">401</span><span class="p">)</span>
+    <span class="n">this_is_never_executed</span><span class="p">()</span>
+
+<span class="nd">@app.errorhandler</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">page_not_found</span><span class="p">(</span><span class="n">error</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;page_not_found.html&#39;</span><span class="p">),</span> <span class="mi">404</span>
+</pre></div>
+
+
+<ul>
+<li>Responses, <ul>
+<li>如果返回的是 <code>response</code> 对象,则直接以这个对象响应</li>
+<li>如果返回的是 <code>string</code>, 则以string为内容,其他以默认参数,构造 <code>response</code> 对象响应</li>
+<li>如果返回的是 <code>tuple</code>, 则要求格式为 <code>(response, status, headers)</code> or <code>(response, headers)</code>, <code>status</code> 是状态码, <code>headers</code> 是list或者dict</li>
+</ul>
+</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="nd">@app.errorhandler</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">not_found</span><span class="p">(</span><span class="n">error</span><span class="p">):</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">make_response</span><span class="p">(</span><span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;error.html&#39;</span><span class="p">),</span> <span class="mi">404</span><span class="p">)</span>
+    <span class="n">resp</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;X-Something&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;A value&#39;</span>
+    <span class="k">return</span> <span class="n">resp</span>
+</pre></div>
+
+
+<ul>
+<li>Sessions</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">url_for</span><span class="p">,</span> <span class="n">escape</span><span class="p">,</span> <span class="n">request</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Set the secret key to some random bytes. Keep this really secret!</span>
+<span class="n">app</span><span class="o">.</span><span class="n">secret_key</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;_5#y2L&quot;F4Q8z</span><span class="se">\n\xec</span><span class="s1">]/&#39;</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="k">if</span> <span class="s1">&#39;username&#39;</span> <span class="ow">in</span> <span class="n">session</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;Logged in as </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">escape</span><span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="s1">&#39;You are not logged in&#39;</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">login</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="n">session</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        &lt;form method=&quot;post&quot;&gt;</span>
+<span class="s1">            &lt;p&gt;&lt;input type=text name=username&gt;</span>
+<span class="s1">            &lt;p&gt;&lt;input type=submit value=Login&gt;</span>
+<span class="s1">        &lt;/form&gt;</span>
+<span class="s1">    &#39;&#39;&#39;</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/logout&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">logout</span><span class="p">():</span>
+    <span class="c1"># remove the username from the session if it&#39;s there</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
+</pre></div>
+
+
+<p>秘钥生成 </p>
+<div class="hlcode"><pre><span></span>$ python -c <span class="s1">&#39;import os; print(os.urandom(16))&#39;</span>
+b<span class="s1">&#39;_5#y2L&quot;F4Q8z\n\xec]/&#39;</span>
+</pre></div>
+
+
+<ul>
+<li>Message Flashing, 不知道干啥的</li>
+<li>日志 <code>logging</code></li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;A value for debugging&#39;</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;A warning occurred (</span><span class="si">%d</span><span class="s1"> apples)&#39;</span><span class="p">,</span> <span class="mi">42</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;An error occurred&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<h2 id="_5">教程</h2>
+<ul>
+<li>构建一个简单的blog系统 <a href="http://flask.pocoo.org/docs/1.0/tutorial/">http://flask.pocoo.org/docs/1.0/tutorial/</a></li>
+<li>通过工厂方法创建应用 <code>create_app</code>, </li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="nb">export</span> <span class="nv">FLASK_APP</span><span class="o">=</span>flaskr:create_app
+<span class="nb">export</span> <span class="nv">FLASK_ENV</span><span class="o">=</span>development
+flask run
+</pre></div>
+
+
+<ul>
+<li>链接数据库<ul>
+<li><code>g</code>是一个特殊的对象, 每一个request对应唯一一个, 用于在多个函数中共享,类似于request作用域的全局变量</li>
+<li><code>current_app</code> 也是一个特殊全局变量,指向当前app实例</li>
+<li><code>click.command</code>  是基于<a href="http://flask.pocoo.org/docs/1.0/cli/#cli">Click的命令行接口</a></li>
+<li><code>app.teardown_appcontext</code> 注册request结束后的hook</li>
+<li><code>app.cli.add_command()</code> 将新的命令注册到flask的命令行</li>
+</ul>
+</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">sqlite3</span>
+
+<span class="kn">import</span> <span class="nn">click</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span><span class="p">,</span> <span class="n">g</span>
+<span class="kn">from</span> <span class="nn">flask.cli</span> <span class="kn">import</span> <span class="n">with_appcontext</span>
+
+
+<span class="k">def</span> <span class="nf">get_db</span><span class="p">():</span>
+    <span class="k">if</span> <span class="s1">&#39;db&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">g</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+            <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;DATABASE&#39;</span><span class="p">],</span>
+            <span class="n">detect_types</span><span class="o">=</span><span class="n">sqlite3</span><span class="o">.</span><span class="n">PARSE_DECLTYPES</span>
+        <span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">row_factory</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Row</span>
+
+    <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">db</span>
+
+
+<span class="k">def</span> <span class="nf">close_db</span><span class="p">(</span><span class="n">e</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;db&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">init_db</span><span class="p">():</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">get_db</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="n">current_app</span><span class="o">.</span><span class="n">open_resource</span><span class="p">(</span><span class="s1">&#39;schema.sql&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">executescript</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">))</span>
+
+
+<span class="nd">@click.command</span><span class="p">(</span><span class="s1">&#39;init-db&#39;</span><span class="p">)</span>
+<span class="nd">@with_appcontext</span>
+<span class="k">def</span> <span class="nf">init_db_command</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Clear the existing data and create new tables.&quot;&quot;&quot;</span>
+    <span class="n">init_db</span><span class="p">()</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s1">&#39;Initialized the database.&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">init_app</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">teardown_appcontext</span><span class="p">(</span><span class="n">close_db</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">init_db_command</span><span class="p">)</span>
+</pre></div>
+
+
+<p><code>flaskr/__init__.py</code></p>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="nf">create_app</span><span class="p">():</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="o">...</span>
+    <span class="c1"># existing code omitted</span>
+
+    <span class="kn">import</span> <span class="nn">db</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">init_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">app</span>
+</pre></div>
+
+
+<ul>
+<li>初始化数据库 <code>flask init-db</code></li>
+</ul>
+<h2 id="blueprints-and-views">Blueprints and Views</h2>
+<h3 id="blueprint">Blueprint</h3>
+<p><a href="http://flask.pocoo.org/docs/1.0/api/#flask.Blueprint">Blueprint</a>是一组相关的view,类似于MVC中的Controller吧。Flaskr有两个Blueprint,一个是认证相关函数,一个是blog。</p>
+<ul>
+<li><code>bp = Blueprint('auth', __name__, url_prefix='/auth')</code> 创建Blueprint <code>auth</code></li>
+<li>通过 <code>app.register_blueprint()</code> 注册blueprint</li>
+</ul>
+<p><code>flaskr/auth.py</code></p>
+<div class="hlcode"><pre><span></span><span class="nd">@bp.route</span><span class="p">(</span><span class="s1">&#39;/register&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">register</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="n">username</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">]</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">get_db</span><span class="p">()</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">username</span><span class="p">:</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="s1">&#39;Username is required.&#39;</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">password</span><span class="p">:</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="s1">&#39;Password is required.&#39;</span>
+        <span class="k">elif</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="s1">&#39;SELECT id FROM user WHERE username = ?&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">username</span><span class="p">,)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="s1">&#39;User {} is already registered.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">error</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="s1">&#39;INSERT INTO user (username, password) VALUES (?, ?)&#39;</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">generate_password_hash</span><span class="p">(</span><span class="n">password</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;auth.login&#39;</span><span class="p">))</span>
+
+        <span class="n">flash</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;auth/register.html&#39;</span><span class="p">)</span>
+
+<span class="nd">@bp.route</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">login</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="n">username</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">]</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">get_db</span><span class="p">()</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="s1">&#39;SELECT * FROM user WHERE username = ?&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">username</span><span class="p">,)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="s1">&#39;Incorrect username.&#39;</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">check_password_hash</span><span class="p">(</span><span class="n">user</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">],</span> <span class="n">password</span><span class="p">):</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="s1">&#39;Incorrect password.&#39;</span>
+
+        <span class="k">if</span> <span class="n">error</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="n">session</span><span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
+
+        <span class="n">flash</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;auth/login.html&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p><code>register</code> 说明</p>
+<ul>
+<li><code>@bp.route</code> 是blueprint的路由, <code>/register</code> 对应的url path为 <code>/auth/register</code></li>
+<li><code>GET</code>请求返回注册页面, <code>POST</code>请求注册用户</li>
+<li><code>generate_password_hash()</code> 用户创建密码hash, 数据库中只保存密码的hash值</li>
+</ul>
+</li>
+<li>
+<p><code>login</code> 说明</p>
+<ul>
+<li><code>check_password_hash()</code> 校验密码</li>
+<li><code>session</code> 登陆成功后,清空session,并设置userid,session字典的值都会通过加密的cookie存到浏览器中</li>
+</ul>
+</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="nd">@bp.before_app_request</span>
+<span class="k">def</span> <span class="nf">load_logged_in_user</span><span class="p">():</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;user_id&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">user_id</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">get_db</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="s1">&#39;SELECT * FROM user WHERE id = ?&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">user_id</span><span class="p">,)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+</pre></div>
+
+
+<ul>
+<li><code>load_logged_in_user</code> 说明<ul>
+<li>从session中查找user_id,如果没有则将<code>g.user</code>置<code>None</code>,否则查询user保存到<code>g.user</code></li>
+</ul>
+</li>
+<li><code>logout</code> 清空session</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="nd">@bp.route</span><span class="p">(</span><span class="s1">&#39;/logout&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">logout</span><span class="p">():</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
+</pre></div>
+
+
+<ul>
+<li>在其他的view中使用用户认证模块, 通过装饰器(<a href="https://foofish.net/python-decorator.html">参考</a>)来实现. <code>@login_required</code>, 注意<code>@login_required</code> 装饰了函数 <code>func</code> 相当于 <code>func = login_required(func)</code> 。有了这个装饰器后,就可以给需要认证的view方便的添加认证。</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="nf">login_required</span><span class="p">(</span><span class="n">view</span><span class="p">):</span>
+    <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapped_view</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">user</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;auth.login&#39;</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">view</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">wrapped_view</span>
+</pre></div>
+
+
+<h2 id="templates">Templates</h2>
+<p><code>flaskr/templates/base.html</code></p>
+<div class="hlcode"><pre><span></span><span class="o">&lt;</span><span class="err">!</span><span class="n">doctype</span> <span class="n">html</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">title</span><span class="o">&gt;</span><span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">title</span> <span class="o">%</span><span class="p">}{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span> <span class="o">-</span> <span class="n">Flaskr</span><span class="o">&lt;/</span><span class="n">title</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">link</span> <span class="n">rel</span><span class="o">=</span><span class="s2">&quot;stylesheet&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ url_for(&#39;static&#39;, filename=&#39;style.css&#39;) }}&quot;</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">nav</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">Flaskr</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
+    <span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">user</span> <span class="o">%</span><span class="p">}</span>
+      <span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;&lt;</span><span class="n">span</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">g</span><span class="o">.</span><span class="n">user</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">span</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ url_for(&#39;auth.logout&#39;) }}&quot;</span><span class="o">&gt;</span><span class="n">Log</span> <span class="n">Out</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+    <span class="p">{</span><span class="o">%</span> <span class="k">else</span> <span class="o">%</span><span class="p">}</span>
+      <span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ url_for(&#39;auth.register&#39;) }}&quot;</span><span class="o">&gt;</span><span class="n">Register</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ url_for(&#39;auth.login&#39;) }}&quot;</span><span class="o">&gt;</span><span class="n">Log</span> <span class="n">In</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+    <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+  <span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">nav</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">section</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;content&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">header</span><span class="o">&gt;</span>
+    <span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">header</span> <span class="o">%</span><span class="p">}{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+  <span class="o">&lt;/</span><span class="n">header</span><span class="o">&gt;</span>
+  <span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">get_flashed_messages</span><span class="p">()</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;flash&quot;</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">message</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+  <span class="p">{</span><span class="o">%</span> <span class="n">endfor</span> <span class="o">%</span><span class="p">}</span>
+  <span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">content</span> <span class="o">%</span><span class="p">}{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+<span class="o">&lt;/</span><span class="n">section</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<ul>
+<li><code>base</code> 模板说明<ul>
+<li><code>get_flashed_messages()</code> 获取 <code>flash</code> 中的message</li>
+<li><code>block</code> 模块可以被继承的模板修改<ul>
+<li><code>{% block title %}</code></li>
+</ul>
+</li>
+<li>每一个 blueprint 都在子目录中</li>
+</ul>
+</li>
+</ul>
+<p><code>flaskr/templates/auth/register.html</code></p>
+<div class="hlcode"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="s1">&#39;base.html&#39;</span> <span class="o">%</span><span class="p">}</span>
+
+<span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">header</span> <span class="o">%</span><span class="p">}</span>
+  <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">title</span> <span class="o">%</span><span class="p">}</span><span class="n">Register</span><span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+
+<span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">content</span> <span class="o">%</span><span class="p">}</span>
+  <span class="o">&lt;</span><span class="n">form</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;post&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">label</span> <span class="k">for</span><span class="o">=</span><span class="s2">&quot;username&quot;</span><span class="o">&gt;</span><span class="n">Username</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">input</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;username&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;username&quot;</span> <span class="n">required</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">label</span> <span class="k">for</span><span class="o">=</span><span class="s2">&quot;password&quot;</span><span class="o">&gt;</span><span class="n">Password</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;password&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;password&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;password&quot;</span> <span class="n">required</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;submit&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;Register&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li><code>register</code> 模块说明<ul>
+<li><code>extends</code> 模板继承</li>
+<li><code>block</code> override 每一个子块, 将 <code>{% block title %}</code> 放到 <code>{% block header %}</code>内部,可以避免title 模块定义两次</li>
+</ul>
+</li>
+</ul>
+<h2 id="static-files">Static Files</h2>
+<ul>
+<li>flask自动添加 <code>static</code> view 作为静态文件的目录</li>
+</ul>
+<h2 id="_6">项目安装</h2>
+<ul>
+<li><code>setup.py</code> 文件, <code>packages</code> 告诉python有哪些包,通过<code>find_packages</code>自动搜索包,<code>include_package_data</code>告诉python是否需要打包数据文件,<code>MANIFEST.in</code>文件告诉python数据文件有哪些</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">find_packages</span><span class="p">,</span> <span class="n">setup</span>
+
+<span class="n">setup</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;flaskr&#39;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s1">&#39;1.0.0&#39;</span><span class="p">,</span>
+    <span class="n">packages</span><span class="o">=</span><span class="n">find_packages</span><span class="p">(),</span>
+    <span class="n">include_package_data</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">zip_safe</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">install_requires</span><span class="o">=</span><span class="p">[</span>
+        <span class="s1">&#39;flask&#39;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+
+
+<p><code>MANIFEST.in</code></p>
+<div class="hlcode"><pre><span></span>include flaskr/schema.sql
+graft flaskr/static
+graft flaskr/templates
+global-exclude *.pyc
+</pre></div>
+
+
+<ul>
+<li>安装 <code>pip install -e .</code> <code>-e</code>表示是edit或者dev模式,可以让修改后的文件立即生效</li>
+</ul>
+<h2 id="_7">测试</h2>
+<ul>
+<li>用 <a href="https://pytest.readthedocs.io/">pytest</a>和<a href="https://coverage.readthedocs.io/">coverage</a>测试你的代码</li>
+<li>测试代码放在与flaskr平行的<code>tests</code>目录下</li>
+</ul>
+<h2 id="flask-sqlalchemy">flask-sqlalchemy</h2>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2019-04-29 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: 'Flask',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2019 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>
