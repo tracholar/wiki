@@ -10,3 +10,4 @@ output
 *.data
 logs/
 tmp/
+*.out
