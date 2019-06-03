@@ -161,4 +161,142 @@ date: 2019-05-20
 
 ## 推荐理由
 - Explainable Recommendation: A Survey and New Perspectives
+- 推荐理由的方法: <https://zhuanlan.zhihu.com/p/21497757>
+    - 基于内容的推荐理由: 
+        - 将item的一些特征(分类、标签、价格、品牌、导演etc)作为推荐理由; 
+        - 挑选高质量评论:
+    - 热门推荐「热门指标】排名前【名次】名的【热门物品】」,定期生成榜单
+    - 协同过滤: 「购买此商品的用户也购买了这些」,「和你口味相似的用户都买了」
+    - 基于知识: 「由于你【用户的需求或偏好】，所以你可能选择【某物品】」
+- 方法分类:
+    1. 生成解释的类型: 文本、视觉
+    2. 生成解释的模型: 矩阵分解、主题模型、图模型、deep learning、知识图谱、关联规则、post-hoc models etc
+- 例子:
+    1. 基于浅层模型的文本解释: Explicit factor models for explainable recommendation based on phrase-level sentiment analysis. 
+    2. 基于深层模型的文本解释: Interpretable Convolutional Neural Networks with Dual Local and Global Attention for Review Rating Prediction
+    3. 基于深层模型的视觉解释: Visually explainable recommendation
+- 可解释性和有效性: 这是一对矛盾, 但是现在在深度学习的帮助下, 变得可以同时兼得
+
+
+### 不同的解释形式
+- 形式
+    1. 个性化文本
+    2. 词云
+    3. 高亮图片的某个区域进行解释
+    4. 生成喜欢该item的社交朋友列表
+    5. 统计直方图、饼图等形式可视化评分分布和item的优缺点
+- user-based解释: 推荐给用户的原因是因为与他相似的一组用户对这个item评分很高, 将相似用户的评分可视化(直方图等可视化手段)。由于用户对「相似用户」并不了解,所以这种方法说服力比较有限,如果换成朋友会更有说服力
+- item-based解释: 推荐给用户的原因是因为他之前买了某个item。因为用户对购买过的item比较熟悉,这个方法比user-based的方法更有说服力
+- content-based解释: 解释原因是因为item的某个feature,比如价格、品牌etc, 而这个feature与用户的某个偏好属性匹配上了。
+- 人口统计学解释: 「80%的20-30岁用户都买了这个商品」
+- 文本解释: 
+    - feature-level与基于内容的解释相似, 区别是这些feature不是直接从商品的属性中提取的, 而是从用户评论中提取的; 
+    - 评论文本中抽取feature: 短语级别的语义分析工具: feature–opinion–sentiment: Do users rate or review?: Boost phraselevel sentiment labeling with review-level sentiment classification, 通过这种方式, 基于抽取的feature, 以词云的方式可视化这些feature作为解释
+    - Sentence-level:
+        - 基于模板+关键词: 「该产品XXXX,你可能会喜欢」,正向和负向的解释都可以提升说服力、转化率etc
+        - 利用LSTM直接从评论中生成解释文本: Automatic generation of natural language explanations
+        - 从大量评论中抽取summary,生成解释: Neural rating regression with abstractive tips generation for recommendation
+- 视觉解释:
+    - 将图片中用户感兴趣的部分区域高亮: Visually explainable recommendation
+- 社交解释: 
+
+![social-explain-rs.png](/wiki/static/images/social-explain-rs.png)
+
+- 混合解释, 输出的一致性
+ 
+### 可解释的推荐方法
+- 矩阵分解的解释方法: 问题:隐因子缺乏可解释性
+    - 显式矩阵分解: Zhang et al. [2014a] 基本思想是,在传统的矩阵分解的基础上,假定隐空间的其中一部分维度和显性因子关联,可以通过一个线性变化V从子隐空间变换到显因子空间。用这一部分显因子来做推荐解释。显因子是从大量评论通过文本语义分析提取的、加上商品的属性etc
+    - 构建 user-item-feature 立方体,利用张量分解来做 Chen et al. [2016] 
+    - 多任务学习:Wang et al. [2018b] 学习两个任务,一个是推荐任务,一个是option建模
+![user-item-feature-tensor-factor](/wiki/static/images/user-item-feature-tensor-factor.png)
+
+- 【2018-推荐理由】Explainable Recommendation via Multi-Task Learning in Opinionated Text Data
+
+- 主题模型: Hidden Factor and Topic (HFT) model, 将item和user的每个隐向量联系到LDA中的一个主题, 使用了一个softmax函数
+
+- 基于图模型的解释: 
+- 基于树模型的解释, 利用GBDT提取显式交叉特征, 进行解释
+- 深度学习的推荐解释:
+    1. 从用户评论用CNN提取特征,预测评分进行推荐。CNN的时候用了attention加权Pooling,权重可以用于解释关注点
+    
+![CNN文本推荐解释](/wiki/static/images/cnn-text-recsys.png)
+
+- 生成自然语言的解释: <https://zhuanlan.zhihu.com/p/33956907>
+- 评论+辅助信息自动生成自然语言解释: Automatic Generation of Natural Language Explanations
+- KG embedding 推荐的解释:
+    - Personalized PageRank
+    - 将推荐看做图谱中「购买」关系下最近的节点
+    - Rippnet, 推荐解释可以看做在图中找到从user到item的一条路径
+- data Mining: 关联规则: 啤酒-尿布解释
+- Post Hoc Explanation: 事后解释, 已经推荐了这个item,然后从事先可能的解释中选择一个,这些解释来自于前面说的解释方法
+
+### 可解释推荐的评估
+- 离线评估: 
+    - 评分预测: MAE, RMSE
+    - top-n推荐: precision@n、recall@n、f1@n、NDCG@n、MRR, DCG中定义正例相关性为1,其他为0,按照位置折扣加权,对前n个求和,对每个用户,用最大的DCG(正例都在负例前面)归一化,然后在所有用户中平均得到NDCG@n
+    - Hit Ratio, AUC
+- 在线评估:
+    - 点击率、转化率、其他商业指标
+- 推荐解释的离线评估:
+    - explainability precision(EP)定义为推荐的top n 个item中有多少比例可解释
+    - explainability recall (ER) 定义为推荐的top n中可解释的item占所有可解释的item的比例?
+    - 生成文本质量: BLEU, ROUGE
+    - 可读性指标: 
+- 推荐解释的在线评估:
+    - 跟一般的推荐评估指标一致, 看点击率、转化率
+- 仿真与用户研究,利用众包平台打标,小规模用户调研
+- Qualitative Evaluation by Case Study
+
+### 应用
+- 电商推荐
+- poi推荐
+- 社交推荐
+- 多媒体推荐
+
+### 未来的方向
+- 解释深度学习推荐系统
+- 基于知识(图谱)增强的可解释推荐
+- 多种信息类型的可解释推荐:图片、文本、行为etc
+- 解释的自然语言生成NLG: 
+- 缺乏容易评估解释效果的离线指标
+- 解释需要随时间变化,因为用户的行为、偏好、关注点等随时间变化
+- 多种解释的聚合: 选最优的 or 聚合所有的
+
+
+## Deep Learning based Recommender System: A Survey and New Perspectives
+- DL推荐
+    1. 视频推荐YouTube: Deep neural networks for youtube recommendations.
+    2. Google play: wide&deep
+    3. 新闻推荐Yahoo:Embedding-based News Recommendation for Millions of Users
+    
+## BiNE: Bipartite Network Embedding
+- 将不同实体的二分图(user-item图,只有user和item之间有链接)做embedding
+- 作者认为按照node2vec的做法子在全同实体的图可以,但是在不同实体的图不是最优的
+- 一个好的embedding方法应该可以根据embedding向量重构原始的图
+- 建模显式关系(边)和隐式关系
+- 两个节点之间共现的概率建模为内积经sigmoid函数归一化的值
+- 用embedding向量表达的共现概率与实际的共现概率之间的差异用KL聚类来度量
+
+$$
+P(i, j) = \frac{w_{ij}}{\sum_{ij} w_{ij}} \\\\
+\hat{P}(i, j) = \frac{1}{1 + exp(- u_i^T v_j)} \\\\
+min KL(P, \hat{P}) = - \sum_{ij} w_{ij} log \hat{P}(i,j)
+$$
+
+- user-user二阶相似度、item-item二阶相似度
+
+$$
+w_{ij}^U = \sum_{k\in V}w_{ik} w_{jk}\\\\
+w_{ij}^V = \sum_{k\in U}w_{ik} w_{jk}
+$$
+
+- 而用embedding向量来表达这两个二阶共现概率需要用到softmax,可以利用负采样近似,即对1个样本采样k个其他不共现样本、计算这(k+1)个样本(不)共现概率的乘积
+- 最终的目标是联合优化一阶和二阶共现概率
+
+
+## Session-based Recommendation with Graph Neural Networks
+
+## Graph Neural Networks for Social Recommendation
+
 
