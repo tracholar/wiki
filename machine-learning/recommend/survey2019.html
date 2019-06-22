@@ -1,0 +1,249 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>推荐新技术跟踪调研 - Tracholar的个人wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="google-search" style="width:200px; float:right; margin: 20px 0;">
+                <form action="//cse.google.com/cse" method="get" id="search-form">
+                    <input type="hidden" name="cx" value="015970462532790426975:gqlen38ywus"/>
+                    <input type="text" name="q"  style="line-height:20px; padding:4px;" placeholder="站内搜索"/>
+                    <svg width="13" height="13" viewBox="0 0 13 13" style="position:relative; left: -20px;" onclick="document.getElementById('search-form').submit()">
+                        <title>搜索</title>
+                        <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z">
+                        </path>
+                    </svg>
+                </form>
+
+            </div>
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#-recommend">recommend</a>&nbsp;»&nbsp;推荐新技术跟踪调研</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">推荐新技术跟踪调研</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">背景</a></li>
+<li><a href="#_2">方法</a></li>
+<li><a href="#_3">排序模型</a><ul>
+<li><a href="#_4">序列模型</a></li>
+</ul>
+</li>
+<li><a href="#_5">引入强化学习</a></li>
+<li><a href="#_6">引入知识图谱</a></li>
+<li><a href="#_7">模型压缩</a></li>
+<li><a href="#_8">评论数据的利用</a></li>
+<li><a href="#gan">GAN 的应用</a></li>
+<li><a href="#-sgd">- SGD优化</a></li>
+</ul>
+</div>
+<h2 id="_1">背景</h2>
+<p>跟踪推荐学术界、工业界相关新技术调研,把握技术动向。</p>
+<h2 id="_2">方法</h2>
+<ul>
+<li>学术界的信息来源主要是公开的论文以及关键论文的被引,微博大脑推荐</li>
+<li>工业界的信息来源主要是一些公众号和论文</li>
+</ul>
+<h2 id="_3">排序模型</h2>
+<ul>
+<li>xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems</li>
+</ul>
+<h3 id="_4">序列模型</h3>
+<ul>
+<li>attention流派:<ul>
+<li>阿里 DIN: 将用户的某种集合(一般是session集合,点击过的item)用attention加权做Pooling</li>
+<li>STAMP: Short-Term Attention/Memory Priority Model for Session-based Recommendation, KDD2018 将session的item加权Pooling,结果与最后一个item以及候选item做了个三向量内积</li>
+</ul>
+</li>
+</ul>
+<h2 id="_5">引入强化学习</h2>
+<ul>
+<li>Supervised Reinforcement Learning with Recurrent Neural Network for Dynamic Treatment Recommendation</li>
+</ul>
+<h2 id="_6">引入知识图谱</h2>
+<ul>
+<li>Leveraging Meta-path based Context for Top-N Recommendation with A Neural Co-Attention Model, KDD2018 <ul>
+<li>关键IDEA: 除了用user和item向量之外,引入meta-path上下文。 meta-path上下文构造方法: 首先构造一个图谱,以电影推荐为例,节点有用户(U),电影(M),导演(D);节点间的关系有用户间的朋友关系,用户与电影之间看过关系,电影与导演间的导演关系。这些节点和关系构成一张异构图,利用random walk按照某种特定的顺序采样(UMUDM),这个顺序即 meta-path,采样得到的节点序列就是一个上下文,这种方法在其他文献中也有用到。从一个user出发到某个item结束可以有很多种序列,根据不同的meta-path也能采样出不同的序列,这些节点序列通过embedding,CNN(或RNN或self-attention),Pooling(max-pooling或attention Pooling)可以得到一个上下文向量,这样就将这个信息引入和推荐系统。</li>
+</ul>
+</li>
+</ul>
+<p><img alt="meta-path-top-n" src="/wiki/static/images/meta-path-top-n.png" /></p>
+<ul>
+<li>Explainable Reasoning over Knowledge Graphs for Recommendation, AAAI2019<ul>
+<li>关键IDEA:也是采样多个从user到item的路径,然后将节点和关系都做embedding,构造向量序列用LSTM做Encoder,多个路径的预测概率最后做一个Pooling</li>
+</ul>
+</li>
+<li>RippleNet: Propagating User Preferences on the Knowledge Graph for Recommender Systems<ul>
+<li>关键IDEA: <ol>
+<li>item向量还是直接embedding</li>
+<li>user向量构造是从用户session开始,从session的item开始在知识图谱中向邻居扩散,每一次扩散都有一个输出向量,最终的用户向量是这些输出向量之和</li>
+<li>每一次传播的输出向量是所有节点向量的加权和, 权重取决于来源节点、关系、target item的关系得分</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>知识图谱的处理, 图卷积GNN</li>
+</ul>
+<h2 id="_7">模型压缩</h2>
+<ul>
+<li>Ranking Distillation: Learning Compact Ranking Models With High Performance for Recommender System<ul>
+<li>基本IDEA: 用一个小模型来学习大模型的输出, 最小化二者的KL距离</li>
+</ul>
+</li>
+</ul>
+<h2 id="_8">评论数据的利用</h2>
+<ul>
+<li>
+<p>个人观点: 评论数据对推荐是有一定作用,但是评论数据的信噪比很低,在CTR模型中, 在已有的数据基础上直接增加评论数据可能不见得有提升,但是评论中可以抽取出item的一些显示feature(比如电影中的某个演员演技很赞, 特效很好, 值回票价 etc),如果这些feature能在展示环节漏出,应该能够有效地提升点击率</p>
+</li>
+<li>
+<p>DeepCoNN: 用户由用户写的评论表示, item由item的所有评论表示,把这两部分文档分别用CNN做encode,然后用FM做匹配(最后一层是用户向量和item向量用FM算出来的loss)。</p>
+<ul>
+<li>ref: Joint Deep Modeling of Users and Items Using Reviews for Recommendation, 2017</li>
+</ul>
+</li>
+</ul>
+<p><img alt="deep conn" src="/wiki/static/images/deep-conn.png" /></p>
+<ul>
+<li>
+<p>TransNets: 在DeepCoNN基础上增加了 multi-task learning 模块</p>
+<ul>
+<li>ref: TransNets: Learning to Transform for Recommendation</li>
+</ul>
+</li>
+<li>
+<p>Dual Attention CNN model (D-ATT): </p>
+<ul>
+<li>ref: 对每个词学一个attention权重,从而将重要的词提权,不中要的词降权,从而提高信噪比。 attention 就是一种利用数据自己学习提高信噪比的方法!!</li>
+<li>全局attention: 对所有的词向量做加权</li>
+<li>local attention: 搞一个滑动窗,只在这个窗内做加权</li>
+</ul>
+</li>
+<li>Multi-Pointer Co-Attention Networks for Recommendation, KDD2028<ul>
+<li>利用attention学到硬attention向量(即只有一个维1其他为0,所以也叫pointer),然后做Pooling</li>
+</ul>
+</li>
+</ul>
+<p><img alt="multi pointer" src="/wiki/static/multi-pointer.png" /></p>
+<h2 id="gan">GAN 的应用</h2>
+<ul>
+<li>Neural Memory Streaming Recommender Networks with Adversarial Training, KDD2018, 360<ul>
+<li>关键点: <ol>
+<li>利用一个有外部存储的neural memory networks, 同时建模用户的长期兴趣和短期兴趣</li>
+<li>利用一个基于GAN的负采样方案, 来优化流式推荐模型。传统负样本采样(随机采或者基于popularity的采样)采出来的</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>流式训练的关键点:<h2 id="-sgd">- SGD优化</h2>
+</li>
+</ul>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2019-06-13 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: '推荐新技术跟踪调研',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2019 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>
