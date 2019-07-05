@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>Flink - Tracholar的个人wiki</title>
+        <title>磁盘空间满了 - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,107 +64,27 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tools">tools</a>&nbsp;»&nbsp;Flink</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#other">other</a>&nbsp;»&nbsp;磁盘空间满了</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">Flink</div>
+<div id="title">磁盘空间满了</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">关于</a></li>
-<li><a href="#_2">基本概念</a><ul>
-<li><a href="#_3">编程模型</a></li>
-<li><a href="#datastream-api">DataStream API</a></li>
-</ul>
-</li>
-<li><a href="#_4">快速入门</a></li>
-<li><a href="#_5">参考链接</a></li>
+<li><a href="#_1">错误日志</a></li>
 </ul>
 </div>
-<h2 id="_1">关于</h2>
-<p>实时数据处理利器。</p>
-<h2 id="_2">基本概念</h2>
-<h3 id="_3">编程模型</h3>
-<ul>
-<li>不同的抽象级别<ul>
-<li>stateful streaming: 通过 process function 嵌入到 <code>DataStream</code> API 中。提供event自由处理能力。</li>
-<li><code>DataStream</code> 和 <code>DataSet</code> API。绝大多数应用关注这个级别的API即可,关注数据的变换,聚合,JOIN</li>
-<li><code>Table API</code> 扩展关系数据库, 类似于HIVE表</li>
-<li><code>SQL</code> 和table api类似,但是是用SQL来表达</li>
-</ul>
-</li>
-</ul>
-<p><img alt="抽象级别" src="/wiki/static/images/levels_of_abstraction.svg" /></p>
-<ul>
-<li>编程和数据流<ul>
-<li>基本block是 <code>stream</code> 和 <code>transformations</code>。<code>transformations</code>输入一个或多个流,输出一个或多个流,类似于Spark的变换算子。</li>
-<li>每一个数据流从<code>source</code>开始, 到 <code>sink</code> 结束</li>
-</ul>
-</li>
-</ul>
-<p><img alt="program_dataflow" src="/wiki/static/images/program_dataflow.svg" /></p>
-<ul>
-<li>Parallel Dataflows<ul>
-<li>stream可以有两种变换数据的模式: one-to-one, redistributing<ul>
-<li>one-to-one: 从source到<code>map()</code>操作之间,保持数据分片和时间顺序</li>
-<li>redistributing: 从<code>map()</code>到<code>keyBy/window</code>操作之间。不保持分片和时间顺序,类似于Spark的shuffle</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p><img alt="parallel_dataflow" src="/wiki/static/images/parallel_dataflow.svg" /></p>
-<ul>
-<li>
-<p>Windows</p>
-<ul>
-<li>时间驱动: 每30s</li>
-<li>数据驱动: 每300个样本</li>
-<li>窗的类型:<ul>
-<li>tumbling windows, 没有重叠,滚动窗</li>
-<li>sliding windows, 有重叠,滑动窗</li>
-<li>session windows, 用没有行为的时间区间来截断</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>Time</p>
-<ul>
-<li>Event Time, 事件创建的时间</li>
-<li>Ingestion time, 事件进入到flink dataflow的时间</li>
-<li>Processing Time, 事件被处理的时间点</li>
-</ul>
-</li>
-</ul>
-<p><img alt="event_ingestion_processing_time" src="/wiki/static/images/event_ingestion_processing_time.svg" /></p>
-<ul>
-<li>Stateful Operations 有状态的操作<ul>
-<li>需要cache多个事件才能操作</li>
-<li>通过<code>keyBy</code>实现, 实际上是维持一个key/value存储</li>
-<li>保证后续操作只跟这个<code>key</code>有关,不用考虑其他<code>key</code>数据,让flink分配key的操作是透明的</li>
-</ul>
-</li>
-</ul>
-<p><img alt="state_partitioning" src="/wiki/static/images/state_partitioning.svg" /></p>
-<ul>
-<li>Checkpoints for Fault Tolerance 容错<ul>
-<li>stream replay 和 checkpointing</li>
-<li>保留操作的状态,可以从checkpoint通过回放的方式,重新消费数据</li>
-</ul>
-</li>
-<li>Batch on Streaming<ul>
-<li>有限的流</li>
-<li><code>DataSet</code> API</li>
-</ul>
-</li>
-</ul>
-<h3 id="datastream-api">DataStream API</h3>
-<h2 id="_4">快速入门</h2>
-<h2 id="_5">参考链接</h2>
-<ul>
-<li><a href="https://ci.apache.org/projects/flink/flink-docs-stable/">https://ci.apache.org/projects/flink/flink-docs-stable/</a></li>
-<li><a href="https://ci.apache.org/projects/flink/flink-docs-stable/concepts/programming-model.html">https://ci.apache.org/projects/flink/flink-docs-stable/concepts/programming-model.html</a></li>
-</ul>
+<h2 id="_1">错误日志</h2>
+<div class="hlcode"><pre><span></span>Java HotSpot<span class="o">(</span>TM<span class="o">)</span> <span class="m">64</span>-Bit Server VM warning: Insufficient space <span class="k">for</span> shared memory file:
+Try using the -Djava.io.tmpdir<span class="o">=</span> option to <span class="k">select</span> an alternate temp location.
+</pre></div>
+
+
+<p>执行 <code>df -hl</code> 检查磁盘空间是否满了。显然 <code>/dev/vda1</code>满了</p>
+<div class="hlcode"><pre><span></span>Filesystem      Size  Used Avail Use% Mounted on
+/dev/vda1        25G   24G   15M <span class="m">100</span>% /
+tmpfs            16G     <span class="m">0</span>   16G   <span class="m">0</span>% /dev/shm
+/dev/vdc1       493G  151G  317G  <span class="m">33</span>% /opt
+</pre></div>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -176,7 +96,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2019-07-04 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2019-07-05 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -184,7 +104,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: 'Flink',
+  title: '磁盘空间满了',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
