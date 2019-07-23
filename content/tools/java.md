@@ -15,3 +15,8 @@ System.out.println(args.split("\t").length); //结果是3
 System.out.println(args.split("\t", -1).length); //结果是5
 ```
 
+
+## 并发相关
+- `synchronized` 和 `Lock` 来保证原子性, `synchronized` 修饰的代码,能够保证任一时刻只有一个线程执行该代码块。
+- `@volatile` 可见性。当一个共享变量被volatile修饰时，它会保证修改的值会立即被更新到主存，当有其他线程需要读取时，它会去内存中读取新值。
+- 优质博客 <https://www.cnblogs.com/dolphin0520/p/3920373.html>
