@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>Java 挖坑记录 - Tracholar的个人wiki</title>
+        <title>Google软件测试之道 - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,31 +64,28 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tools">tools</a>&nbsp;»&nbsp;Java 挖坑记录</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#book-note">book-note</a>&nbsp;»&nbsp;Google软件测试之道</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">Java 挖坑记录</div>
+<div id="title">Google软件测试之道</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">字符串相关</a></li>
-<li><a href="#_2">并发相关</a></li>
+<li><a href="#1-google">第1章 Google软件测试介绍</a></li>
+<li><a href="#2">第2章 软件测试开发工程师</a></li>
+<li><a href="#-">- 测试先行</a></li>
 </ul>
 </div>
-<h2 id="_1">字符串相关</h2>
-<p><code>String.split</code> 默认会去掉收尾的多余字符</p>
-<div class="hlcode"><pre><span></span><span class="n">String</span> <span class="n">args</span> <span class="o">=</span> <span class="s">&quot;0.035635684\t\t13001002926\t\t&quot;</span><span class="o">;</span>
-<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">args</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">&quot;\t&quot;</span><span class="o">).</span><span class="na">length</span><span class="o">);</span> <span class="c1">//结果是3</span>
-
-<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">args</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">&quot;\t&quot;</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">).</span><span class="na">length</span><span class="o">);</span> <span class="c1">//结果是5</span>
-</pre></div>
-
-
-<h2 id="_2">并发相关</h2>
+<h2 id="1-google">第1章 Google软件测试介绍</h2>
 <ul>
-<li><code>synchronized</code> 和 <code>Lock</code> 来保证原子性, <code>synchronized</code> 修饰的代码,能够保证任一时刻只有一个线程执行该代码块。</li>
-<li><code>@volatile</code> 可见性。当一个共享变量被volatile修饰时，它会保证修改的值会立即被更新到主存，当有其他线程需要读取时，它会去内存中读取新值。</li>
-<li>优质博客 <a href="https://www.cnblogs.com/dolphin0520/p/3920373.html">https://www.cnblogs.com/dolphin0520/p/3920373.html</a></li>
+<li>当有人来问我,google成功的关键是什么,我的第一个建议是,别找太多的测试人员</li>
+<li>在google,写代码的开发人员也承担测试的重任</li>
+<li>如果你是名工程师,那么你也是个测试人员。如果你的职位有测试两个字,你的任务是怎么让那些没有测试头衔的人更好地做测试。</li>
+<li>质量不是被测出来的</li>
+<li>开发人员要对自己的代码负责,比专职的测试人员更适合做测试</li>
+<li>在google,测试是独立存在的部门,与专注领域平行的部门,成为工程生产力团队</li>
 </ul>
+<h2 id="2">第2章 软件测试开发工程师</h2>
+<h2 id="-">- 测试先行</h2>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -100,7 +97,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2019-01-08 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2019-07-19 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -108,7 +105,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: 'Java 挖坑记录',
+  title: 'Google软件测试之道',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {

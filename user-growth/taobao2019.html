@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>Java 挖坑记录 - Tracholar的个人wiki</title>
+        <title>Flink - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,30 +64,67 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tools">tools</a>&nbsp;»&nbsp;Java 挖坑记录</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#user-growth">user-growth</a>&nbsp;»&nbsp;Flink</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">Java 挖坑记录</div>
+<div id="title">Flink</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">字符串相关</a></li>
-<li><a href="#_2">并发相关</a></li>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">主要内容</a></li>
 </ul>
 </div>
-<h2 id="_1">字符串相关</h2>
-<p><code>String.split</code> 默认会去掉收尾的多余字符</p>
-<div class="hlcode"><pre><span></span><span class="n">String</span> <span class="n">args</span> <span class="o">=</span> <span class="s">&quot;0.035635684\t\t13001002926\t\t&quot;</span><span class="o">;</span>
-<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">args</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">&quot;\t&quot;</span><span class="o">).</span><span class="na">length</span><span class="o">);</span> <span class="c1">//结果是3</span>
-
-<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">args</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">&quot;\t&quot;</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">).</span><span class="na">length</span><span class="o">);</span> <span class="c1">//结果是5</span>
-</pre></div>
-
-
-<h2 id="_2">并发相关</h2>
+<h2 id="_1">关于</h2>
 <ul>
-<li><code>synchronized</code> 和 <code>Lock</code> 来保证原子性, <code>synchronized</code> 修饰的代码,能够保证任一时刻只有一个线程执行该代码块。</li>
-<li><code>@volatile</code> 可见性。当一个共享变量被volatile修饰时，它会保证修改的值会立即被更新到主存，当有其他线程需要读取时，它会去内存中读取新值。</li>
-<li>优质博客 <a href="https://www.cnblogs.com/dolphin0520/p/3920373.html">https://www.cnblogs.com/dolphin0520/p/3920373.html</a></li>
+<li><a href="https://www.infoq.cn/article/saL-HR2JTSBHObfscdiW">https://www.infoq.cn/article/saL-HR2JTSBHObfscdiW</a></li>
+<li>淘宝用户增长的 5+1 个策略</li>
+</ul>
+<h2 id="_2">主要内容</h2>
+<ul>
+<li>淘宝用户增长：<ul>
+<li>用户增长公式：MAU拆解。MAUt = 新增用户 + MAUt-1 * (1-lambda) + 流失用户 * r</li>
+<li>新增用户：纯增量</li>
+<li>活跃用户留存</li>
+<li>流失用户召回</li>
+</ul>
+</li>
+<li>三纵两横</li>
+<li>智能投放<br />
+三方流量，即站外流量<br />
+目标：高质量MAU增量<br />
+传统的广告投放：用户请求 -&gt; 广告主竞价 -&gt; 决定是否投放<br />
+在传统的广告投放基础上加入用户点击广告后的跟踪反馈信号（例如转化等特定行为），反馈信号由广告主反馈给平台用于优化平台的投放策略 OCPx，OCPC<br />
+流量筛选，筛选优质流量，降低渠道成本<br />
+对人的认识。识别增长的目标用户，什么是目标用户？高LTV的用户，LTV建模<br />
+对素材的认识。高效的素材个性化推荐，怎样才能？提升素材的曝光效率，一个基本条件就是素材数量。海量素材，素材生成，海量的元素（商品、品牌），经验丰富的设计师=&gt;高效率的的模板；高效的NLP算法=&gt;高效的文案； =&gt; 海量素材<br />
+素材筛选：高效的个性化推荐算法，u2anything<br />
+对于允许广告主自助推荐的渠道接入个性化推荐算法，曝光点击率10%+<br />
+对于不允许自主推荐的渠道，利用海量的素材赋能渠道推荐系统。简单来说就是加海量物料<br />
+流量分发<br />
+素材推荐 &amp; 素材模型优化？<br />
+矩阵优势<br />
+二方引流：利用自己平台上的多个产品，互相引流，形成流量矩阵<br />
+拉承一体<br />
+触达后的引入是优化空间最大的环节<br />
+登录率优化<br />
+收口流量：统一数据、统一行为<br />
+用户信息总线服务，将所有行为（站外行为，比如看到一个券）写入总线，在需要的时候进行消费（APP内首页也能看到这个券），对用户进行引导<br />
+长周期运营<br />
+长生命周期运营：以数据为基础，结合算法的能力，驱动用户成长的运营方式<br />
+关注点从行为漏斗效率到生命周期的跃迁，希望用户不断地向上发展<br />
+全链路触达：在用户动线的每一个节点上设置触发点，目标不是驱动用户进入漏斗的下一个节点，而是驱动用户生命周期的跃迁<br />
+首先定义用户生命周期节点，整合用户行为数据，利用算法能力计算出用户在生命周期中所处的位置，并预测到下一状态跃迁的概率。当时别用户在跃迁边界时，干预系统触发商品、券等信息，加速用户跃迁。例如，当预测到用户长期没有核心行为，即将流失的时候，使用定向商品刺激用户，产生购买行为，「临门一脚」。<br />
+平台提效<br />
+以技术的方式代替人工，把两周的事情提效到15分钟<br />
+除了开发提效工具，还需要将这些工具变成系统，把用户增长理论实体化，流程化<br />
+将「上卷和下钻」分析工具化；AB测试工具化<br />
+工具做完了，但是用得人并不会主动使用或者正确使用<br />
+解决之道：通过系统保证，将这些工具默认集成到产品中，成为默认选项<br />
+数据为王<br />
+用户增长团队的能力升级<br />
+解释趋势和关注分布<br />
+关注趋势：选择一个核心指标，建立其在时间维度的图标，关注趋势变化。试图通过各种手段解释变动的原因，沉淀方法论<br />
+关注分布：关注核心指标在各个维度上的分布，发现不均匀分布的维度，找到解决不均匀分布的方案，提出假设，大胆试验</li>
 </ul>
 </div>
 <div id="income">
@@ -100,7 +137,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2019-01-08 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2019-07-04 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -108,7 +145,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: 'Java 挖坑记录',
+  title: 'Flink',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {

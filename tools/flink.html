@@ -73,11 +73,28 @@
 <li><a href="#_1">关于</a></li>
 <li><a href="#_2">基本概念</a><ul>
 <li><a href="#_3">编程模型</a></li>
+<li><a href="#_4">分布式运行时环境</a></li>
 <li><a href="#datastream-api">DataStream API</a></li>
 </ul>
 </li>
-<li><a href="#_4">快速入门</a></li>
-<li><a href="#_5">参考链接</a></li>
+<li><a href="#_5">快速入门</a><ul>
+<li><a href="#debugging">Debugging</a></li>
+</ul>
+</li>
+<li><a href="#scala-api">scala API</a></li>
+<li><a href="#flink-vs-storm">flink vs storm</a></li>
+<li><a href="#_6">算子</a><ul>
+<li><a href="#physical-partitioning">Physical partitioning</a></li>
+<li><a href="#task-chaining-and-resource-groups">Task chaining and resource groups</a></li>
+</ul>
+</li>
+<li><a href="#windows">Windows</a></li>
+<li><a href="#join">JOIN</a></li>
+<li><a href="#processfunction">ProcessFunction</a></li>
+<li><a href="#io">异步IO操作</a></li>
+<li><a href="#streaming-connectors">Streaming Connectors</a></li>
+<li><a href="#tabel-api">Tabel API</a></li>
+<li><a href="#_7">参考链接</a></li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -138,7 +155,45 @@
 </ul>
 <p><img alt="event_ingestion_processing_time" src="/wiki/static/images/event_ingestion_processing_time.svg" /></p>
 <ul>
-<li>Stateful Operations 有状态的操作<ul>
+<li>
+<p>Time Characteristic</p>
+<ul>
+<li>是否指定时间戳</li>
+<li>使用哪种时间</li>
+</ul>
+</li>
+<li>
+<p>Event Time and Watermarks</p>
+<ul>
+<li>event time 事件时间, 数据不一定按照事件时间顺序过来</li>
+<li>watermark 告诉operator到接受到当前watermark的时候,之后不再有该事件之前的数据了</li>
+<li>Periodic Watermarks <code>AssignerWithPeriodicWatermarks</code><ul>
+<li></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>source functions with Timestamps and Watermarks</p>
+<ul>
+<li>源中直接设置时间戳和发送watermark</li>
+<li>使用 timestamp assigner 设置时间戳和水印</li>
+</ul>
+</li>
+<li>
+<p>Timestamp Assigners / Watermark Generators</p>
+<ul>
+<li>在数据源后面增加</li>
+<li>预定义的assigner  <ul>
+<li><code>stream.assignAscendingTimestamps( _.getCreationTime )</code></li>
+<li>固定延迟 <code>stream.assignTimestampsAndWatermarks(new BoundedOutOfOrdernessTimestampExtractor[MyEvent](Time.seconds(10))( _.getCreationTime ))</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Stateful Operations 有状态的操作</p>
+<ul>
 <li>需要cache多个事件才能操作</li>
 <li>通过<code>keyBy</code>实现, 实际上是维持一个key/value存储</li>
 <li>保证后续操作只跟这个<code>key</code>有关,不用考虑其他<code>key</code>数据,让flink分配key的操作是透明的</li>
@@ -158,9 +213,562 @@
 </ul>
 </li>
 </ul>
+<h3 id="_4">分布式运行时环境</h3>
+<ul>
+<li>JobManagers(maters) : 规划任务、协调checkpoint和恢复。<ul>
+<li>至少有一个, 可以有多个来备份</li>
+</ul>
+</li>
+<li>TaskManagers(workers) : 执行具体任务, 缓存状态, 改变数据流</li>
+<li>Client : 类似于Spark的client,用于汇报进展</li>
+<li>部署模式<ul>
+<li>standalone cluster</li>
+<li>YARN, Mesos</li>
+</ul>
+</li>
+</ul>
+<p><img alt="processes" src="/wiki/static/images/processes.svg" /></p>
+<ul>
+<li>task slots : 一个slot是一个线程</li>
+</ul>
+<p><img alt="tasks slots" src="/wiki/static/images/tasks_slots.svg" /></p>
+<ul>
+<li>slot sharing</li>
+</ul>
+<p><img alt="slots sharing" src="/wiki/static/images/slot_sharing.svg" /></p>
+<ul>
+<li>
+<p>State Backends: </p>
+<ul>
+<li>内存中的一个hash map</li>
+<li>rocksDB</li>
+</ul>
+</li>
+<li>
+<p>Savepoints: 用户手动触发, checkpoint 是自动触发</p>
+</li>
+</ul>
 <h3 id="datastream-api">DataStream API</h3>
-<h2 id="_4">快速入门</h2>
-<h2 id="_5">参考链接</h2>
+<ul>
+<li><code>aggregate</code> 函数<ul>
+<li></li>
+</ul>
+</li>
+</ul>
+<h2 id="_5">快速入门</h2>
+<ul>
+<li>wordcount</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="k">object</span> <span class="nc">WikipediaAnalysis</span> <span class="o">{</span>
+    <span class="k">def</span> <span class="n">main</span><span class="o">(</span><span class="n">args</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="o">{</span>
+        <span class="k">val</span> <span class="n">env</span> <span class="k">=</span> <span class="nc">StreamExecutionEnvironment</span><span class="o">.</span><span class="n">getExecutionEnvironment</span>
+        <span class="k">val</span> <span class="n">edits</span> <span class="k">=</span> <span class="n">env</span><span class="o">.</span><span class="n">socketTextStream</span><span class="o">(</span><span class="s">&quot;localhost&quot;</span><span class="o">,</span> <span class="mi">1025</span><span class="o">)</span>
+        <span class="k">val</span> <span class="n">result</span> <span class="k">=</span> <span class="n">edits</span><span class="o">.</span><span class="n">flatMap</span><span class="o">(</span><span class="n">line</span> <span class="k">=&gt;</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">&quot;\\s+&quot;</span><span class="o">))</span>
+            <span class="o">.</span><span class="n">map</span><span class="o">((</span><span class="k">_</span><span class="o">,</span> <span class="mi">1</span><span class="o">)).</span><span class="n">keyBy</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
+            <span class="o">.</span><span class="n">timeWindow</span><span class="o">(</span><span class="nc">Time</span><span class="o">.</span><span class="n">seconds</span><span class="o">(</span><span class="mi">5</span><span class="o">))</span>
+            <span class="o">.</span><span class="n">sum</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">print</span><span class="o">()</span>
+
+        <span class="n">env</span><span class="o">.</span><span class="n">execute</span><span class="o">()</span>
+
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>创建流 <code>nc -l 1025</code> netcat</p>
+<ul>
+<li>
+<p>数据源</p>
+<ul>
+<li><code>sourceFunction</code>, <code>ParallelSourceFunction</code>, <code>RichParallelSourceFunction</code></li>
+<li>文件源<ul>
+<li><code>readTextFile(path)</code></li>
+<li><code>readFile(fileInputFormat, path)</code></li>
+<li><code>readFile(fileInputFormat, path, watchType, interval, pathFilter)</code></li>
+</ul>
+</li>
+<li>socket<ul>
+<li><code>socketTextStream</code></li>
+</ul>
+</li>
+<li>集合<ul>
+<li><code>fromCollection(Seq)</code> iterator</li>
+<li><code>fromElements(elements: _*)</code></li>
+<li><code>fromParallelCollection(SplittableIterator)</code></li>
+<li><code>generateSequence(from, to)</code></li>
+</ul>
+</li>
+<li>Custom<ul>
+<li><code>FlinkKafkaConsumer08</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>流的变换</p>
+</li>
+<li>
+<p>sinks</p>
+<ul>
+<li><code>writeAsText</code></li>
+<li><code>writeAsCsv</code></li>
+<li><code>print/printToErr</code></li>
+<li><code>writeUsingOutputFormat() / FileOutputFormat</code></li>
+<li><code>writeToSocket</code></li>
+<li><code>addSink</code> 自定义的sink</li>
+</ul>
+</li>
+<li>
+<p>iterators, <code>IterativeStream</code></p>
+</li>
+<li>
+<p>Execution Parameters。 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/dev/execution_configuration.html">https://ci.apache.org/projects/flink/flink-docs-release-1.8/dev/execution_configuration.html</a></p>
+<ul>
+<li><code>env.getConfig</code></li>
+</ul>
+</li>
+<li>
+<p>Fault Tolerance</p>
+</li>
+<li>Controlling Latency<ul>
+<li><code>env.setBufferTimeout(timeoutMillis)</code> 默认是100ms, 即使没有满也会将buff发送出去</li>
+</ul>
+</li>
+</ul>
+<h3 id="debugging">Debugging</h3>
+<ul>
+<li>本地执行环节, 可以直接从IDE执行,设置断点。<code>StreamExecutionEnvironment.createLocalEnvironment</code></li>
+<li>Collection Data Sources。利用 <code>env.fromElements</code> <code>env.fromCollection</code> 从序列创建流,测试</li>
+<li>Iterator Data Sink. <code>DataStreamUtils.collect</code></li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.flink.streaming.experimental.DataStreamUtils</span>
+<span class="k">import</span> <span class="nn">scala.collection.JavaConverters.asScalaIteratorConverter</span>
+
+<span class="k">val</span> <span class="n">myResult</span><span class="k">:</span> <span class="kt">DataStream</span><span class="o">[(</span><span class="kt">String</span>, <span class="kt">Int</span><span class="o">)]</span> <span class="k">=</span> <span class="o">...</span>
+<span class="k">val</span> <span class="n">myOutput</span><span class="k">:</span> <span class="kt">Iterator</span><span class="o">[(</span><span class="kt">String</span>, <span class="kt">Int</span><span class="o">)]</span> <span class="k">=</span> <span class="nc">DataStreamUtils</span><span class="o">.</span><span class="n">collect</span><span class="o">(</span><span class="n">myResult</span><span class="o">.</span><span class="n">javaStream</span><span class="o">).</span><span class="n">asScala</span>
+</pre></div>
+
+
+<h2 id="scala-api">scala API</h2>
+<ul>
+<li>增加依赖</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="c">&lt;!-- https://mvnrepository.com/artifact/org.apache.flink/flink-scala --&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.apache.flink<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>flink-scala_2.11<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>${flink.version}<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+
+<span class="c">&lt;!-- https://mvnrepository.com/artifact/org.apache.flink/flink-streaming-scala --&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.apache.flink<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>flink-streaming-scala_2.11<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>${flink.version}<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+
+
+<ul>
+<li>导入基础包</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.flink.api.scala._</span>
+<span class="k">import</span> <span class="nn">org.apache.flink.streaming.api.scala._</span>
+
+<span class="c1">// 偏函数支持</span>
+<span class="k">import</span> <span class="nn">org.apache.flink.streaming.api.scala.extensions._</span>
+</pre></div>
+
+
+<ul>
+<li>scala 偏函数支持, 偏函数支持flink提供了额外的API, <code>xxxWith</code>。 <a href="https://ci.apache.org/projects/flink/flink-docs-stable/dev/scala_api_extensions.html">https://ci.apache.org/projects/flink/flink-docs-stable/dev/scala_api_extensions.html</a></li>
+</ul>
+<h2 id="flink-vs-storm">flink vs storm</h2>
+<ul>
+<li>flink 有状态, 而storm无状态,需要自己管理状态</li>
+<li>flink 支持窗口, 而storm不支持。统计特征啊</li>
+</ul>
+<h2 id="_6">算子</h2>
+<ul>
+<li><code>map</code></li>
+<li><code>flatMap</code></li>
+<li><code>filter</code></li>
+<li><code>keyBy</code>   DataStream → KeyedStream</li>
+<li><code>reduce</code> KeyedStream → DataStream</li>
+<li><code>fold</code> KeyedStream → DataStream, <code>keyedStream.fold("start")((str, i) =&gt; { str + "-" + i })</code></li>
+<li><code>Aggregations</code>, <code>min</code>, <code>max</code>, <code>sum</code> KeyedStream → DataStream</li>
+<li><code>window</code>, KeyedStream → WindowedStream</li>
+<li><code>windowAll</code>, DataStream → AllWindowedStream</li>
+<li><code>Window Apply</code> <code>apply</code>, WindowedStream → DataStream; AllWindowedStream → DataStream   </li>
+<li><code>Window Reduce</code>, <code>reduce</code>, WindowedStream → DataStream</li>
+<li><code>Window Fold</code>, WindowedStream → DataStream</li>
+<li><code>Aggregations on windows</code>, WindowedStream → DataStream</li>
+<li><code>Union</code> DataStream* → DataStream</li>
+<li><code>Window Join</code> DataStream,DataStream → DataStream</li>
+<li><code>Window CoGroup</code>, DataStream,DataStream → DataStream  </li>
+<li><code>Connect</code>, 两个流共享状态。DataStream,DataStream → ConnectedStreams   </li>
+<li><code>CoMap, CoFlatMap</code>, ConnectedStreams → DataStream</li>
+<li><code>Split</code>, 将一个流分为多个, DataStream → SplitStream</li>
+<li><code>Select</code>, 从splitstream 中选择一个。SplitStream → DataStream</li>
+<li><code>Iterate</code>, 实现迭代计算, DataStream → IterativeStream → DataStream</li>
+<li><code>Extract Timestamps</code>, 抽取时间戳, DataStream → DataStream</li>
+<li><code>Project</code>, 从tuple中提取部分字段, scala可以用模式匹配,但要加上扩展 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/dev/scala_api_extensions.html">https://ci.apache.org/projects/flink/flink-docs-release-1.8/dev/scala_api_extensions.html</a></li>
+</ul>
+<h3 id="physical-partitioning">Physical partitioning</h3>
+<ul>
+<li>自定义分区, <code>dataStream.partitionCustom</code></li>
+<li>随机分区, <code>dataStream.shuffle()</code></li>
+<li>重平衡,用于解决不同分区数据倾斜的问题, <code>dataStream.rebalance</code></li>
+<li>在单机上增加或缩小分片 <code>dataStream.rescale</code></li>
+<li>广播变量到所有分片 <code>dataStream.broadcast</code></li>
+</ul>
+<h3 id="task-chaining-and-resource-groups">Task chaining and resource groups</h3>
+<ul>
+<li>手动维护任务链,构建任务分组(slot)</li>
+<li>创建新链, <code>someStream.filter(...).map(...).startNewChain().map</code></li>
+<li>禁止任务链, <code>someStream.map(...).disableChaining()</code></li>
+<li>设置slot分组, <code>someStream.filter(...).slotSharingGroup("name")</code>, 默认的分组名是<code>default</code></li>
+</ul>
+<h2 id="windows">Windows</h2>
+<ul>
+<li>窗的生命周期<ul>
+<li>窗口创建于第一个事件到来的时候,结束时间是 窗口结束时间 + 指定的时延</li>
+</ul>
+</li>
+<li>每一个窗都有一个 <code>trigger</code> 和一个窗函数<code>ProcessWindowFunction, ReduceFunction, AggregateFunction or FoldFunction</code> 与之关联<ul>
+<li><code>trigger</code> 指定什么时候应用窗函数</li>
+<li><code>Evictor</code> 可以在触发之后,移除窗口中的一些元素</li>
+</ul>
+</li>
+<li>Keyed vs Non-Keyed Windows<ul>
+<li>通过 <code>keyBy</code> 来划分key,变成逻辑上的分key的流。(逻辑上??)</li>
+<li>所有相同key的数据被发送到同一个task, 而不分key会使所有的数据发送到同一个task</li>
+</ul>
+</li>
+<li>Window Assigners<ul>
+<li>定义如何将元素关联到window。在 <code>window(...)</code> 和 <code>windowAll()</code> 中指定</li>
+<li>预定义 window assigner<ul>
+<li>tumbling windows 滚动窗,时间无重叠切分<ul>
+<li>固定大小, 没有重叠 </li>
+<li><code>TumblingEventTimeWindows.of(Time.seconds(5))</code></li>
+<li><code>TumblingEventTimeWindows.of(Time.days(1), Time.hours(-8))</code> 第二个参数是offset,中国位于东8区,所以加8小时offset</li>
+</ul>
+</li>
+<li>sliding windows 滑动窗<ul>
+<li>固定大小, 有重叠</li>
+<li><code>SlidingEventTimeWindows.of(Time.seconds(10), Time.seconds(5))</code> 大小为10s,滑动距离为5s的滑动窗</li>
+<li><code>SlidingProcessingTimeWindows.of(Time.hours(12), Time.hours(1), Time.hours(-8))</code></li>
+</ul>
+</li>
+<li>session windows 用两次事件时间间隔超过某个阈值进行划分<ul>
+<li>不重叠, 没有固定的起止时间。通过固定时间间隔(session gap)没有收到数据来划分窗口</li>
+<li><code>EventTimeSessionWindows.withGap(Time.minutes(10))</code> 使用event时间</li>
+<li><code>ProcessingTimeSessionWindows.withGap(Time.minutes(10))</code> 使用处理时间</li>
+<li><code>EventTimeSessionWindows.withDynamicGap</code> 自定义gap</li>
+</ul>
+</li>
+<li>global windows<ul>
+<li>需要自己定义 <code>trigger</code>, 否则这个窗口不会结束, 因此也不会做任何事情</li>
+<li><code>GlobalWindows.create()</code></li>
+</ul>
+</li>
+<li>自定义: 实现 <code>WindowAssigner</code> 类</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Window Functions</p>
+<ul>
+<li>ReduceFunction 增量聚合<ul>
+<li><code>.reduce { (v1, v2) =&gt; (v1._1, v1._2 + v2._2) }</code></li>
+</ul>
+</li>
+<li>
+<p>AggregateFunction 增量聚合</p>
+<ul>
+<li>通用的reduce函数, 3个类型, 输入类型IN,累积类型ACC,输出类型OUT</li>
+<li>AggregateFunction 接口的函数用途<ul>
+<li><code>createAccumulator</code> 创建ACC,返回ACC的初始值</li>
+<li><code>add</code> 将新的元素加到ACC中</li>
+<li><code>getResult</code> 获取最终结果</li>
+<li><code>merge</code> 合并两个中间的ACC</li>
+</ul>
+</li>
+</ul>
+<p>```scala<br />
+class AverageAggregate extends AggregateFunction[(String, Long), (Long, Long), Double] {<br />
+  override def createAccumulator() = (0L, 0L)</p>
+<p>override def add(value: (String, Long), accumulator: (Long, Long)) =<br />
+    (accumulator._1 + value._2, accumulator._2 + 1L)</p>
+<p>override def getResult(accumulator: (Long, Long)) = accumulator._1 / accumulator._2</p>
+<p>override def merge(a: (Long, Long), b: (Long, Long)) =<br />
+    (a._1 + b._1, a._2 + b._2)<br />
+}<br />
+<code>``
+    - FoldFunction 高阶函数
+-</code>.fold("") { (acc, v) =&gt; acc + v._2 }`<br />
+    - ProcessWindowFunction<br />
+- 这个函数会先缓存所有, 尽量用其他聚合函数,可以增量聚合<br />
+    - windowfunction</p>
+</li>
+</ul>
+</li>
+<li>
+<p>triggers</p>
+<ul>
+<li>每一个 <code>WindowAssigner</code> 都有一个默认的trigger</li>
+<li>自定义trigger <code>trigger(...)</code></li>
+<li><code>onElement()</code> 在每个元素被加到窗口后调用</li>
+<li><code>onEventTime()</code> 当注册一个事件时间触发的时候调用</li>
+<li><code>onProcessingTime()</code> 当注册处理时间的时候调用</li>
+<li><code>onMerge</code> 合并状态</li>
+<li><code>clear()</code> 窗口被移除的时候调用</li>
+</ul>
+</li>
+<li>
+<p>evictor</p>
+<ul>
+<li><code>evictBefore</code> 在窗口函数之前调用</li>
+<li><code>evictAfter</code> 在窗口函数之后调用</li>
+<li><code>CountEvictor</code> 保留用户定义数目的元素,丢弃其他的</li>
+<li><code>DeltaEvictor</code> 到最后一个元素的时间区间,只保留低于阈值的原始</li>
+<li><code>TimeEvictor</code> 移除超过一定区间的</li>
+</ul>
+</li>
+<li>Allowed Lateness</li>
+</ul>
+<h2 id="join">JOIN</h2>
+<ul>
+<li>实现流的JOIN操作, 实现 inner-join, 除了key相同,还要求在同一个窗口内</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="n">stream</span><span class="o">.</span><span class="n">join</span><span class="o">(</span><span class="n">otherStream</span><span class="o">)</span>
+    <span class="o">.</span><span class="n">where</span><span class="o">(&lt;</span><span class="nc">KeySelector</span><span class="o">&gt;)</span>
+    <span class="o">.</span><span class="n">equalTo</span><span class="o">(&lt;</span><span class="nc">KeySelector</span><span class="o">&gt;)</span>
+    <span class="o">.</span><span class="n">window</span><span class="o">(&lt;</span><span class="nc">WindowAssigner</span><span class="o">&gt;)</span>
+    <span class="o">.</span><span class="n">apply</span><span class="o">(&lt;</span><span class="nc">JoinFunction</span><span class="o">&gt;)</span>
+</pre></div>
+
+
+<ul>
+<li>Interval Join<ul>
+<li>JOIN A和B两个流,除了key相同,还要求相对时间间隔在一定范围内</li>
+<li><code>.intervalJoin(greenStream.keyBy(elem =&gt; /* select key */)).between(Time.milliseconds(-2), Time.milliseconds(1))</code></li>
+<li>指定上限和下限</li>
+</ul>
+</li>
+</ul>
+<h2 id="processfunction">ProcessFunction</h2>
+<ul>
+<li>low-level 流处理操作<ul>
+<li>events 流的元素</li>
+<li>state 容错、一致性、只有keyedstream有</li>
+<li>timers 事件时间、处理时间、只有keyedstream有</li>
+<li>可以看做 <code>FlatMapFunction</code> + 可以访问keyed state 和 timers</li>
+<li>每一个事件接受到的时候被调用</li>
+<li>通过 <code>RuntimeContext</code> 访问 keyed state</li>
+<li><code>stream.keyBy(...).process(new MyProcessFunction())</code></li>
+</ul>
+</li>
+<li>
+<p>Low-level Joins</p>
+<ul>
+<li><code>CoProcessFunction</code></li>
+</ul>
+</li>
+<li>
+<p>Timer Coalescing</p>
+<ul>
+<li>降低时间分辨率</li>
+</ul>
+</li>
+</ul>
+<h2 id="io">异步IO操作</h2>
+<ul>
+<li>访问外部系统(例如外部存储), 原始的访问方式如在 <code>MapFunction</code> 中访问将会发送同步请求,这导致接口调用占用大量的处理时间</li>
+<li>异步实际上是并发请求</li>
+<li>KV存储一般存在异步请求客户端</li>
+<li>需要实现<ul>
+<li>实现<code>AsyncFunction</code>发送请求</li>
+<li><code>callback</code>处理返回的结果</li>
+<li>应用异步IO操作到 DataStream<ul>
+<li><code>Timeout</code> 超时时间, 默认会抛出异常, 任务重启, 通过重载 <code>AsyncFunction#timeout</code> 方法处理异常</li>
+<li><code>Capacity</code> 并发量</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>结果顺序<ul>
+<li>无序, 通过 <code>AsyncDataStream.unorderedWait</code> 调用,低延时,低overhead</li>
+<li>有序, 通过 <code>AsyncDataStream.orderedWait</code> 调用</li>
+</ul>
+</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * An implementation of the &#39;AsyncFunction&#39; that sends requests and sets the callback.</span>
+<span class="cm"> */</span>
+<span class="k">class</span> <span class="nc">AsyncDatabaseRequest</span> <span class="k">extends</span> <span class="nc">AsyncFunction</span><span class="o">[</span><span class="kt">String</span>, <span class="o">(</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">)]</span> <span class="o">{</span>
+
+    <span class="cm">/** The database specific client that can issue concurrent requests with callbacks */</span>
+    <span class="k">lazy</span> <span class="k">val</span> <span class="n">client</span><span class="k">:</span> <span class="kt">DatabaseClient</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DatabaseClient</span><span class="o">(</span><span class="n">host</span><span class="o">,</span> <span class="n">post</span><span class="o">,</span> <span class="n">credentials</span><span class="o">)</span>
+
+    <span class="cm">/** The context used for the future callbacks */</span>
+    <span class="k">implicit</span> <span class="k">lazy</span> <span class="k">val</span> <span class="n">executor</span><span class="k">:</span> <span class="kt">ExecutionContext</span> <span class="o">=</span> <span class="nc">ExecutionContext</span><span class="o">.</span><span class="n">fromExecutor</span><span class="o">(</span><span class="nc">Executors</span><span class="o">.</span><span class="n">directExecutor</span><span class="o">())</span>
+
+
+    <span class="k">override</span> <span class="k">def</span> <span class="n">asyncInvoke</span><span class="o">(</span><span class="n">str</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">resultFuture</span><span class="k">:</span> <span class="kt">ResultFuture</span><span class="o">[(</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">)])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+
+        <span class="c1">// issue the asynchronous request, receive a future for the result</span>
+        <span class="k">val</span> <span class="n">resultFutureRequested</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">(</span><span class="n">str</span><span class="o">)</span>
+
+        <span class="c1">// set the callback to be executed once the request by the client is complete</span>
+        <span class="c1">// the callback simply forwards the result to the result future</span>
+        <span class="n">resultFutureRequested</span><span class="o">.</span><span class="n">onSuccess</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="n">result</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="n">resultFuture</span><span class="o">.</span><span class="n">complete</span><span class="o">(</span><span class="nc">Iterable</span><span class="o">((</span><span class="n">str</span><span class="o">,</span> <span class="n">result</span><span class="o">)))</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// create the original stream</span>
+<span class="k">val</span> <span class="n">stream</span><span class="k">:</span> <span class="kt">DataStream</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">...</span>
+
+<span class="c1">// apply the async I/O transformation</span>
+<span class="k">val</span> <span class="n">resultStream</span><span class="k">:</span> <span class="kt">DataStream</span><span class="o">[(</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">)]</span> <span class="k">=</span>
+    <span class="nc">AsyncDataStream</span><span class="o">.</span><span class="n">unorderedWait</span><span class="o">(</span><span class="n">stream</span><span class="o">,</span> <span class="k">new</span> <span class="nc">AsyncDatabaseRequest</span><span class="o">(),</span> <span class="mi">1000</span><span class="o">,</span> <span class="nc">TimeUnit</span><span class="o">.</span><span class="nc">MILLISECONDS</span><span class="o">,</span> <span class="mi">100</span><span class="o">)</span>
+</pre></div>
+
+
+<h2 id="streaming-connectors">Streaming Connectors</h2>
+<ul>
+<li>当前支持的系统<ul>
+<li>Apache Kafka (source/sink)</li>
+<li>Apache Cassandra (sink)</li>
+<li>Amazon Kinesis Streams (source/sink)</li>
+<li>Elasticsearch (sink)</li>
+<li>Hadoop FileSystem (sink)</li>
+<li>RabbitMQ (source/sink)</li>
+<li>Apache NiFi (source/sink)</li>
+<li>Twitter Streaming API (source)</li>
+</ul>
+</li>
+<li>Connectors in Apache Bahir<ul>
+<li>Apache ActiveMQ (source/sink)</li>
+<li>Apache Flume (sink)</li>
+<li>Redis (sink)</li>
+<li>Akka (sink)</li>
+<li>Netty (source)</li>
+</ul>
+</li>
+<li>容错</li>
+<li>Kafka<ul>
+<li><code>FlinkKafkaConsumer08</code></li>
+<li>构造函数<ul>
+<li>topic name 或 topic name列表</li>
+<li>序列化方式 DeserializationSchema / KafkaDeserializationSchema<ul>
+<li>解析从kafka中来的数据</li>
+<li><code>DeserializationSchema</code></li>
+<li><code>T deserialize(byte[] message)</code></li>
+<li>预定义的schema<ul>
+<li><code>TypeInformationSerializationSchema</code>, <code>TypeInformationKeyValueSerializationSchema</code> 基于flink的 <code>TypeInformation</code></li>
+<li><code>JsonDeserializationSchema</code> 和 <code>JSONKeyValueDeserializationSchema</code></li>
+<li><code>AvroDeserializationSchema</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>属性<ul>
+<li>bootstrap.servers</li>
+<li>zookeeper.connect</li>
+<li>group.id</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>指定消费的起始位置<ul>
+<li>myConsumer.setStartFromEarliest()      // start from the earliest record possible</li>
+<li>myConsumer.setStartFromLatest()        // start from the latest record</li>
+<li>myConsumer.setStartFromTimestamp(...)  // start from specified epoch timestamp (milliseconds)</li>
+<li>myConsumer.setStartFromGroupOffsets()  // the default behaviour</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Kafka Consumers and Fault Tolerance</p>
+<ul>
+<li>对源进行checkpoint</li>
+<li><code>env.enableCheckpointing(5000) // checkpoint every 5000 msecs</code></li>
+</ul>
+</li>
+<li>
+<p>Kafka Consumers Topic and Partition Discovery</p>
+<ul>
+<li>设置配置属性 <code>flink.partition-discovery.interval-millis</code></li>
+<li>创建 consumer 时用正则表达式匹配, <code>new FlinkKafkaConsumer08[String](Pattern.compile("test-topic-[0-9]"), new SimpleStringSchema, properties)</code></li>
+</ul>
+</li>
+<li>Kafka Producer</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="k">val</span> <span class="n">stream</span><span class="k">:</span> <span class="kt">DataStream</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">...</span>
+
+<span class="k">val</span> <span class="n">myProducer</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">FlinkKafkaProducer011</span><span class="o">[</span><span class="kt">String</span><span class="o">](</span>
+        <span class="s">&quot;localhost:9092&quot;</span><span class="o">,</span>         <span class="c1">// broker list</span>
+        <span class="s">&quot;my-topic&quot;</span><span class="o">,</span>               <span class="c1">// target topic</span>
+        <span class="k">new</span> <span class="nc">SimpleStringSchema</span><span class="o">)</span>   <span class="c1">// serialization schema</span>
+
+<span class="c1">// versions 0.10+ allow attaching the records&#39; event timestamp when writing them to Kafka;</span>
+<span class="c1">// this method is not available for earlier Kafka versions</span>
+<span class="n">myProducer</span><span class="o">.</span><span class="n">setWriteTimestampToKafka</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+
+<span class="n">stream</span><span class="o">.</span><span class="n">addSink</span><span class="o">(</span><span class="n">myProducer</span><span class="o">)</span>
+</pre></div>
+
+
+<div class="hlcode"><pre><span></span><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.apache.flink<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>flink-connector-kafka_2.11<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.8.0<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>side outputs</p>
+<ul>
+<li>在主要的结果stream中filter出满足一定规则的stream</li>
+</ul>
+</li>
+<li>
+<p>测试</p>
+<ul>
+<li>单元测试</li>
+<li>集成测试: 端到端测试flink pipeline<ul>
+<li><code>flink-test-utils_2.11</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="tabel-api">Tabel API</h2>
+<ul>
+<li>在stream上定义table</li>
+<li>连续query<ul>
+<li>将启动的时候收到的第一条记录到当前记录看做一个有限表,聚合操作在这个有限表中执行<ul>
+<li><code>SELECT user, count(1) as cnt FROM clicks GROUP BY user</code></li>
+</ul>
+</li>
+<li>窗聚合<ul>
+<li><code>SELECT user, TUMBLE_END(cTime, INTERVAL '1' HOURS) as endT, COUNT(1) as cnt FROM clicks GROUP BY user, TUMBLE_END(cTime, INTERVAL '1' HOURS)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="_7">参考链接</h2>
 <ul>
 <li><a href="https://ci.apache.org/projects/flink/flink-docs-stable/">https://ci.apache.org/projects/flink/flink-docs-stable/</a></li>
 <li><a href="https://ci.apache.org/projects/flink/flink-docs-stable/concepts/programming-model.html">https://ci.apache.org/projects/flink/flink-docs-stable/concepts/programming-model.html</a></li>

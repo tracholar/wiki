@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>Java 挖坑记录 - Tracholar的个人wiki</title>
+        <title>PowerMock在单元测试中的应用 - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,30 +64,63 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tools">tools</a>&nbsp;»&nbsp;Java 挖坑记录</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tools">tools</a>&nbsp;»&nbsp;PowerMock在单元测试中的应用</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">Java 挖坑记录</div>
+<div id="title">PowerMock在单元测试中的应用</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">字符串相关</a></li>
-<li><a href="#_2">并发相关</a></li>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">配置环境</a></li>
+<li><a href="#_3">应用</a></li>
 </ul>
 </div>
-<h2 id="_1">字符串相关</h2>
-<p><code>String.split</code> 默认会去掉收尾的多余字符</p>
-<div class="hlcode"><pre><span></span><span class="n">String</span> <span class="n">args</span> <span class="o">=</span> <span class="s">&quot;0.035635684\t\t13001002926\t\t&quot;</span><span class="o">;</span>
-<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">args</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">&quot;\t&quot;</span><span class="o">).</span><span class="na">length</span><span class="o">);</span> <span class="c1">//结果是3</span>
+<h2 id="_1">关于</h2>
+<ul>
+<li>参考IBM教程, <a href="https://www.ibm.com/developerworks/cn/java/j-lo-powermock/index.html">https://www.ibm.com/developerworks/cn/java/j-lo-powermock/index.html</a></li>
+</ul>
+<h2 id="_2">配置环境</h2>
+<div class="hlcode"><pre><span></span><span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;project.build.sourceEncoding&gt;</span>UTF-8<span class="nt">&lt;/project.build.sourceEncoding&gt;</span>
+        <span class="nt">&lt;powermock.version&gt;</span>2.0.2<span class="nt">&lt;/powermock.version&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
 
-<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">args</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">&quot;\t&quot;</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">).</span><span class="na">length</span><span class="o">);</span> <span class="c1">//结果是5</span>
+    <span class="nt">&lt;dependencies&gt;</span>
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.powermock<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>powermock-module-junit4<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>${powermock.version}<span class="nt">&lt;/version&gt;</span>
+            <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.powermock<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>powermock-api-mockito2<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>${powermock.version}<span class="nt">&lt;/version&gt;</span>
+            <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>junit<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>junit<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>4.12<span class="nt">&lt;/version&gt;</span>
+            <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;/dependencies&gt;</span>
 </pre></div>
 
 
-<h2 id="_2">并发相关</h2>
+<h2 id="_3">应用</h2>
 <ul>
-<li><code>synchronized</code> 和 <code>Lock</code> 来保证原子性, <code>synchronized</code> 修饰的代码,能够保证任一时刻只有一个线程执行该代码块。</li>
-<li><code>@volatile</code> 可见性。当一个共享变量被volatile修饰时，它会保证修改的值会立即被更新到主存，当有其他线程需要读取时，它会去内存中读取新值。</li>
-<li>优质博客 <a href="https://www.cnblogs.com/dolphin0520/p/3920373.html">https://www.cnblogs.com/dolphin0520/p/3920373.html</a></li>
+<li>模拟静态方法: 模拟静态方法返回指定的值</li>
+<li>模拟构造函数: 模拟构造函数返回的结果</li>
+<li>模拟私有以及final方法</li>
+<li><code>mock</code> 对象对于未指定处理规则的调用会按照方法返回值类型返回该类型的默认值(int,long返回0, boolean返回false,对象则返回null,void则什么都不做)</li>
+<li><code>spy</code>对象对于未指定处理规则的时候会调用真实方法</li>
+<li>初始化静态field, <code>SuppressStaticInitializationFor</code> <ul>
+<li><a href="http://codyaray.com/2012/05/mocking-static-java-util-logger-with-easymocks-powermock-extension">http://codyaray.com/2012/05/mocking-static-java-util-logger-with-easymocks-powermock-extension</a></li>
+<li><a href="https://github.com/powermock/powermock/wiki/Mock-Policies">https://github.com/powermock/powermock/wiki/Mock-Policies</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div id="income">
@@ -100,7 +133,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2019-01-08 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2019-07-19 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -108,7 +141,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: 'Java 挖坑记录',
+  title: 'PowerMock在单元测试中的应用',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
