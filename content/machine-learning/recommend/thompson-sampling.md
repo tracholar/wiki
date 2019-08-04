@@ -63,8 +63,10 @@ $$
 - 后验分布并不是高斯分布,所以采用拉普拉斯近似,将众数作为高斯的均值,二阶导作为协方差矩阵(只取了对角项,没有要交叉项)
 - 拉普拉斯近似具体操作过程可以参考PRML
 - 仿真的结论是, TS比UCB和e-greedy都要好,但是没有探索的方法效果也不差! 作者认为一个可能的解释是, 不同的上下文本身有带有一定的探索。
+- BOPR: BOPR则将概率函数直接用高斯分布的类似形式,都不用近似。参考: Web-scale Bayesian click-through rate prediction for sponsored search advertising in Microsoft’s Bing search engine
 
 ![汤普森采样LR](/wiki/static/images/ts-lr.png)
+
 
 
 ## 新文章推荐
