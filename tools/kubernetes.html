@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>An Empirical Evaluation of Thompson Sampling - Tracholar的个人wiki</title>
+        <title>kubernetes - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,96 +64,27 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#-recommend">recommend</a>&nbsp;»&nbsp;An Empirical Evaluation of Thompson Sampling</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tools">tools</a>&nbsp;»&nbsp;kubernetes</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">An Empirical Evaluation of Thompson Sampling</div>
+<div id="title">kubernetes</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">关于</a></li>
-<li><a href="#_2">摘要</a></li>
-<li><a href="#_3">算法</a></li>
-<li><a href="#_4">展示广告</a></li>
-<li><a href="#_5">新文章推荐</a></li>
+<li><a href="#_2">基础</a><ul>
+<li><a href="#_3">构建集群</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
+<p>Kubernetes 构建在 Google 15 年生产环境经验基础之上,并结合来自社区的最佳创意和实践。</p>
 <ul>
-<li>论文: An Empirical Evaluation of Thompson Sampling, 2011</li>
-<li>参考博客 <a href="http://lipixun.me/2018/02/25/ts">http://lipixun.me/2018/02/25/ts</a></li>
-<li>参考书籍: PRML</li>
+<li><a href="https://queue.acm.org/detail.cfm?id=2898444">https://queue.acm.org/detail.cfm?id=2898444</a></li>
+<li><a href="https://kubernetes.io/docs/tutorials/">https://kubernetes.io/docs/tutorials/</a></li>
 </ul>
-<h2 id="_2">摘要</h2>
-<ul>
-<li>UCB方法: 强理论保证<ul>
-<li>P. Auer, N. Cesa-Bianchi, and P. Fischer. Finite-time analysis of the multiarmed bandit problem. Machine learning, 47(2):235–256, 2002.</li>
-<li>T.L. Lai and H. Robbins. Asymptotically efficient adaptive allocation rules. Advances in applied mathematics, 6:4–22, 1985.</li>
-</ul>
-</li>
-<li>贝叶斯优化版的Gittins: 在给定先验分布直接优化最大回报<ul>
-<li>John C. Gittins. Multi-armed Bandit Allocation Indices. Wiley Interscience Series in Systems and Optimization. John Wiley &amp; Sons Inc, 1989.</li>
-</ul>
-</li>
-<li>probability matching: Thompson sampling, 根据概率选择某个臂, 容易实现, 但缺乏理论分析<ul>
-<li>William R. Thompson. On the likelihood that one unknown probability exceeds another in view of the evidence of two samples. Biometrika, 25(3–4):285–294, 1933.</li>
-</ul>
-</li>
-</ul>
-<h2 id="_3">算法</h2>
-<ul>
-<li>上下文$(x)$, 动作集合A, 回报r, 多臂老虎机问题实际上是单步MDP, 上下文实际上就是状态</li>
-<li>过去的经验 D由三元组 $( (x_i, a_i, r_i) )$ 构成, 由函数$(P(r|a,x,\theta))$建模,其中$(\theta)$是模型参数</li>
-<li>设模型参数的先验分布为$(P(\theta))$</li>
-<li>那么根据贝叶斯法则,后验分布$(P(\theta|D) \propto \Pi_i P(r_i|a_i,x_i,\theta) P(\theta) )$</li>
-<li>如果我们知道理想的参数值$(\theta^* )$,那么我们应该选择使得期望收益最大的动作$(\max_a E(r|a,x,\theta^*) )$</li>
-<li>但是实际上最优的参数是未知的, 可以最大化经验分布下的期望收益(即 exploitation) $(\max E(r|a,x) = \int E(r|a,x,\theta) P(\theta|D) d\theta)$</li>
-<li>如果在探索的设置下,则是根据是最优动作的概率随机选择一个动作。即选择动作a的概率等于</li>
-</ul>
-<p>$$<br />
-\int I[E(r|a,x,\theta) = \max_{a'} E(r|a',x,\theta)] P(\theta|D) d\theta<br />
-$$</p>
-<ul>
-<li>实际实现的时候,积分是通过随机采样来实现的,每次从后验分布$(P(\theta|D))$采样一组参数,然后根据这组参数来选择最优动作a</li>
-</ul>
-<p><img alt="汤普森采样" src="/wiki/static/images/thompson-sampling.png" /></p>
-<ul>
-<li>在标准的多臂老虎机任务中, 汤普森采样相当于每个臂使用了不同的beta先验</li>
-</ul>
-<p><img alt="贝努力bandit" src="/wiki/static/images/ts-bernouli-bandit.png" /></p>
-<ul>
-<li>汤普森采样方法对先验分布参数的鲁棒性: 十分鲁邦</li>
-<li>汤普森采样是渐进最优的, 比UCB具有更低的regret</li>
-<li>EE的核心思想是: 提升选择那些我们不是很确定的动作的概率</li>
-<li>乐观汤普森采样: 如果采样的score小于均值(即该动作当前的期望回报), 那么就截断到均值。<ul>
-<li>替换算法1中的$(E_r(r|x_t,a_t,\theta^t))$为 $(max( E_r(r|x_t,a_t,\theta^t), E_r(r|x_t, a_t) ))$</li>
-</ul>
-</li>
-</ul>
-<p><img alt="乐观汤普森采样" src="/wiki/static/images/optimistic-ts.png" /></p>
-<ul>
-<li>后验塑形: 改变后验分布,增加探索能力。例如把beta分布的a和b两个参数都除以$(\alpha)$,将在不改变期望的情况下增加方差,从而增加探索能力。<ul>
-<li>试验结果显示,虽然在渐进区域(T很大的区域)改变后验分布反而使得regret比标准版的TS效果要差,但是在非渐进区域,可以得到更好的regret的。</li>
-<li>启示: 可以在早期的时候将$(\alpha)$设置为小于1,减少探索性,加快收敛,在后期的时候逐步增加到1</li>
-</ul>
-</li>
-</ul>
-<p><img alt="后验塑形" src="/wiki/static/images/ts-reshaping.png" /></p>
-<ul>
-<li>时延的影响: 因为实际系统中,反馈往往存在时延。作者通过一个模拟仿真,证实汤普森采样比UCB在时延变长的时候更加鲁棒。(ratio指的是UCB的regret/汤普森采样的regret,该值越大,说明ts比ucb越好)</li>
-</ul>
-<p><img alt="时延的影响" src="/wiki/static/images/ts-ucb-delay.png" /></p>
-<h2 id="_4">展示广告</h2>
-<ul>
-<li>假设模型参数的先验分布, 以正则化逻辑回归为例,假设参数先验为高斯分布</li>
-<li>后验分布并不是高斯分布,所以采用拉普拉斯近似,将众数作为高斯的均值,二阶导作为协方差矩阵(只取了对角项,没有要交叉项)</li>
-<li>拉普拉斯近似具体操作过程可以参考PRML</li>
-<li>仿真的结论是, TS比UCB和e-greedy都要好,但是没有探索的方法效果也不差! 作者认为一个可能的解释是, 不同的上下文本身有带有一定的探索。</li>
-</ul>
-<p><img alt="汤普森采样LR" src="/wiki/static/images/ts-lr.png" /></p>
-<h2 id="_5">新文章推荐</h2>
-<ul>
-<li>yahoo的一个案例,略</li>
-</ul>
+<h2 id="_2">基础</h2>
+<h3 id="_3">构建集群</h3>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -165,7 +96,7 @@ $$</p>
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2019-07-22 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2019-08-04 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -173,7 +104,7 @@ $$</p>
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: 'An Empirical Evaluation of Thompson Sampling',
+  title: 'kubernetes',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
