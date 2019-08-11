@@ -56,12 +56,54 @@ $$
 - 高斯分布生成: Box-Muller方法
     - $(z_1,z_2)$独立采样自服从(-1,1)之间的均匀分布
     - 只保留在单位圆内的点,即满足$(z_1^2 + z_2^2 \le 1)$,从而得到单位圆内的均匀分布
-    - 构造新的变量$(y_1 = z_1(\frac{-2 ln z_1}{r^2})^{1/2}, y_2 = z_2 (\frac{-2 ln z_2}{r^2})^{1/2})$. 其中r是半径, 那么y1和y2就是两个独立的服从标准正太分布的随机变量
-    - 待证明,貌似证明挺复杂的
+    - 构造新的变量$(y_1 = z_1(\frac{-2 ln r}{r^2})^{1/2}, y_2 = z_2 (\frac{-2 ln r}{r^2})^{1/2})$. 其中r是半径, 那么y1和y2就是两个独立的服从标准正太分布的随机变量
+    - 假设两个随机变量z1,z2服从正太分布,那么对应的极坐标r和$(\theta)$对应的分布是 $(r e^{-\frac{r^2}{2}})$ 和 $(\frac{1}{2\pi})$的均匀分布。显然这两个分布可以通过均匀分布通过逆变换的方法容易得到。
+    $$
+    r = \sqrt{-2 ln U_1} \\\\
+    \theta = 2\pi U_2
+    $$
+    如果是从单位圆内的变换过来,那么容易验证对应的$(\theta)$即满足第二个均匀分布,而半径s分布为$(2s)$,所以根据概率恒等关系有
+    $$
+    2s ds = r e^{-\frac{r^2}{2}} dr
+    $$
+    解这个微分方程可得 $(r = \sqrt{ln s} )$, 同时$(cos(\theta) = x/s, sin(\theta) = y/s)$,于是有 
+    $$
+    z_1 = r cos(\theta) = x \sqrt{ln s}/s, \\\\
+    z_2 = r sin(\theta) = y \sqrt{ln s}/s
+    $$
 - 一般的高斯分布$(\mu, \Sigma)$,将协方差矩阵分解为$(LL^T)$,那么对独立的标准正太分布向量z,做变换$(\mu + L z)$ 即可得到目标分布
 
+```python
+def urnd():
+    return random.random()
+    
+def gaussian_rnd():
+    r = sqrt(- 2 * log(urnd()))
+    theta = 2*pi*urnd()
+    return r * cos(theta)
+```
+
 ### 拒绝采样
+- 目标分布p(z)不简单(比如没有解析表达式,或者有但是逆变换很困难etc),但是p(z)对给定的z还是要容易算出来
+- 对于已有的某种分布q(z),选取足够大的k使得$(kq(z) \le p(z))$
+- 每次采样的时候,首选从q中采样一个z,然后随机一个(0, kq(z))均匀分布u,如果$(u>p(z))$则拒绝该样本,否则就得到目标分布的一个采样。容易验证这样采出来的z分布为 $(q(z) \times p(z)/kq(z) = p(z))$
 
+![拒绝采样](/wiki/static/images/prml-reject-samping.png)
 
+- kq尽可能和目标分布接近,否则采样效率很低,比如下述例子
+
+```python
+## 利用拒绝采样a>1和b>1的beta分布随机变量
+def reject_samping_beta(a, b):
+    assert a>1 and b>1
+    reject = True
+    z = 0
+    while reject:
+        z = urnd()
+        p = z**(a-1) * (1-z) ** (b-1) / beta(a, b)
+        u = urnd()
+        reject = u > p
+    return z
+```
 
 
