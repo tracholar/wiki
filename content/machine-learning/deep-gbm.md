@@ -81,6 +81,7 @@ date: 2019-08-09
 ![在线效果](/wiki/static/images/deepgbm-online.png)
 ## 疑问
 - 为啥FM和wide & deep在这种CTR预估数据集上的性能被采用了label encoded处理过sparse特征后的LightGBM完虐? 似乎不太符合常理?
+- 个人认为这种方案还是不太方便, 有没有更好的方案, 可以让NN也能具有GBDT处理连续特征的能力?
 
     
     
