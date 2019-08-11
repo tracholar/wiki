@@ -75,6 +75,9 @@ date: 2019-08-09
 - 将GBDT和NN联合训练比单独的GBDT和单独的NN有额外收益
 - 将GBDT蒸馏为NN这一步对在线更新上有显著收益
 - 开源代码 <https://github.com/motefly/DeepGBM>
+
+![离线效果](/wiki/static/images/deepgbm-offline.png)
+![在线效果](/wiki/static/images/deepgbm-online.png)
 ## 疑问
 - 为啥FM和wide & deep在这种CTR预估数据集上的性能被采用了label encoded处理过sparse特征后的LightGBM完虐? 似乎不太符合常理?
 
