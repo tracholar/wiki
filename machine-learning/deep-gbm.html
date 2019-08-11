@@ -178,6 +178,7 @@ $$</li>
 </ul>
 <h2 id="_3">试验结论</h2>
 <ul>
+<li>试验对比: D1 是直接用GBDT+NN(应该微软17年的论文方法,直接boost融合); D2 是只用GBDT2NN,没有CatNN</li>
 <li>将GBDT蒸馏为NN这一步离线性能上有轻微的额外收益</li>
 <li>将GBDT和NN联合训练比单独的GBDT和单独的NN有额外收益</li>
 <li>将GBDT蒸馏为NN这一步对在线更新上有显著收益</li>
