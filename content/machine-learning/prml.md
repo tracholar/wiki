@@ -76,12 +76,40 @@ $$
 ```python
 def urnd():
     return random.random()
-    
+
+def exp_rnd(lb):
+    assert lb > 0
+    x = urnd()
+    return -1/lb*log(1-x)
+
 def gaussian_rnd():
     r = sqrt(- 2 * log(urnd()))
     theta = 2*pi*urnd()
     return r * cos(theta)
+
+def cauchy_rnd():
+    z = (urnd()-0.5) * pi
+    return tan(z)
+
+def cauchy_rnd2():
+    x = gaussian_rnd()
+    y = gaussian_rnd()
+    if y == 0.0:
+        return cauchy_rnd()
+    return x/y
+
 ```
+
+- cauchy分布 $(p(x) = \frac{1}{\pi} \frac{1}{1+x^2})$
+    - 通过逆变换方法, z采样自U(0,1), 逆变换为 tan((z-0.5)*pi)
+    - 构造两个标准正态分布X,Y,那么X/Y 则服从cauchy分布
+- 对第2点的证明, 做变量代换t=X/Y, 那么P(t_0<X/Y<t_0+dt)的概率微元为
+$$
+P(t_0)dt = \iint_{t_0<X/Y<t_0+dt} p_X(x)p_Y(y)dxdy \\\\
+= dt \int_{-\infty}^{\infty} dy |y| p_X(t_0y)p_Y(y)  \text{(积分变换)} \\\\
+= dt \int_{-\infty}^{\infty} dy \frac{1}{2\pi} |y|e^{-\frac{1}{2}(t_0^2+1) y^2} \\\\
+= \frac{1}{\pi} \frac{1}{1+t_0^2} dt
+$$
 
 ### 拒绝采样
 - 目标分布p(z)不简单(比如没有解析表达式,或者有但是逆变换很困难etc),但是p(z)对给定的z还是要容易算出来
@@ -106,4 +134,101 @@ def reject_samping_beta(a, b):
     return z
 ```
 
+- Gamma分布的例子
+$$
+Gam(z|a,b) = \frac{b^a z^{a-1} \exp(-b z)}{\Gamma(a)}, a>1
+$$
 
+选取$(c = a − 1, b^2 = 2a − 1)$,柯西分布 $(q(z) =\frac{k}{1 + (z − c)2/b^2})$ 选取足够小的k可以逼近gamma分布的包罗
+
+
+### 重要性采样
+- 不是生成目标分布的采样,而是直接近似在这个分布下的期望值。
+- p(z) 容易计算,但是不容易生成该分布的采样,比如gamma分布
+- 假设容易采样分布为q(z), 那么期望
+$$
+E_p[f] = \int f(z)p(z) dz = \int \frac{p(z)}{q(z)}f(z) q(z) dz \\\\
+       = E_q[\frac{p(z)}{q(z)}f(z)]
+$$
+其中$(\frac{p(z)}{q(z)})$为重要性权重
+- 优点:所有的采样样本都保留了下来
+- 缺点:跟拒绝采样一样,p和q分布要尽可能差异小,否则采样效率也比较低。比如总是采样到很小概率的区域
+- sampling-importance-resampling SIR
+    1. 先从分布q中采样L个样本$(z_1, ..., z_L)$
+    2. 计算重要性权重(可以不用归一化概率) $(w_1,...,w_L)$
+    3. 从L个样本中用重要性权重加权采样L个新样本$(z_1, ..., z_L)$
+- 优点:所有样本都保留了下来, 能在一定程度上解决采样效率低的问题
+- 缺点: L很小的时候存在的固有偏差较大。比如L=1的时候,会导致实际采样的分布等于q(z),只有到L趋近于无穷的时候,才没有偏差
+
+### 采样与EM算法
+- 蒙特卡洛EM算法,在求Q函数的时候,利用采样的方法来估计积分的值。
+- 缺少一个例子来理解。。。。。。。。。。。
+- IP算法P537页,以后再说
+
+
+### 马尔科夫链蒙特卡洛MCMC
+- 能够处理一大类分布的问题, 能够容易扩展到样本向量维度很高的问题
+- 马尔科夫链平稳条件(充分条件) 意义是: 从z跳转到z'的联合概率,与从z'到z的联合概率相等
+$$
+p(z) T(z, z') = p(z') T(z', z)
+$$
+- 目标:构造一个马氏链, 稳态分布是目标分布p(z),就可以采样出无穷多的样本了
+- 假设目标分布是p,用户构造出来的转移概率为q(z|z^{t}),利用拒绝采样的方法来配平上述平稳条件,假设接受概率为A(z|z^{t}),那么要求
+$$
+p(z^{t})q(z|z^{t})A(z|z^{t}) = p(z)q(z^{t}|z)A(z^{t}|z)
+$$
+为了使上式平衡,可以让接受率跟转移的联合概率成反比。选取$(A(z|z^{t}) = min(1, \frac{p(z)q(z^{t}|z)}{p(z^{t})q(z|z^{t})}))$
+即,如果左边大于右边,那么右边以概率1接受,左边以小于1的概率接受。
+- 一个变量,多个离散状态的情况模拟, 即让 i->j 的联合概率 等于 j->i 的联合概率
+```python
+def rand_i(w):
+    w = w/w.sum()
+    j = 0
+    s = w[j]
+    r = random.random()
+    while s < r:
+        j += 1
+        s += w[j]
+    return j
+def MetropolisHastings():
+    p_target = [0.1, 0.2, 0.2, 0.5]
+    q = np.ones((4,4)) * 0.25
+
+    x = np.random.randint(4)
+    x0 = x
+    rx = []
+    for i in range(100000):
+        x = rand_i(q[x0])
+        aij = p_target[x] * q[x, x0] / (p_target[x0] * q[x0, x])  # 接受率
+        aij = min(1, aij)
+        if urnd() > aij:
+            continue
+        if i> 10000:
+            rx.append(x)
+        x0 = x # update
+    return rx
+```
+### 吉布斯采样
+- 不用拒绝采样,直接通过巧妙地构造转移概率来实现等式配平。构造方法是:
+    1. 以某个次序(具体的次序不重要,随机都行)选择z的某个维度z_i。
+    2. 计算条件概率$(p(z_i|z_{i-}))$,$(z_{i-})$表示除了zi外的其他维度变量
+    3. 用条件概率采样的zi代替当前的zi
+- 这样一来,p(z)是联合分布的边际分布,q(z|z')是个路径相关的条件分布(参考下面说的2维的情况),所以等式左右两边都等于联合分布除以一个共同的常数,配平了!!
+- 原因解释, 因为在每一步, 只变动一个维度,而且这个维度的采样概率只依赖于剩下的变量。因此容易验证
+$$
+A(z|z^{t}) = \frac{p(z)q(z^{t}|z)}{p(z^{t})q(z|z^{t})} = 1
+$$
+- 假设一维情况下, q(z|z') = p(z),所以等式两边都是 p(z)p(z')
+- 假设2维情况
+    1. 第一步 (x_1, y_1) -> (x_1, y_2); x_1不变,等式两边都是 p(x_1,y_1)p(x_1,y_2)/p(x_1) 是关于 y_1, y_2对称的 
+    2. 第二步 (x_1, y_2) -> (x_2, y_2); y_2不变,等式两边都是 p(x_1, y_2)p(x_2, y_2)/p(y_2) 是关于 x_1,x_2对称的
+    3. 总的结果是等式左右两边都等于 p(x_1,y_1)p(x_1,y_2)p(x_2,y_2)/p(x_1)/p(y_2) 所以马氏链配平了
+    
+![吉布斯采样](/wiki/static/images/gibss-samping.png)
+
+
+
+- 参考链接: <https://www.cnblogs.com/xbinworld/p/4266146.html>
+
+
+### slice采样
