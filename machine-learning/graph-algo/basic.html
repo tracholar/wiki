@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>短中长期规划 - Tracholar的个人wiki</title>
+        <title>基本的图挖掘算法 - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,63 +64,33 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#about">about</a>&nbsp;»&nbsp;短中长期规划</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#-graph-algo">graph-algo</a>&nbsp;»&nbsp;基本的图挖掘算法</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">短中长期规划</div>
+<div id="title">基本的图挖掘算法</div>
 <div id="content">
-  <h2 id="_1">短期</h2>
-<ul>
-<li>熟悉spark开发流程，学会使用mllib在线上建模 ✅</li>
-<li>cs224d  ✅</li>
-<li>cs231n  ✅</li>
-<li>cs294, cs234 RL</li>
-<li>GAN</li>
-<li>TensorFlow 系统性学习,并完成记录和博客 [TODO]</li>
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">社区发现</a></li>
+<li><a href="#_2">论文</a></li>
 </ul>
-<h2 id="_2">读书</h2>
+</div>
+<h2 id="_1">社区发现</h2>
 <ul>
-<li>《财务会计教程》√</li>
-<li>《货币金融学》  √</li>
-<li>《赢》 √</li>
-<li>《格鲁夫的第一堂课》</li>
-<li>《第五项修炼》</li>
-<li>《投资学》 √</li>
-<li>《公司理财》 </li>
-<li>《期权期货及其他衍生品》</li>
-<li>《批判性思维工具》</li>
-<li>《巴菲特致股东的信:投资原则篇》</li>
-<li>《金字塔原理》 √</li>
-<li>《穷爸爸富爸爸》 √</li>
-<li>《日本的城镇化》√</li>
+<li>即将一个图划分成多个子图, 子图间定点不重叠的叫非重叠社区,有重叠的叫重叠社区</li>
+<li>质量评估<ul>
+<li>modularity</li>
 </ul>
-<h2 id="_3">中期</h2>
-<ul>
-<li>deep learning overview ： Bengio 的书及相关论文</li>
-<li>machine learning overview ： 周志华的书，prml, element of ml</li>
-<li>分布式工具和环境， Spark， Hbase， Hadoop， Hive</li>
-<li>分布式算法，优化算法等</li>
-<li>金融学基础知识</li>
+</li>
+<li>LPA(label propagation algorithm)<ol>
+<li>对每个顶点初始化一个唯一的类别id(社区id)</li>
+<li>迭代刷新每个节点的类别id</li>
+</ol>
+</li>
 </ul>
-<h2 id="_4">长期</h2>
+<h2 id="_2">论文</h2>
 <ul>
-<li>ML 技术栈，从工程到算法到系统</li>
-<li>金融学基础知识</li>
-<li>从财务和技术两方面分析主流IT企业</li>
-</ul>
-<h2 id="2018">2018年</h2>
-<ul>
-<li>6篇深入思考博客 [完成30%]</li>
-<li>10篇 关键论文结果的复现 [未完成]</li>
-</ul>
-<p>总结: 缺乏短期规划, 和短期不断的调整与反馈</p>
-<h2 id="2019">2019年</h2>
-<ul>
-<li>3篇深入思考博客</li>
-<li>10篇重要论文中的关键部分复现</li>
-<li>3篇金融学书</li>
-<li>10 项宏观经济数据及分析报告</li>
-<li>每周计划、调整与反馈</li>
+<li>Community detection in networks: A user guide</li>
+<li><a href="https://blog.csdn.net/huangxia73/article/details/11801661">https://blog.csdn.net/huangxia73/article/details/11801661</a></li>
 </ul>
 </div>
 <div id="income">
@@ -133,7 +103,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2016-07-17 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2019-09-16 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -141,7 +111,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: '短中长期规划',
+  title: '基本的图挖掘算法',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
