@@ -15,5 +15,9 @@ print data
 print ds
 
 print pd.Series(ds).describe()
-plt.hist(ds, bins=50)
+f = plt.hist(ds, bins=50)
+
+f = plt.gcf()
+f.savefig('hs300_inc_ratio.svg')
+
 plt.show()
