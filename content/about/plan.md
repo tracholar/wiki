@@ -35,6 +35,7 @@ date: 2016-07-17
 - 分布式工具和环境， Spark， Hbase， Hadoop， Hive
 - 分布式算法，优化算法等
 - 金融学基础知识
+- <http://nil.csail.mit.edu/6.824/2018/>
 
 ## 长期
 - ML 技术栈，从工程到算法到系统
