@@ -71,6 +71,7 @@
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">问题描述</a></li>
+<li><a href="#_2">解决方案</a></li>
 </ul>
 </div>
 <h2 id="_1">问题描述</h2>
@@ -87,11 +88,15 @@
 </pre></div>
 
 
-<p>但是当这个jar包是动态加载的时候，会找不到这个资源文件，因为动态加载的时候会读取框架的资源文件目录，当然找不到用户自己的包中的资源。因此，要在Module类中读取资源文件需要直接操作jar文件来实现。</p>
+<p>但是当这个jar包是动态加载的时候，会找不到这个资源文件，因为动态加载的时候会读取框架的资源文件目录，当然找不到用户自己的包中的资源。</p>
+<h2 id="_2">解决方案</h2>
+<p>可以在Module类中直接操作jar文件来实现。</p>
 <div class="hlcode"><pre><span></span><span class="kd">class</span> <span class="nc">Module</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="nf">Module</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span><span class="o">{</span>
+        <span class="c1">// 获取当前类运行的地址，如果是jar包返回的jar包地址，如果是IDE，则返回class目录地址，这里假设是jar包</span>
         <span class="n">URL</span> <span class="n">url</span> <span class="o">=</span> <span class="n">getClass</span><span class="o">().</span><span class="na">getProtectionDomain</span><span class="o">().</span><span class="na">getCodeSource</span><span class="o">().</span><span class="na">getLocation</span><span class="o">();</span>
 
+        <span class="c1">// 创建JarFile对象，直接读取jar包内文件</span>
         <span class="n">JarFile</span> <span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JarFile</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">url</span><span class="o">.</span><span class="na">toURI</span><span class="o">()));</span>
         <span class="n">is</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">(</span><span class="n">file</span><span class="o">.</span><span class="na">getEntry</span><span class="o">(</span><span class="s">&quot;conf.json&quot;</span><span class="o">));</span>
 
