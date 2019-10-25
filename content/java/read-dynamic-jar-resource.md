@@ -21,13 +21,19 @@ class Module {
 }
 ```
 
-但是当这个jar包是动态加载的时候，会找不到这个资源文件，因为动态加载的时候会读取框架的资源文件目录，当然找不到用户自己的包中的资源。因此，要在Module类中读取资源文件需要直接操作jar文件来实现。
+但是当这个jar包是动态加载的时候，会找不到这个资源文件，因为动态加载的时候会读取框架的资源文件目录，当然找不到用户自己的包中的资源。
+
+## 解决方案
+
+可以在Module类中直接操作jar文件来实现。
 
 ```java
 class Module {
     public Module() throws Exception{
+        // 获取当前类运行的地址，如果是jar包返回的jar包地址，如果是IDE，则返回class目录地址，这里假设是jar包
         URL url = getClass().getProtectionDomain().getCodeSource().getLocation();
     
+        // 创建JarFile对象，直接读取jar包内文件
         JarFile file = new JarFile(new File(url.toURI()));
         is = file.getInputStream(file.getEntry("conf.json"));
         
