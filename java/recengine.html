@@ -75,6 +75,12 @@
 <li><a href="#_3">设计思想</a></li>
 <li><a href="#_4">推荐引擎接口及其基础数据类型的定义</a></li>
 <li><a href="#6">实现一个6阶段推荐引擎</a></li>
+<li><a href="#6_1">可配置的6阶段推荐引擎</a></li>
+<li><a href="#_5">两种配置方式构造的引擎</a><ul>
+<li><a href="#json">JSON配置</a></li>
+</ul>
+</li>
+<li><a href="#_6">自动加载</a></li>
 </ul>
 </li>
 </ul>
@@ -276,6 +282,139 @@
 <li>重排组件：<code>ReRanker</code>，它必须有一个方法<code>List&lt;R&gt; reRank(IUser user, List&lt;R&gt; results, IContext ctx)</code>将排序的结果重新排序，主要是为了满足一些策略上的要求，一般在排序阶段只会对每个item计算匹配得分，但不太会考虑多样性和业务特定规则以及EE的一些问题，所以这一层主要是为了干这些事情。输入输出都是<code>RankResult</code> 本质上它也是排序，但是输入不一样，<code>Ranker</code>输入是召回结果列表，而<code>ReRanker</code>输入是排序结果列表！定义参考<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/ReRanker.java">ReRanker.java</a> </li>
 <li>取详情组件：<code>DetailFetcher</code>，它有一个方法<code>List&lt;I&gt; fetch(List&lt;ID&gt; arr)</code>。输入是一个有ID的记录列表，这里输入是<code>RankResult</code>，输出是有详情的结果<code>IItem</code>。但是在涉及这个接口时，做了一些扩展，把泛型参数上限都设为<code>HasId</code>，便于用到其他地方，比如取user的详情。定义参考<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/DetailFetcher.java">DetailFetcher.java</a></li>
 </ol>
+<h3 id="6_1">可配置的6阶段推荐引擎</h3>
+<p>前一节我们实现了一个6阶段推荐引擎，但是并不知道这个引擎所需要的那些组件怎么创建和获取。而这一层，我们就来解决这个问题。这些组件可以通过代码写死来创建，也可以通过更灵活的配置方式来创建。因此，不同的创建方式可以得到不同的子类型。这一层我只实现配置的方式来创建组件的引擎 <code>ConfigurableSimpleRecEngine</code>。</p>
+<p>那个问题又来了，对于可配置的引擎来说，什么是必须有的呢？首先，它要实现上一层次要求它实现的接口，即获取组件的接口。其次，它要从配置来创建这些组件！考虑到配置可以是不同的，比如可以来自MySQL数据库，也可以来自配置文件，甚至可以像后面要说的通过java注解的方式实现的配置！因此，这一部分不应该设计到具体的配置方式，所以可以定一个配置结构<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/config/RecEngineConfig.java">RecEngineConfig</a>。</p>
+<p>总结起来，这一阶段要干的事有：从配置对象初始化各组件，实现父类获取组件的接口。不该干的事情是：从某种配置类型（文件、数据库等）创建配置对象。从而实现配置变化带来的重构问题，屏蔽配置类型的变化！</p>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">com.tracholar.recommend.abtest.ABTestKey</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.tracholar.recommend.abtest.ABTestProxy</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.tracholar.recommend.abtest.ABTestable</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.tracholar.recommend.engine.config.ComponentConfig</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.tracholar.recommend.engine.config.Configable</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.tracholar.recommend.engine.config.RecEngineConfig</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">lombok.AccessLevel</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">lombok.Getter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.Logger</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.slf4j.LoggerFactory</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * @author tracholar.github.io</span>
+<span class="cm"> *</span>
+<span class="cm"> * &lt;p&gt;</span>
+<span class="cm"> * ConfigurableSimpleRecEngine 抽象了通过配置生成推荐引擎所需要的模块。</span>
+<span class="cm"> * 已经是一个独立的推荐引擎了！ 使用示例</span>
+<span class="cm"> *</span>
+<span class="cm"> * &lt;pre&gt;{@code</span>
+<span class="cm"> * ConfigurableSimpleRecEngine engine = new ConfigurableSimpleRecEngine()</span>
+<span class="cm"> * // 构造一个 RecEngineConfig 对象</span>
+<span class="cm"> * RecEngineConfig config = ...;</span>
+<span class="cm"> * engine.init(config);</span>
+<span class="cm"> * }</span>
+<span class="cm"> * &lt;/pre&gt;</span>
+<span class="cm"> *</span>
+<span class="cm"> * {@code RecEngineConfig} 可以参看 {@link com.tracholar.recommend.engine.config.RecEngineConfig}</span>
+<span class="cm"> *</span>
+<span class="cm"> *</span>
+<span class="cm"> *</span>
+<span class="cm"> */</span>
+<span class="nd">@Getter</span><span class="o">(</span><span class="n">AccessLevel</span><span class="o">.</span><span class="na">PROTECTED</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ConfigurableSimpleRecEngine</span> <span class="kd">extends</span> <span class="n">SimpleRecEngine</span> <span class="o">{</span>
+    <span class="nd">@Getter</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">ABTestProxy</span> <span class="n">abTestProxy</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">DetailFetcher</span> <span class="n">detailFetcher</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Recall</span><span class="o">&gt;</span> <span class="n">recalls</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Merge</span><span class="o">&gt;</span> <span class="n">merges</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Filter</span><span class="o">&gt;</span> <span class="n">filters</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Ranker</span><span class="o">&gt;</span> <span class="n">rankers</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">ReRanker</span><span class="o">&gt;</span> <span class="n">reRankers</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">(</span><span class="n">RecEngineConfig</span> <span class="n">conf</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">EngineInitialException</span><span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">//通过配置文件构造一个推荐引擎</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
+
+            <span class="c1">//abtest</span>
+            <span class="n">abTestProxy</span> <span class="o">=</span> <span class="o">(</span><span class="n">ABTestProxy</span><span class="o">)</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="n">conf</span><span class="o">.</span><span class="na">getAbtest</span><span class="o">().</span><span class="na">getClassName</span><span class="o">()).</span><span class="na">newInstance</span><span class="o">();</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">abTestProxy</span> <span class="k">instanceof</span> <span class="n">Configable</span><span class="o">)</span> <span class="o">{</span>
+                <span class="o">((</span><span class="n">Configable</span><span class="o">)</span> <span class="n">abTestProxy</span><span class="o">).</span><span class="na">init</span><span class="o">(</span><span class="n">conf</span><span class="o">.</span><span class="na">getAbtest</span><span class="o">().</span><span class="na">getArgs</span><span class="o">());</span>
+            <span class="o">}</span>
+            <span class="n">detailFetcher</span> <span class="o">=</span> <span class="o">(</span><span class="n">DetailFetcher</span><span class="o">)</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="n">conf</span><span class="o">.</span><span class="na">getDetailFetcher</span><span class="o">().</span><span class="na">getClassName</span><span class="o">()).</span><span class="na">newInstance</span><span class="o">();</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">detailFetcher</span> <span class="k">instanceof</span> <span class="n">Configable</span><span class="o">)</span> <span class="o">{</span>
+                <span class="o">((</span><span class="n">Configable</span><span class="o">)</span> <span class="n">detailFetcher</span><span class="o">).</span><span class="na">init</span><span class="o">(</span><span class="n">conf</span><span class="o">.</span><span class="na">getDetailFetcher</span><span class="o">().</span><span class="na">getArgs</span><span class="o">());</span>
+            <span class="o">}</span>
+
+            <span class="c1">//recall</span>
+            <span class="n">loadComponents</span><span class="o">(</span><span class="n">recalls</span><span class="o">,</span> <span class="n">conf</span><span class="o">.</span><span class="na">getRecalls</span><span class="o">());</span>
+
+            <span class="c1">//filters</span>
+            <span class="n">loadComponents</span><span class="o">(</span><span class="n">filters</span><span class="o">,</span> <span class="n">conf</span><span class="o">.</span><span class="na">getFilters</span><span class="o">());</span>
+
+            <span class="c1">//merges</span>
+            <span class="n">loadComponents</span><span class="o">(</span><span class="n">merges</span><span class="o">,</span> <span class="n">conf</span><span class="o">.</span><span class="na">getMerges</span><span class="o">());</span>
+
+            <span class="c1">//rankers</span>
+            <span class="n">loadComponents</span><span class="o">(</span><span class="n">rankers</span><span class="o">,</span> <span class="n">conf</span><span class="o">.</span><span class="na">getRankers</span><span class="o">());</span>
+
+            <span class="c1">//re-rankers</span>
+            <span class="n">loadComponents</span><span class="o">(</span><span class="n">reRankers</span><span class="o">,</span> <span class="n">conf</span><span class="o">.</span><span class="na">getReRankers</span><span class="o">());</span>
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">EngineInitialException</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="kt">void</span> <span class="nf">loadComponents</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">arr</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">ComponentConfig</span><span class="o">&gt;</span> <span class="n">compConfs</span><span class="o">)</span>
+            <span class="kd">throws</span> <span class="n">Exception</span><span class="o">{</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">compConfs</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">ComponentConfig</span> <span class="n">c</span> <span class="o">=</span> <span class="n">compConfs</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+            <span class="n">T</span> <span class="n">strategy</span> <span class="o">=</span> <span class="o">(</span><span class="n">T</span><span class="o">)</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">getClassName</span><span class="o">()).</span><span class="na">newInstance</span><span class="o">();</span>
+
+            <span class="k">if</span><span class="o">(</span><span class="n">strategy</span> <span class="k">instanceof</span> <span class="n">ABTestable</span> <span class="o">&amp;&amp;</span> <span class="n">c</span><span class="o">.</span><span class="na">getAbTestKey</span><span class="o">()</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">ABTestKey</span> <span class="n">key</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="na">getAbTestKey</span><span class="o">();</span>
+                <span class="o">((</span><span class="n">ABTestable</span><span class="o">)</span> <span class="n">strategy</span><span class="o">).</span><span class="na">setAbTestKey</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">strategy</span> <span class="k">instanceof</span> <span class="n">Configable</span><span class="o">)</span> <span class="o">{</span>
+                <span class="o">((</span><span class="n">Configable</span><span class="o">)</span> <span class="n">strategy</span><span class="o">).</span><span class="na">init</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">getArgs</span><span class="o">());</span>
+            <span class="o">}</span>
+            <span class="n">arr</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">strategy</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>这个类的核心代码是两个函数<code>init</code> 和<code>loadComponents</code>，前者是从配置对象初始化的入口，要创建一个引擎最简单的方式是，构造一个<code>RecEngineConfig</code>，然后传给<code>init</code>方法，就搞定了！<code>loadComponents</code>是从组件的配置创建组件的函数，在这个函数中，会通过反射<code>Class.forName</code>创建类的实例对象，并判断组件是否是<code>ABTestable</code>，和是否是<code>Configable</code>，从而进行必要的设置！</p>
+<p>另外，这里使用了<code>lombok</code>这个库，通过<code>@Getter</code>注解实现了get方法，从而实现了父类要求实现的获取组件的方法！</p>
+<h3 id="_5">两种配置方式构造的引擎</h3>
+<p>这一节我们介绍实现的两种配置方式，一种是JSON配置文件，另一种是自动加载注解的方式。上一节已经可以从配置初始化组件了，但是不知道配置怎么来的，不同的配置方法实现不同的配置类型推荐引擎。这就是在这一层我们要干的事情。</p>
+<h4 id="json">JSON配置</h4>
+<p>JSON配置比较简单，直接将<code>RecEngineConfig</code> JSON序列化就行，然后修改对应的配置项。反序列化也简单，利用FastJSON <code>JSON.parseObject(is, RecEngineConfig.class)</code>就能实现。</p>
+<div class="hlcode"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JsonConfigRecEngine</span> <span class="kd">extends</span> <span class="n">ConfigurableSimpleRecEngine</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">RecEngineConfig</span> <span class="n">config</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="nf">JsonConfigRecEngine</span><span class="o">(){};</span>
+
+    <span class="kd">public</span> <span class="nf">JsonConfigRecEngine</span><span class="o">(</span><span class="n">RecEngineConfig</span> <span class="n">config</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">EngineInitialException</span><span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="n">config</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">JsonConfigRecEngine</span> <span class="nf">load</span><span class="o">(</span><span class="n">InputStream</span> <span class="n">is</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">RecEngineConfig</span> <span class="n">config</span> <span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="na">parseObject</span><span class="o">(</span><span class="n">is</span><span class="o">,</span> <span class="n">RecEngineConfig</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="n">JsonConfigRecEngine</span><span class="o">(</span><span class="n">config</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">JsonConfigRecEngine</span> <span class="nf">load</span><span class="o">(</span><span class="n">String</span> <span class="n">json</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">RecEngineConfig</span> <span class="n">config</span> <span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="na">parseObject</span><span class="o">(</span><span class="n">json</span><span class="o">,</span> <span class="n">RecEngineConfig</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="n">JsonConfigRecEngine</span><span class="o">(</span><span class="n">config</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h3 id="_6">自动加载</h3>
+<p>自动加载的原理是java的反射，通过<code>@Autoload</code>注解判断组件是否需要加载，通过<code>@ABtestConf</code>获取AB测试的配置信息。具体原理解析参考<a href="autoload.html">利用反射实现自动配置和加载</a>，代码参考<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/AutoloadRecEngine.java">AutoloadRecEngine</a>。</p>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
