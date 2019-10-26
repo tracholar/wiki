@@ -341,3 +341,53 @@ public class JsonConfigRecEngine extends ConfigurableSimpleRecEngine {
 
 #### 自动加载
 自动加载的原理是java的反射，通过`@Autoload`注解判断组件是否需要加载，通过`@ABtestConf`获取AB测试的配置信息。具体原理解析参考[利用反射实现自动配置和加载](autoload.html)，代码参考[AutoloadRecEngine](https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/AutoloadRecEngine.java)。
+
+
+
+## 教程与演示案例
+### 演示案例
+在[com.tracholar.recommend.demo](https://github.com/tracholar/recsys-proj/tree/master/service/src/main/java/com/tracholar/recommend/demo)包中，实现了一个个简单的推荐系统，JSON配置版的[DemoSimpleRecEngine](https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/demo/DemoSimpleRecEngine.java)，自动加载版的[DemoAutoloadRecEngine](https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/demo/DemoAutoloadRecEngine.java)。各类组件都分别实现了至少一个实例。下面是一个随机排序的Ranker组件
+
+```java
+package com.tracholar.recommend.demo;
+
+import com.tracholar.recommend.abtest.ABTestInfo;
+import com.tracholar.recommend.data.IContext;
+import com.tracholar.recommend.data.IUser;
+import com.tracholar.recommend.data.RankResult;
+import com.tracholar.recommend.engine.Ranker;
+import com.tracholar.recommend.data.RecallResult;
+import com.tracholar.recommend.engine.config.Autoload;
+import com.tracholar.recommend.model.SimpleScore;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Autoload
+@ABTestInfo(layerKey = "1", flowKey = "234")
+public class DemoRanker implements Ranker<RecallResult, RankResult> {
+    @Override
+    public List<RankResult> rank(IUser user, List<RecallResult> results, IContext ctx){
+        List<RankResult> rs = new ArrayList<>();
+        for(int i=0; i<results.size(); i++){
+            rs.add(new DemoRankResult((String) results.get(i).getId(), new SimpleScore(0.1f), i));
+        }
+
+        return rs;
+    }
+}
+```
+
+### 一个简单的文章推荐系统
+在`com.tracholar.articlerecsys`包中实现了一个简单的文章推荐系统[ArticleRecEngine](https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/articlerecsys/ArticleRecEngine.java)，文章的数据来自之前实现的一个推荐系统，通过爬虫爬取到文章，加工后存入数据库中。同时，还是先了一个基于spring boot的推荐系统web api，参考类[ArticleRecEngineWebAPI](https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/articlerecsys/ArticleRecEngineWebAPI.java)。
+
+### 自己动手实现一个推荐系统
+在`com.tracholar.tutorial`包中实现了一个组件基本框架，但是没有实现代码，可以作为启动代码，自己动手实践一个推荐系统。可以选择以下两个任务中的一个作为实践。
+
+#### 作业一：实现一个新闻推荐系统
+- 新闻需要有：标题，作者，发布时间，页面的URL等信息
+- 需要过滤掉用户已经看过的新闻列表
+
+
+#### 作业二：实现一个图片推荐系统
+- 图片需要有：URL，尺寸，大小，标签等信息
