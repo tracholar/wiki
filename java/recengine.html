@@ -83,6 +83,16 @@
 </li>
 </ul>
 </li>
+<li><a href="#_7">教程与演示案例</a><ul>
+<li><a href="#_8">演示案例</a></li>
+<li><a href="#_9">一个简单的文章推荐系统</a></li>
+<li><a href="#_10">自己动手实现一个推荐系统</a><ul>
+<li><a href="#_11">作业一：实现一个新闻推荐系统</a></li>
+<li><a href="#_12">作业二：实现一个图片推荐系统</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -415,6 +425,52 @@
 
 <h4 id="_6">自动加载</h4>
 <p>自动加载的原理是java的反射，通过<code>@Autoload</code>注解判断组件是否需要加载，通过<code>@ABtestConf</code>获取AB测试的配置信息。具体原理解析参考<a href="autoload.html">利用反射实现自动配置和加载</a>，代码参考<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/AutoloadRecEngine.java">AutoloadRecEngine</a>。</p>
+<h2 id="_7">教程与演示案例</h2>
+<h3 id="_8">演示案例</h3>
+<p>在<a href="https://github.com/tracholar/recsys-proj/tree/master/service/src/main/java/com/tracholar/recommend/demo">com.tracholar.recommend.demo</a>包中，实现了一个个简单的推荐系统，JSON配置版的<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/demo/DemoSimpleRecEngine.java">DemoSimpleRecEngine</a>，自动加载版的<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/demo/DemoAutoloadRecEngine.java">DemoAutoloadRecEngine</a>。各类组件都分别实现了至少一个实例。下面是一个随机排序的Ranker组件</p>
+<div class="hlcode"><pre><span></span><span class="kn">package</span> <span class="nn">com.tracholar.recommend.demo</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.tracholar.recommend.abtest.ABTestInfo</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.tracholar.recommend.data.IContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.tracholar.recommend.data.IUser</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.tracholar.recommend.data.RankResult</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.tracholar.recommend.engine.Ranker</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.tracholar.recommend.data.RecallResult</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.tracholar.recommend.engine.config.Autoload</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.tracholar.recommend.model.SimpleScore</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+
+<span class="nd">@Autoload</span>
+<span class="nd">@ABTestInfo</span><span class="o">(</span><span class="n">layerKey</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span><span class="o">,</span> <span class="n">flowKey</span> <span class="o">=</span> <span class="s">&quot;234&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DemoRanker</span> <span class="kd">implements</span> <span class="n">Ranker</span><span class="o">&lt;</span><span class="n">RecallResult</span><span class="o">,</span> <span class="n">RankResult</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">RankResult</span><span class="o">&gt;</span> <span class="nf">rank</span><span class="o">(</span><span class="n">IUser</span> <span class="n">user</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">RecallResult</span><span class="o">&gt;</span> <span class="n">results</span><span class="o">,</span> <span class="n">IContext</span> <span class="n">ctx</span><span class="o">){</span>
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">RankResult</span><span class="o">&gt;</span> <span class="n">rs</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">results</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++){</span>
+            <span class="n">rs</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">DemoRankResult</span><span class="o">((</span><span class="n">String</span><span class="o">)</span> <span class="n">results</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">getId</span><span class="o">(),</span> <span class="k">new</span> <span class="n">SimpleScore</span><span class="o">(</span><span class="mf">0.1f</span><span class="o">),</span> <span class="n">i</span><span class="o">));</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">rs</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h3 id="_9">一个简单的文章推荐系统</h3>
+<p>在<code>com.tracholar.articlerecsys</code>包中实现了一个简单的文章推荐系统<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/articlerecsys/ArticleRecEngine.java">ArticleRecEngine</a>，文章的数据来自之前实现的一个推荐系统，通过爬虫爬取到文章，加工后存入数据库中。同时，还是先了一个基于spring boot的推荐系统web api，参考类<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/articlerecsys/ArticleRecEngineWebAPI.java">ArticleRecEngineWebAPI</a>。</p>
+<h3 id="_10">自己动手实现一个推荐系统</h3>
+<p>在<code>com.tracholar.tutorial</code>包中实现了一个组件基本框架，但是没有实现代码，可以作为启动代码，自己动手实践一个推荐系统。可以选择以下两个任务中的一个作为实践。</p>
+<h4 id="_11">作业一：实现一个新闻推荐系统</h4>
+<ul>
+<li>新闻需要有：标题，作者，发布时间，页面的URL等信息</li>
+<li>需要过滤掉用户已经看过的新闻列表</li>
+</ul>
+<h4 id="_12">作业二：实现一个图片推荐系统</h4>
+<ul>
+<li>图片需要有：URL，尺寸，大小，标签等信息</li>
+</ul>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
