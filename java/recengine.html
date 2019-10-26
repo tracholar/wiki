@@ -78,9 +78,9 @@
 <li><a href="#6_1">可配置的6阶段推荐引擎</a></li>
 <li><a href="#_5">两种配置方式构造的引擎</a><ul>
 <li><a href="#json">JSON配置</a></li>
+<li><a href="#_6">自动加载</a></li>
 </ul>
 </li>
-<li><a href="#_6">自动加载</a></li>
 </ul>
 </li>
 </ul>
@@ -413,7 +413,7 @@
 </pre></div>
 
 
-<h3 id="_6">自动加载</h3>
+<h4 id="_6">自动加载</h4>
 <p>自动加载的原理是java的反射，通过<code>@Autoload</code>注解判断组件是否需要加载，通过<code>@ABtestConf</code>获取AB测试的配置信息。具体原理解析参考<a href="autoload.html">利用反射实现自动配置和加载</a>，代码参考<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/AutoloadRecEngine.java">AutoloadRecEngine</a>。</p>
 </div>
 <div id="income">
