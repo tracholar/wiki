@@ -339,5 +339,5 @@ public class JsonConfigRecEngine extends ConfigurableSimpleRecEngine {
 }
 ```
 
-### 自动加载
+#### 自动加载
 自动加载的原理是java的反射，通过`@Autoload`注解判断组件是否需要加载，通过`@ABtestConf`获取AB测试的配置信息。具体原理解析参考[利用反射实现自动配置和加载](autoload.html)，代码参考[AutoloadRecEngine](https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/AutoloadRecEngine.java)。
