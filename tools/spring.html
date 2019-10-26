@@ -78,6 +78,8 @@
 <li><a href="#_4">页面模板</a></li>
 <li><a href="#bean_1">Bean 自动配置</a></li>
 <li><a href="#_5">表单认证</a></li>
+<li><a href="#runner">runner</a></li>
+<li><a href="#jpa">jpa</a></li>
 </ul>
 </div>
 <h2 id="_1">概念</h2>
@@ -395,6 +397,21 @@ Spring所倡导的开发方式就是如此，所有的类都会在spring容器�
 
 
 <p>问题: 为什么Controller的方法可以自动指定这么多不同类型的参数?</p>
+<h2 id="runner">runner</h2>
+<p>通过 <code>SpringApplication.run(class, args)</code>创建的是wenb runner</p>
+<p>可以通过实现<code>CommandLineRunner</code> 创建命令行应用程序。</p>
+<div class="hlcode"><pre><span></span><span class="n">SpringApplication</span> <span class="n">app</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SpringApplication</span><span class="o">(</span><span class="n">TestCommandLineRunner</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">app</span><span class="o">.</span><span class="na">setWebEnvironment</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+<span class="n">app</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">args</span><span class="o">);</span>
+</pre></div>
+
+
+<h2 id="jpa">jpa</h2>
+<p>太神奇了！！极大地简化数据访问</p>
+<ul>
+<li><a href="https://www.cnblogs.com/dreamroute/p/5173896.html">https://www.cnblogs.com/dreamroute/p/5173896.html</a></li>
+<li><a href="https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#reference">https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#reference</a></li>
+</ul>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
