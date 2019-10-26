@@ -352,3 +352,21 @@ public class PersonController {
 问题: 为什么Controller的方法可以自动指定这么多不同类型的参数?
 
 
+
+## runner
+通过 `SpringApplication.run(class, args)`创建的是wenb runner
+
+可以通过实现`CommandLineRunner` 创建命令行应用程序。
+
+```java
+SpringApplication app = new SpringApplication(TestCommandLineRunner.class);
+app.setWebEnvironment(false);
+app.run(args);
+```
+
+
+## jpa
+太神奇了！！极大地简化数据访问
+
+- <https://www.cnblogs.com/dreamroute/p/5173896.html>
+- <https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#reference>
