@@ -1,0 +1,263 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>利用反射实现自动配置和加载 - Tracholar的个人wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="google-search" style="width:200px; float:right; margin: 20px 0;">
+                <form action="//cse.google.com/cse" method="get" id="search-form">
+                    <input type="hidden" name="cx" value="015970462532790426975:gqlen38ywus"/>
+                    <input type="text" name="q"  style="line-height:20px; padding:4px;" placeholder="站内搜索"/>
+                    <svg width="13" height="13" viewBox="0 0 13 13" style="position:relative; left: -20px;" onclick="document.getElementById('search-form').submit()">
+                        <title>搜索</title>
+                        <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z">
+                        </path>
+                    </svg>
+                </form>
+
+            </div>
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#java">java</a>&nbsp;»&nbsp;利用反射实现自动配置和加载</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">利用反射实现自动配置和加载</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#autoloadabtestconf">定义两个注解@Autoload和@ABTestConf</a></li>
+<li><a href="#_2">实现自动加载</a></li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>最近在用Java写一个简单的推荐引擎，实现了一个可配置的引擎<a href="https://github.com/tracholar/recsys-proj/blob/master
+/service/src/main/java/com/tracholar/recommend/engine/ConfigurableSimpleRecEngine.java">ConfigurableSimpleRecEngine</a>。并且，顺便实现了一个从JSON<br />
+文件来初始化配置的一个引擎<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com
+/tracholar/recommend/engine/JsonConfigRecEngine.java">JsonConfigRecEngine</a>。有了这个类，就可以通过配置文件，快速实现一个推荐引擎了！配置文件格式参考<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/resources/article-rec-sys/engine.json">engine.json</a></p>
+<div class="hlcode"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span> <span class="p">:</span> <span class="s2">&quot;文章推荐引擎&quot;</span><span class="p">,</span>
+
+  <span class="nt">&quot;abtest&quot;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;name&quot;</span> <span class="p">:</span> <span class="s2">&quot;abtest&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;class&quot;</span> <span class="p">:</span> <span class="s2">&quot;com.tracholar.articlerecsys.ABTest&quot;</span>
+  <span class="p">},</span>
+
+  <span class="nt">&quot;detailFetcher&quot;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;name&quot;</span> <span class="p">:</span> <span class="s2">&quot;detail fetcher&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="s2">&quot;com.tracholar.articlerecsys.ArticleFetcher&quot;</span>
+  <span class="p">},</span>
+
+  <span class="nt">&quot;recalls&quot;</span> <span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;time-recall&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;com.tracholar.articlerecsys.recall.TimeRecall&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;abtestKey&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;layerKey&quot;</span> <span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;flowKey&quot;</span> <span class="p">:</span> <span class="s2">&quot;0,1,2,3,4,5,6,7,8,9&quot;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+  <span class="err">/**</span> <span class="err">以下省略</span> <span class="err">*/</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>使用配置文件的好处是可以统一管理，但是当配置的模块特别多的时候，特指文件会特别长，阅读困难，另外在多人合作开发的时候，仍然存在多人会修改同一个文件的问题，在合并代码的时候，存在一定的风险，导致一个人配好的配置被另外的开发者无意中修改的问题。</p>
+<p>那么，有没有一种方案，可以实现不需要配置文件，自动加载呢？答案是肯定的，spring boot 就实现了这样一套方案，方法是通过「注解」Annotation。对java的注解不了解的同学可以参考 <a href="annotation.html">Annotation<br />
+</a>。</p>
+<h2 id="autoloadabtestconf">定义两个注解<code>@Autoload</code>和<code>@ABTestConf</code></h2>
+<p><code>@Autoload</code> 用于标识组建可以自动加载，避免加载不需要的组建。由于要在运行时获取到这个注解，所以需要指定<code>@Retention(RetentionPolicy.RUNTIME)</code>，这个注解只注解类型，所以需要标注<code>@Target({ElementType.TYPE})</code>。</p>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">java.lang.annotation.ElementType</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.annotation.Retention</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.annotation.RetentionPolicy</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.annotation.Target</span><span class="o">;</span>
+
+<span class="nd">@Retention</span><span class="o">(</span><span class="n">RetentionPolicy</span><span class="o">.</span><span class="na">RUNTIME</span><span class="o">)</span>
+<span class="nd">@Target</span><span class="o">({</span><span class="n">ElementType</span><span class="o">.</span><span class="na">TYPE</span><span class="o">})</span>
+<span class="kd">public</span> <span class="nd">@interface</span> <span class="n">Autoload</span> <span class="o">{</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p><code>@ABTestConf</code> 用于配置AB测试的key，对应于JSON配置中的<code>abtest</code>配置项。它有两个必须参数<code>layerKey</code> 和 <code>flowKey</code>。</p>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">java.lang.annotation.ElementType</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.annotation.Retention</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.annotation.RetentionPolicy</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.annotation.Target</span><span class="o">;</span>
+
+<span class="nd">@Retention</span><span class="o">(</span><span class="n">RetentionPolicy</span><span class="o">.</span><span class="na">RUNTIME</span><span class="o">)</span>
+<span class="nd">@Target</span><span class="o">({</span><span class="n">ElementType</span><span class="o">.</span><span class="na">TYPE</span><span class="o">})</span>
+<span class="kd">public</span> <span class="nd">@interface</span> <span class="n">ABTestConf</span> <span class="o">{</span>
+    <span class="n">String</span> <span class="nf">layerKey</span><span class="o">();</span>
+    <span class="n">String</span> <span class="nf">flowKey</span><span class="o">();</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h2 id="_2">实现自动加载</h2>
+<p>有了这两个注解之后，我们还是只能知道哪些类被标注了，但是还需要把这些信息转换成<code>RecEngineConfig</code>对象。这需要我们通过反射的方式，获取这些类的配置信息。</p>
+<p>首先，让我们引入一个有用的反射库<a href="https://github.com/ronmamo/reflections">reflections</a>，它可以简化很多操作。</p>
+<div class="hlcode"><pre><span></span><span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.reflections<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>reflections<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>0.9.11<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+
+
+<p>为了实现自动加载，第一步，我们可以假设所有的模块都在某个特定的包下面，减少我们搜索类的难度。然后我们需要找到某个包下面的所有类，判断是否标记了<code>@Autoload</code>。以加载<code>Recall</code>召回组件为例，我们可以通过<code>.getSubTypesOf</code>获取所有<code>Recall</code>的子类，并通过<code>.isAnnotationPresent()</code>判断一个类是否有某个特定的注解，从而筛选出标记了自动加载的<code>Recall</code>组件。</p>
+<p>另外，我们还需要通过<code>@ABTestConf</code>注解来获取ab测试的配置信息，这可以通过 <code>.getAnnotation</code> API获取类的注解，从而得到注解的参数。</p>
+<p>综合这两步，我们可以实现<code>Recall</code>组件的自动加载和自动加载AB测试配置了。</p>
+<div class="hlcode"><pre><span></span><span class="n">Reflections</span> <span class="n">reflections</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Reflections</span><span class="o">(</span><span class="n">packageName</span><span class="o">);</span>
+<span class="n">Set</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;&gt;</span> <span class="n">classes</span> <span class="o">=</span> <span class="n">reflections</span><span class="o">.</span><span class="na">getSubTypesOf</span><span class="o">(</span><span class="n">Recall</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+<span class="n">List</span><span class="o">&lt;</span><span class="n">ComponentConfig</span><span class="o">&gt;</span> <span class="n">conf</span> <span class="o">=</span> <span class="n">classes</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+                <span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">c</span> <span class="o">-&gt;</span> <span class="n">c</span><span class="o">.</span><span class="na">isAnnotationPresent</span><span class="o">(</span><span class="n">Autoload</span><span class="o">.</span><span class="na">class</span><span class="o">))</span>
+                <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">e</span> <span class="o">-&gt;</span> <span class="o">{</span>
+                    <span class="n">ComponentConfig</span> <span class="n">c</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ComponentConfig</span><span class="o">();</span>
+                    <span class="n">c</span><span class="o">.</span><span class="na">setClassName</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+                    <span class="n">c</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getSimpleName</span><span class="o">());</span>
+                    <span class="k">if</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">isAnnotationPresent</span><span class="o">(</span><span class="n">ABTestInfo</span><span class="o">.</span><span class="na">class</span><span class="o">)){</span>
+                        <span class="n">ABTestInfo</span> <span class="n">info</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">getAnnotation</span><span class="o">(</span><span class="n">ABTestInfo</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+                        <span class="n">ABTestKey</span> <span class="n">key</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ABTestKey</span><span class="o">(</span><span class="n">info</span><span class="o">.</span><span class="na">layerKey</span><span class="o">(),</span> <span class="n">info</span><span class="o">.</span><span class="na">flowKey</span><span class="o">());</span>
+                        <span class="n">c</span><span class="o">.</span><span class="na">setAbTestKey</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+                     <span class="o">}</span>
+
+
+                    <span class="k">return</span> <span class="n">c</span><span class="o">;</span>
+                <span class="o">}).</span><span class="na">collect</span><span class="o">(</span><span class="n">Collectors</span><span class="o">.</span><span class="na">toList</span><span class="o">());</span>
+</pre></div>
+
+
+<p>我们可以将这个功能写成一个函数，用于加载多个不同类型的组件。</p>
+<div class="hlcode"><pre><span></span><span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">ComponentConfig</span><span class="o">&gt;</span> <span class="nf">getComponentConfig</span><span class="o">(</span><span class="n">Reflections</span> <span class="n">reflections</span><span class="o">,</span>
+                                                     <span class="n">Class</span> <span class="n">cls</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="n">Set</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;&gt;</span> <span class="n">classes</span> <span class="o">=</span> <span class="n">reflections</span><span class="o">.</span><span class="na">getSubTypesOf</span><span class="o">(</span><span class="n">cls</span><span class="o">);</span>
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">ComponentConfig</span><span class="o">&gt;</span> <span class="n">conf</span> <span class="o">=</span> <span class="n">classes</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+                <span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">c</span> <span class="o">-&gt;</span> <span class="n">c</span><span class="o">.</span><span class="na">isAnnotationPresent</span><span class="o">(</span><span class="n">Autoload</span><span class="o">.</span><span class="na">class</span><span class="o">))</span>
+                <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">e</span> <span class="o">-&gt;</span> <span class="o">{</span>
+                    <span class="n">ComponentConfig</span> <span class="n">c</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ComponentConfig</span><span class="o">();</span>
+                    <span class="n">c</span><span class="o">.</span><span class="na">setClassName</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+                    <span class="n">c</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getSimpleName</span><span class="o">());</span>
+                    <span class="k">if</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">isAnnotationPresent</span><span class="o">(</span><span class="n">ABTestInfo</span><span class="o">.</span><span class="na">class</span><span class="o">)){</span>
+                        <span class="n">ABTestInfo</span> <span class="n">info</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">getAnnotation</span><span class="o">(</span><span class="n">ABTestInfo</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+                        <span class="n">ABTestKey</span> <span class="n">key</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ABTestKey</span><span class="o">(</span><span class="n">info</span><span class="o">.</span><span class="na">layerKey</span><span class="o">(),</span> <span class="n">info</span><span class="o">.</span><span class="na">flowKey</span><span class="o">());</span>
+                        <span class="n">c</span><span class="o">.</span><span class="na">setAbTestKey</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+                    <span class="o">}</span>
+                    <span class="k">return</span> <span class="n">c</span><span class="o">;</span>
+                <span class="o">}).</span><span class="na">collect</span><span class="o">(</span><span class="n">Collectors</span><span class="o">.</span><span class="na">toList</span><span class="o">());</span>
+        <span class="k">return</span> <span class="n">conf</span><span class="o">;</span>
+    <span class="o">}</span>
+</pre></div>
+
+
+<p>利用这个函数，可以很快写出自动加载推荐引擎的所有组件，这些代码比较琐碎，就不再叙述了，可以参考<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/AutoloadRecEngine.java">AutoloadRecEngine.java</a>的具体实现。</p>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2019-10-25 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: '利用反射实现自动配置和加载',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2019 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>
