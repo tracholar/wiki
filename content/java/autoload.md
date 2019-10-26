@@ -104,7 +104,7 @@ List<ComponentConfig> conf = classes.stream()
                     c.setClassName(e.getName());
                     c.setName(e.getSimpleName());
                     if(e.isAnnotationPresent(ABTestInfo.class)){
-                        ABTestInfo info = e.getAnnotation(ABTestInfo.class);
+                        ABTestConf info = e.getAnnotation(ABTestConf.class);
                         ABTestKey key = new ABTestKey(info.layerKey(), info.flowKey());
                         c.setAbTestKey(key);
                      }
@@ -126,8 +126,8 @@ private List<ComponentConfig> getComponentConfig(Reflections reflections,
                     ComponentConfig c = new ComponentConfig();
                     c.setClassName(e.getName());
                     c.setName(e.getSimpleName());
-                    if(e.isAnnotationPresent(ABTestInfo.class)){
-                        ABTestInfo info = e.getAnnotation(ABTestInfo.class);
+                    if(e.isAnnotationPresent(ABTestConf.class)){
+                        ABTestConf info = e.getAnnotation(ABTestConf.class);
                         ABTestKey key = new ABTestKey(info.layerKey(), info.flowKey());
                         c.setAbTestKey(key);
                     }
