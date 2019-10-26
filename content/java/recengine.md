@@ -201,3 +201,143 @@ public abstract class SimpleRecEngine implements RecEngine {
 6. 重排组件：`ReRanker`，它必须有一个方法`List<R> reRank(IUser user, List<R> results, IContext ctx)`将排序的结果重新排序，主要是为了满足一些策略上的要求，一般在排序阶段只会对每个item计算匹配得分，但不太会考虑多样性和业务特定规则以及EE的一些问题，所以这一层主要是为了干这些事情。输入输出都是`RankResult` 本质上它也是排序，但是输入不一样，`Ranker`输入是召回结果列表，而`ReRanker`输入是排序结果列表！定义参考[ReRanker.java](https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/ReRanker.java) 
 7. 取详情组件：`DetailFetcher`，它有一个方法`List<I> fetch(List<ID> arr)`。输入是一个有ID的记录列表，这里输入是`RankResult`，输出是有详情的结果`IItem`。但是在涉及这个接口时，做了一些扩展，把泛型参数上限都设为`HasId`，便于用到其他地方，比如取user的详情。定义参考[DetailFetcher.java](https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/DetailFetcher.java)
 
+### 可配置的6阶段推荐引擎
+前一节我们实现了一个6阶段推荐引擎，但是并不知道这个引擎所需要的那些组件怎么创建和获取。而这一层，我们就来解决这个问题。这些组件可以通过代码写死来创建，也可以通过更灵活的配置方式来创建。因此，不同的创建方式可以得到不同的子类型。这一层我只实现配置的方式来创建组件的引擎 `ConfigurableSimpleRecEngine`。
+
+那个问题又来了，对于可配置的引擎来说，什么是必须有的呢？首先，它要实现上一层次要求它实现的接口，即获取组件的接口。其次，它要从配置来创建这些组件！考虑到配置可以是不同的，比如可以来自MySQL数据库，也可以来自配置文件，甚至可以像后面要说的通过java注解的方式实现的配置！因此，这一部分不应该设计到具体的配置方式，所以可以定一个配置结构[RecEngineConfig](https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/config/RecEngineConfig.java)。
+
+总结起来，这一阶段要干的事有：从配置对象初始化各组件，实现父类获取组件的接口。不该干的事情是：从某种配置类型（文件、数据库等）创建配置对象。从而实现配置变化带来的重构问题，屏蔽配置类型的变化！
+
+```java
+import com.tracholar.recommend.abtest.ABTestKey;
+import com.tracholar.recommend.abtest.ABTestProxy;
+import com.tracholar.recommend.abtest.ABTestable;
+import com.tracholar.recommend.engine.config.ComponentConfig;
+import com.tracholar.recommend.engine.config.Configable;
+import com.tracholar.recommend.engine.config.RecEngineConfig;
+import lombok.AccessLevel;
+import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author tracholar.github.io
+ *
+ * <p>
+ * ConfigurableSimpleRecEngine 抽象了通过配置生成推荐引擎所需要的模块。
+ * 已经是一个独立的推荐引擎了！ 使用示例
+ *
+ * <pre>{@code
+ * ConfigurableSimpleRecEngine engine = new ConfigurableSimpleRecEngine()
+ * // 构造一个 RecEngineConfig 对象
+ * RecEngineConfig config = ...;
+ * engine.init(config);
+ * }
+ * </pre>
+ *
+ * {@code RecEngineConfig} 可以参看 {@link com.tracholar.recommend.engine.config.RecEngineConfig}
+ *
+ *
+ *
+ */
+@Getter(AccessLevel.PROTECTED)
+public class ConfigurableSimpleRecEngine extends SimpleRecEngine {
+    @Getter
+    private String name;
+    private ABTestProxy abTestProxy;
+    private DetailFetcher detailFetcher;
+    private List<Recall> recalls = new ArrayList<>();
+    private List<Merge> merges = new ArrayList<>();
+    private List<Filter> filters = new ArrayList<>();
+    private List<Ranker> rankers = new ArrayList<>();
+    private List<ReRanker> reRankers = new ArrayList<>();
+
+    public void init(RecEngineConfig conf) throws EngineInitialException{
+        try {
+            //通过配置文件构造一个推荐引擎
+            name = conf.getName();
+
+            //abtest
+            abTestProxy = (ABTestProxy) Class.forName(conf.getAbtest().getClassName()).newInstance();
+            if(abTestProxy instanceof Configable) {
+                ((Configable) abTestProxy).init(conf.getAbtest().getArgs());
+            }
+            detailFetcher = (DetailFetcher) Class.forName(conf.getDetailFetcher().getClassName()).newInstance();
+            if(detailFetcher instanceof Configable) {
+                ((Configable) detailFetcher).init(conf.getDetailFetcher().getArgs());
+            }
+
+            //recall
+            loadComponents(recalls, conf.getRecalls());
+
+            //filters
+            loadComponents(filters, conf.getFilters());
+
+            //merges
+            loadComponents(merges, conf.getMerges());
+
+            //rankers
+            loadComponents(rankers, conf.getRankers());
+
+            //re-rankers
+            loadComponents(reRankers, conf.getReRankers());
+        }catch (Exception e){
+            throw new EngineInitialException(e);
+        }
+    }
+
+    private <T> void loadComponents(List<T> arr, List<ComponentConfig> compConfs)
+            throws Exception{
+        for(int i=0; i<compConfs.size(); i++) {
+            ComponentConfig c = compConfs.get(i);
+            T strategy = (T) Class.forName(c.getClassName()).newInstance();
+
+            if(strategy instanceof ABTestable && c.getAbTestKey() != null) {
+                ABTestKey key = c.getAbTestKey();
+                ((ABTestable) strategy).setAbTestKey(key);
+            }
+            if(strategy instanceof Configable) {
+                ((Configable) strategy).init(c.getArgs());
+            }
+            arr.add(strategy);
+        }
+    }
+}
+```
+
+这个类的核心代码是两个函数`init` 和`loadComponents`，前者是从配置对象初始化的入口，要创建一个引擎最简单的方式是，构造一个`RecEngineConfig`，然后传给`init`方法，就搞定了！`loadComponents`是从组件的配置创建组件的函数，在这个函数中，会通过反射`Class.forName`创建类的实例对象，并判断组件是否是`ABTestable`，和是否是`Configable`，从而进行必要的设置！
+
+另外，这里使用了`lombok`这个库，通过`@Getter`注解实现了get方法，从而实现了父类要求实现的获取组件的方法！
+
+### 两种配置方式构造的引擎
+这一节我们介绍实现的两种配置方式，一种是JSON配置文件，另一种是自动加载注解的方式。上一节已经可以从配置初始化组件了，但是不知道配置怎么来的，不同的配置方法实现不同的配置类型推荐引擎。这就是在这一层我们要干的事情。
+
+#### JSON配置
+JSON配置比较简单，直接将`RecEngineConfig` JSON序列化就行，然后修改对应的配置项。反序列化也简单，利用FastJSON `JSON.parseObject(is, RecEngineConfig.class)`就能实现。
+
+```java
+public class JsonConfigRecEngine extends ConfigurableSimpleRecEngine {
+    private RecEngineConfig config;
+
+    private JsonConfigRecEngine(){};
+
+    public JsonConfigRecEngine(RecEngineConfig config) throws EngineInitialException{
+        super.init(config);
+    }
+
+    public static JsonConfigRecEngine load(InputStream is) throws Exception {
+        RecEngineConfig config = JSON.parseObject(is, RecEngineConfig.class);
+        return new JsonConfigRecEngine(config);
+    }
+    public static JsonConfigRecEngine load(String json) throws Exception {
+        RecEngineConfig config = JSON.parseObject(json, RecEngineConfig.class);
+        return new JsonConfigRecEngine(config);
+    }
+}
+```
+
+### 自动加载
+自动加载的原理是java的反射，通过`@Autoload`注解判断组件是否需要加载，通过`@ABtestConf`获取AB测试的配置信息。具体原理解析参考[利用反射实现自动配置和加载](autoload.html)，代码参考[AutoloadRecEngine](https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/AutoloadRecEngine.java)。
