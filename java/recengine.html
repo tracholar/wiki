@@ -1,0 +1,340 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>推荐引擎设计 - Tracholar的个人wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="google-search" style="width:200px; float:right; margin: 20px 0;">
+                <form action="//cse.google.com/cse" method="get" id="search-form">
+                    <input type="hidden" name="cx" value="015970462532790426975:gqlen38ywus"/>
+                    <input type="text" name="q"  style="line-height:20px; padding:4px;" placeholder="站内搜索"/>
+                    <svg width="13" height="13" viewBox="0 0 13 13" style="position:relative; left: -20px;" onclick="document.getElementById('search-form').submit()">
+                        <title>搜索</title>
+                        <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z">
+                        </path>
+                    </svg>
+                </form>
+
+            </div>
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#java">java</a>&nbsp;»&nbsp;推荐引擎设计</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">推荐引擎设计</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">系统设计</a><ul>
+<li><a href="#_3">设计思想</a></li>
+<li><a href="#_4">推荐引擎接口及其基础数据类型的定义</a></li>
+<li><a href="#6">实现一个6阶段推荐引擎</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="_1">关于</h2>
+<p>本文通过自顶向下设计，实现一个可扩展的推荐引擎。主要特性：</p>
+<ul>
+<li>实现一个基于JSON配置的推荐引擎，和自动加载配置的引擎</li>
+<li>各组件可自由定制</li>
+<li>新增功能，不需要修改原有代码，只需要扩展现有的组件类型</li>
+</ul>
+<h2 id="_2">系统设计</h2>
+<h3 id="_3">设计思想</h3>
+<p>采用自顶向下抽象的方法，设计整个推荐系统。每一层抽象只实现该层次公共的代码逻辑，而将可变的部分交给子类型来实现。</p>
+<h3 id="_4">推荐引擎接口及其基础数据类型的定义</h3>
+<p>在设计推荐引擎接口时，首先我们要深刻理解「什么是推荐引擎」？有人说，推荐引擎要实现召回、排序，那么，问题来了，没有召回和排序就不是推荐引擎了吗？举个例子，我调用一个外部一个服务来获取推荐结果，一次搞定，没有召回也没有排序，那么它不是一个推荐引擎吗？显然也是。所以召回、排序不是推荐引擎的必须特性。我认为，在最初的抽象层次，推荐引擎有且只有一个接口，就是传入用户，上下文信息，返回推荐的item列表！因此，推荐引擎接口应该是</p>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">com.tracholar.recommend.data.IContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.tracholar.recommend.data.IItem</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.tracholar.recommend.data.IUser</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * @author: tracholar.github.io</span>
+<span class="cm"> * 从外部来看，推荐引擎就是传入1个用户和一个上下文信息，你给我返回一个item的推荐列表。</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">RecEngine</span><span class="o">&lt;</span><span class="n">U</span> <span class="kd">extends</span> <span class="n">IUser</span><span class="o">,</span> <span class="n">I</span> <span class="kd">extends</span> <span class="n">IItem</span><span class="o">,</span> <span class="n">C</span> <span class="kd">extends</span> <span class="n">IContext</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="n">List</span><span class="o">&lt;</span><span class="n">I</span><span class="o">&gt;</span> <span class="nf">recommend</span><span class="o">(</span><span class="n">U</span> <span class="n">user</span><span class="o">,</span> <span class="n">C</span> <span class="n">ctx</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>要理解这一点，有一个很简单的视角，就是从引擎的调用者来看，它并不需要知道你这个引擎如何实现，只要知道要传给你什么（用户，上下文），然后可以从你这获得什么（推荐的item列表）！至于如何实现这个引擎，你到底是外包给一个外部服务，还是自己实现两阶段推荐（召回、排序），甚至更多阶段的推荐流程（例如可以再细化为：触发、检索、粗排、精排、重排机制），那应该是下一层抽象该做的事情。</p>
+<p>这个引擎同时定义了3个基础数据类型 <code>IUser</code> <code>IItem</code> <code>IContext</code>。同样，我们可以问一句，这三个数据类型有什么是必须的吗？看起来除了ID之外，其他都不见的是必须的，因为只要有ID，就可以对每个实际的user或者item有了标识，因此只有ID是必须的。</p>
+<ul>
+<li><code>HasId</code> 接口定义</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">HasId</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="n">T</span> <span class="nf">getId</span><span class="o">();</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<ul>
+<li><code>IUser</code> 接口定义</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">IUser</span><span class="o">&lt;</span><span class="n">ID</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">HasId</span><span class="o">&lt;</span><span class="n">ID</span><span class="o">&gt;</span> <span class="o">{</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<ul>
+<li><code>IItem</code> 接口定义</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">IItem</span><span class="o">&lt;</span><span class="n">ID</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">HasId</span><span class="o">&lt;</span><span class="n">ID</span><span class="o">&gt;</span> <span class="o">{</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<ul>
+<li><code>IContext</code> 接口定义</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">IContext</span><span class="o">&lt;</span><span class="n">ID</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">HasId</span><span class="o">&lt;</span><span class="n">ID</span><span class="o">&gt;</span> <span class="o">{</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h3 id="6">实现一个6阶段推荐引擎</h3>
+<p>有了第一层抽象之后，我们只知道对使用引擎的人来说，该如何使用这个引擎。但是对实现引擎的人来说，有一些共同的东西可以抽象，这就是第二层的抽象。这一层我们可以抽象出几种不同的推荐模式。比如一阶段推荐（查外部接口、或者简单的策略推荐）、两阶段推荐（按照主流的推荐模式拆分为召回、排序）等等。这里我已一个比较主流的6阶段推荐模式为例，实现一个<code>SimpleRecEngine</code>。其他类型的推荐范式可以参考这个例子对<code>RecEngine</code>进行扩展。</p>
+<p>所谓6阶段推荐是指：召回、合并、过滤、排序、重排、取详情 这六个阶段。在这一层次的抽象中，我们该实现哪些不该实现哪些以保证可扩展性呢？跟前面一样，我们要对6阶段推荐流程有深刻的理解，即问一句「六阶段推荐引擎哪些是必须要有的」，但还得多问一句「所有的六阶段推荐引擎，哪些逻辑是相同的」？</p>
+<p>对第一个问题，都有的就是这六个阶段所用到的模块，我们称之为组件。其次，我们还得有AB测试模块，因为标准的推荐引擎需要通过试验的方式进行迭代。为什么AB测试模块要放到这一层呢？因为我们假定所有的6阶段推荐引擎都会有AB测试，但如果你硬要抬杠说，我就要一个不需要AB测试的6阶段推荐引擎，那我只能说「万万没想到」！这个设计就取决于一种平衡，如果现实中确实有这种情况，那确实不应该不把AB测试这个模块放到这一层，但实际上这种情况几乎不可能，所以没必要过度设计。是否抽象层次过多和抽象层次过少，就需要设计系统者对该业务有深入理解才能把握！这里，我就拍个板了，现实中没有不需要AB测试的六阶段推荐引擎，所以我就不考虑了。</p>
+<p>对第二个问题，相同的逻辑应该有：</p>
+<ol>
+<li>通过AB测试模块判断当前推荐中命中了哪些模块？例如，通常有很多排序组件，分别对应不同的排序策略，但一次推荐中，应该只会命中一个一个排序策略。所以需要AB测试模块来判断。</li>
+<li>将这六个阶段串联起来，实现推荐。显然，我们可以假定这六阶段都是按照固定的流程串联起来的。如果有其他串联方式，可以从<code>RecEngine</code>再派生一种子推荐类型即可。</li>
+</ol>
+<p>在这一层，由于我们需要实现特定的逻辑，所以不能再用java的<code>interface</code>了，接口是不能有实现逻辑的，因此应该用抽象类来实现。</p>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">com.tracholar.recommend.data.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.tracholar.recommend.abtest.ABTestKey</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.tracholar.recommend.abtest.ABTestProxy</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.tracholar.recommend.abtest.ABTestable</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * @author tracholar.github.io</span>
+<span class="cm"> * SimpleRecEngin 抽象了整个推荐系统的流水线，将各个模块（如召回、排序、AB测试等）组装起来。</span>
+<span class="cm"> * 但是它并不知道如何获取这些模块，而将这些模块的获取留给子类实现。</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">SimpleRecEngine</span> <span class="kd">implements</span> <span class="n">RecEngine</span> <span class="o">{</span>
+    <span class="kd">abstract</span> <span class="kd">protected</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Recall</span><span class="o">&gt;</span> <span class="nf">getRecalls</span><span class="o">();</span>
+    <span class="kd">abstract</span> <span class="kd">protected</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Merge</span><span class="o">&gt;</span> <span class="nf">getMerges</span><span class="o">();</span>
+    <span class="kd">abstract</span> <span class="kd">protected</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Filter</span><span class="o">&gt;</span> <span class="nf">getFilters</span><span class="o">();</span>
+    <span class="kd">abstract</span> <span class="kd">protected</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Ranker</span><span class="o">&gt;</span> <span class="nf">getRankers</span><span class="o">();</span>
+    <span class="kd">abstract</span> <span class="kd">protected</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">ReRanker</span><span class="o">&gt;</span> <span class="nf">getReRankers</span><span class="o">();</span>
+
+    <span class="kd">abstract</span> <span class="kd">protected</span> <span class="n">ABTestProxy</span> <span class="nf">getAbTestProxy</span><span class="o">();</span>
+    <span class="kd">abstract</span> <span class="kd">protected</span> <span class="n">DetailFetcher</span> <span class="nf">getDetailFetcher</span><span class="o">();</span>
+
+
+    <span class="kd">private</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">filterByABTest</span><span class="o">(</span><span class="n">IUser</span> <span class="n">user</span><span class="o">,</span> <span class="n">IContext</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">arr</span><span class="o">){</span>
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">strategies</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+        <span class="k">for</span><span class="o">(</span><span class="n">T</span> <span class="n">s</span> <span class="o">:</span> <span class="n">arr</span><span class="o">){</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">s</span> <span class="k">instanceof</span> <span class="n">ABTestable</span><span class="o">){</span>
+                <span class="n">ABTestKey</span> <span class="n">key</span> <span class="o">=</span> <span class="o">((</span><span class="n">ABTestable</span><span class="o">)</span> <span class="n">s</span><span class="o">).</span><span class="na">getAbTestKey</span><span class="o">();</span>
+                <span class="k">if</span><span class="o">(!</span> <span class="n">getAbTestProxy</span><span class="o">().</span><span class="na">match</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">key</span><span class="o">)){</span>
+                    <span class="k">continue</span><span class="o">;</span>
+                <span class="o">}</span>
+
+            <span class="o">}</span>
+            <span class="n">strategies</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">strategies</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">private</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">T</span> <span class="nf">getByABTest</span><span class="o">(</span><span class="n">IUser</span> <span class="n">user</span><span class="o">,</span> <span class="n">IContext</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">arr</span><span class="o">)</span>
+            <span class="kd">throws</span> <span class="n">ComponentNotFoundException</span><span class="o">{</span>
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">filtered</span> <span class="o">=</span> <span class="n">filterByABTest</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">arr</span><span class="o">);</span>
+
+        <span class="k">if</span><span class="o">(</span><span class="n">filtered</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">){</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">ComponentNotFoundException</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">filtered</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+    <span class="o">}</span>
+
+
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">RecallResult</span><span class="o">&gt;</span> <span class="nf">doRecall</span><span class="o">(</span><span class="n">IUser</span> <span class="n">user</span><span class="o">,</span> <span class="n">IContext</span> <span class="n">ctx</span><span class="o">)</span>
+        <span class="kd">throws</span> <span class="n">ComponentNotFoundException</span><span class="o">{</span>
+        <span class="n">Map</span><span class="o">&lt;</span><span class="n">Recall</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">RecallResult</span><span class="o">&gt;&gt;</span> <span class="n">results</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+        <span class="k">for</span><span class="o">(</span><span class="n">Recall</span> <span class="n">strategy</span> <span class="o">:</span> <span class="n">filterByABTest</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">getRecalls</span><span class="o">())){</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">List</span><span class="o">&lt;</span><span class="n">RecallResult</span><span class="o">&gt;</span> <span class="n">res</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="na">recall</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="n">ctx</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">res</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">continue</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="n">results</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">strategy</span><span class="o">,</span> <span class="n">res</span><span class="o">);</span>
+            <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="n">Merge</span> <span class="n">merge</span> <span class="o">=</span> <span class="n">getByABTest</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">getMerges</span><span class="o">());</span>
+        <span class="k">return</span> <span class="n">merge</span><span class="o">.</span><span class="na">merge</span><span class="o">(</span><span class="n">results</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">RecallResult</span><span class="o">&gt;</span> <span class="nf">doFilter</span><span class="o">(</span><span class="n">IUser</span> <span class="n">user</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">RecallResult</span><span class="o">&gt;</span> <span class="n">results</span><span class="o">,</span> <span class="n">IContext</span> <span class="n">ctx</span><span class="o">){</span>
+        <span class="k">for</span><span class="o">(</span><span class="n">Filter</span> <span class="n">f</span> <span class="o">:</span> <span class="n">filterByABTest</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">getFilters</span><span class="o">())){</span>
+            <span class="kt">int</span> <span class="n">begine</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="na">size</span><span class="o">();</span>
+
+            <span class="n">results</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="n">results</span><span class="o">,</span> <span class="n">ctx</span><span class="o">);</span>
+
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">results</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">IItem</span><span class="o">&gt;</span> <span class="nf">recommend</span><span class="o">(</span><span class="n">IUser</span> <span class="n">user</span><span class="o">,</span> <span class="n">IContext</span> <span class="n">ctx</span><span class="o">){</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">// recall</span>
+            <span class="n">List</span><span class="o">&lt;</span><span class="n">RecallResult</span><span class="o">&gt;</span> <span class="n">results</span> <span class="o">=</span> <span class="n">doRecall</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="n">ctx</span><span class="o">);</span>
+
+            <span class="c1">// filter</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">doFilter</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="n">results</span><span class="o">,</span> <span class="n">ctx</span><span class="o">);</span>
+
+            <span class="c1">// rank</span>
+            <span class="n">Ranker</span> <span class="n">ranker</span> <span class="o">=</span> <span class="n">getByABTest</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">getRankers</span><span class="o">());</span>
+            <span class="n">List</span><span class="o">&lt;</span><span class="n">RankResult</span><span class="o">&gt;</span> <span class="n">rankResults</span> <span class="o">=</span> <span class="n">ranker</span><span class="o">.</span><span class="na">rank</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="n">results</span><span class="o">,</span> <span class="n">ctx</span><span class="o">);</span>
+
+            <span class="c1">// re-rank</span>
+            <span class="n">rankResults</span> <span class="o">=</span> <span class="n">getByABTest</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">getReRankers</span><span class="o">())</span>
+                    <span class="o">.</span><span class="na">reRank</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="n">rankResults</span><span class="o">,</span> <span class="n">ctx</span><span class="o">);</span>
+
+            <span class="c1">// fetch details</span>
+            <span class="k">return</span> <span class="n">getDetailFetcher</span><span class="o">().</span><span class="na">fetch</span><span class="o">(</span><span class="n">rankResults</span><span class="o">);</span>
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">ComponentNotFoundException</span> <span class="n">e</span><span class="o">){</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+
+
+<p>为简单期间，这里的代码略去了一些必要的日志记录，原始版本可以参考<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/SimpleRecEngine.java">SimpleRecEngine.java</a>。</p>
+<p>这个抽象类实现了推荐引擎的接口<code>recommend</code>，将6个阶段串联了起来，其中<code>doRecall</code>将多路召回和融合组装到一起，<code>doFilter</code>将多个filter串联执行，便于<code>recommend</code>的逻辑清晰。<code>filterByABTest</code>和<code>getByABTest</code>实现通过AB测试模块对注册的组件进行过滤，筛选出匹配的组件。</p>
+<p>在这个层次，并不知道如何获得这些组件，所以留出了几个未实现的获取对应组件接口，让下一层来实现。</p>
+<p>在这一层，我们新引入了几个组件的抽象</p>
+<ol>
+<li>AB测试组件：<code>ABTestProxy</code>，它有一个必须的方法<code>boolean match(IUser user, IContext ctx, ABTestKey key)</code>，即判断用户在当前请求下是否命中AB测试的key。具体实现参考<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/abtest/ABTestProxy.java">ABTestProxy.java</a><ul>
+<li>这个组件派生出一个新的接口<code>ABTestable</code>，如果组件实现了这个接口，那么说明支持AB测试，否则就不支持AB测试，需要全部命中！接口定义参考<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/abtest/ABTestable.java">ABTestable.java</a></li>
+<li>这个组件同样需要一个<code>ABTestKey</code>对象，通常来说分层AB测试是一个共识，所以这部分也没有继续抽象，直接定义这个对象有两个属性，layerKey和flowKey。</li>
+</ul>
+</li>
+<li>召回组件：<code>Recall</code>，它必须有一个方法<code>List&lt;R&gt; recall(U user, C ctx)</code> 即输入user跟ctx，输出<code>RecallResult</code>。这里三个类型参数分别是（下同）：U代表<code>IUser</code>接口的子类，C代表<code>IContext</code>的子类，<code>R</code>是<code>RecallResult</code>的子类。定义参考<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/Recall.java">Recall.java</a></li>
+<li>合并组件：<code>Merge</code>，它必须有一个方法<code>List&lt;R&gt; merge(Map&lt;Recall, List&lt;R&gt;&gt; results)</code>即将多个召回的结果，合并到一个召回结果列表中！定义参考<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/Merge.java">Merge.java</a></li>
+<li>过滤组件：<code>Filter</code>，它必须有一个方法<code>List&lt;R&gt; filter(U user, List&lt;R&gt; results, C ctx)</code> 即对合并的结果进行过滤。过滤掉某些不合适的召回结果，可能是一些人工策略和业务需要！定义参考<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/Filter.java">Filter.java</a></li>
+<li>排序组件：<code>Ranker</code>，它必须有一个方法<code>List&lt;RR&gt; rank(IUser user, List&lt;R&gt; results, IContext ctx)</code>，对过滤后的召回列表进行排序，得到排序结果<code>RankerResult</code>，RR是泛型参数，是<code>RankerResult</code>的子类。定义参考<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/Ranker.java">Ranker.java</a> <a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/data/RankResult.java">RankResult</a></li>
+<li>重排组件：<code>ReRanker</code>，它必须有一个方法<code>List&lt;R&gt; reRank(IUser user, List&lt;R&gt; results, IContext ctx)</code>将排序的结果重新排序，主要是为了满足一些策略上的要求，一般在排序阶段只会对每个item计算匹配得分，但不太会考虑多样性和业务特定规则以及EE的一些问题，所以这一层主要是为了干这些事情。输入输出都是<code>RankResult</code> 本质上它也是排序，但是输入不一样，<code>Ranker</code>输入是召回结果列表，而<code>ReRanker</code>输入是排序结果列表！定义参考<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/ReRanker.java">ReRanker.java</a> </li>
+<li>取详情组件：<code>DetailFetcher</code>，它有一个方法<code>List&lt;I&gt; fetch(List&lt;ID&gt; arr)</code>。输入是一个有ID的记录列表，这里输入是<code>RankResult</code>，输出是有详情的结果<code>IItem</code>。但是在涉及这个接口时，做了一些扩展，把泛型参数上限都设为<code>HasId</code>，便于用到其他地方，比如取user的详情。定义参考<a href="https://github.com/tracholar/recsys-proj/blob/master/service/src/main/java/com/tracholar/recommend/engine/DetailFetcher.java">DetailFetcher.java</a></li>
+</ol>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2019-10-26 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: '推荐引擎设计',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2019 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>
