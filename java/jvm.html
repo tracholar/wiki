@@ -76,6 +76,7 @@
 <li><a href="#_2">概述</a></li>
 </ul>
 </li>
+<li><a href="#4">第4章 虚拟机性能监控与故障处理工具</a></li>
 </ul>
 </li>
 </ul>
@@ -233,6 +234,57 @@
 <li>大对象直接进入老年代</li>
 <li>动态对象年龄判定：如果在Survivor空间中，相同年龄所有对象大小综合大于Survivor空间一半，年龄大于或等于该年龄的对象就可以直接进入老年代</li>
 <li>空间分配担保，FULL GC 老年代也要GC</li>
+</ul>
+</li>
+</ul>
+<h2 id="4">第4章 虚拟机性能监控与故障处理工具</h2>
+<ul>
+<li>系统定位问题用到的数据：运行日志、异常堆栈、GC日志、线程快照、堆转储快照</li>
+<li>JDK命令行工具，正真实现的代码在 jdk/lib/tools.jar ，好处是这里面的工具可以直接在应用程序中实现监控分析<ul>
+<li><code>jps</code> JVM Process Status 显示进程状态<ul>
+<li><code>-l</code> 显示进程主类</li>
+<li><code>-q</code> 只显示LVMID</li>
+<li><code>-m</code> 显示传给主类的参数</li>
+<li><code>-v</code> 输出启动JVM参数</li>
+</ul>
+</li>
+<li><code>jstat</code> JVM Statistics Monitoring Tool，用于手机虚拟机运行数据<ul>
+<li><code>-class</code> 件事类装载、加载数量etc</li>
+<li><code>-gc</code> 监事gc</li>
+<li><code>-gcnew</code> 新生代GC</li>
+<li><code>-gcold</code> 老年代GC</li>
+<li><code>-compiler</code> 输出JIT编译器编译过的方法、耗时</li>
+</ul>
+</li>
+<li>jinfo Configuration Info for Java 显示虚拟机配置信息</li>
+<li>jmap Memory Map for Java 生成内存快照heapdump文件<ul>
+<li><code>jmap -dump:file=&lt;filename&gt; pid</code></li>
+</ul>
+</li>
+<li>jhat Heap Dump Browser 用于分析heapdump文件，它会建立一个HTTP服务，用户可以在网页上查看分析结果<ul>
+<li>VisualVM, Eclipse Memory Analyzer, IBM HeapAnalyzer<br />
+<code>bash
+$jhat test.bin 
+Reading from test.bin...
+Dump file created Tue Oct 29 22:56:59 CST 2019
+Snapshot read, resolving...
+Resolving 199895 objects...
+Chasing references, expect 39 dots.......................................
+Eliminating duplicate references.......................................
+Snapshot resolved.
+Started HTTP server on port 7000
+Server is ready.</code></li>
+</ul>
+</li>
+<li>jstack Stack Trace for Java<ul>
+<li><code>jstack -l &lt;pid&gt;</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>JDK可视化工具：JConsole 和 VisualVM<ul>
+<li>jconsole 命令行启动即可</li>
+<li>Visual VM通过插件安装</li>
 </ul>
 </li>
 </ul>
