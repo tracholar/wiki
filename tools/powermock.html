@@ -74,6 +74,9 @@
 <li><a href="#_2">配置环境</a></li>
 <li><a href="#_3">应用</a><ul>
 <li><a href="#mock">Mock 外部调用</a></li>
+<li><a href="#mockio">Mock非静态方法和对象（例如文件IO）</a></li>
+<li><a href="#mock_1">Mock 私有字段</a></li>
+<li><a href="#mock-field">Mock 静态field</a></li>
 </ul>
 </li>
 </ul>
@@ -158,6 +161,175 @@
         <span class="n">when</span><span class="o">(</span><span class="n">IdGenerator</span><span class="o">.</span><span class="na">generateNewId</span><span class="o">()).</span><span class="na">thenReturn</span><span class="o">(</span><span class="mi">2L</span><span class="o">);</span>
         <span class="k">new</span> <span class="n">ClassUnderTest</span><span class="o">().</span><span class="na">methodToTest</span><span class="o">();</span>
 
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h3 id="mockio">Mock非静态方法和对象（例如文件IO）</h3>
+<ul>
+<li>假设要测试的方法需要创建一个文件，这是一个非静态方法</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DirectoryStructure</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">create</span><span class="o">(</span><span class="n">String</span> <span class="n">directoryPath</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">File</span> <span class="n">directory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">directoryPath</span><span class="o">);</span>
+
+        <span class="k">if</span><span class="o">(</span><span class="n">directory</span><span class="o">.</span><span class="na">exists</span><span class="o">()){</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalArgumentException</span><span class="o">(</span><span class="n">directoryPath</span> <span class="o">+</span> <span class="s">&quot; already exists.&quot;</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">directory</span><span class="o">.</span><span class="na">mkdirs</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<ul>
+<li>可以利用API <code>whenNew(File.class).withArguments(directoryPath).thenReturn(directoryMock)</code> 实现创建对象的mock</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">org.junit.Test</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.runner.RunWith</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.powermock.core.classloader.annotations.PrepareForTest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.powermock.modules.junit4.PowerMockRunner</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
+
+<span class="kn">import static</span> <span class="nn">org.junit.Assert.assertTrue</span><span class="o">;</span>
+<span class="kn">import static</span> <span class="nn">org.mockito.Mockito.mock</span><span class="o">;</span>
+<span class="kn">import static</span> <span class="nn">org.powermock.api.mockito.PowerMockito.verifyNew</span><span class="o">;</span>
+<span class="kn">import static</span> <span class="nn">org.powermock.api.mockito.PowerMockito.when</span><span class="o">;</span>
+<span class="kn">import static</span> <span class="nn">org.powermock.api.mockito.PowerMockito.whenNew</span><span class="o">;</span>
+
+<span class="nd">@RunWith</span><span class="o">(</span><span class="n">PowerMockRunner</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="nd">@PrepareForTest</span><span class="o">(</span><span class="n">DirectoryStructure</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestDirectoryStructure</span> <span class="o">{</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">createDirectoryWhenNotExists</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="n">String</span> <span class="n">directoryPath</span> <span class="o">=</span> <span class="s">&quot;mocked path&quot;</span><span class="o">;</span>
+        <span class="n">File</span> <span class="n">directoryMock</span> <span class="o">=</span> <span class="n">mock</span><span class="o">(</span><span class="n">File</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+        <span class="n">whenNew</span><span class="o">(</span><span class="n">File</span><span class="o">.</span><span class="na">class</span><span class="o">).</span><span class="na">withArguments</span><span class="o">(</span><span class="n">directoryPath</span><span class="o">).</span><span class="na">thenReturn</span><span class="o">(</span><span class="n">directoryMock</span><span class="o">);</span>
+        <span class="n">when</span><span class="o">(</span><span class="n">directoryMock</span><span class="o">.</span><span class="na">exists</span><span class="o">()).</span><span class="na">thenReturn</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+        <span class="n">when</span><span class="o">(</span><span class="n">directoryMock</span><span class="o">.</span><span class="na">mkdirs</span><span class="o">()).</span><span class="na">thenReturn</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+
+        <span class="n">assertTrue</span><span class="o">(</span><span class="k">new</span> <span class="n">DirectoryStructure</span><span class="o">().</span><span class="na">create</span><span class="o">(</span><span class="n">directoryPath</span><span class="o">));</span>
+        <span class="n">verifyNew</span><span class="o">(</span><span class="n">File</span><span class="o">.</span><span class="na">class</span><span class="o">).</span><span class="na">withArguments</span><span class="o">(</span><span class="n">directoryPath</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<ul>
+<li>代码：<ul>
+<li><a href="https://github.com/tracholar/ml-homework-cz/blob/master/testing/tracholar/src/main/java/com/tracholar/testing/DirectoryStructure.java">https://github.com/tracholar/ml-homework-cz/blob/master/testing/tracholar/src/main/java/com/tracholar/testing/DirectoryStructure.java</a></li>
+<li><a href="https://github.com/tracholar/ml-homework-cz/blob/master/testing/tracholar/src/test/java/com/tracholar/testing/TestDirectoryStructure.java">https://github.com/tracholar/ml-homework-cz/blob/master/testing/tracholar/src/test/java/com/tracholar/testing/TestDirectoryStructure.java</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="mock_1">Mock 私有字段</h3>
+<ul>
+<li>下面的例子有一个私有字段引用了外部对象</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LocalServiceImpl</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">ServiceA</span> <span class="n">remoteService</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="n">Node</span> <span class="nf">getRemoteNode</span><span class="o">(</span><span class="kt">int</span> <span class="n">num</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">remoteService</span><span class="o">.</span><span class="na">getRemoteNode</span><span class="o">(</span><span class="n">num</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<ul>
+<li>可以通过<code>Whitebox.setInternalState(obj, field, mockObj);</code>来实现设置内部私有字段</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">org.junit.Before</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.Test</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.runner.RunWith</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.mockito.InjectMocks</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.mockito.Mock</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.mockito.Mockito</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.mockito.junit.MockitoJUnitRunner</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.powermock.reflect.Whitebox</span><span class="o">;</span>
+
+<span class="kn">import static</span> <span class="nn">org.junit.Assert.assertEquals</span><span class="o">;</span>
+<span class="kn">import static</span> <span class="nn">org.junit.Assert.assertNull</span><span class="o">;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Created by zuoyuan on 2019/7/19.</span>
+<span class="cm"> */</span>
+<span class="nd">@RunWith</span><span class="o">(</span><span class="n">MockitoJUnitRunner</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestLocalServiceImplMock</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">LocalServiceImpl</span> <span class="n">localService</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="n">ServiceA</span> <span class="n">remoteService</span><span class="o">;</span>
+
+    <span class="nd">@Before</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUp</span><span class="o">(){</span>
+        <span class="n">localService</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LocalServiceImpl</span><span class="o">();</span>
+        <span class="n">remoteService</span> <span class="o">=</span> <span class="n">Mockito</span><span class="o">.</span><span class="na">mock</span><span class="o">(</span><span class="n">ServiceA</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">Whitebox</span><span class="o">.</span><span class="na">setInternalState</span><span class="o">(</span><span class="n">localService</span><span class="o">,</span> <span class="s">&quot;remoteService&quot;</span><span class="o">,</span> <span class="n">remoteService</span><span class="o">);</span>
+
+    <span class="o">}</span>
+
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testMock</span><span class="o">(){</span>
+        <span class="n">Node</span> <span class="n">target</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Node</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="s">&quot;target&quot;</span><span class="o">);</span>
+        <span class="n">Mockito</span><span class="o">.</span><span class="na">when</span><span class="o">(</span><span class="n">remoteService</span><span class="o">.</span><span class="na">getRemoteNode</span><span class="o">(</span><span class="mi">1</span><span class="o">)).</span><span class="na">thenReturn</span><span class="o">(</span><span class="n">target</span><span class="o">);</span>
+        <span class="n">Node</span> <span class="n">result</span> <span class="o">=</span> <span class="n">localService</span><span class="o">.</span><span class="na">getRemoteNode</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+
+        <span class="n">assertEquals</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="n">result</span><span class="o">);</span>
+        <span class="n">assertEquals</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">result</span><span class="o">.</span><span class="na">getNum</span><span class="o">());</span>
+        <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;target&quot;</span><span class="o">,</span> <span class="n">result</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+
+        <span class="n">Node</span> <span class="n">result2</span> <span class="o">=</span> <span class="n">localService</span><span class="o">.</span><span class="na">getRemoteNode</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+        <span class="n">assertNull</span><span class="o">(</span><span class="n">result2</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h3 id="mock-field">Mock 静态field</h3>
+<ul>
+<li>下面的例子有一个静态的字段 <code>logger</code>，一般可能是一个远程的logger需要mock，这里以log4j为例</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kn">package</span> <span class="nn">com.tracholar.testing</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.logging.Logger</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">StaticFieldTest</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">StaticFieldTest</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doSomething</span><span class="o">(){</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;Hello&quot;</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<ul>
+<li>可以通过<code>@SuppressStaticInitializationFor</code>和<code>@PrepareForTest</code>api来mock类的静态字段的初始化</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">org.junit.Test</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.runner.RunWith</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.mockito.Mockito</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.powermock.core.classloader.annotations.PrepareForTest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.powermock.core.classloader.annotations.SuppressStaticInitializationFor</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.powermock.modules.junit4.PowerMockRunner</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.powermock.reflect.Whitebox</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.logging.Logger</span><span class="o">;</span>
+
+<span class="nd">@RunWith</span><span class="o">(</span><span class="n">PowerMockRunner</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="nd">@SuppressStaticInitializationFor</span><span class="o">(</span><span class="s">&quot;com.tracholar.testing.StaticFieldTest&quot;</span><span class="o">)</span>
+<span class="nd">@PrepareForTest</span><span class="o">(</span><span class="n">StaticFieldTest</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestStaticFieldTest</span> <span class="o">{</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test1</span><span class="o">(){</span>
+        <span class="n">Whitebox</span><span class="o">.</span><span class="na">setInternalState</span><span class="o">(</span><span class="n">StaticFieldTest</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="s">&quot;logger&quot;</span><span class="o">,</span> <span class="n">Mockito</span><span class="o">.</span><span class="na">mock</span><span class="o">(</span><span class="n">Logger</span><span class="o">.</span><span class="na">class</span><span class="o">));</span>
+        <span class="n">StaticFieldTest</span> <span class="n">test</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StaticFieldTest</span><span class="o">();</span>
+        <span class="n">test</span><span class="o">.</span><span class="na">doSomething</span><span class="o">();</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </pre></div>
