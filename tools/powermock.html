@@ -72,7 +72,10 @@
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">关于</a></li>
 <li><a href="#_2">配置环境</a></li>
-<li><a href="#_3">应用</a></li>
+<li><a href="#_3">应用</a><ul>
+<li><a href="#mock">Mock 外部调用</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <h2 id="_1">关于</h2>
@@ -123,6 +126,41 @@
 </li>
 <li>个人DEMO例子参考：<a href="https://github.com/tracholar/ml-homework-cz/tree/master/testing">https://github.com/tracholar/ml-homework-cz/tree/master/testing</a></li>
 </ul>
+<h3 id="mock">Mock 外部调用</h3>
+<ul>
+<li>待测试的类 [ClassUnderTest] (https://github.com/tracholar/ml-homework-cz/blob/master/testing/tracholar/src/main/java/com/tracholar/testing/ClassUnderTest.java) </li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ClassUnderTest</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">methodToTest</span><span class="o">(){</span>
+        <span class="kd">final</span> <span class="kt">long</span> <span class="n">id</span> <span class="o">=</span> <span class="n">IdGenerator</span><span class="o">.</span><span class="na">generateNewId</span><span class="o">();</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>这个待测试的类有一个外部调用 <code>IdGenerator.generateNewId()</code>，为了测试，我们必须把这个外部调用mock掉，返回我们想要的值才能测试。可以通过 <code>mockStatic</code> 实现静态方法的mock，通过<code>when(IdGenerator.generateNewId()).thenReturn(2L)</code> 将静态方法返回的值设为给定的值，<a href="https://github.com/tracholar/ml-homework-cz/blob/master/testing/tracholar/src/test/java/com/tracholar/testing/TestClassUnderTest.java">代码如下</a></p>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">org.junit.Test</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.runner.RunWith</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.powermock.core.classloader.annotations.PrepareForTest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.powermock.modules.junit4.PowerMockRunner</span><span class="o">;</span>
+
+<span class="kn">import static</span> <span class="nn">org.powermock.api.mockito.PowerMockito.mockStatic</span><span class="o">;</span>
+<span class="kn">import static</span> <span class="nn">org.powermock.api.mockito.PowerMockito.verifyStatic</span><span class="o">;</span>
+<span class="kn">import static</span> <span class="nn">org.powermock.api.mockito.PowerMockito.when</span><span class="o">;</span>
+
+<span class="nd">@RunWith</span><span class="o">(</span><span class="n">PowerMockRunner</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="nd">@PrepareForTest</span><span class="o">(</span><span class="n">IdGenerator</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestClassUnderTest</span> <span class="o">{</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">demoStaticMethodMocking</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">mockStatic</span><span class="o">(</span><span class="n">IdGenerator</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">when</span><span class="o">(</span><span class="n">IdGenerator</span><span class="o">.</span><span class="na">generateNewId</span><span class="o">()).</span><span class="na">thenReturn</span><span class="o">(</span><span class="mi">2L</span><span class="o">);</span>
+        <span class="k">new</span> <span class="n">ClassUnderTest</span><span class="o">().</span><span class="na">methodToTest</span><span class="o">();</span>
+
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
