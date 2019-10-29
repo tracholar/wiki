@@ -84,3 +84,156 @@ public class TestClassUnderTest {
     }
 }
 ```
+
+### Mock非静态方法和对象（例如文件IO）
+- 假设要测试的方法需要创建一个文件，这是一个非静态方法
+```java
+import java.io.File;
+
+public class DirectoryStructure {
+    public boolean create(String directoryPath) {
+        File directory = new File(directoryPath);
+
+        if(directory.exists()){
+            throw new IllegalArgumentException(directoryPath + " already exists.");
+        }
+
+        return directory.mkdirs();
+    }
+}
+```
+- 可以利用API `whenNew(File.class).withArguments(directoryPath).thenReturn(directoryMock)` 实现创建对象的mock
+
+```java
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.io.File;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.powermock.api.mockito.PowerMockito.verifyNew;
+import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(DirectoryStructure.class)
+public class TestDirectoryStructure {
+    @Test
+    public void createDirectoryWhenNotExists() throws Exception {
+        final String directoryPath = "mocked path";
+        File directoryMock = mock(File.class);
+
+        whenNew(File.class).withArguments(directoryPath).thenReturn(directoryMock);
+        when(directoryMock.exists()).thenReturn(false);
+        when(directoryMock.mkdirs()).thenReturn(true);
+
+        assertTrue(new DirectoryStructure().create(directoryPath));
+        verifyNew(File.class).withArguments(directoryPath);
+    }
+}
+```
+- 代码：
+    - <https://github.com/tracholar/ml-homework-cz/blob/master/testing/tracholar/src/main/java/com/tracholar/testing/DirectoryStructure.java>
+    - <https://github.com/tracholar/ml-homework-cz/blob/master/testing/tracholar/src/test/java/com/tracholar/testing/TestDirectoryStructure.java>
+    
+### Mock 私有字段
+- 下面的例子有一个私有字段引用了外部对象
+```java
+public class LocalServiceImpl {
+    private ServiceA remoteService;
+
+    public Node getRemoteNode(int num) {
+        return remoteService.getRemoteNode(num);
+    }
+}
+```
+- 可以通过`Whitebox.setInternalState(obj, field, mockObj);`来实现设置内部私有字段
+```java
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.powermock.reflect.Whitebox;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+/**
+ * Created by zuoyuan on 2019/7/19.
+ */
+@RunWith(MockitoJUnitRunner.class)
+public class TestLocalServiceImplMock {
+    private LocalServiceImpl localService;
+
+    private ServiceA remoteService;
+
+    @Before
+    public void setUp(){
+        localService = new LocalServiceImpl();
+        remoteService = Mockito.mock(ServiceA.class);
+        Whitebox.setInternalState(localService, "remoteService", remoteService);
+
+    }
+
+    @Test
+    public void testMock(){
+        Node target = new Node(1, "target");
+        Mockito.when(remoteService.getRemoteNode(1)).thenReturn(target);
+        Node result = localService.getRemoteNode(1);
+
+        assertEquals(target, result);
+        assertEquals(1, result.getNum());
+        assertEquals("target", result.getName());
+
+        Node result2 = localService.getRemoteNode(2);
+        assertNull(result2);
+    }
+}
+```
+### Mock 静态field
+- 下面的例子有一个静态的字段 `logger`，一般可能是一个远程的logger需要mock，这里以log4j为例
+```java
+package com.tracholar.testing;
+
+import java.util.logging.Logger;
+
+public class StaticFieldTest {
+    private static Logger logger = Logger.getLogger(StaticFieldTest.class.getName());
+
+    public void doSomething(){
+        logger.info("Hello");
+    }
+}
+```
+- 可以通过`@SuppressStaticInitializationFor`和`@PrepareForTest`api来mock类的静态字段的初始化
+```java
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
+import java.util.logging.Logger;
+
+@RunWith(PowerMockRunner.class)
+@SuppressStaticInitializationFor("com.tracholar.testing.StaticFieldTest")
+@PrepareForTest(StaticFieldTest.class)
+public class TestStaticFieldTest {
+    @Test
+    public void test1(){
+        Whitebox.setInternalState(StaticFieldTest.class, "logger", Mockito.mock(Logger.class));
+        StaticFieldTest test = new StaticFieldTest();
+        test.doSomething();
+    }
+}
+```
+
+
+
