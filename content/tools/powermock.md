@@ -51,7 +51,8 @@ date: 2019-07-19
 
 
 ### Mock 外部调用
-- 待测试的类 [ClassUnderTest] (https://github.com/tracholar/ml-homework-cz/blob/master/testing/tracholar/src/main/java/com/tracholar/testing/ClassUnderTest.java) 
+- 待测试的类 [ClassUnderTest](https://github.com/tracholar/ml-homework-cz/blob/master/testing/tracholar/src/main/java/com/tracholar/testing/ClassUnderTest.java) 
+
 ```java
 public class ClassUnderTest {
     public void methodToTest(){
