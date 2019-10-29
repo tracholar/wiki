@@ -235,5 +235,6 @@ public class TestStaticFieldTest {
 }
 ```
 
-
+## 作业
+- 纸上得来终觉浅，绝知此事要躬行，做个作业行不行。启动代码已经帮你写好，放在[getstart](https://github.com/tracholar/ml-homework-cz/tree/master/testing/getstart) 目录中
 
