@@ -48,3 +48,38 @@ date: 2019-07-19
     - <http://codyaray.com/2012/05/mocking-static-java-util-logger-with-easymocks-powermock-extension>
     - <https://github.com/powermock/powermock/wiki/Mock-Policies>
 - 个人DEMO例子参考：<https://github.com/tracholar/ml-homework-cz/tree/master/testing>
+
+
+### Mock 外部调用
+- 待测试的类 [ClassUnderTest] (https://github.com/tracholar/ml-homework-cz/blob/master/testing/tracholar/src/main/java/com/tracholar/testing/ClassUnderTest.java) 
+```java
+public class ClassUnderTest {
+    public void methodToTest(){
+        final long id = IdGenerator.generateNewId();
+        System.out.println(id);
+    }
+}
+```
+这个待测试的类有一个外部调用 `IdGenerator.generateNewId()`，为了测试，我们必须把这个外部调用mock掉，返回我们想要的值才能测试。可以通过 `mockStatic` 实现静态方法的mock，通过`when(IdGenerator.generateNewId()).thenReturn(2L)` 将静态方法返回的值设为给定的值，[代码如下](https://github.com/tracholar/ml-homework-cz/blob/master/testing/tracholar/src/test/java/com/tracholar/testing/TestClassUnderTest.java)
+```java
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(IdGenerator.class)
+public class TestClassUnderTest {
+    @Test
+    public void demoStaticMethodMocking() throws Exception {
+        mockStatic(IdGenerator.class);
+        when(IdGenerator.generateNewId()).thenReturn(2L);
+        new ClassUnderTest().methodToTest();
+
+    }
+}
+```
