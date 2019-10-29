@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>PowerMock在单元测试中的应用 - Tracholar的个人wiki</title>
+        <title>Collections源代码 - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,64 +64,39 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tools">tools</a>&nbsp;»&nbsp;PowerMock在单元测试中的应用</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#java">java</a>&nbsp;»&nbsp;Collections源代码</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">PowerMock在单元测试中的应用</div>
+<div id="title">Collections源代码</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">关于</a></li>
-<li><a href="#_2">配置环境</a></li>
-<li><a href="#_3">应用</a></li>
+<li><a href="#_1">类继承关系</a></li>
 </ul>
 </div>
-<h2 id="_1">关于</h2>
+<h2 id="_1">类继承关系</h2>
 <ul>
-<li>参考IBM教程, <a href="https://www.ibm.com/developerworks/cn/java/j-lo-powermock/index.html">https://www.ibm.com/developerworks/cn/java/j-lo-powermock/index.html</a></li>
-</ul>
-<h2 id="_2">配置环境</h2>
-<div class="hlcode"><pre><span></span><span class="nt">&lt;properties&gt;</span>
-        <span class="nt">&lt;project.build.sourceEncoding&gt;</span>UTF-8<span class="nt">&lt;/project.build.sourceEncoding&gt;</span>
-        <span class="nt">&lt;powermock.version&gt;</span>2.0.2<span class="nt">&lt;/powermock.version&gt;</span>
-    <span class="nt">&lt;/properties&gt;</span>
-
-    <span class="nt">&lt;dependencies&gt;</span>
-        <span class="nt">&lt;dependency&gt;</span>
-            <span class="nt">&lt;groupId&gt;</span>org.powermock<span class="nt">&lt;/groupId&gt;</span>
-            <span class="nt">&lt;artifactId&gt;</span>powermock-module-junit4<span class="nt">&lt;/artifactId&gt;</span>
-            <span class="nt">&lt;version&gt;</span>${powermock.version}<span class="nt">&lt;/version&gt;</span>
-            <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
-        <span class="nt">&lt;/dependency&gt;</span>
-        <span class="nt">&lt;dependency&gt;</span>
-            <span class="nt">&lt;groupId&gt;</span>org.powermock<span class="nt">&lt;/groupId&gt;</span>
-            <span class="nt">&lt;artifactId&gt;</span>powermock-api-mockito2<span class="nt">&lt;/artifactId&gt;</span>
-            <span class="nt">&lt;version&gt;</span>${powermock.version}<span class="nt">&lt;/version&gt;</span>
-            <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
-        <span class="nt">&lt;/dependency&gt;</span>
-
-        <span class="nt">&lt;dependency&gt;</span>
-            <span class="nt">&lt;groupId&gt;</span>junit<span class="nt">&lt;/groupId&gt;</span>
-            <span class="nt">&lt;artifactId&gt;</span>junit<span class="nt">&lt;/artifactId&gt;</span>
-            <span class="nt">&lt;version&gt;</span>4.12<span class="nt">&lt;/version&gt;</span>
-            <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
-        <span class="nt">&lt;/dependency&gt;</span>
-    <span class="nt">&lt;/dependencies&gt;</span>
-</pre></div>
-
-
-<h2 id="_3">应用</h2>
-<ul>
-<li>模拟静态方法: 模拟静态方法返回指定的值</li>
-<li>模拟构造函数: 模拟构造函数返回的结果</li>
-<li>模拟私有以及final方法</li>
-<li><code>mock</code> 对象对于未指定处理规则的调用会按照方法返回值类型返回该类型的默认值(int,long返回0, boolean返回false,对象则返回null,void则什么都不做)</li>
-<li><code>spy</code>对象对于未指定处理规则的时候会调用真实方法</li>
-<li>初始化静态field, <code>SuppressStaticInitializationFor</code> <ul>
-<li><a href="http://codyaray.com/2012/05/mocking-static-java-util-logger-with-easymocks-powermock-extension">http://codyaray.com/2012/05/mocking-static-java-util-logger-with-easymocks-powermock-extension</a></li>
-<li><a href="https://github.com/powermock/powermock/wiki/Mock-Policies">https://github.com/powermock/powermock/wiki/Mock-Policies</a></li>
+<li><code>Iterable</code><ul>
+<li><code>Iterator&lt;T&gt; iterator()</code></li>
 </ul>
 </li>
-<li>个人DEMO例子参考：<a href="https://github.com/tracholar/ml-homework-cz/tree/master/testing">https://github.com/tracholar/ml-homework-cz/tree/master/testing</a></li>
+<li><code>Collection&lt;E&gt; extends Iterable&lt;E&gt;</code><ul>
+<li><code>int size()</code></li>
+<li><code>boolean isEmpty()</code></li>
+<li><code>boolean contains(Object o)</code></li>
+<li><code>Iterator&lt;E&gt; iterator()</code></li>
+<li><code>Object[] toArray()</code></li>
+<li><code>T[] toArray(T[] a)</code></li>
+<li><code>boolean add(E e)</code></li>
+<li><code>boolean remove(Object o)</code></li>
+<li><code>boolean containsAll(Collection&lt;?&gt; c)</code></li>
+<li><code>boolean addAll(Collection&lt;? extends E&gt; c)</code></li>
+<li><code>boolean removeAll(Collection&lt;?&gt; c)</code></li>
+<li><code>boolean retainAll(Collection&lt;?&gt; c)</code></li>
+<li><code>void clear()</code></li>
+<li><code>boolean equals(Object o)</code></li>
+<li><code>int hashCode()</code></li>
+</ul>
+</li>
 </ul>
 </div>
 <div id="income">
@@ -134,7 +109,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2019-07-19 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2019-10-28 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -142,7 +117,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: 'PowerMock在单元测试中的应用',
+  title: 'Collections源代码',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
