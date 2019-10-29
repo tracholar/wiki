@@ -47,3 +47,4 @@ date: 2019-07-19
 - 初始化静态field, `SuppressStaticInitializationFor` 
     - <http://codyaray.com/2012/05/mocking-static-java-util-logger-with-easymocks-powermock-extension>
     - <https://github.com/powermock/powermock/wiki/Mock-Policies>
+- 个人DEMO例子参考：<https://github.com/tracholar/ml-homework-cz/tree/master/testing>

@@ -37,3 +37,7 @@ Set<Class<? extends SomeType>> subTypes = reflections.getSubTypesOf(SomeType.cla
 Set<Class<?>> annotated = reflections.getTypesAnnotatedWith(SomeAnnotation.class);
 ```
 
+
+
+### 动态代理
+<https://www.cnblogs.com/haitaofeiyang/p/7724263.html>
