@@ -111,5 +111,40 @@ date: 2019-10-25
     
     
        
+## 第4章 虚拟机性能监控与故障处理工具
+- 系统定位问题用到的数据：运行日志、异常堆栈、GC日志、线程快照、堆转储快照
+- JDK命令行工具，正真实现的代码在 jdk/lib/tools.jar ，好处是这里面的工具可以直接在应用程序中实现监控分析
+    - `jps` JVM Process Status 显示进程状态
+        - `-l` 显示进程主类
+        - `-q` 只显示LVMID
+        - `-m` 显示传给主类的参数
+        - `-v` 输出启动JVM参数
+    - `jstat` JVM Statistics Monitoring Tool，用于手机虚拟机运行数据
+        - `-class` 件事类装载、加载数量etc
+        - `-gc` 监事gc
+        - `-gcnew` 新生代GC
+        - `-gcold` 老年代GC
+        - `-compiler` 输出JIT编译器编译过的方法、耗时
+    - jinfo Configuration Info for Java 显示虚拟机配置信息
+    - jmap Memory Map for Java 生成内存快照heapdump文件
+        - `jmap -dump:file=<filename> pid`
+    - jhat Heap Dump Browser 用于分析heapdump文件，它会建立一个HTTP服务，用户可以在网页上查看分析结果
+        - VisualVM, Eclipse Memory Analyzer, IBM HeapAnalyzer
+        ```bash
+        $jhat test.bin 
+        Reading from test.bin...
+        Dump file created Tue Oct 29 22:56:59 CST 2019
+        Snapshot read, resolving...
+        Resolving 199895 objects...
+        Chasing references, expect 39 dots.......................................
+        Eliminating duplicate references.......................................
+        Snapshot resolved.
+        Started HTTP server on port 7000
+        Server is ready.
+        ```
+    - jstack Stack Trace for Java
+        - `jstack -l <pid>`
+- JDK可视化工具：JConsole 和 VisualVM
+    - jconsole 命令行启动即可
+    - Visual VM通过插件安装
     
-        
