@@ -37,3 +37,26 @@ date: 2019-10-18
         - %l   输出日志事件的发生位置，包括类目名、发生的线程，以及在代码中的行数。举例：Testlog4.main(TestLog4.java: 10 ) 
         
         
+## 一个模板
+- log4j.properties
+
+```properties
+### 设置###
+log4j.rootLogger = DEBUG, stdout, E
+### 输出信息到控制抬 ###
+log4j.appender.stdout = org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.Target = System.err
+log4j.appender.stdout.layout = org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern = [%p] %d{yyyy-MM-dd HH:mm:ss} - %c - %m%n
+log4j.appender.stdout.Threshold = DEBUG
+
+### 输出到文件
+log4j.appender.E = org.apache.log4j.RollingFileAppender
+log4j.appender.E.File = log/info.log
+log4j.appender.E.Append = true
+log4j.appender.E.Threshold = INFO 
+log4j.appender.E.MaxFileSize = 10240KB
+log4j.appender.E.MaxBackupIndex = 3
+log4j.appender.E.layout = org.apache.log4j.PatternLayout
+log4j.appender.E.layout.ConversionPattern = %d{yyyy-MM-dd HH:mm:ss} [%l:[%p]] %m%n
+```
