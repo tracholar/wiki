@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>log4j 配置和使用 - Tracholar的个人wiki</title>
+        <title>Hivemall源代码阅读 - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,79 +64,32 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tools">tools</a>&nbsp;»&nbsp;log4j 配置和使用</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#hive">hive</a>&nbsp;»&nbsp;Hivemall源代码阅读</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">log4j 配置和使用</div>
+<div id="title">Hivemall源代码阅读</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">几种不同的包和区别</a></li>
-<li><a href="#_2">配置</a></li>
-<li><a href="#_3">一个模板</a></li>
+<li><a href="#_1">概述</a></li>
+<li><a href="#_2">总体设计</a><ul>
+<li><a href="#_3">分类</a></li>
+</ul>
+</li>
 </ul>
 </div>
-<h2 id="_1">几种不同的包和区别</h2>
+<h1 id="_1">概述</h1>
+<p>Hivemall 是一个可以运行在Hive和Spark上用SQL来训练机器学习模型的一个开源库。</p>
+<h1 id="_2">总体设计</h1>
+<h2 id="_3">分类</h2>
 <ul>
-<li><code>java.util.logging</code></li>
-<li><code>sl4j</code></li>
-</ul>
-<h2 id="_2">配置</h2>
-<ul>
-<li>文件 <code>log4j.properties</code> 放在<code>resource</code> 根目录下</li>
-<li><code>log4j.rootLogger = [LEVEL], appender1, appender2 ...</code> 设置日志级别和多个appender</li>
-<li>appender设置<ul>
-<li><code>log4j.appender.[appenderName] = [appender class name]</code>  设置append的处理类<ul>
-<li><code>org.apache.log4j.ConsoleAppender</code> 输出到控制台</li>
-<li><code>org.apache.log4j.FileAppender</code> 输出到固定文件</li>
-<li><code>org.apache.log4j.RollingFileAppender</code> 指定文件大小，达到大小创建新文件</li>
-<li><code>org.apache.log4j.DailyRollingFileAppender</code> 每天一个文件</li>
-<li><code>org.apache.log4j.WriterAppender</code> 不知道</li>
-</ul>
-</li>
-<li><code>log4j.appender.[appenderName].layout</code> layerout设置<ul>
-<li><code>org.apache.log4j.HTMLLayout</code>（以HTML表格形式布局）  </li>
-<li><code>org.apache.log4j.PatternLayout</code>（可以灵活地指定布局模式）</li>
-<li><code>org.apache.log4j.SimpleLayout</code>（包含日志信息的级别和信息字符串）</li>
-<li><code>org.apache.log4j.TTCCLayout</code>（包含日志产生的时间、线程、类别等等信息）</li>
-</ul>
-</li>
-<li><code>log4j.appender.D.layout.ConversionPattern</code> 指定模式<ul>
-<li>%m   输出代码中指定的消息</li>
-<li>%p   输出优先级，即DEBUG，INFO，WARN，ERROR，FATAL </li>
-<li>%r   输出自应用启动到输出该log信息耗费的毫秒数</li>
-<li>%c   输出所属的类目，通常就是所在类的全名 </li>
-<li>%t   输出产生该日志事件的线程名 </li>
-<li>%n   输出一个回车换行符，Windows平台为“\r\n”，Unix平台为“\n” </li>
-<li>%d   输出日志时间点的日期或时间，默认格式为ISO8601，也可以在其后指定格式，比如：%d{yyy MMM dd HH:mm:ss , SSS}，输出类似：2002年10月18日  22 ： 10 ： 28</li>
-<li>%l   输出日志事件的发生位置，包括类目名、发生的线程，以及在代码中的行数。举例：Testlog4.main(TestLog4.java: 10 ) </li>
+<li><code>UDTFWithOptions</code> 实现了<code>parseOptions</code>处理命令行参数，将<code>getOptions</code>留给子类自己处理。<code>showHelp</code> 通过获取注解的UDF描述信息，生成帮助文本<ul>
+<li><code>LearnerBaseUDTF</code><ul>
+<li><code>BinaryOnlineClassifierUDTF</code></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-<h2 id="_3">一个模板</h2>
-<ul>
-<li>log4j.properties</li>
-</ul>
-<div class="hlcode"><pre><span></span><span class="c">### 设置###</span>
-<span class="na">log4j.rootLogger</span> <span class="o">=</span> <span class="s">DEBUG, stdout, E</span>
-<span class="c">### 输出信息到控制抬 ###</span>
-<span class="na">log4j.appender.stdout</span> <span class="o">=</span> <span class="s">org.apache.log4j.ConsoleAppender</span>
-<span class="na">log4j.appender.stdout.Target</span> <span class="o">=</span> <span class="s">System.err</span>
-<span class="na">log4j.appender.stdout.layout</span> <span class="o">=</span> <span class="s">org.apache.log4j.PatternLayout</span>
-<span class="na">log4j.appender.stdout.layout.ConversionPattern</span> <span class="o">=</span> <span class="s">[%p] %d{yyyy-MM-dd HH:mm:ss} - %c - %m%n</span>
-<span class="na">log4j.appender.stdout.Threshold</span> <span class="o">=</span> <span class="s">DEBUG</span>
-
-<span class="c">### 输出到文件</span>
-<span class="na">log4j.appender.E</span> <span class="o">=</span> <span class="s">org.apache.log4j.RollingFileAppender</span>
-<span class="na">log4j.appender.E.File</span> <span class="o">=</span> <span class="s">log/info.log</span>
-<span class="na">log4j.appender.E.Append</span> <span class="o">=</span> <span class="s">true</span>
-<span class="na">log4j.appender.E.Threshold</span> <span class="o">=</span> <span class="s">INFO </span>
-<span class="na">log4j.appender.E.MaxFileSize</span> <span class="o">=</span> <span class="s">10240KB</span>
-<span class="na">log4j.appender.E.MaxBackupIndex</span> <span class="o">=</span> <span class="s">3</span>
-<span class="na">log4j.appender.E.layout</span> <span class="o">=</span> <span class="s">org.apache.log4j.PatternLayout</span>
-<span class="na">log4j.appender.E.layout.ConversionPattern</span> <span class="o">=</span> <span class="s">%d{yyyy-MM-dd HH:mm:ss} [%l:[%p]] %m%n</span>
-</pre></div>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -148,7 +101,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2019-10-18 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2019-10-30 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -156,7 +109,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: 'log4j 配置和使用',
+  title: 'Hivemall源代码阅读',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
