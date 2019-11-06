@@ -72,6 +72,7 @@
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">图</a></li>
 <li><a href="#-graph-sparsification-by-effective-resistances">- Graph sparsification by effective resistances</a></li>
+<li><a href="#random-walk-molynomial-sparsification">Random-Walk Molynomial Sparsification</a></li>
 <li><a href="#svd">SVD</a></li>
 </ul>
 </div>
@@ -109,6 +110,16 @@ $$<br />
 因此,等效电阻的关键是计算拉普拉斯矩阵的伪逆,即对拉普拉斯矩阵做谱分解。</li>
 </ul>
 </li>
+</ul>
+<h2 id="random-walk-molynomial-sparsification">Random-Walk Molynomial Sparsification</h2>
+<ul>
+<li>利用random-walk 将图变成稀疏图</li>
+<li>谱相似，两个图的拉普拉斯矩阵是相似的，拉普拉斯矩阵相似是指，对任意x，<br />
+$$<br />
+(1-\epsilon) x^T \hat{L}x \le x^T L x \le (1+\epsilon) x^T \hat{L} x<br />
+$$  <br />
+那么这两个图就叫$(1+\epsilon)$-谱相似</li>
+<li>稀疏化的方法还没搞懂</li>
 </ul>
 <h2 id="svd">SVD</h2>
 <ul>

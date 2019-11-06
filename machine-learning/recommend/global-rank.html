@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>短中长期规划 - Tracholar的个人wiki</title>
+        <title>Rerank机制调研 - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,74 +64,116 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#about">about</a>&nbsp;»&nbsp;短中长期规划</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#-recommend">recommend</a>&nbsp;»&nbsp;Rerank机制调研</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">短中长期规划</div>
+<div id="title">Rerank机制调研</div>
 <div id="content">
-  <h2 id="_1">短期</h2>
-<ul>
-<li>熟悉spark开发流程，学会使用mllib在线上建模 ✅</li>
-<li>cs224d  ✅</li>
-<li>cs231n  ✅</li>
-<li>cs294, cs234 RL</li>
-<li>GAN</li>
-<li>TensorFlow 系统性学习,并完成记录和博客 [TODO]</li>
-</ul>
-<h2 id="_2">读书</h2>
-<ul>
-<li>《财务会计教程》√</li>
-<li>《货币金融学》  √</li>
-<li>《赢》 √</li>
-<li>《格鲁夫的第一堂课》</li>
-<li>《第五项修炼》</li>
-<li>《投资学》 √</li>
-<li>《公司理财》 </li>
-<li>《期权期货及其他衍生品》</li>
-<li>《批判性思维工具》</li>
-<li>《巴菲特致股东的信:投资原则篇》</li>
-<li>《金字塔原理》 √</li>
-<li>《穷爸爸富爸爸》 √</li>
-<li>《日本的城镇化》√</li>
-</ul>
-<h2 id="_3">中期</h2>
-<ul>
-<li>deep learning overview ： Bengio 的书及相关论文</li>
-<li>machine learning overview ： 周志华的书，prml, element of ml</li>
-<li>分布式工具和环境， Spark， Hbase， Hadoop， Hive</li>
-<li>分布式算法，优化算法等</li>
-<li>金融学基础知识</li>
-<li><a href="http://nil.csail.mit.edu/6.824/2018/">http://nil.csail.mit.edu/6.824/2018/</a></li>
-</ul>
-<h2 id="_4">长期</h2>
-<ul>
-<li>ML 技术栈，从工程到算法到系统</li>
-<li>金融学基础知识</li>
-<li>从财务和技术两方面分析主流IT企业</li>
-</ul>
-<h2 id="2018">2018年</h2>
-<ul>
-<li>6篇深入思考博客 [完成30%]</li>
-<li>10篇 关键论文结果的复现 [未完成]</li>
-</ul>
-<p>总结: 缺乏短期规划, 和短期不断的调整与反馈</p>
-<h2 id="2019">2019年</h2>
-<ul>
-<li>3篇深入思考博客<ul>
-<li>NGBoost</li>
-<li>推荐系统的召回总结</li>
-<li></li>
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">问题</a></li>
+<li><a href="#_2">传统方法</a></li>
+<li><a href="#2009">微软2009</a></li>
+<li><a href="#-icml2008">多臂老虎机-ICML2008</a><ul>
+<li><a href="#-learning-diverse-rankings-with-multi-armed-bandits">- Learning diverse rankings with multi-armed bandits</a></li>
 </ul>
 </li>
-<li>10篇重要论文中的关键部分复现</li>
-<li>3篇金融学书<ul>
-<li>货币金融学 √</li>
-<li>投资学 √</li>
-<li>期权期货 doing</li>
+<li><a href="#mmr">MMR</a></li>
+<li><a href="#xquad">xQuAD</a></li>
+<li><a href="#svmdiv">SVMDiv</a></li>
+<li><a href="#_3">多样性</a></li>
+<li><a href="#mdp-2017">MDP-2017</a></li>
+<li><a href="#rank">优化整个页面的rank</a></li>
+<li><a href="#globally-rank">阿里：Globally Rank</a></li>
+<li><a href="#rerank">阿里：个性化rerank</a></li>
+<li><a href="#dpp-youtube">DPP：行列式点过程-YouTube</a></li>
 </ul>
+</div>
+<h1 id="_1">问题</h1>
+<ul>
+<li>现有的推荐模型基本上都是预测一个得分f(u, i)，是一个pointwise模型。而实际上排序时，对i的打分还依赖前后的item，所以应该是listwise模型。rerank就是为了解决这个问题</li>
+</ul>
+<h1 id="_2">传统方法</h1>
+<ul>
+<li>在排序中，可以利用lambdaMart，优化list的损失函数来实现</li>
+</ul>
+<h1 id="2009">微软2009</h1>
+<ul>
+<li>Diversifying Search Results</li>
+<li>基本思路是在排序得到一个文档集合之后，先初始化一个空集，然后贪心地将边际收益最大的文档加入集合中</li>
+<li>边际收益的定义。假设有很多个类别，query和document都有一定概率属于某个类别。用$( V(d| q, c) )$ 表示在query为q，类别c的条件下，出文档d的价值（比如相关性）；用$( U(c | q, S) )$ 表示在集合S都不属于c类别条件下，q属于类别c的概率。那么在列表S中加入文档d带来的边际收益（额外增加的价值）可以表示为：现有的S都不是c类别但query的意图是c类别，此时文档d带来的收益为V(d|q,c)。对所有类别求期望有<br />
+$$<br />
+g(d|q, c,S) = \sum_{c \in C(d)} U(c|q,S) V(d|q,c)<br />
+$$<br />
+C(d)是文档d的所属类别集合（文档可以属于多个类别）。</li>
+<li>当在集合S中增加文档d后，条件概率$(U(c | q, S \cup {d}))$的更新表达式为<br />
+$$<br />
+U(c|q, S \cup {d}) = (1 - V(d|q,c))U(c | q, S)<br />
+$$</li>
+</ul>
+<h1 id="-icml2008">多臂老虎机-ICML2008</h1>
+<h2 id="-learning-diverse-rankings-with-multi-armed-bandits">- Learning diverse rankings with multi-armed bandits</h2>
+<h1 id="mmr">MMR</h1>
+<ul>
+<li>The use of mmr, diversity-based reranking for reordering documents and producing summaries</li>
+<li>最大化边际相关性</li>
+<li>对于给定的文档集合S，往里面加一个新的文档d的边际相关性为<br />
+$$<br />
+\lambda Sim_1(d, q) - (1-\lambda) \max_{d_i \in S} Sim_2(d, d_i)<br />
+$$<br />
+即为文档d与q的相关性减掉d与S中所有文档中最大相关性！</li>
+</ul>
+<h1 id="xquad">xQuAD</h1>
+<ul>
+<li>预定义效用函数，对相关性和多样性加权，多样性的衡量是改写的qi和现有集合S中的文档都不相关但与文档d相关的概率。<br />
+$$<br />
+(1-\lambda P(d|q)) + \lambda \sum_{q_i \in Q}P(q_i|q)P(d|q_i) \Pi_{d_j \in S} (1-P(d_j|q_i))<br />
+$$</li>
+</ul>
+<h1 id="svmdiv">SVMDiv</h1>
+<h1 id="_3">多样性</h1>
+<ul>
+<li>Learning for search result diversification</li>
+</ul>
+<h1 id="mdp-2017">MDP-2017</h1>
+<ul>
+<li>Adapting markov decision process for search result diversification</li>
+</ul>
+<h1 id="rank">优化整个页面的rank</h1>
+<ul>
+<li>Beyond ranking: Optimizing whole-page presentation</li>
+</ul>
+<h1 id="globally-rank">阿里：Globally Rank</h1>
+<ul>
+<li>Globally Optimized Mutual Influence Aware Ranking in E-Commerce Search</li>
+<li>将问题建模为估计$(p(i|c(o, i)))$ c是上下文中的item，上下文是指排序展示结果中有的item</li>
+<li>关键是构造global特征，global特征构造方法是算一个全局分位点值<br />
+$$<br />
+f' = \frac{f - f_{min}}{f_{max} - f_{min}}<br />
+$$</li>
+<li>最后将rerank建模成一个序列生成模型，用RNN来做decoder，用beam search来做搜索</li>
+<li>lambdaMART用了listwise的损失函数，但是模型没有使用展示的list中的信息，这里的一个创新点应该是还利用到了list中的信息来做特征，建模这个得分。</li>
+</ul>
+<h1 id="rerank">阿里：个性化rerank</h1>
+<ul>
+<li>
+<p>Personalized Re-ranking for Recommendation<br />
+<img alt="PRM" src="/wiki/static/images/prm.png" /></p>
 </li>
-<li>10 项宏观经济数据及分析报告</li>
-<li>每周计划、调整与反馈</li>
+<li>
+<p>recsys2019年，阿里发表的文章</p>
+</li>
+<li>将问题建模为对排序后的每一个item计算一个得分 $(P(y_i | X, PV; \theta))$，其中X是该list所有item的特征矩阵，PV是一个正常pointwise排序模型（比如W&amp;D）最后一个隐层输出向量，作为用户和这个item的个性向量</li>
+<li>本质上是建模一个序列(排序后的item列表)到另一个序列(每一个item的打分序列)的问题</li>
+<li>将item特征向量和pv向量拼接，在加上position Encoder向量，通过一个transformer来建模这个序列到序列的变换模型；最后一层是一个softmax，监督信号是点击之类的信号</li>
+</ul>
+<h1 id="dpp-youtube">DPP：行列式点过程-YouTube</h1>
+<ul>
+<li>Practical Diversified Recommendations on YouTube with Determinantal Point Processes</li>
+<li>两个item是相似的，如果他们放在一起会导致效用下降<br />
+$$<br />
+P(y_i=1, y_j=1) &lt; P(y_i=1)P(y_j=1)<br />
+$$<br />
+如果feed流中有两个item是相似的，那么排序策略不是最优策略了！</li>
 </ul>
 </div>
 <div id="income">
@@ -144,7 +186,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2016-07-17 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2019-11-05 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -152,7 +194,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: '短中长期规划',
+  title: 'Rerank机制调研',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {

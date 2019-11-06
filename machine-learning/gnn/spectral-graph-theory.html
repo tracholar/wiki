@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>短中长期规划 - Tracholar的个人wiki</title>
+        <title>谱图理论-Spectral Graph Theory - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,74 +64,49 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#about">about</a>&nbsp;»&nbsp;短中长期规划</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#-gnn">gnn</a>&nbsp;»&nbsp;谱图理论-Spectral Graph Theory</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">短中长期规划</div>
+<div id="title">谱图理论-Spectral Graph Theory</div>
 <div id="content">
-  <h2 id="_1">短期</h2>
-<ul>
-<li>熟悉spark开发流程，学会使用mllib在线上建模 ✅</li>
-<li>cs224d  ✅</li>
-<li>cs231n  ✅</li>
-<li>cs294, cs234 RL</li>
-<li>GAN</li>
-<li>TensorFlow 系统性学习,并完成记录和博客 [TODO]</li>
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">导言</a></li>
 </ul>
-<h2 id="_2">读书</h2>
+</div>
+<h1 id="_1">导言</h1>
 <ul>
-<li>《财务会计教程》√</li>
-<li>《货币金融学》  √</li>
-<li>《赢》 √</li>
-<li>《格鲁夫的第一堂课》</li>
-<li>《第五项修炼》</li>
-<li>《投资学》 √</li>
-<li>《公司理财》 </li>
-<li>《期权期货及其他衍生品》</li>
-<li>《批判性思维工具》</li>
-<li>《巴菲特致股东的信:投资原则篇》</li>
-<li>《金字塔原理》 √</li>
-<li>《穷爸爸富爸爸》 √</li>
-<li>《日本的城镇化》√</li>
+<li>图的邻接矩阵 $(A_G(u, v))$</li>
+<li>图的操作：<ul>
+<li>diffusion operator，扩散操作：每一个时刻，某个顶点上的东西，均匀扩散到邻居顶点，不保留任何物质<ul>
+<li>$(D_G)$表示顶点的度矩阵，那么考虑归一化（这是为了得到扩散概率）邻接矩阵$(W_G = D_G^{-1} A_G)$ 。它的每一行$(W_G(u, \cdot))$代表从顶点u通过一次扩散操作转移到其他顶点的物质的比例。<ul>
+<li>另一种解释：W可以看做一个概率转移矩阵，从u转移到v的概率</li>
 </ul>
-<h2 id="_3">中期</h2>
-<ul>
-<li>deep learning overview ： Bengio 的书及相关论文</li>
-<li>machine learning overview ： 周志华的书，prml, element of ml</li>
-<li>分布式工具和环境， Spark， Hbase， Hadoop， Hive</li>
-<li>分布式算法，优化算法等</li>
-<li>金融学基础知识</li>
-<li><a href="http://nil.csail.mit.edu/6.824/2018/">http://nil.csail.mit.edu/6.824/2018/</a></li>
+</li>
+<li>用向量p表示初始每个顶点物质的数量，那么进过一次扩散操作后，每个顶点物质的数量为 $(p W_G)$<ul>
+<li>概率解释：一次扩散操作后，每个定点上的物质的数量是所有定点的量通过一次转移，到达该顶点的量的总和</li>
 </ul>
-<h2 id="_4">长期</h2>
-<ul>
-<li>ML 技术栈，从工程到算法到系统</li>
-<li>金融学基础知识</li>
-<li>从财务和技术两方面分析主流IT企业</li>
+</li>
 </ul>
-<h2 id="2018">2018年</h2>
-<ul>
-<li>6篇深入思考博客 [完成30%]</li>
-<li>10篇 关键论文结果的复现 [未完成]</li>
+</li>
+<li>拉普拉斯矩阵：$(L_G = D_G - A_G)$<ul>
+<li>半正定矩阵 $(x^T L_G x  = \sum_{(u,v) \in E} (x(u) - x(v))^2)$</li>
+<li>二次型的意义是图上数量分布的平滑性</li>
 </ul>
-<p>总结: 缺乏短期规划, 和短期不断的调整与反馈</p>
-<h2 id="2019">2019年</h2>
-<ul>
-<li>3篇深入思考博客<ul>
-<li>NGBoost</li>
-<li>推荐系统的召回总结</li>
+</li>
+</ul>
+</li>
+<li>谱论 <ul>
+<li>实对称矩阵，有n个特征值和对应的特征向量。线性代数的基础知识，不多介绍</li>
+<li>瑞利商 $(\frac{x^T M x}{x^T x})$</li>
+</ul>
+</li>
+<li>拉普拉斯矩阵的特征向量<ul>
+<li>L的特征值大于等于0</li>
+<li>0 是特征值，对应的特征向量是全1向量</li>
+<li>特征值的代数重数代表图可以划分为互不联通的子图的数目</li>
 <li></li>
 </ul>
 </li>
-<li>10篇重要论文中的关键部分复现</li>
-<li>3篇金融学书<ul>
-<li>货币金融学 √</li>
-<li>投资学 √</li>
-<li>期权期货 doing</li>
-</ul>
-</li>
-<li>10 项宏观经济数据及分析报告</li>
-<li>每周计划、调整与反馈</li>
 </ul>
 </div>
 <div id="income">
@@ -144,7 +119,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2016-07-17 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2019-11-05 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -152,7 +127,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: '短中长期规划',
+  title: '谱图理论-Spectral Graph Theory',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
