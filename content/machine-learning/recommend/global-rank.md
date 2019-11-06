@@ -80,11 +80,58 @@ $$
 - 将item特征向量和pv向量拼接，在加上position Encoder向量，通过一个transformer来建模这个序列到序列的变换模型；最后一层是一个softmax，监督信号是点击之类的信号
 
 
-# DPP：行列式点过程-YouTube
+# DPP：行列式点过程
+## 行列式点过程
+- 一个点过程P是行列式点过程是指，如果Y是一个采样自P的随机子集，那么对任意 $(S \subset Y)$，有
+$$
+P(S \subset Y) = \det(K_S)
+$$
+其中$(K)$是一个实对称半正点相似矩阵，$(K_S)$代表子集S作为下标集合表示的子矩阵。
+- 由于K的任意子矩阵的行列式表示一个概率所以，K的特征值应该都在[0,1]区间，因此有$(0 \le K \le 1)$
+- $(P(e_i \in Y)= K_{ii})$
+- $(P(e_i, e_j \in Y)= K_{ii}K_{jj} - K_{ij}^2 = P(e_i \in Y) P(e_j \in Y) - K_{ij}^2)$，也就是两个元素同时出现的概率小于分别出现概率的乘积！！这表明这两个元素是互斥的！Kij越大，表示这两个元素同时出现的概率越小！
+- 当没有交叉项，也就没有斥力项，此时K是对角阵，不同元素之间互相独立！
+
+### 例子
+- <https://arxiv.org/pdf/0904.3740.pdf>
+- 长度为N的序列，每个元素是从集合I中选出，从这个序列的第二个元素开始，如果当前元素小于前面一个数，那么就把这个元素的下标选出，这些下标的分布构成一个行列式点过程。
+
+
+
+
+## Google YouTube
 - Practical Diversified Recommendations on YouTube with Determinantal Point Processes
+- rerank的目标，最大化总交互数目
+$$
+G' = \sum_{u \sim user} \sum_{i \sim item} y_{ui}
+$$
+- 为了刻画rerank的收益，rerank的目标是把交互的用户和item对排到最前面，可以用下述累积收益来刻画
+$$
+G = \sum_{u \sim user} \sum_{i \sim item} \frac{y_{ui} }{j}
+$$
+j 是rerank后的排序！上述收益可以刻画rerank的排序效果！
 - 两个item是相似的，如果他们放在一起会导致效用下降
 $$
 P(y_i=1, y_j=1) < P(y_i=1)P(y_j=1)
 $$
 如果feed流中有两个item是相似的，那么排序策略不是最优策略了！
 
+![DPP](/wiki/static/images/dpp-serving.png)
+
+- 有N个item，用0表示用户没有点，1表示点击，那么N个item对应的用户的行为向量为[0,..,1,..,0]，其中点击的下标服从行列式点过程！！因为下标是「当前元素小于前一个数」（假设1小于0），所以刚好是DPP中的那个例子！
+- 因此用户点击的item下标服从DPP，点击下标集合Y的概率分布可以用一个矩阵的行列式来表示
+$$
+P(Y) = \frac{\det(L_Y)}{\sum_{Y ' \subset S} \det(L_{Y'})}
+$$
+S = {1,2,3,...,N}是全量下标集合。上式的分母可以简化为
+$$
+\sum_{Y ' \subset S} \det(L_{Y'}) = \det(L + I)
+$$
+
+- DPP核矩阵的定义，假设第i个video的Pointwise得分为$(q_i)$，sparse embedding向量为$(\phi_i)$。假设排序完有N个video，定义如下核矩阵
+$$
+L_{ii} = q_i^2 \\\\
+L_{ij} = \alpha q_i q_j \exp(- \frac{D_{ij}}{2\sigma^2}), i \neq j
+$$
+$(D_{ij})$是i和j的距离，通过embedding向量计算得到。
+- 当$(\alpha)$较大的时候，代表斥力很大，但是就无法保证核矩阵的半正定要求。作者通过一个投影操作，将核矩阵强行半正定化。投影的方法是，将核矩阵对角化，然后将负特征值强行置0！
