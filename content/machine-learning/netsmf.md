@@ -32,8 +32,16 @@ date: 2019-10-01
     R_e = v_u - v_v = (\chi_u-\chi_v)^T v = b_e L^+ b_e^T
     $$
     因此,等效电阻的关键是计算拉普拉斯矩阵的伪逆,即对拉普拉斯矩阵做谱分解。
-    
-    
+
+## Random-Walk Molynomial Sparsification
+- 利用random-walk 将图变成稀疏图
+- 谱相似，两个图的拉普拉斯矩阵是相似的，拉普拉斯矩阵相似是指，对任意x，
+$$
+(1-\epsilon) x^T \hat{L}x \le x^T L x \le (1+\epsilon) x^T \hat{L} x
+$$    
+那么这两个图就叫$(1+\epsilon)$-谱相似
+- 稀疏化的方法还没搞懂
+
 ## SVD
 - truncated SVD
 - redsvd <https://github.com/cequencer/redsvd>
