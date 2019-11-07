@@ -185,7 +185,7 @@ $(D_{ij})$是i和j的距离，通过embedding向量计算得到。
     - 数据偏差，通过ee来实现
     - 超参数$(\alpha, \sigma)$ 通过gridsearch来寻找
 
-![dpp-grid-search](/wiki/static/images/dpp-grid-search.png)
+<img alt="dpp-grid-search" src="/wiki/static/images/dpp-grid-search.png" width="400">
 
 ### Deep Gramian Kernels
 - 启发式的核矩阵，不容易分布式
@@ -204,7 +204,7 @@ L_{ij} = f(q_i)g(\phi_i)^T g(\phi_j)f(q_j) + \delta \mathbf{1}_{i=j}
 $$
 f和g是两个神经网络，f是标量，而g是一个向量，$(\delta)$是正则参数。这种方法可以保证L是半正定的，而不用投影！
 
-![DPP核矩阵建模](/wiki/static/images/dpp-kernel-nn.png)
+<img alt="DPP核矩阵建模" src="/wiki/static/images/dpp-kernel-nn.png" width="400">
 
 ### Efficient Ranking Algorithm with DPP
 - DPP layer接受到N个item的质量分q和video的embedding向量$(\phi)$
@@ -215,3 +215,32 @@ $$
 \max_{Y:|Y|=k} \det(L_Y)
 $$
 - 这个问题可以通过贪心算法近似求解，即从一个空集开始，每次加入一个item都要使得现有的k个item对应的$(\det(L_Y) )$是最大的！
+
+<img alt="DPP算法" src="/wiki/static/images/dpp-rank-algo.png" width="400">
+
+### 实验
+实验对比：
+<img alt="DPP实验结果" src="/wiki/static/images/dpp-exp-data.png" width="400">
+
+- Fuzzy deduping：从空集开始，贪心地增加item：新增加的item如果和现有集合中的item距离小于一个阈值就干掉！
+- Sliding window：每m个item最多n个的距离可以小于一个阈值
+- Smooth score penalty：将相似作为惩罚系数
+$$
+q_{new, v} = q_{origin,v} * e^{-b(\phi_v \cdot \phi_{prev})} \\\\
+\phi_{prev} = \sum_{k=0}^{n} a^{n-k-1} \phi_k
+$$
+- 这些方法都没有正向效果。只有DPP和Deep DPP有正向效果
+- 对稀疏向量，使用Jaccard 距离应用到item token比较有效
+- 核参数版本的DPP有明显正向效果，首页满意观看指标+0.63%，观看时长+0.52%。已经部署到TV，桌面，Live stream等场景。
+- Deep DPP虽然在第一个指标提升1.72%，但是由于对排序改动较大，对第二指标不利影响，仍需要继续调优！所以还没有部署。
+- 长期学习效应：多样性带来更长期的收益，并且随着时间逐渐巩固！
+
+<img alt="长期学习效应" src="/wiki/static/images/dpp-learning-effect.png" width="500">
+
+### 结论和未来规划
+- 多样性具有短期和长期双重收益
+- 当前的多样性策略没有考虑用户的个性化、item的类型可能影响多样化需求。以及时间因素
+- 未来会利用强化学习探索多样性的调控策略
+
+### 思考
+- DPP相比于传统的多样性方法，本质区别是什么？传统的方法还是将多样性作为一个目标，而DPP确实在优化用户交互这个目标，多样性是为了这个目标所必需的。简单地说，传统的方法是在优化多样性本身，DPP是在优化用户对列表的总交互量！
