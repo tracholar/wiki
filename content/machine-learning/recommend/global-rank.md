@@ -81,6 +81,9 @@ $$
 
 
 # DPP：行列式点过程
+- 参考 <http://people.csail.mit.edu/stefje/fall15/notes_lecture21.pdf>
+- Determinantal Point Processes for Machine Learning <http://www.alexkulesza.com/pubs/dpps_fnt12.pdf>
+
 ## 行列式点过程
 - 一个点过程P是行列式点过程是指，如果Y是一个采样自P的随机子集，那么对任意 $(S \subset Y)$，有
 $$
@@ -90,12 +93,55 @@ $$
 - 由于K的任意子矩阵的行列式表示一个概率所以，K的特征值应该都在[0,1]区间，因此有$(0 \le K \le 1)$
 - $(P(e_i \in Y)= K_{ii})$
 - $(P(e_i, e_j \in Y)= K_{ii}K_{jj} - K_{ij}^2 = P(e_i \in Y) P(e_j \in Y) - K_{ij}^2)$，也就是两个元素同时出现的概率小于分别出现概率的乘积！！这表明这两个元素是互斥的！Kij越大，表示这两个元素同时出现的概率越小！
+- 如果 $(K_{ij} = \sqrt{K_{ii} K_{jj}})$ 表示i和j是完全相似的，这两个item同时出现的概率接近于0！
 - 当没有交叉项，也就没有斥力项，此时K是对角阵，不同元素之间互相独立！
 
 ### 例子
 - <https://arxiv.org/pdf/0904.3740.pdf>
 - 长度为N的序列，每个元素是从集合I中选出，从这个序列的第二个元素开始，如果当前元素小于前面一个数，那么就把这个元素的下标选出，这些下标的分布构成一个行列式点过程。
 
+### L-ensembles
+- 对一个实对称阵L，点过程 $(Y \subset V)$ 的未归一化概率为
+$$
+P_L(Y) \propto \det(L_Y) 
+$$
+- 如何计算归一化常数。有下列定理(⚠️)
+- 对任意$(A \subset V)$
+$$
+\sum_{A \subset Y \subset V} \det(L_Y) = \det(L + I_{\bar{A}})
+$$
+其中$(I_{\bar{A}})$ 是一个对角阵，A中下标对应的对角元素是0，非A中的下标对角元为1.
+- 当 $(A = \phi)$空集时，就得到L-ensembles的归一化常数为
+$$
+\sum_{S \subset V} \det(L_S) = \det(L + I_V)
+$$
+- 用核矩阵（归一化的）K和实对称阵L定义DPP是等价的，并且这两个矩阵有关系
+$$
+K = L(L + I)^{-1} = I - (L + I)^{-1} \\\\
+L = (I - K)^{-1} - I = K (I - K)^{-1}
+$$
+- 特征值分解，如果L的特征值分解为 $(L = \sum_k \lambda_k v_k v_k^T)$，那么$(K = \sum_k \frac{\lambda_k}{\lambda_k + 1} v_k v_k^T)$
+- 几何视角：点过程$(x_1,...,x_n)$是n维空间中的点过程，那么可以构造矩阵$(L_{ij} = x_i^T x_j)$，那么 ⚠️
+$$
+P_L(S) \propto \det(L_S) = Vol^2(\\{x_i\\}_{i \in S}) 
+$$
+如果一个集合包含的点具有更多的多样性，那么体积也就越大，所以概率也就越大。
+
+### DPP的应用
+- 尽管DPP的可能子集数目是指数规模$(2^N)$，但是DPP的很多概率推断却可以在多项式时间复杂度完成！
+- 如果$( Y \sim DPP(K) )$，那么Y的补集 $( \bar{Y} \sim DPP(I - K) )$   ⚠️
+$$
+P(A \cap Y = \phi) = \det(I - K_A)
+$$
+- 其他略，参考原始材料吧
+- DPP众数，找到一个集合Y，最大化概率$(P_L(Y))$是一个NP-hard问题
+
+### DPP采样
+- 问题：
+    - 如何采样
+    - 样本中有多少个点
+- element DPP：如果核矩阵的特征值为{0,1}。一个DPP可以看做多个基础DPP的混合！
+- 定理：一个DPP，$(L = \sum_k \lambda_k v_k v_k^T)$ 可以看做多个基础的DPP的混合：$(P_L = \frac{1}{\det(L + I)} \sum_{T \subset U} \Pi_{k\in T} \lambda_k P^T)$    
 
 
 
@@ -135,3 +181,37 @@ L_{ij} = \alpha q_i q_j \exp(- \frac{D_{ij}}{2\sigma^2}), i \neq j
 $$
 $(D_{ij})$是i和j的距离，通过embedding向量计算得到。
 - 当$(\alpha)$较大的时候，代表斥力很大，但是就无法保证核矩阵的半正定要求。作者通过一个投影操作，将核矩阵强行半正定化。投影的方法是，将核矩阵对角化，然后将负特征值强行置0！
+- 训练方法
+    - 数据偏差，通过ee来实现
+    - 超参数$(\alpha, \sigma)$ 通过gridsearch来寻找
+
+![dpp-grid-search](/wiki/static/images/dpp-grid-search.png)
+
+### Deep Gramian Kernels
+- 启发式的核矩阵，不容易分布式
+- 直接用模型学习kernel矩阵
+- 核矩阵的参数L有r个参数，用向量w表示。$(L = L(w))$
+- 训练集： 
+    1. 有N个items
+    2. 用户有交互的item下标集合Y
+- 优化目标：极大似然估计出参数w，拟合实际的观测样本Y
+$$
+loglike(w) = \sum_j \log P(Y_j|w) = \sum_j \left[ \log \det(L(w) _ {Y_j}) - \log \det(I + L(w) _ {Y_j}) \right]
+$$
+- L的参数：item的embedding向量、质量分$(q_i)$向量（多个质量分维度，而不是最终的一个分数）
+$$
+L_{ij} = f(q_i)g(\phi_i)^T g(\phi_j)f(q_j) + \delta \mathbf{1}_{i=j}
+$$
+f和g是两个神经网络，f是标量，而g是一个向量，$(\delta)$是正则参数。这种方法可以保证L是半正定的，而不用投影！
+
+![DPP核矩阵建模](/wiki/static/images/dpp-kernel-nn.png)
+
+### Efficient Ranking Algorithm with DPP
+- DPP layer接受到N个item的质量分q和video的embedding向量$(\phi)$
+- 利用构造的方法或者神经网络的方法，计算出DPP的未归一化核矩阵L
+- 选择固定的窗k << N，寻找最大概率的k个item，放到上面，然后依次执行该步骤，选出余下的item并排序。之所以要选择一个窗口，而不是对全部N个item来排序，是因为相似item的斥力随着展示距离而衰减！换句话说，距离达到一定程度后是可以放很相似的item的。N一般是几百，而k一般是10+的样子。
+- 最大化k个item出现的概率对应下列优化问题，是一个NP-hard问题
+$$
+\max_{Y:|Y|=k} \det(L_Y)
+$$
+- 这个问题可以通过贪心算法近似求解，即从一个空集开始，每次加入一个item都要使得现有的k个item对应的$(\det(L_Y) )$是最大的！
