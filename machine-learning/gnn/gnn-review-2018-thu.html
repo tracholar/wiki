@@ -72,7 +72,10 @@
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">摘要</a></li>
 <li><a href="#_2">导言</a></li>
-<li><a href="#_3">模型</a></li>
+<li><a href="#_3">模型</a><ul>
+<li><a href="#gnn">GNN的变体</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <h2 id="_1">摘要</h2>
@@ -116,6 +119,23 @@
 </li>
 </ul>
 <h2 id="_3">模型</h2>
+<ul>
+<li>F. Scarselli, M. Gori, A. C. Tsoi, M. Hagenbuchner, and G. Monfar- dini, “The graph neural network model,” IEEE TNN 2009, vol. 20, no. 1, pp. 61–80, 2009</li>
+<li>GNN的目标是学习一个隐向量，包含了邻居节点的信息</li>
+<li>输出的结果依赖这个隐向量和当前节点的信息<br />
+$$<br />
+H = F(H, X) \\<br />
+O = G(H, X_N)<br />
+$$<br />
+H 是所有节点的状态，X是所有的特征，X_N是所有节点的特征，O是所有的输出。F是global transition function，G是global output function。H是F的不动点，可以通过迭代求解。</li>
+<li>传统GNN的不足<ul>
+<li>迭代求解不动点是低效的</li>
+<li>不同层的参数是相同的</li>
+<li>存在一些边相关的特征无法建模</li>
+</ul>
+</li>
+</ul>
+<h3 id="gnn">GNN的变体</h3>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
