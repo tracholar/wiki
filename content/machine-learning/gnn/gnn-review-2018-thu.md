@@ -34,3 +34,17 @@ date: 2019-11-04
     - GNN将图的结构信息作为传播关系，而不是直接作为特征
     
 ## 模型
+- F. Scarselli, M. Gori, A. C. Tsoi, M. Hagenbuchner, and G. Monfar- dini, “The graph neural network model,” IEEE TNN 2009, vol. 20, no. 1, pp. 61–80, 2009
+- GNN的目标是学习一个隐向量，包含了邻居节点的信息
+- 输出的结果依赖这个隐向量和当前节点的信息
+$$
+H = F(H, X) \\\\
+O = G(H, X_N)
+$$
+H 是所有节点的状态，X是所有的特征，X_N是所有节点的特征，O是所有的输出。F是global transition function，G是global output function。H是F的不动点，可以通过迭代求解。
+- 传统GNN的不足
+    - 迭代求解不动点是低效的
+    - 不同层的参数是相同的
+    - 存在一些边相关的特征无法建模
+
+### GNN的变体
