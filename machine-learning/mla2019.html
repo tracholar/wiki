@@ -90,11 +90,21 @@
 <li>论文：Unbiased LambdaMART- An Unbiased Pairwise Learning-to-Rank Algorithm</li>
 <li>点击数据具有偏差：位置偏差和展示偏差</li>
 <li>解决的方法：估计出这些偏差</li>
-<li>
-<p>Pointwise无偏LTR<br />
+<li>Pointwise无偏LTR<br />
 $$<br />
 P(c_i^+|x_i) = t_i^+ P(r_i^+|x_i)<br />
+$$</li>
+<li>
+<p>所以可以将$(1/t_i^+)$作为权重来纠偏<br />
+$$<br />
+f_{unbiased} = \arg\min_f \sum_q \sum_d \frac{L(f(x_i), c_i^+)}{t_i^+}<br />
 $$</p>
+</li>
+<li>
+<p>IPW: The central role of the propensity score in observational studies for causal effects, 1983</p>
+</li>
+<li>
+<p>点击一定相关，相关但不一定点击！</p>
 </li>
 <li>
 <p>pairwise无偏LTR<br />
