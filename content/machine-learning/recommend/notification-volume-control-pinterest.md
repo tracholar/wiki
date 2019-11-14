@@ -63,3 +63,6 @@ $$
 - Rupesh Gupta, Guanfeng Liang, and Rómer Rosales. 2017. Optimizing Email Volume For Sitewide Engagement. In Proceedings of the 2017 ACM on Conference on Information and Knowledge Management, CIKM 2017, Singapore, November 06 - 10, 2017. 1947–1955
 - Rupesh Gupta, Guanfeng Liang, Hsiao-Ping Tseng, Ravi Kiran Holur Vijay, Xi- aoyu Chen, and Rómer Rosales. 2016. Email Volume Optimization at LinkedIn. In Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, San Francisco, CA, USA, August 13-17, 2016. 97–106
     
+    
+## Real-World Product Deployment of Adaptive Push Notification Scheduling on Smartphones
+- KDD2019

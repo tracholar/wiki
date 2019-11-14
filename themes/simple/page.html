@@ -12,7 +12,7 @@
         {%- if loop.index == 1 -%}
           {%- set id = c -%}
         {%- else -%}
-          {% set id = c -%}
+          {% set id = id ~ "-" ~ c -%}
         {%- endif -%}
     &nbsp;»&nbsp;<a href="{{ site.root }}/#{{ id }}">{{ c }}</a>
       {%- endfor -%}
