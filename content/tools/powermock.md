@@ -196,6 +196,47 @@ public class TestLocalServiceImplMock {
     }
 }
 ```
+
+### Mock私有方法
+- 下面的例子要测试`meaningfulPublicApi`，但希望 `doTheGamble` 返回特定的值来测试，需要mock `doTheGamble` 方法，而执行真正的 `meaningfulPublicApi` 方法。可以通过 `spy` 来实现。 `spy`只mock指定的方法和属性，而其他没有mock的就会执行真正的方法！
+
+```java
+public class CodeWithPrivateMethod {
+
+    public void meaningfulPublicApi() {
+        if (doTheGamble("Whatever", 1 << 3)) {
+            throw new RuntimeException("boom");
+        }
+    }
+
+    private boolean doTheGamble(String whatever, int binary) {
+        Random random = new Random(System.nanoTime());
+        boolean gamble = random.nextBoolean();
+        return gamble;
+    }
+}
+```
+
+- 测试类
+
+```java
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(CodeWithPrivateMethod.class)
+public class CodeWithPrivateMethodTest {
+
+    @Test(expected = RuntimeException.class)
+    public void when_gambling_is_true_then_always_explode() throws Exception {
+        CodeWithPrivateMethod spy = PowerMockito.spy(new CodeWithPrivateMethod());
+
+        when(spy, method(CodeWithPrivateMethod.class, "doTheGamble", String.class, int.class))
+                .withArguments(anyString(), anyInt())
+                .thenReturn(true);
+
+        spy.meaningfulPublicApi();
+    }
+}
+```
+
 ### Mock 静态field
 - 下面的例子有一个静态的字段 `logger`，一般可能是一个远程的logger需要mock，这里以log4j为例
 ```java

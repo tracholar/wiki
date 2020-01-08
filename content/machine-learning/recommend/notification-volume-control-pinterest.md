@@ -65,4 +65,12 @@ $$
     
     
 ## Real-World Product Deployment of Adaptive Push Notification Scheduling on Smartphones
-- KDD2019
+- KDD2019, 日本yahoo和Keio University联合发的文章
+- Yahoo 日本 Android APP
+- 自适应通知策略，估计用户打断，用户的注意力是有限的
+- 38W用户，28天的测试，点击率提升60%
+- 在突发新闻的时候更好
+- 解决「打断过载」的问题，更像在解决触发时机的问题
+- 
+
+
