@@ -76,6 +76,7 @@
 <li><a href="#mock">Mock 外部调用</a></li>
 <li><a href="#mockio">Mock非静态方法和对象（例如文件IO）</a></li>
 <li><a href="#mock_1">Mock 私有字段</a></li>
+<li><a href="#mock_2">Mock私有方法</a></li>
 <li><a href="#mock-field">Mock 静态field</a></li>
 </ul>
 </li>
@@ -292,6 +293,48 @@
 </pre></div>
 
 
+<h3 id="mock_2">Mock私有方法</h3>
+<ul>
+<li>下面的例子要测试<code>meaningfulPublicApi</code>，但希望 <code>doTheGamble</code> 返回特定的值来测试，需要mock <code>doTheGamble</code> 方法，而执行真正的 <code>meaningfulPublicApi</code> 方法。可以通过 <code>spy</code> 来实现。 <code>spy</code>只mock指定的方法和属性，而其他没有mock的就会执行真正的方法！</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CodeWithPrivateMethod</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">meaningfulPublicApi</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">doTheGamble</span><span class="o">(</span><span class="s">&quot;Whatever&quot;</span><span class="o">,</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">RuntimeException</span><span class="o">(</span><span class="s">&quot;boom&quot;</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">doTheGamble</span><span class="o">(</span><span class="n">String</span> <span class="n">whatever</span><span class="o">,</span> <span class="kt">int</span> <span class="n">binary</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Random</span> <span class="n">random</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Random</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">nanoTime</span><span class="o">());</span>
+        <span class="kt">boolean</span> <span class="n">gamble</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="na">nextBoolean</span><span class="o">();</span>
+        <span class="k">return</span> <span class="n">gamble</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<ul>
+<li>测试类</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="nd">@RunWith</span><span class="o">(</span><span class="n">PowerMockRunner</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="nd">@PrepareForTest</span><span class="o">(</span><span class="n">CodeWithPrivateMethod</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CodeWithPrivateMethodTest</span> <span class="o">{</span>
+
+    <span class="nd">@Test</span><span class="o">(</span><span class="n">expected</span> <span class="o">=</span> <span class="n">RuntimeException</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">when_gambling_is_true_then_always_explode</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">CodeWithPrivateMethod</span> <span class="n">spy</span> <span class="o">=</span> <span class="n">PowerMockito</span><span class="o">.</span><span class="na">spy</span><span class="o">(</span><span class="k">new</span> <span class="n">CodeWithPrivateMethod</span><span class="o">());</span>
+
+        <span class="n">when</span><span class="o">(</span><span class="n">spy</span><span class="o">,</span> <span class="n">method</span><span class="o">(</span><span class="n">CodeWithPrivateMethod</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="s">&quot;doTheGamble&quot;</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">))</span>
+                <span class="o">.</span><span class="na">withArguments</span><span class="o">(</span><span class="n">anyString</span><span class="o">(),</span> <span class="n">anyInt</span><span class="o">())</span>
+                <span class="o">.</span><span class="na">thenReturn</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+
+        <span class="n">spy</span><span class="o">.</span><span class="na">meaningfulPublicApi</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
 <h3 id="mock-field">Mock 静态field</h3>
 <ul>
 <li>下面的例子有一个静态的字段 <code>logger</code>，一般可能是一个远程的logger需要mock，这里以log4j为例</li>
@@ -380,7 +423,7 @@ gitment.render('comments')
         </div>
         <div id="footer">
             <span>
-                Copyright © 2019 tracholar.
+                Copyright © 2020 tracholar.
                 Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
             </span>
         </div>

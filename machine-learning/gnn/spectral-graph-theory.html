@@ -70,10 +70,17 @@
 <div id="title">谱图理论-Spectral Graph Theory</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">导言</a></li>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">导言</a></li>
 </ul>
 </div>
-<h1 id="_1">导言</h1>
+<h1 id="_1">关于</h1>
+<ul>
+<li>课程 Spectral Graph Theory  的学习笔记</li>
+<li><a href="http://www.cs.yale.edu/homes/spielman/561/">http://www.cs.yale.edu/homes/spielman/561/</a></li>
+<li>python 图代码库 <a href="https://networkx.github.io/">https://networkx.github.io/</a> <a href="https://networkx.github.io/documentation/stable/">https://networkx.github.io/documentation/stable/</a></li>
+</ul>
+<h1 id="_2">导言</h1>
 <ul>
 <li>图的邻接矩阵 $(A_G(u, v))$</li>
 <li>图的操作：<ul>
@@ -100,10 +107,22 @@
 <li>瑞利商 $(\frac{x^T M x}{x^T x})$</li>
 </ul>
 </li>
-<li>拉普拉斯矩阵的特征向量<ul>
+<li>拉普拉斯矩阵的特征向量，假设特征值从小到大排序 $(\lambda_1 \le \lambda_2 \le \cdot \lambda_n)$<ul>
 <li>L的特征值大于等于0</li>
 <li>0 是特征值，对应的特征向量是全1向量</li>
 <li>特征值的代数重数代表图可以划分为互不联通的子图的数目</li>
+<li>$(\lambda_2 &gt; 0)$ 当且仅当图是联通的。<ul>
+<li>个人理解，一个互相联通的图可以用一个拉普拉斯矩阵表示出来，且存在一个非0向量使得这个Lx=0</li>
+<li>两个互不联通的图看做一个图的时候，由于两个图节点间没有任何连接，因此对应的总拉普拉斯矩阵应该是<br />
+$$<br />
+L = \begin{bmatrix}<br />
+L_1 &amp; O \\<br />
+O &amp; L_2<br />
+\end{bmatrix}<br />
+$$</li>
+<li>因此，显然可以构造两个不同的向量$([v_1, O], [O, v_2])$ 使得Lv=0，其中v1和v2分别是子矩阵的0空间中的任意向量。</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -147,7 +166,7 @@ gitment.render('comments')
         </div>
         <div id="footer">
             <span>
-                Copyright © 2019 tracholar.
+                Copyright © 2020 tracholar.
                 Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
             </span>
         </div>
