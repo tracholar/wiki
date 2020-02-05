@@ -42,3 +42,6 @@ date: 2020-01-18
 ### 现在有哪些文档是以FAQ的方式写的
 - [FAQ阅读法](/wiki/about/faq-learning.html)
 - [海蒂怀孕大百科全书](/wiki/baby/baby-heidi.html)
+- [简明中国古代史](/wiki/history/old-china.html)
+- [感冒与病毒](/wiki/medicine/cold-virus.html)
+- [医学免疫学](/wiki/medicine/immunology.html)
