@@ -72,8 +72,11 @@
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">关于</a></li>
 <li><a href="#_2">导言</a></li>
+<li><a href="#_3">拉普拉斯矩阵</a></li>
 <li><a href="#faq">FAQ</a><ul>
-<li><a href="#_3">为什么特征值的代数重数代表图可以划分为互不联通的子图的数目</a></li>
+<li><a href="#0">为什么特征值0的代数重数代表图可以划分为互不联通的子图的数目</a></li>
+<li><a href="#_4">对拉普拉斯矩阵做线性变换有什么特殊含义吗</a></li>
+<li><a href="#_5">拉普拉斯矩阵的特征值和特征向量有什么意义</a></li>
 </ul>
 </li>
 </ul>
@@ -114,7 +117,7 @@
 <li>拉普拉斯矩阵的特征向量，假设特征值从小到大排序 $(\lambda_1 \le \lambda_2 \le \cdot \lambda_n)$<ul>
 <li>L的特征值大于等于0</li>
 <li>0 是特征值，对应的特征向量是全1向量</li>
-<li>特征值的代数重数代表图可以划分为互不联通的子图的数目</li>
+<li>特征值0的代数重数代表图可以划分为互不联通的子图的数目</li>
 <li>$(\lambda_2 &gt; 0)$ 当且仅当图是联通的。<ul>
 <li>个人理解，一个互相联通的图可以用一个拉普拉斯矩阵表示出来，且存在一个非0向量使得这个Lx=0</li>
 <li>两个互不联通的图看做一个图的时候，由于两个图节点间没有任何连接，因此对应的总拉普拉斯矩阵应该是<br />
@@ -130,8 +133,75 @@ $$</li>
 </ul>
 </li>
 </ul>
+<h1 id="_3">拉普拉斯矩阵</h1>
+<ul>
+<li>全1向量是特征值0对应的特征向量</li>
+<li>$(\lambda_2)$ 对应的特征向量是满足下列条件的向量</li>
+</ul>
+<p>$$<br />
+\min_x x^T Lx \\<br />
+s.t. ||x||^2 = 1 \\<br />
+1^T x = 0<br />
+$$</p>
+<ul>
+<li>$(\lambda_3)$ 对应的特征向量是满足于跟上述x正交且满足上述条件的解y</li>
+<li>$(\lambda_2)$ 跟问题「通过切割最少的边，将图切分成两个子图」有密切关系</li>
+<li>顶点集合的子集S的边界(boundary)定义为S与剩下定点的所有相连的边的集合</li>
+</ul>
+<p>$$<br />
+\partial S = \{(u,v) \in E| u \in S, v\notin S \}<br />
+$$</p>
+<ul>
+<li>
+<p>isoperimetric ratio 定义为S的边界集合大小与S顶点数目之比<br />
+$$<br />
+\theta(S) = \frac{|\partial S|}{|S|}<br />
+$$</p>
+</li>
+<li>
+<p>isoperimetric number 定义为上述比值的最小值，要求S的大小不超过所有顶点数的一半<br />
+$$<br />
+\theta_G = \min_{|S| \le n/2} \theta(S)<br />
+$$</p>
+</li>
+<li>
+<p>定理(下界)：对每一个子集 $(S \subset V)$， <br />
+$$<br />
+\theta(S) \ge \lambda_2 (1-s)<br />
+$$<br />
+s=|S|/|V|是顶点数目比率，因为S的数目不超过V的一半，所以$(s \le 1/2)$，所以<br />
+$$<br />
+\theta_G \ge \lambda_2 /2<br />
+$$</p>
+</li>
+</ul>
+<blockquote>
+<p>定理的证明，关键是理解 $(x^T L x)$ 的几何意义。取一个特殊的向量x，x是子集S的示性函数，即xi代表第i个定点是否在S中，如果在则xi=1，否则xi=0。<br />
+那么 $( (Lx)_i , i \in S)$ 的意义则为第i个顶点与S外的其他定点的边的数目，把S中的所有i求和即得到边界$(\partial S)$ 的大小了。<br />
+所以 $(\theta(S) = \frac{x^T L x}{x^T x})$<br />
+显然上式是不小于$(\lambda_2)$ 的，但是还有更准确的下界。<br />
+将x按照两个子空间分解（0特征值的空间，即全1向量空间；正交补空间，即 $(x^T i = 0)$）<br />
+$(x = y + s)$，$(y^T 1 = 0)$，s则为每一维都是s的向量，且$(s_i=|S|/|V| )$<br />
+所以继续推导有（注意s是L的特征向量，Ls=0）<br />
+$$<br />
+\theta(S) = \frac{x^T L x}{x^T x} \\<br />
+          = \frac{y^T L y}{x^T x}   \ge \lambda_2 \frac{y^T y}{x^T x} \\<br />
+          = \lambda_2 \frac{y^T y}{y^T y + s^T s}  =  \lambda_2 (1-s)<br />
+$$</p>
+</blockquote>
 <h1 id="faq">FAQ</h1>
-<h3 id="_3">为什么特征值的代数重数代表图可以划分为互不联通的子图的数目</h3>
+<h2 id="0">为什么特征值0的代数重数代表图可以划分为互不联通的子图的数目</h2>
+<p>两个互不联通的图看做一个图的时候，由于两个图节点间没有任何连接，因此对应的总拉普拉斯矩阵应该是<br />
+$$<br />
+L = \begin{bmatrix}<br />
+L_1 &amp; O \\<br />
+O &amp; L_2<br />
+\end{bmatrix}<br />
+$$</p>
+<p>因此，显然可以构造两个不同的向量$([v_1, O], [O, v_2])$ 使得Lv=0，其中v1和v2分别是子矩阵的0空间中的任意向量。</p>
+<p>显然，如果可以划分成k个子图，那么0特征值的代数重数就是k。</p>
+<h2 id="_4">对拉普拉斯矩阵做线性变换有什么特殊含义吗</h2>
+<h2 id="_5">拉普拉斯矩阵的特征值和特征向量有什么意义</h2>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
