@@ -90,6 +90,7 @@ $$
 >           = \lambda_2 \frac{y^T y}{y^T y + s^T s}  =  \lambda_2 (1-s)
 > $$
 
+- 定理的意义：这个定理说明了lambda_2跟L的联通性的关系，lambda_2越大，说明L联通性越好（任意子集与其补集间的边越多）
 
 # FAQ
 
