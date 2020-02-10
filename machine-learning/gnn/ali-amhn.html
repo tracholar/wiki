@@ -1,0 +1,307 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>Representation Learning for Attributed Multiplex Heterogeneous Network - Tracholar的个人wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="google-search" style="width:200px; float:right; margin: 20px 0;">
+                <form action="//cse.google.com/cse" method="get" id="search-form">
+                    <input type="hidden" name="cx" value="015970462532790426975:gqlen38ywus"/>
+                    <input type="text" name="q"  style="line-height:20px; padding:4px;" placeholder="站内搜索"/>
+                    <svg width="13" height="13" viewBox="0 0 13 13" style="position:relative; left: -20px;" onclick="document.getElementById('search-form').submit()">
+                        <title>搜索</title>
+                        <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z">
+                        </path>
+                    </svg>
+                </form>
+
+            </div>
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#-gnn">gnn</a>&nbsp;»&nbsp;Representation Learning for Attributed Multiplex Heterogeneous Network</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">Representation Learning for Attributed Multiplex Heterogeneous Network</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">主要内容</a><ul>
+<li><a href="#_2">模型</a></li>
+<li><a href="#transductive-model-gatne-t">Transductive Model: GATNE-T</a></li>
+</ul>
+</li>
+<li><a href="#faq">FAQ</a><ul>
+<li><a href="#_3">这篇文章解决的问题是什么</a></li>
+<li><a href="#amhens">之前的论文没有研究AMHENs吗？他们都是在研究啥图</a></li>
+<li><a href="#amhens_1">AMHENs有什么实际的困难吗</a></li>
+<li><a href="#_4">本文方法的关键点是什么</a></li>
+<li><a href="#transductive-learning-inductive-learning">文中说的transductive learning 跟 inductive learning分别是什么？</a></li>
+<li><a href="#f1">论文中模型离线评估的F1值是怎么算的</a></li>
+<li><a href="#_5">其它可以扩展到新节点的方法有哪些</a></li>
+<li><a href="#_6">本文中的问题的数学表示是</a></li>
+<li><a href="#gatne-t">GATNE-T 的基本结构是什么</a></li>
+<li><a href="#gatne-t_1">GATNE-T 中每个顶点的初始边向量是怎么来的</a></li>
+<li><a href="#gatne-t-kk-1">GATNE-T 第k次聚合是否只利用到k-1次聚合的结果</a></li>
+<li><a href="#gatne-t_2">GATNE-T 对多个关系是如何处理的</a></li>
+<li><a href="#gatne-tu">为什么GATNE-T中，u明明是跟顶点强绑定的，对邻居节点的聚合和多个关系的聚合被表示为边的表达</a></li>
+<li><a href="#gatne-t_3">GATNE-T 对顶点属性是如何利用的</a></li>
+<li><a href="#gatne-i">GATNE-I 是如何处理属性的</a></li>
+<li><a href="#gatne-i_1">GATNE-I 是如何实现对新的节点的也能推理的</a></li>
+<li><a href="#_7">模型是如何训练的，监督信号是啥</a></li>
+<li><a href="#_8">分布式训练是如何做的</a></li>
+<li><a href="#_9">为什么顶点向量维度比边向量维度高一个量级</a></li>
+<li><a href="#meta-path">meta-path的采样在工程上是如何实现的</a></li>
+<li><a href="#_10">邻居聚合在训练和推断的时候是如何实现的</a></li>
+<li><a href="#_11">文章的结果是否拿到线上效果</a></li>
+<li><a href="#_12">这篇文章的前序文章有哪些值得看的</a></li>
+<li><a href="#_13">代码在哪</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h1 id="_1">主要内容</h1>
+<h2 id="_2">模型</h2>
+<p><img alt="模型" src="/wiki/static/images/amhen-03.png" /></p>
+<h2 id="transductive-model-gatne-t">Transductive Model: GATNE-T</h2>
+<ul>
+<li>每个定点的向量是其一阶邻居向量的某种聚合操作（均值、attention etc）</li>
+<li>可以存在多次聚合，就能扩展到邻居的邻居来表示该节点</li>
+</ul>
+<h1 id="faq">FAQ</h1>
+<h2 id="_3">这篇文章解决的问题是什么</h2>
+<ul>
+<li>AMHENs网络的表达学习</li>
+<li>AMHENs网络是指：不同类型的顶点会有不同类型的边；每个顶点关联一组不同的属性。</li>
+<li>举例来说：在电商领域，user跟item的关系有<ul>
+<li>点过</li>
+<li>买过</li>
+<li>加购物车</li>
+<li>加收藏</li>
+</ul>
+</li>
+</ul>
+<h2 id="amhens">之前的论文没有研究AMHENs吗？他们都是在研究啥图</h2>
+<ul>
+<li>deepwalk，node2vec，同质图，只有一种顶点，一种关系，没有属性</li>
+<li>metapath2vec，异构图，有多种顶点，多种关系（两个顶点之间只有一种关系），没有属性</li>
+</ul>
+<p><img alt="不同算法的对比图" src="/wiki/static/images/amhen-02.png" /></p>
+<h2 id="amhens_1">AMHENs有什么实际的困难吗</h2>
+<ul>
+<li>多个边，两个节点见有多种关系，也就有多个边。每种关系的对刻画节点关系的重要程度不一样（例如下单跟点击）</li>
+<li>部分观测，大部分user跟item之间没有曝光过，所以就没法获得用户跟item的一些关系，所能拿到的数据都只是观测到的一部分数据。大多已存在的方法无法处理长尾和冷启动问题</li>
+<li>可扩展性，数据规模大，节点是10亿量级，边是百亿甚至千亿量级</li>
+</ul>
+<h2 id="_4">本文方法的关键点是什么</h2>
+<ul>
+<li>方法：General Attributed Multiplex HeTerogeneous Network Embedding （GATNE）</li>
+<li>关键技术：</li>
+</ul>
+<h2 id="transductive-learning-inductive-learning">文中说的transductive learning 跟 inductive learning分别是什么？</h2>
+<ul>
+<li>说的是否能泛化到新的顶点上（例如新用户和新的商品）</li>
+</ul>
+<h2 id="f1">论文中模型离线评估的F1值是怎么算的</h2>
+<ul>
+<li>在原始的数据中，构造了一个链接预测任务</li>
+<li>随机选取了5%/10%的正样本，以及相同数目的负样本</li>
+<li>假设已经知道正样本数目，（相当于将P调到跟R一样），避免卡不同阈值带来的差异</li>
+<li>多个类型的边的结果单独计算，然后平均</li>
+</ul>
+<h2 id="_5">其它可以扩展到新节点的方法有哪些</h2>
+<ul>
+<li>GraphSAGE，Inductive Representation Learning on Large Graphs</li>
+<li>基本想法是利用节点的特征来表达节点，学出表示函数的参数，而不是直接对节点做embedding</li>
+</ul>
+<h2 id="_6">本文中的问题的数学表示是</h2>
+<ul>
+<li>对每一个顶点v，在不同的关系r下，存在一个embedding向量 $(v^r)$。本文是对每种关系r学习一个带参映射函数$(f_{\theta_r})$</li>
+</ul>
+<h2 id="gatne-t">GATNE-T 的基本结构是什么</h2>
+<ul>
+<li>第一层是一个多层的图传播聚合层，用于学习图的结构信息</li>
+<li>第二层是一个self-attention层，因为每个定点都有r个向量，（每一种关系有一个向量），self-attention用于将这r个向量做聚合，聚合结果还是r个向量，但是每个向量可以学到其他关系中的一些信息</li>
+</ul>
+<h2 id="gatne-t_1">GATNE-T 中每个顶点的初始边向量是怎么来的</h2>
+<ul>
+<li>初始向量即$(u_{i, r}^0)$ 是随机初始化来的，类似于node2vec这种；所以这个可以看做多层图传播算子（聚合操作）</li>
+</ul>
+<h2 id="gatne-t-kk-1">GATNE-T 第k次聚合是否只利用到k-1次聚合的结果</h2>
+<ul>
+<li>是的，第k词聚合的输入是k-1次聚合的所有定点向量</li>
+</ul>
+<h2 id="gatne-t_2">GATNE-T 对多个关系是如何处理的</h2>
+<ul>
+<li>最终输出的r个向量，每个向量都是聚合了多个关系中的顶点向量$(U_i)$的结果，所以在一定程度上，每个向量都包含了所有关系的信息。</li>
+<li>另一方面，聚合的时候采用的是self-attention机制$(a_{i,r})$，所以可以只将其他关系学到的信息中跟当前关系有关的部分抽取进来（当然，这只是一种强行解释，只是说存在这样一种可能性；而如果没有这个结构就不存在这种可能性）</li>
+<li>在聚合后，还做了一个线性变换，变换系数$(M_r)$跟关系关联；此外，还加了一个base embedding向量$(b_i)$，可以理解为基线模型。</li>
+</ul>
+<p>$$<br />
+v_{i,r} = b_i + \alpha_r M_r^T U_i a_{i,r}<br />
+$$</p>
+<p>说明：$(\alpha_r)$ 是一个超参数</p>
+<h2 id="gatne-tu">为什么GATNE-T中，u明明是跟顶点强绑定的，对邻居节点的聚合和多个关系的聚合被表示为边的表达</h2>
+<p><img alt="模型" src="/wiki/static/images/amhen-03.png" /></p>
+<p>因为，邻居的信息都是通过边来起作用的，而边的表示本质上是要将边的类型信息和对面的节点信息表示出来。</p>
+<p>在模型中，边的类型信息通过attention矩阵和几个线性变换矩阵表示了出来（不同类型矩阵参数不一样）。而对面节点的信息通过聚合直接加了了进来。</p>
+<p>虽然u跟顶点强绑定，但是u表示的是定点的边所表达的信息，所以还是叫边向量</p>
+<h2 id="gatne-t_3">GATNE-T 对顶点属性是如何利用的</h2>
+<p>GATNE-T 不使用顶点的属性，GATNE-I会使用；因此GATNE-T无法处理训练时没有出现过的顶点（如新的用户和新的item）</p>
+<h2 id="gatne-i">GATNE-I 是如何处理属性的</h2>
+<ul>
+<li>对每个顶点$(v_i)$有一个将顶点的特征向量 $(x_i)$ 映射到一个隐向量的函数 $(b_i = h_z(x_i))$ z是代表顶点的类型，每个类型对应的映射函数都是不一样的。</li>
+<li>不一样的原因是，每种类型的属性特征维度和意义都不太一样，所以需要多个函数更好。类似于双塔模型的用户塔和item塔</li>
+<li>另一方面，在GATNE-T中，还存在一个跟顶点强绑定的参数，即初始向量$(u_{i, r}^0)$，也都可以表示成顶点属性的函数。</li>
+<li>此外，由于b和u都是对输入特征的高阶变换，所以作者还加了一个对输入特征的线性项。最终的结果是</li>
+</ul>
+<p>$$<br />
+v_{i,r} = h_z(x_i) + \alpha_r M_r^T U_i a_{i,r} + \beta_r D_z^T x_i<br />
+$$</p>
+<p>这里r代表边的类别，z代表顶点的类别</p>
+<h2 id="gatne-i_1">GATNE-I 是如何实现对新的节点的也能推理的</h2>
+<ul>
+<li>它没有直接用节点id来embedding，而是使用节点的特征来学embedding，类似于双塔模型与FM的区别</li>
+</ul>
+<h2 id="_7">模型是如何训练的，监督信号是啥</h2>
+<ul>
+<li>在图中做meta-path-based random walks，然后利用负采样损失函数来做的，负采样只在特定类型的顶点集合中采样</li>
+</ul>
+<h2 id="_8">分布式训练是如何做的</h2>
+<ul>
+<li>文章中没有提到</li>
+</ul>
+<h2 id="_9">为什么顶点向量维度比边向量维度高一个量级</h2>
+<h2 id="meta-path">meta-path的采样在工程上是如何实现的</h2>
+<ul>
+<li>利用python包<code>networkx</code></li>
+<li><a href="https://github.com/THUDM/GATNE/blob/master/src/walk.py">https://github.com/THUDM/GATNE/blob/master/src/walk.py</a></li>
+</ul>
+<h2 id="_10">邻居聚合在训练和推断的时候是如何实现的</h2>
+<ul>
+<li>通过邻接表数据结构来实现的</li>
+</ul>
+<h2 id="_11">文章的结果是否拿到线上效果</h2>
+<ul>
+<li>只有离线的AB测试效果，没有线上效果</li>
+</ul>
+<h2 id="_12">这篇文章的前序文章有哪些值得看的</h2>
+<ul>
+<li>DeepWalk</li>
+<li>LINE</li>
+<li>NetSMF/NetMF</li>
+<li>GraphSAGE</li>
+<li>HNE</li>
+<li>PTE</li>
+<li>metapath2vec</li>
+<li>HERec</li>
+<li>etc</li>
+</ul>
+<h2 id="_13">代码在哪</h2>
+<p><a href="https://github.com/THUDM/GATNE">https://github.com/THUDM/GATNE</a></p>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2020-02-10 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: 'Representation Learning for Attributed Multiplex Heterogeneous Network',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2020 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>

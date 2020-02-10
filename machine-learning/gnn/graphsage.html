@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>医学免疫学 - Tracholar的个人wiki</title>
+        <title>Inductive Representation Learning on Large Graphs - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,54 +64,108 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#medicine">medicine</a>&nbsp;»&nbsp;医学免疫学</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#-gnn">gnn</a>&nbsp;»&nbsp;Inductive Representation Learning on Large Graphs</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">医学免疫学</div>
+<div id="title">Inductive Representation Learning on Large Graphs</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#faq">FAQ</a><ul>
-<li><a href="#_1">什么是免疫</a></li>
-<li><a href="#_2">抗原是什么</a></li>
-<li><a href="#_3">抗体是什么</a></li>
-<li><a href="#_4">抗体是如何起免疫作用的</a></li>
-<li><a href="#_5">抗体的结构是如何影响其功能的</a></li>
-<li><a href="#_6">病毒是如何欺骗细胞进入细胞内部的</a></li>
-<li><a href="#tb">T细胞和B细胞的区别是什么</a></li>
+<li><a href="#_1">本文解决的核心问题是什么</a></li>
+<li><a href="#embedding">embedding算法的基本步骤是什么</a></li>
+<li><a href="#_2">为什么每一层都要对向量做归一化</a></li>
+<li><a href="#_3">为什么要定义一个固定大小的邻居集合，而不是用原始的邻居集合</a></li>
+<li><a href="#_4">模型的参数有哪些？</a></li>
+<li><a href="#0">第0层顶点向量是什么</a></li>
+<li><a href="#weisfeiler-lehman-isomorphism-test">Weisfeiler-Lehman Isomorphism Test 是什么</a></li>
+<li><a href="#_5">模型的监督信号是什么，参数如何训练</a></li>
+<li><a href="#_6">聚合函数如何设计</a></li>
+<li><a href="#_7">代码在哪</a></li>
+<li><a href="#_8">试验如何评估</a></li>
+<li><a href="#clustering-coefficient">每一个顶点的聚类系数（clustering coefficient ）是什么</a></li>
+<li><a href="#_9">论文中阐述算法的能力是什么意思</a></li>
+<li><a href="#_10">这篇文章有落地吗</a></li>
+<li><a href="#idea">从这个文章中，可以提出哪些idea</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <h1 id="faq">FAQ</h1>
-<h2 id="_1">什么是免疫</h2>
-<h2 id="_2">抗原是什么</h2>
+<h2 id="_1">本文解决的核心问题是什么</h2>
 <ul>
-<li>能被B细胞或T细胞识别及结合，诱导机体产生免疫应答的物质</li>
+<li>传统的Graph embedding 无法泛化到未见过的node（称为 transductive）</li>
+<li>本文的方法可以泛化到未见过的node（称为inductive），因为node的向量是通过特征学到的</li>
+<li>模型将node的特征作为输入，模型输出node 的embedding向量</li>
+<li>这种方式的价值是，提高模型的泛化能力，可以在一定程度上解决冷启动问题</li>
 </ul>
-<h2 id="_3">抗体是什么</h2>
+<h2 id="embedding">embedding算法的基本步骤是什么</h2>
 <ul>
-<li>抗体：病原体侵入人体后，刺激了淋巴细胞，淋巴细胞就会产生一种抵抗该病原体的特殊蛋白质，叫作抗体。</li>
+<li>每一层是由一个聚合操作、一个带激活函数的线性变换构成</li>
+<li>聚合操作是将每个顶点的邻居向量做一个聚合</li>
+<li>带激活函数的线性变换是将该顶点的上一层向量与邻居聚合向量做一个非线性映射</li>
+<li>很多这样的层构成了多次邻居聚合和高阶非线性</li>
 </ul>
-<h2 id="_4">抗体是如何起免疫作用的</h2>
+<p><img alt="基本算法" src="/wiki/static/images/graphsage-01.png" /></p>
+<h2 id="_2">为什么每一层都要对向量做归一化</h2>
 <ul>
-<li>抗体跟抗原结合可以简介杀死/抑制病毒。</li>
-<li>抗体可以间接杀死病毒。这主要是因为抗体的ADCC作用。ADCC，是抗体依赖的细胞介导的细胞毒性作用（ADCC，antibody-dependent cell-mediated cytotoxicity ）是指抗体的Fab段结合病毒感染的细胞或肿瘤细胞的抗原表位，其Fc段与杀伤细胞（NK细胞、巨噬细胞等）表面的FcR结合，介导杀伤细胞直接杀伤靶细胞。主要是NK细胞，靶细胞凋亡的同时，细胞内的病毒也随着一并被处理掉了。第二种，抗体可以间接抑制病毒。这里所说的抑制主要是抗体的中和作用。简单来讲，病毒需要和靶细胞表面的受体结合才能感染细胞，如新发的2019-nCov病毒表明有一个S蛋白的三聚体，其顶端有一个RBD区域，该区域可以与人体肺部分细胞表面的ACE2蛋白结合，从而被内吞入细胞。而具备中和作用的抗体，其识别并结合的区域就是S蛋白的RBD区域。当抗体结合在该区域之后，就占据了该位置，病毒就不能再结合ACE2蛋白，也就不能再感染新的细胞。并且体内一旦具有一定量的中和抗体，病毒就很难再进行细胞间传播。</li>
+<li>防止梯度消失和爆炸？</li>
 </ul>
-<h2 id="_5">抗体的结构是如何影响其功能的</h2>
+<h2 id="_3">为什么要定义一个固定大小的邻居集合，而不是用原始的邻居集合</h2>
 <ul>
-<li>抗体分子的V区和C区的氨基酸组成和顺序不同，决定了他们功能上的差异。</li>
-<li>抗体V区用于识别并特异性结合抗原，具有中和毒素、阻断病原入侵的免疫防御功能，但抗体本身无法清除病原微生物</li>
-<li>抗体C区用于跟吞噬细胞等杀伤细胞结合，用于吞噬抗体和抗原的中和体</li>
+<li>因为有些节点的邻居太多了，影响性能。固定大小的邻居可以减少这个问题</li>
+<li>这里采样用的是均匀采样，是否在特定应用场景下可以用非均匀采样？</li>
 </ul>
-<h2 id="_6">病毒是如何欺骗细胞进入细胞内部的</h2>
+<h2 id="_4">模型的参数有哪些？</h2>
 <ul>
-<li>通过细胞表面蛋白（即受体）结合，从而进入细胞内部</li>
-<li>具体的呢？？？</li>
+<li>聚合函数的参数，每一层聚合的参数都不一样，类似于多个卷积层的参数也不一样</li>
+<li>线性变换权重参数，每一层也不一样</li>
 </ul>
-<h2 id="tb">T细胞和B细胞的区别是什么</h2>
+<h2 id="0">第0层顶点向量是什么</h2>
 <ul>
-<li>T淋巴细胞来自于胸腺，主要通过杀伤感染细胞来实现免疫</li>
-<li>B淋巴细胞通过分泌抗体来中和抗原</li>
+<li>本文是顶点对应的特征向量</li>
+<li>对于直接embedding，是否也可以是随机初始化的向量？</li>
+</ul>
+<h2 id="weisfeiler-lehman-isomorphism-test">Weisfeiler-Lehman Isomorphism Test 是什么</h2>
+<ul>
+<li>没搞清楚，记个 TODO</li>
+</ul>
+<h2 id="_5">模型的监督信号是什么，参数如何训练</h2>
+<ul>
+<li>监督信号跟random walk 一样，通过随机游走采样，利用负采样损失函数来训练。即监督信号就是节点间的某种距离。</li>
+<li>如果有具体的任务，应该可以直接用最终的任务来做监督信号</li>
+</ul>
+<h2 id="_6">聚合函数如何设计</h2>
+<ul>
+<li>均值聚合：直接计算向量的元素均值</li>
+<li>LSTM聚合：将邻居随机排列，输入LSTM来聚合。实际上RNN都可以这样做</li>
+<li>Pooling聚合：先通过一层神经网络，然后按元素取最大值 max-pooling。有参数可以学</li>
+<li>自己想的，attention聚合。套路都一样</li>
+<li>文章试验了前三种方式，效果上均值最差，后两者差不太多；计算速度上LSTM最差。总结起来 Pooling 聚合是一个不错的选择</li>
+</ul>
+<h2 id="_7">代码在哪</h2>
+<p><a href="http://snap.stanford.edu/graphsage/">http://snap.stanford.edu/graphsage/</a></p>
+<h2 id="_8">试验如何评估</h2>
+<ul>
+<li>构造了一些顶点的分类任务</li>
+<li>citation数据集：分类一篇文章的类别；特征：顶点的度，文章摘要提取的特征和词向量构造的特征</li>
+<li>Reddit数据集：分类一篇文章属于哪个community；特征：(i) the average embedding of the post title, (ii) the average embedding of all the post’s comments (iii) the post’s score, and (iv) the number of comments made on the post.</li>
+</ul>
+<h2 id="clustering-coefficient">每一个顶点的聚类系数（clustering coefficient ）是什么</h2>
+<ul>
+<li>即由该顶点已经1跳的顶点构成的子图中，任意三个联通的点构成的三角形中，是封闭三角形的比例</li>
+<li>参考<a href="https://www.cnblogs.com/startover/p/3141646.html">https://www.cnblogs.com/startover/p/3141646.html</a></li>
+</ul>
+<h2 id="_9">论文中阐述算法的能力是什么意思</h2>
+<ul>
+<li>算法可以以任意精度近似每个定点的聚类系数</li>
+</ul>
+<h2 id="_10">这篇文章有落地吗</h2>
+<ul>
+<li>参考 Graph Convolutional Neural Networks for Web-Scale Recommender Systems</li>
+</ul>
+<h2 id="idea">从这个文章中，可以提出哪些idea</h2>
+<ul>
+<li>在推荐系统中，对于用到item embedding向量的地方，不是直接用embedding向量，而是用通过特征学到的embedding向量</li>
 </ul>
 </div>
 <div id="income">
@@ -124,7 +178,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2020-02-04 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2020-02-10 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -132,7 +186,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: '医学免疫学',
+  title: 'Inductive Representation Learning on Large Graphs',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
