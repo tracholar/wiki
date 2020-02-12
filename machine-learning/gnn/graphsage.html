@@ -84,7 +84,8 @@
 <li><a href="#_8">试验如何评估</a></li>
 <li><a href="#clustering-coefficient">每一个顶点的聚类系数（clustering coefficient ）是什么</a></li>
 <li><a href="#_9">论文中阐述算法的能力是什么意思</a></li>
-<li><a href="#_10">这篇文章有落地吗</a></li>
+<li><a href="#_10">如果完全依赖与节点的特征会不会限制模型的表达能力</a></li>
+<li><a href="#_11">这篇文章有落地吗</a></li>
 <li><a href="#idea">从这个文章中，可以提出哪些idea</a></li>
 </ul>
 </li>
@@ -159,7 +160,14 @@
 <ul>
 <li>算法可以以任意精度近似每个定点的聚类系数</li>
 </ul>
-<h2 id="_10">这篇文章有落地吗</h2>
+<h2 id="_10">如果完全依赖与节点的特征会不会限制模型的表达能力</h2>
+<ul>
+<li>从论文的一些具体的例子来看，如citation数据集和Reddit数据集，用到的特征都是词向量以及基于词向量相关的特征，外加一些辅助特征，所以模型的表达能能力是有的</li>
+<li>但是如果节点的特征很少，那么理论上应该会限制模型的表达能力。因为模型的参数较少。</li>
+<li>因此，总结起来，这种方式比较适用于节点本身可抽取的特征信息较多的场景。否则的话，可能还不如直接对节点做embedding效果好。</li>
+<li>对应辅助特征较少的场景，可以将直接embedding相连跟辅助特征向量concat到一起来表达？</li>
+</ul>
+<h2 id="_11">这篇文章有落地吗</h2>
 <ul>
 <li>参考 Graph Convolutional Neural Networks for Web-Scale Recommender Systems</li>
 </ul>
