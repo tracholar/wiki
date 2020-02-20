@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>短中长期规划 - Tracholar的个人wiki</title>
+        <title>Modeling Task Relationships in Multi-task Learning with Multi-gate Mixture-of-Experts - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,92 +64,78 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#about">about</a>&nbsp;»&nbsp;短中长期规划</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;Modeling Task Relationships in Multi-task Learning with Multi-gate Mixture-of-Experts</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">短中长期规划</div>
+<div id="title">Modeling Task Relationships in Multi-task Learning with Multi-gate Mixture-of-Experts</div>
 <div id="content">
-  <h2 id="_1">短期</h2>
-<ul>
-<li>熟悉spark开发流程，学会使用mllib在线上建模 ✅</li>
-<li>cs224d  ✅</li>
-<li>cs231n  ✅</li>
-<li>cs294, cs234 RL</li>
-<li>GAN</li>
-<li>TensorFlow 系统性学习,并完成记录和博客 [TODO]</li>
-</ul>
-<h2 id="_2">读书</h2>
-<ul>
-<li>《财务会计教程》√</li>
-<li>《货币金融学》  √</li>
-<li>《赢》 √</li>
-<li>《格鲁夫的第一堂课》</li>
-<li>《第五项修炼》</li>
-<li>《投资学》 √</li>
-<li>《公司理财》 </li>
-<li>《期权期货及其他衍生品》</li>
-<li>《批判性思维工具》</li>
-<li>《巴菲特致股东的信:投资原则篇》</li>
-<li>《金字塔原理》 √</li>
-<li>《穷爸爸富爸爸》 √</li>
-<li>《日本的城镇化》√</li>
-</ul>
-<h2 id="_3">中期</h2>
-<ul>
-<li>deep learning overview ： Bengio 的书及相关论文</li>
-<li>machine learning overview ： 周志华的书，prml, element of ml</li>
-<li>分布式工具和环境， Spark， Hbase， Hadoop， Hive</li>
-<li>分布式算法，优化算法等</li>
-<li>金融学基础知识</li>
-<li><a href="http://nil.csail.mit.edu/6.824/2018/">http://nil.csail.mit.edu/6.824/2018/</a></li>
-</ul>
-<h2 id="_4">长期</h2>
-<ul>
-<li>ML 技术栈，从工程到算法到系统</li>
-<li>金融学基础知识</li>
-<li>从财务和技术两方面分析主流IT企业</li>
-</ul>
-<h2 id="2018">2018年</h2>
-<ul>
-<li>6篇深入思考博客 [完成30%]</li>
-<li>10篇 关键论文结果的复现 [未完成]</li>
-</ul>
-<p>总结: 缺乏短期规划, 和短期不断的调整与反馈</p>
-<h2 id="2019">2019年</h2>
-<ul>
-<li>3篇深入思考博客<ul>
-<li>NGBoost  ×</li>
-<li>推荐系统的召回总结 ×</li>
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">简介</a><ul>
+<li><a href="#_2">问题</a></li>
+<li><a href="#_3">模型结构</a></li>
+<li><a href="#_4">合成试验</a></li>
+<li><a href="#mixture-of-experts">Mixture-of-Experts</a></li>
 </ul>
 </li>
-<li>10篇重要论文中的关键部分复现 ×</li>
-<li>3篇金融学书<ul>
-<li>货币金融学 √</li>
-<li>投资学 √</li>
-<li>期权期货 doing 一半</li>
-</ul>
-</li>
-<li>10 项宏观经济数据及分析报告</li>
-<li>每周计划、调整与反馈</li>
-</ul>
-<h2 id="2020">2020年</h2>
-<ul>
-<li>至少3本书/课程<ul>
-<li>金融：期权期货</li>
-<li>机器学习理论/编程技术：谱图理论</li>
-<li>管理类</li>
-</ul>
-</li>
-<li>25篇重要技术总结性、或精读重要文献文章；包括不限于<ul>
-<li>算法源代码阅读</li>
-<li>技术总结博客</li>
-<li>精读文献</li>
-<li>论文的复现</li>
-<li>书籍读后感</li>
-<li>对经济/股市的分析文章</li>
+<li><a href="#faq">FAQ</a><ul>
+<li><a href="#_5">为什么多任务一起学习很多时候不如单任务单独学习的效果</a></li>
+<li><a href="#labelpearsonp">为什么在没有非线性项时，构造数据的label的pearson相关系数精确为p</a></li>
 </ul>
 </li>
 </ul>
+</div>
+<h1 id="_1">简介</h1>
+<h2 id="_2">问题</h2>
+<p>以电影推荐为例，我们既要预测用户购买电影，也要预测用户对电影的评分。通过对用户推荐其评分高的电影实现长期收益</p>
+<h2 id="_3">模型结构</h2>
+<p><img alt="MOE" src="/wiki/static/images/moe-01.png" /></p>
+<ul>
+<li>Shared-Bottom multi-task DNN structure：用相同的部分来处理输入特征得到中间表达，然后再用单独的塔来学习目标任务。<br />
+$$<br />
+y_k = h^k(f(x)), k=1,2,...<br />
+$$</li>
+<li>One-gate MoE：</li>
+<li>Multi-gate MoE：有多个encode（expert）来处理输入，得到多个中间表达；每个任务都有一个gate来对着多个中间表达做加权聚合，得到自己的最终向量表达，然后输入到自己的塔中学习目标任务</li>
+</ul>
+<h2 id="_4">合成试验</h2>
+<ul>
+<li>任务：两个回归任务</li>
+<li>数据生成<ol>
+<li>生成两个正交单位向量u1,u2。</li>
+<li>给定常数因子c和相关系数p，生成两个权重向量<br />
+$$<br />
+w_1 = cu_1, w_2=c(pu_1+\sqrt{(1-p^2)}u_2)<br />
+$$</li>
+<li>生成高斯随机向量x作为特征</li>
+<li>生成两个任务的label，alpha和beta是固定参数，用于函数的形状，epsilon是高斯随机噪声<br />
+$$<br />
+y_1 = w_1^x + \sum_{i=1}^m sin(\alpha_i w_1^T x + \beta_i) + \epsilon_1 \\<br />
+y_2 = w_2^x + \sum_{i=1}^m sin(\alpha_i w_2^T x + \beta_i) + \epsilon_2<br />
+$$</li>
+</ol>
+</li>
+<li>这种生成方式可以保证w1和w2的余弦是p</li>
+</ul>
+<p><img alt="合成试验效果" src="/wiki/static/images/moe-02.png" /></p>
+<h2 id="mixture-of-experts">Mixture-of-Experts</h2>
+<ul>
+<li>The Original Mixture-of-Experts (MoE) Model<br />
+$$<br />
+y = \sum_{i=1}^n g(x)_i f_i(x) <br />
+$$</li>
+</ul>
+<p>g 是gate网络，g(x)_i 代表gate网络输出的第i个分量，代表选择第i个专家的概率，g是归一化的，f_i代表第i个专家网络</p>
+<ul>
+<li>MOE很久之前就提出来了，之前用来做模型融合</li>
+</ul>
+<h1 id="faq">FAQ</h1>
+<h2 id="_5">为什么多任务一起学习很多时候不如单任务单独学习的效果</h2>
+<ul>
+<li>DNN模型通常对数据非常敏感</li>
+<li>任务不同的地方数据会互相干扰，尤其是模型共享参数很大的情况下</li>
+<li>因此，多个任务之间要有较强的关联才会都有提升，提升来自于共同的部分的加强收益超过不同的部分的损失</li>
+</ul>
+<h2 id="labelpearsonp">为什么在没有非线性项时，构造数据的label的pearson相关系数精确为p</h2>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -161,7 +147,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2016-07-17 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2020-02-13 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -169,7 +155,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: '短中长期规划',
+  title: 'Modeling Task Relationships in Multi-task Learning with Multi-gate Mixture-of-Experts',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {

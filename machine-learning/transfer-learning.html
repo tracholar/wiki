@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>短中长期规划 - Tracholar的个人wiki</title>
+        <title>迁移学习简明手册 - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,91 +64,134 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#about">about</a>&nbsp;»&nbsp;短中长期规划</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;迁移学习简明手册</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">短中长期规划</div>
+<div id="title">迁移学习简明手册</div>
 <div id="content">
-  <h2 id="_1">短期</h2>
-<ul>
-<li>熟悉spark开发流程，学会使用mllib在线上建模 ✅</li>
-<li>cs224d  ✅</li>
-<li>cs231n  ✅</li>
-<li>cs294, cs234 RL</li>
-<li>GAN</li>
-<li>TensorFlow 系统性学习,并完成记录和博客 [TODO]</li>
-</ul>
-<h2 id="_2">读书</h2>
-<ul>
-<li>《财务会计教程》√</li>
-<li>《货币金融学》  √</li>
-<li>《赢》 √</li>
-<li>《格鲁夫的第一堂课》</li>
-<li>《第五项修炼》</li>
-<li>《投资学》 √</li>
-<li>《公司理财》 </li>
-<li>《期权期货及其他衍生品》</li>
-<li>《批判性思维工具》</li>
-<li>《巴菲特致股东的信:投资原则篇》</li>
-<li>《金字塔原理》 √</li>
-<li>《穷爸爸富爸爸》 √</li>
-<li>《日本的城镇化》√</li>
-</ul>
-<h2 id="_3">中期</h2>
-<ul>
-<li>deep learning overview ： Bengio 的书及相关论文</li>
-<li>machine learning overview ： 周志华的书，prml, element of ml</li>
-<li>分布式工具和环境， Spark， Hbase， Hadoop， Hive</li>
-<li>分布式算法，优化算法等</li>
-<li>金融学基础知识</li>
-<li><a href="http://nil.csail.mit.edu/6.824/2018/">http://nil.csail.mit.edu/6.824/2018/</a></li>
-</ul>
-<h2 id="_4">长期</h2>
-<ul>
-<li>ML 技术栈，从工程到算法到系统</li>
-<li>金融学基础知识</li>
-<li>从财务和技术两方面分析主流IT企业</li>
-</ul>
-<h2 id="2018">2018年</h2>
-<ul>
-<li>6篇深入思考博客 [完成30%]</li>
-<li>10篇 关键论文结果的复现 [未完成]</li>
-</ul>
-<p>总结: 缺乏短期规划, 和短期不断的调整与反馈</p>
-<h2 id="2019">2019年</h2>
-<ul>
-<li>3篇深入思考博客<ul>
-<li>NGBoost  ×</li>
-<li>推荐系统的召回总结 ×</li>
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">简介</a></li>
+<li><a href="#_2">基本方法</a><ul>
+<li><a href="#_3">基于样本</a></li>
+<li><a href="#_4">基于特征</a></li>
+<li><a href="#_5">基于模型</a></li>
+<li><a href="#_6">基于关系</a></li>
 </ul>
 </li>
-<li>10篇重要论文中的关键部分复现 ×</li>
-<li>3篇金融学书<ul>
-<li>货币金融学 √</li>
-<li>投资学 √</li>
-<li>期权期货 doing 一半</li>
+<li><a href="#_7">第一类方法:数据分布自适应</a><ul>
+<li><a href="#_8">边缘分布自适应</a></li>
+<li><a href="#_9">统计特征对齐</a></li>
+<li><a href="#_10">流行学习</a></li>
 </ul>
 </li>
-<li>10 项宏观经济数据及分析报告</li>
-<li>每周计划、调整与反馈</li>
+<li><a href="#_11">深度迁移学习</a><ul>
+<li><a href="#finetune">finetune</a></li>
+<li><a href="#_12">深度网络自适应</a></li>
+<li><a href="#_13">深度对抗网络迁移</a></li>
 </ul>
-<h2 id="2020">2020年</h2>
+</li>
+<li><a href="#faq">FAQ</a><ul>
+<li><a href="#_14">迁移学习的本质是什么</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h1 id="_1">简介</h1>
 <ul>
-<li>至少3本书/课程<ul>
-<li>金融：期权期货</li>
-<li>机器学习理论/编程技术：谱图理论</li>
-<li>管理类</li>
+<li>大佬：杨强</li>
+<li>迁移学习：两个领域存在一定的相似性。举一反三</li>
+<li>负迁移：两个领域存在一定的相反性。东施效颦</li>
+<li>远领域迁移学习：通过多个中间任务，将两个不像似的任务串联起来，实现远邻域迁移（可以实现用人脸识别来识别飞机）</li>
+<li>
+<p>应用：</p>
+<ul>
+<li>机器翻译，语料不足</li>
+<li>图像识别，不同光照、背景</li>
+<li>行为识别</li>
 </ul>
 </li>
-<li>25篇重要技术总结性、或精读重要文献文章；包括不限于<ul>
-<li>算法源代码阅读</li>
-<li>技术总结博客</li>
-<li>精读文献</li>
-<li>论文的复现</li>
-<li>书籍读后感</li>
-<li>对经济/股市的分析文章</li>
+<li>
+<p>迁移学习 (Transfer Learning): 给定一个有标记的源域 Ds = {xi , yi }ni=1 和一个无 标记的目标域 D = {x }n+m 。这两个领域的数据分布 P(x ) 和 P(x ) 不同，即 P(x ) ̸=<br />
+tjj=n+1 sts P (xt )。迁移学习的目的就是要借助 Ds 的知识，来学习目标域 Dt 的知识 (标签)。</p>
+</li>
+<li>一句话总结: 相似性是核心，度量准则是重要手段。</li>
+<li>度量准则<ul>
+<li>MMD：Maximum mean discrepancy</li>
+<li>Principal Angle</li>
+<li>A-distance</li>
+<li>Hilbert-Schmidt Independence Criterion</li>
+<li>Wasserstein Distance</li>
 </ul>
 </li>
+</ul>
+<h1 id="_2">基本方法</h1>
+<ul>
+<li>分类：基于样本、基于模型、基于特征、基于关系</li>
+</ul>
+<h2 id="_3">基于样本</h2>
+<ul>
+<li>源域中存在不同种类的动物，如狗、鸟、猫等，目标域只有狗这一种类别。在迁移时，为了 最大限度地和目标域相似，我们可以人为地提高源域中属于狗这个类别的样本权重。</li>
+</ul>
+<p><img alt="基于样本" src="/wiki/static/images/transfer-learning-01.png" /></p>
+<ul>
+<li>理论上对源域s的样本做加权$(P(x_t)/P(x_s))$，就可以得到目标域的样本分布，从而在源域加权后的样本中训练就实现了IID</li>
+<li>应用局限：只在两个域差异较小的时候可以用，在NLP，CV等领域效果不好</li>
+</ul>
+<h2 id="_4">基于特征</h2>
+<ul>
+<li>基于特征变换，减少两个域的特征差异</li>
+<li>将两个域的特征映射到同一个特征空间中</li>
+</ul>
+<h2 id="_5">基于模型</h2>
+<ul>
+<li>指从源域和目 标域中找到他们之间共享的参数信息，以实现迁移的方法。</li>
+</ul>
+<h2 id="_6">基于关系</h2>
+<ul>
+<li>略</li>
+</ul>
+<h1 id="_7">第一类方法:数据分布自适应</h1>
+<h2 id="_8">边缘分布自适应</h2>
+<ul>
+<li>基本思想，因为$(P(x_s))$ 和 $(P(x_t))$ 不一样，所以期望存在某种隐射$(\phi)$ 使得 $(P(\phi(x_s))=P(\phi(x_t)))$，并假设边缘分布一致时条件分布也一样。</li>
+<li>TCA</li>
+</ul>
+<h2 id="_9">统计特征对齐</h2>
+<ul>
+<li>找个变换M，将$(X_s)$ 隐射到 $(X_t)$</li>
+</ul>
+<h2 id="_10">流行学习</h2>
+<ul>
+<li>Grassman流行</li>
+<li>SGF：把源域和目标域分别看成高维空间 (即 Grassmann 流形) 中的两个点，在这两个点的测地线距离上取 d 个中间点，然后依次连接 起来。这样，源域和目标域就构成了一条测地线的路径。我们只需要找到合适的每一步的变 换，就能从源域变换到目标域了。</li>
+<li>简单地说就是找到一系列变换可以将源域的点沿着测地线变换到目标域的点</li>
+</ul>
+<h1 id="_11">深度迁移学习</h1>
+<h2 id="finetune">finetune</h2>
+<ul>
+<li>最简单的深度网络迁移形式:finetune。即在A任务上训练好的前n层微调。</li>
+<li>神经网络的前 3 层基本都是 general feature，进行迁移的效果会比较好;</li>
+<li>深度迁移网络中加入 fine-tune，效果会提升比较大，可能会比原网络效果还好; </li>
+<li>Fine-tune 可以比较好地克服数据之间的差异性;</li>
+<li>深度迁移网络要比随机初始化权重效果好;</li>
+<li>网络层数的迁移可以加速网络的学习和优化。</li>
+</ul>
+<h2 id="_12">深度网络自适应</h2>
+<ul>
+<li>增加了一个自适应损失项</li>
+</ul>
+<p><img alt="DDC方法" src="/wiki/static/images/transfer-learning-02.png" /></p>
+<ul>
+<li>DAN:有别于 DDC 方法只加入一个自适应层，DAN 方法同时加入了三个自适应层 (分类器前 三层);多核 MMD 度量 (MK-MMD)</li>
+<li>Joint Adaptation Network:JMMD 度量 (Joint MMD)</li>
+<li>AdaBN: AdaBN(Adaptive Batch Normalization) [Li et al., 2018]， 通过在归一化层加入统计特征的适配，从而完成迁移。</li>
+</ul>
+<h2 id="_13">深度对抗网络迁移</h2>
+<h1 id="faq">FAQ</h1>
+<h2 id="_14">迁移学习的本质是什么</h2>
+<ul>
+<li>训练集和测试不是同分布，但是有关系的学习任务</li>
+<li>找到源领域与目标领域数据的相似性和不变量</li>
 </ul>
 </div>
 <div id="income">
@@ -161,7 +204,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2016-07-17 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2020-02-19 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -169,7 +212,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: '短中长期规划',
+  title: '迁移学习简明手册',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
