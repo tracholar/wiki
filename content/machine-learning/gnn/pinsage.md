@@ -193,3 +193,11 @@ $$
 - 可以查看embedding向量学到的是否有一定的区分度，避免全部item的向量距离都很近
 - 最近邻检索时也能更加高效
 
+
+## 图结构和邻居采样是通过什么数据结构实现的
+- 通过邻接表来表示图
+
+## 代码实现时用到了哪些库
+- DEMO1 <https://gist.github.com/BarclayII/ba88c3101a1ab784c5f27f73e2088ec1>
+- DMLC <https://github.com/dmlc/dgl>
+

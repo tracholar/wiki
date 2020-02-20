@@ -39,9 +39,16 @@ date: 2020-01-18
 ## 后续对使用这个方法有什么计划吗
 后续打算用这个方法来阅读新的论文和书籍；以及之前看过但是觉得理解得还不够深刻的论文和书籍。
 
+## 在使用这个方法的时候遇到了哪些问题
+1. 提问-回答的方式固然好，但是比较适合看原始资料的人整理思路和逻辑。例如，以读论文和书籍为例，对我来说，我用FAQ的方式提问-回答确实能提高思维深度和逻辑完备性，但是对于看我wiki的人，逻辑就会变得比较乱。
+    - 解决方法：对于阅读的wiki，还是以先记录为主，记录时有问题写FAQ
+2. FAQ的方式整理材料的时候，没有将问题间的逻辑关系表达出来。
+    - 解决方法：最后再整理一版逻辑清晰的可阅读文档
+
 ## 现在有哪些文档是以FAQ的方式写的
 - [FAQ阅读法](/wiki/about/faq-learning.html)
 - [海蒂怀孕大百科全书](/wiki/baby/baby-heidi.html)
 - [简明中国古代史](/wiki/history/old-china.html)
 - [感冒与病毒](/wiki/medicine/cold-virus.html)
 - [医学免疫学](/wiki/medicine/immunology.html)
+- [论文-PinSAGE](/wiki/machine-learning/gnn/pinsage.html)

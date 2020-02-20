@@ -54,7 +54,8 @@ date: 2020-02-10
 - 文章试验了前三种方式，效果上均值最差，后两者差不太多；计算速度上LSTM最差。总结起来 Pooling 聚合是一个不错的选择
 
 ## 代码在哪
-<http://snap.stanford.edu/graphsage/>
+- <http://snap.stanford.edu/graphsage/>
+- <https://github.com/williamleif/GraphSAGE>
 
 ## 试验如何评估
 - 构造了一些顶点的分类任务
