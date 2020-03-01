@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>迁移学习简明手册 - Tracholar的个人wiki</title>
+        <title>CEM: cross entropy method - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,144 +64,57 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;迁移学习简明手册</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;CEM: cross entropy method</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">迁移学习简明手册</div>
+<div id="title">CEM: cross entropy method</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">简介</a></li>
-<li><a href="#_2">基本方法</a><ul>
-<li><a href="#_3">基于样本</a></li>
-<li><a href="#_4">基于特征</a></li>
-<li><a href="#_5">基于模型</a></li>
-<li><a href="#_6">基于关系</a></li>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">基本原理</a></li>
+<li><a href="#_3">具体应用</a><ul>
+<li><a href="#_4">推荐多目标调参</a></li>
 </ul>
 </li>
-<li><a href="#_7">第一类方法:数据分布自适应</a><ul>
-<li><a href="#_8">边缘分布自适应</a></li>
-<li><a href="#_9">统计特征对齐</a></li>
-<li><a href="#_10">流行学习</a></li>
-</ul>
-</li>
-<li><a href="#_11">深度迁移学习</a><ul>
-<li><a href="#finetune">finetune</a></li>
-<li><a href="#_12">深度网络自适应</a></li>
-<li><a href="#_13">深度对抗网络迁移</a></li>
-</ul>
-</li>
+<li><a href="#_5">参考</a></li>
 <li><a href="#faq">FAQ</a><ul>
-<li><a href="#_14">迁移学习的本质是什么</a></li>
-<li><a href="#tdclabel">TDC方法为什么目标域没有label也能学习</a></li>
+<li><a href="#cem">CEM跟贝叶斯优化的区别是什么</a></li>
 </ul>
 </li>
 </ul>
 </div>
-<h1 id="_1">简介</h1>
+<h1 id="_1">关于</h1>
+<p>CEM，交叉熵方法，是一种在线求解目标变量最优解的方法。</p>
+<h1 id="_2">基本原理</h1>
 <ul>
-<li>大佬：杨强</li>
-<li>迁移学习：两个领域存在一定的相似性。举一反三</li>
-<li>负迁移：两个领域存在一定的相反性。东施效颦</li>
-<li>远领域迁移学习：通过多个中间任务，将两个不像似的任务串联起来，实现远邻域迁移（可以实现用人脸识别来识别飞机）</li>
-<li>
-<p>应用：</p>
-<ul>
-<li>机器翻译，语料不足</li>
-<li>图像识别，不同光照、背景</li>
-<li>行为识别</li>
-</ul>
-</li>
-<li>
-<p>迁移学习 (Transfer Learning): 给定一个有标记的源域 Ds = {xi , yi }ni=1 和一个无 标记的目标域 D = {x }n+m 。这两个领域的数据分布 P(x ) 和 P(x ) 不同，即 P(x ) ̸=<br />
-tjj=n+1 sts P (xt )。迁移学习的目的就是要借助 Ds 的知识，来学习目标域 Dt 的知识 (标签)。</p>
-</li>
-<li>一句话总结: 相似性是核心，度量准则是重要手段。</li>
-<li>度量准则<ul>
-<li>MMD：Maximum mean discrepancy</li>
-<li>Principal Angle</li>
-<li>A-distance</li>
-<li>Hilbert-Schmidt Independence Criterion</li>
-<li>Wasserstein Distance</li>
-</ul>
-</li>
-</ul>
-<h1 id="_2">基本方法</h1>
-<ul>
-<li>分类：基于样本、基于模型、基于特征、基于关系</li>
-</ul>
-<h2 id="_3">基于样本</h2>
-<ul>
-<li>源域中存在不同种类的动物，如狗、鸟、猫等，目标域只有狗这一种类别。在迁移时，为了 最大限度地和目标域相似，我们可以人为地提高源域中属于狗这个类别的样本权重。</li>
-</ul>
-<p><img alt="基于样本" src="/wiki/static/images/transfer-learning-01.png" /></p>
-<ul>
-<li>理论上对源域s的样本做加权$(P(x_t)/P(x_s))$，就可以得到目标域的样本分布，从而在源域加权后的样本中训练就实现了IID</li>
-<li>应用局限：只在两个域差异较小的时候可以用，在NLP，CV等领域效果不好</li>
-</ul>
-<h2 id="_4">基于特征</h2>
-<ul>
-<li>基于特征变换，减少两个域的特征差异</li>
-<li>将两个域的特征映射到同一个特征空间中</li>
-</ul>
-<h2 id="_5">基于模型</h2>
-<ul>
-<li>指从源域和目 标域中找到他们之间共享的参数信息，以实现迁移的方法。</li>
-</ul>
-<h2 id="_6">基于关系</h2>
-<ul>
-<li>略</li>
-</ul>
-<h1 id="_7">第一类方法:数据分布自适应</h1>
-<h2 id="_8">边缘分布自适应</h2>
-<ul>
-<li>基本思想，因为$(P(x_s))$ 和 $(P(x_t))$ 不一样，所以期望存在某种隐射$(\phi)$ 使得 $(P(\phi(x_s))=P(\phi(x_t)))$，并假设边缘分布一致时条件分布也一样。</li>
-<li>TCA：学一个映射$(\phi)$，使得源域与目标域特征距离最小<br />
+<li>假设待优化向量为w，可以观察到参数w下的回报S(w)</li>
+<li>S被当做黑盒，不建模</li>
+<li>最简单的想法是，随机一批w，然后观察S(w)，然后选出最优w即可</li>
+<li>如果w空间很大，一次迭代难以得到足够的数据来确定最优w，可以利用在线更新的方法（类似汤普森采样）</li>
+<li>先假设w的一个先验分布，比如高斯分布$(w ~ N(\mu, \sigma))$</li>
+<li>然后每轮采样n个wi，执行策略并观察回报S(wi)</li>
+<li>取前K(K&lt;n)个w，重新估计参数$(\mu, \sigma)$，即用这K个w计算新的均值和方差<br />
 $$<br />
-||\frac{1}{n_s}\sum \phi(x_i^s) - \sum \phi(x_j^t)||_H<br />
-$$<br />
-那么在源域学到的预测模型，就可以在目标域中进行预测了。</li>
+\mu_{new} = \frac{\sum_{i \in I_K} w_i}{|I_K|} \\<br />
+\sigma^2_{new} = \frac{\sum_{i \in I_K} (w_i-\mu_{new})^T(w_i-\mu_{new})}{|I_K|} + Z<br />
+$$</li>
+<li>Z是一个随机噪声，避免过快收敛</li>
 </ul>
-<h2 id="_9">统计特征对齐</h2>
+<h1 id="_3">具体应用</h1>
+<h2 id="_4">推荐多目标调参</h2>
 <ul>
-<li>找个变换M，将$(X_s)$ 隐射到 $(X_t)$</li>
+<li>假设排序分是pCTR和pCVR的加权和 $(w_1 pCTR + w_2 pCTR * pCVR)$</li>
+<li>可以认为w1和w2 分别服从高斯分布 N(0, 1)</li>
+<li>从该分布随机n组w1和w2，观察最终的业务指标，如GMV</li>
+<li>选择GMV最高的K组w1和w2，重新计算后验分布的均值和方差，并给方差加点噪声</li>
+<li>重复上述过程</li>
 </ul>
-<h2 id="_10">流行学习</h2>
+<h1 id="_5">参考</h1>
 <ul>
-<li>Grassman流行</li>
-<li>SGF：把源域和目标域分别看成高维空间 (即 Grassmann 流形) 中的两个点，在这两个点的测地线距离上取 d 个中间点，然后依次连接 起来。这样，源域和目标域就构成了一条测地线的路径。我们只需要找到合适的每一步的变 换，就能从源域变换到目标域了。</li>
-<li>简单地说就是找到一系列变换可以将源域的点沿着测地线变换到目标域的点</li>
+<li><a href="https://zhuanlan.zhihu.com/p/44623211">https://zhuanlan.zhihu.com/p/44623211</a></li>
 </ul>
-<h1 id="_11">深度迁移学习</h1>
-<h2 id="finetune">finetune</h2>
-<ul>
-<li>最简单的深度网络迁移形式:finetune。即在A任务上训练好的前n层微调。</li>
-<li>神经网络的前 3 层基本都是 general feature，进行迁移的效果会比较好;</li>
-<li>深度迁移网络中加入 fine-tune，效果会提升比较大，可能会比原网络效果还好; </li>
-<li>Fine-tune 可以比较好地克服数据之间的差异性;</li>
-<li>深度迁移网络要比随机初始化权重效果好;</li>
-<li>网络层数的迁移可以加速网络的学习和优化。</li>
-</ul>
-<h2 id="_12">深度网络自适应</h2>
-<ul>
-<li>增加了一个自适应损失项</li>
-</ul>
-<p><img alt="DDC方法" src="/wiki/static/images/transfer-learning-02.png" /></p>
-<ul>
-<li>DAN:有别于 DDC 方法只加入一个自适应层，DAN 方法同时加入了三个自适应层 (分类器前 三层);多核 MMD 度量 (MK-MMD)</li>
-<li>Joint Adaptation Network:JMMD 度量 (Joint MMD)</li>
-<li>AdaBN: AdaBN(Adaptive Batch Normalization) [Li et al., 2018]， 通过在归一化层加入统计特征的适配，从而完成迁移。</li>
-</ul>
-<h2 id="_13">深度对抗网络迁移</h2>
 <h1 id="faq">FAQ</h1>
-<h2 id="_14">迁移学习的本质是什么</h2>
-<ul>
-<li>训练集和测试不是同分布，但是有关系的学习任务</li>
-<li>找到源领域与目标领域数据的相似性和不变量</li>
-</ul>
-<h2 id="tdclabel">TDC方法为什么目标域没有label也能学习</h2>
-<ul>
-<li>TODO</li>
-</ul>
+<h2 id="cem">CEM跟贝叶斯优化的区别是什么</h2>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -213,7 +126,7 @@ $$<br />
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2020-02-19 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2020-03-01 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -221,7 +134,7 @@ $$<br />
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: '迁移学习简明手册',
+  title: 'CEM: cross entropy method',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {

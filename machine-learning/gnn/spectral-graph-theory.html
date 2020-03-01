@@ -92,12 +92,20 @@
 <li><a href="#cheeger">Cheeger不等式</a></li>
 </ul>
 </li>
+<li><a href="#spring-and-resistor-networks">Spring and Resistor Networks</a></li>
+<li><a href="#random-walks-on-graphs">Random Walks on Graphs</a><ul>
+<li><a href="#_12">转移概率</a></li>
+<li><a href="#_13">扩散运动</a></li>
+<li><a href="#_14">举例</a></li>
+</ul>
+</li>
 <li><a href="#faq">FAQ</a><ul>
 <li><a href="#0">为什么特征值0的代数重数代表图可以划分为互不联通的子图的数目</a></li>
-<li><a href="#_12">对拉普拉斯矩阵做线性变换有什么特殊含义吗</a></li>
-<li><a href="#_13">拉普拉斯矩阵的特征值和特征向量有什么意义</a></li>
+<li><a href="#_15">对拉普拉斯矩阵做线性变换有什么特殊含义吗</a></li>
+<li><a href="#_16">拉普拉斯矩阵的特征值和特征向量有什么意义</a></li>
 <li><a href="#d-max-regular">为什么联通图就是d-max regular？</a></li>
 <li><a href="#perron-frobenius">如何理解Perron-Frobenius</a></li>
+<li><a href="#pagerank">既然稳态分布是顶点的度，那为什么PageRank算法还有做特征向量分解？直接统计度不就行了？</a></li>
 </ul>
 </li>
 </ul>
@@ -349,6 +357,67 @@ $$</li>
 <li>cheeger不等式 $(\phi_G \le \sqrt{2v_2})$</li>
 </ul>
 <h2 id="cheeger">Cheeger不等式</h2>
+<h1 id="spring-and-resistor-networks">Spring and Resistor Networks</h1>
+<ul>
+<li>想想图的边是一个个理想的弹簧，向量x代表每个定点的位置，x(u) - x(v) 代表u和v相对便宜，从而产生弹力 x(v) - x(u)，这里假设弹性系数是1（对应无权的边，对于有权图就是权重）</li>
+<li>由受力平衡条件可得<br />
+$$<br />
+x(u) = \frac{1}{d(u)}\sum_{u: (u,v) \in E} x(v)<br />
+$$</li>
+<li>对于加权图则为<br />
+$$<br />
+x(u) = \frac{1}{d(u)}\sum_{u: (u,v) \in E} w_{u,v} x(v)<br />
+$$</li>
+<li>上式可以重写为拉普拉斯矩阵线性方程<br />
+$$<br />
+L x = 0<br />
+$$</li>
+<li>
+<p>设每个点有一个电压v和一个流出的电流i_ext，那么有 i_ext = Lv，边的权重是电导</p>
+</li>
+<li>
+<p>顶点ab间的等效电阻可以通过设置$(i_{ext}=\delta_a - \delta_b)$得到<br />
+$$<br />
+R_{ab} = u_{ab} = (\delta_a - \delta_b)^T L^+ (\delta_a - \delta_b)<br />
+$$</p>
+</li>
+</ul>
+<h1 id="random-walks-on-graphs">Random Walks on Graphs</h1>
+<h2 id="_12">转移概率</h2>
+<ul>
+<li>$(p_t \in R^n)$ 定义在时刻t，各顶点在random walk下的概率分布，概率转移方程<br />
+$$<br />
+p_{t+1}(u) = \sum_{v: (u,v)\in E} \frac{w(u,v)}{d(v)}p_t(v)<br />
+$$</li>
+<li>lazy random walk, 以一定的概率(1/2)待在原地不动<br />
+$$<br />
+p_{t+1}(u) = \frac{1}{2} p_t(u) + \frac{1}{2} \sum_{v: (u,v)\in E} \frac{w(u,v)}{d(v)}p_t(v)<br />
+$$</li>
+</ul>
+<h2 id="_13">扩散运动</h2>
+<ul>
+<li>气体/液体的扩散可以用上述两个方程来建模</li>
+<li>扩散方程的矩阵形式<br />
+$$<br />
+p_{t+1} = 1/2(I + AD^{-1})p_t<br />
+$$</li>
+<li>lazy walk matrix $(W_G = 1/2(I + AD^{-1}) = I - \frac{1}{2} D^{-1/2}ND^{-1/2})$, N是归一化拉普拉斯矩阵</li>
+<li>特征向量是$(D^{1/2}\phi_i)$, $(\phi_i)$是N的特征向量；特征值是$(1-v_i/2)$</li>
+<li>稳态分布：顶点的概率正比于顶点的度</li>
+<li>收敛率：初始值为$(e_a)$，那么对任意b，t<br />
+$$<br />
+|p_t(b) - \pi(b)| \le \frac{d(b)}{d(a)} w_2^t<br />
+$$</li>
+<li>w2是W的第2大特征值（第1大特征值为1）</li>
+</ul>
+<h2 id="_14">举例</h2>
+<ul>
+<li>定理，拉普拉斯矩阵L，特征值$(\lambda_1 \le ... \le \lambda_n)$和归一化拉普拉斯矩阵N，特征值$(v_1 \le ... \le v_n)$，满足<br />
+$$<br />
+\frac{\lambda_i}{d_{min}} \ge v_i \ge \frac{\lambda_i}{d_{max}}<br />
+$$</li>
+<li>Path：度最大为2，最小为1，所以N的特征值近似为L的特征值，$(c/n^2)$</li>
+</ul>
 <h1 id="faq">FAQ</h1>
 <h2 id="0">为什么特征值0的代数重数代表图可以划分为互不联通的子图的数目</h2>
 <p>两个互不联通的图看做一个图的时候，由于两个图节点间没有任何连接，因此对应的总拉普拉斯矩阵应该是<br />
@@ -360,8 +429,8 @@ O &amp; L_2<br />
 $$</p>
 <p>因此，显然可以构造两个不同的向量$([v_1, O], [O, v_2])$ 使得Lv=0，其中v1和v2分别是子矩阵的0空间中的任意向量。</p>
 <p>显然，如果可以划分成k个子图，那么0特征值的代数重数就是k。</p>
-<h2 id="_12">对拉普拉斯矩阵做线性变换有什么特殊含义吗</h2>
-<h2 id="_13">拉普拉斯矩阵的特征值和特征向量有什么意义</h2>
+<h2 id="_15">对拉普拉斯矩阵做线性变换有什么特殊含义吗</h2>
+<h2 id="_16">拉普拉斯矩阵的特征值和特征向量有什么意义</h2>
 <h2 id="d-max-regular">为什么联通图就是d-max regular？</h2>
 <h2 id="perron-frobenius">如何理解Perron-Frobenius</h2>
 <ul>
@@ -370,6 +439,7 @@ $$</p>
 <li>如果特征向量1中的某个元素为0，那么说明他的邻居里面有一些是负数，但是特征向量1是放大倍数最大的向量，所以如果把负数改成正数放大倍数更大，所以矛盾。</li>
 <li>mu1的放大倍数是最大的，不考虑方向也是</li>
 </ul>
+<h2 id="pagerank">既然稳态分布是顶点的度，那为什么PageRank算法还有做特征向量分解？直接统计度不就行了？</h2>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
