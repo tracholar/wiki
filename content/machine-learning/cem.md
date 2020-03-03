@@ -33,6 +33,11 @@ $$
 
 # 参考
 - <https://zhuanlan.zhihu.com/p/44623211>
+- <https://gist.github.com/kashif/5dfa12d80402c559e060d567ea352c06#file-cem-py-L102>
+- <https://github.com/tracholar/ml-homework-cz/blob/master/cem/tracholar/cem.py>
 
 # FAQ
 ## CEM跟贝叶斯优化的区别是什么
+
+## 为什么CEM最终会收敛到最优目标
+- 定性理解：因为每一步都舍弃了一批最差的取值，所以最终分布会不断收敛到最优解
