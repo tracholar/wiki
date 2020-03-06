@@ -1,0 +1,270 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>推荐系统在工业界的调研 - Tracholar的个人wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="google-search" style="width:200px; float:right; margin: 20px 0;">
+                <form action="//cse.google.com/cse" method="get" id="search-form">
+                    <input type="hidden" name="cx" value="015970462532790426975:gqlen38ywus"/>
+                    <input type="text" name="q"  style="line-height:20px; padding:4px;" placeholder="站内搜索"/>
+                    <svg width="13" height="13" viewBox="0 0 13 13" style="position:relative; left: -20px;" onclick="document.getElementById('search-form').submit()">
+                        <title>搜索</title>
+                        <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z">
+                        </path>
+                    </svg>
+                </form>
+
+            </div>
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#-recommend">recommend</a>&nbsp;»&nbsp;推荐系统在工业界的调研</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">推荐系统在工业界的调研</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">产品形态</a><ul>
+<li><a href="#feed">Feed</a></li>
+<li><a href="#_2">交互式推荐</a></li>
+</ul>
+</li>
+<li><a href="#_3">目标</a></li>
+<li><a href="#_4">召回</a></li>
+<li><a href="#_5">排序</a></li>
+<li><a href="#_6">多目标</a></li>
+<li><a href="#_7">重排与机制</a></li>
+<li><a href="#_8">其他主题</a><ul>
+<li><a href="#_9">强化学习</a></li>
+<li><a href="#gan">GAN</a></li>
+</ul>
+</li>
+<li><a href="#faq">FAQ</a></li>
+</ul>
+</div>
+<h1 id="_1">产品形态</h1>
+<h2 id="feed">Feed</h2>
+<ul>
+<li>电商类：<ul>
+<li>淘宝首页的猜你喜欢</li>
+<li>京东首页的为你推荐</li>
+<li>拼多多首页Feed</li>
+<li>美团首页的猜你喜欢</li>
+<li>大众点评首页Feed</li>
+</ul>
+</li>
+<li>资讯新闻类：<ul>
+<li>头条首页Feed</li>
+<li>腾讯新闻Feed</li>
+<li>知乎推荐</li>
+<li>微信搜一搜</li>
+<li>百度百家号</li>
+</ul>
+</li>
+<li>视频类：<ul>
+<li>抖音</li>
+<li>快手</li>
+<li>YouTube视频推荐</li>
+</ul>
+</li>
+</ul>
+<h2 id="_2">交互式推荐</h2>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/oY9BBjAHUKZr6dVdnNtcbg">淘宝风向标</a></li>
+<li>视频feed：腾讯、爱奇艺 etc</li>
+</ul>
+<h1 id="_3">目标</h1>
+<ul>
+<li>商业目标：GMV，时长，DAU etc</li>
+<li>建模目标：CTR，CVR，price etc</li>
+</ul>
+<h1 id="_4">召回</h1>
+<ul>
+<li>策略召回：<ul>
+<li>热门：热门新闻，热门商家</li>
+<li>附近：附近发生的新闻，附近商家</li>
+<li>好友推荐：好友点赞/看过的</li>
+</ul>
+</li>
+<li>基于内容：<ul>
+<li>利用文本和图片等特征计算item相似度，然后推荐跟用户交互过的item相似的item。也是item2item的一种</li>
+</ul>
+</li>
+<li>协同过滤（CF）：基于行为共现关系<ul>
+<li>UserCF：lookalike?</li>
+<li>ItemCF：(item2item)<ul>
+<li>共现矩阵计算相似，基本不用了</li>
+<li>构造item共现矩阵，矩阵分解得到item向量(ALS算法)，取最近邻(近似最近邻Annoy，Faiss)</li>
+<li>item2vec，构造共现序列（一般用session或者订单）利用word2vec，学出item向量，取最近邻</li>
+<li>GraphEmbedding：node2vec，randomwalk。构造session图或者语义图，利用随机游走采样序列，变成item2vec问题</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>U2I<ul>
+<li>构造user-item共现矩阵，矩阵分解得到item向量(ALS算法)，取最近邻(近似最近邻Annoy，Faiss)</li>
+<li>YouTube DNN，将用户向量用一个DNN来建模，监督信号使用点击/下单</li>
+<li>DSSM，用户向量和item向量都用DNN建模，但是item不使用实时特征。监督信号使用点击/下单</li>
+</ul>
+</li>
+</ul>
+<h1 id="_5">排序</h1>
+<ul>
+<li>离散LR，可以使用大规模离散id特征，提高模型容量和个性化。缺点是需要大量特征工程：人工交叉特征，或者用GBDT来交叉特征。曾经线上的主力模型，现在也做粗排模型用</li>
+<li>GBDT，统计特征居多，难以处理大规模离散特征。也是较好的baseline，缺点是跟DNN这套体系不太相容，随着数据量增大，模型容量容易接近天花板</li>
+<li>wide &amp; deep，实际上就是 离散DNN + LR，这里特意强调离散DNN，指的是利用embedding来扩充模型容量的DNN。解决了单独LR的特征工程问题。当前的新基线模型，也是线上主力</li>
+<li>其他改进：DeepFM、DCN、DIN(加了Attention)，DIEN（加了RNN对行为序列建模）。这些改进常常取决于数据和问题场景，有些有效果，有些不见得有效果。理论上有效果，实际也不一定有效果。需要一个个去试，权衡成本跟收益</li>
+<li>TDM：将召回和排序联合训练，目前只有阿里在用</li>
+</ul>
+<h1 id="_6">多目标</h1>
+<ul>
+<li>多任务学习：<ul>
+<li>共享一些底层embedding和层。知乎、微博</li>
+<li>给预测目标增加额外约束。美团，阿里</li>
+<li>MMOE：除了共享底层表达，在中间的变换层用多个子网络来做，避免任务间的负迁移，然后用Attention融合子网络的结果，做到不同建模目标侧重不同的子网络</li>
+</ul>
+</li>
+<li>多目标融合：多个目标融合的权重调参，优化目标是多个「商业目标」。目标表优化问题，找到帕累托最优<ul>
+<li>离线近似调参+线上AB测试</li>
+<li>CEM：当做黑盒优化问题，用CEM在线调参</li>
+<li>贝叶斯优化：当做黑和优化问题，用贝叶斯优化在线调参</li>
+</ul>
+</li>
+</ul>
+<h1 id="_7">重排与机制</h1>
+<ul>
+<li>重排：主要解决排序只考虑单个item，而实际上是给出一个item列表，使得整个列表的收益最大化。一个极端的例子是，排在前面的都是用户喜欢的，但是基本上一模一样。<ul>
+<li>规则：通过启发式规则，限制一定范围内的item的相似度；强查etc</li>
+<li>DPP：行列式点过程建模相似item的互斥关系，YouTube有落地</li>
+<li>RNN：阿里有尝试，将上下文item的特征都加进去，将重排建模成一个Decoder问题</li>
+</ul>
+</li>
+<li>机制：某些场景下的推荐并不是重排问题，比如滴滴打车的用户司机匹配（如果看做推荐的话），这类问题一般可以建模成一个待约束的组合优化问题<ul>
+<li>数学优化求解</li>
+<li>强化学习暴利求解</li>
+</ul>
+</li>
+</ul>
+<h1 id="_8">其他主题</h1>
+<h2 id="_9">强化学习</h2>
+<ul>
+<li>目前强化主要来解决几个问题<ul>
+<li>数据有偏：YouTube</li>
+<li>长期收益：阿里的一些工作</li>
+<li>交互式推荐中的序列决策问题：淘宝锦囊</li>
+</ul>
+</li>
+</ul>
+<h2 id="gan">GAN</h2>
+<ul>
+<li>暂时缺乏公开的有重要意义的成果</li>
+</ul>
+<h1 id="faq">FAQ</h1>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2020-03-05 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: '推荐系统在工业界的调研',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2020 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>

@@ -116,9 +116,12 @@
 <h1 id="2">第2章 词典分词</h1>
 <ul>
 <li>词典：HanLP自带了千万级词典，同时提供mini版</li>
-<li>切分算法<ul>
-<li>完全切分，即遍历所有连续字序列，跟词典中的词进行匹配。输出所有可能的词<br />
-<code>python
+<li>
+<p>切分算法</p>
+<ul>
+<li>完全切分，即遍历所有连续字序列，跟词典中的词进行匹配。输出所有可能的词</li>
+</ul>
+<p><code>python
 def fully_segment(text, dic):
     """
     text: 文本序列
@@ -130,9 +133,9 @@ def fully_segment(text, dic):
             word = text[i:j]
             if word in dic:
                 word_list.append(word)
-    return word_list</code></li>
-<li>正向最长匹配：即认为越长的词优先级越高，优先匹配长词。从前往后扫叫做正向最长匹配，从后往前扫叫逆向最长匹配<br />
-<code>python
+    return word_list</code><br />
+- 正向最长匹配：即认为越长的词优先级越高，优先匹配长词。从前往后扫叫做正向最长匹配，从后往前扫叫逆向最长匹配</p>
+<p><code>python
 def forward_segment(text, dic):
   word_list = []
       for i in range(len(text)):
@@ -140,7 +143,8 @@ def forward_segment(text, dic):
               word = text[i:j]
               if word in dic:
                   word_list.append(word)
-      return word_list</code></li>
+      return word_list</code></p>
+<ul>
 <li>逆向最长匹配：总的而言，逆向最长匹配效果好于正向，孙茂松教授论文</li>
 <li>双向最长匹配：汉语中单字词数量远小于非单字词<ol>
 <li>同时执行正向和逆向最长匹配，若两者词数不一样，选择词数更好的那一个</li>
@@ -153,23 +157,15 @@ def forward_segment(text, dic):
 <li>正向和逆向性能差不多，但是java的不好说，可能因为垃圾回收机制，正向快一些？</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>字典树 trie 树，前缀树；避免了前缀的重复比较，比简单的二叉树匹配要快<ul>
+<li>字典树 trie 树，前缀树；避免了前缀的重复比较，比简单的二叉树匹配要快</li>
 <li>由于子节点较多，所以孩子节点集合要用字典或者map来实现</li>
-</ul>
-</li>
-<li>首字散列其余二分的字典树：在逆向和双向匹配是，大约比Java的treemap快一倍的样子<ul>
+<li>首字散列其余二分的字典树：在逆向和双向匹配是，大约比Java的treemap快一倍的样子</li>
 <li>首字：用字符散列函数来查询孩子，子节点个数很大，例如65535</li>
 <li>其余的节点，通过二分查找来查询孩子</li>
-</ul>
-</li>
-<li>前缀树的妙用：优化到1000万字每秒<ul>
+<li>前缀树的妙用：优化到1000万字每秒</li>
 <li>出发点，如果「自然」不在词典中，那么所有以「自然」开头的词都不在词典中。比普通实现的全切分可以快5-7倍</li>
+<li>双数组字典树：略，进一步加速2-3倍</li>
 </ul>
-</li>
-<li>
-<p>双数组字典树：略，进一步加速2-3倍</p>
 </li>
 <li>
 <p>中文分词的评估</p>
