@@ -89,6 +89,10 @@
 <li><a href="#6">第6章 条件随机场与序列标注</a></li>
 <li><a href="#7">第7章 词性标注</a></li>
 <li><a href="#8">第8章 命名实体识别</a></li>
+<li><a href="#9">第9章 信息抽取</a></li>
+<li><a href="#10">第10章 文本聚类</a></li>
+<li><a href="#11">第11章 文本分类</a></li>
+<li><a href="#12">第12章 依存句法分析</a></li>
 <li><a href="#faq">FAQ</a><ul>
 <li><a href="#_6">为什么逆向最长匹配通常好于正向最长匹配</a></li>
 <li><a href="#_7">为什么字典树相比普通的二叉树要快</a></li>
@@ -100,6 +104,7 @@
 <li><a href="#hmmcrf">HMM为什么不如结构化感知机和CRF</a></li>
 <li><a href="#crfcrf">结构化感知机和CRF的区别是什么？为什么CRF效果更好？</a></li>
 <li><a href="#crf">如何理解CRF的本质</a></li>
+<li><a href="#crf-vs-hmm">CRF vs HMM</a></li>
 </ul>
 </li>
 </ul>
@@ -402,7 +407,75 @@ $$</li>
 </ul>
 </li>
 <li>基于规则<ul>
-<li>词典，</li>
+<li>词典：机构名、人名</li>
+<li>正则表达式：数字、英文识别</li>
+</ul>
+</li>
+<li>语料：<ul>
+<li>人民日报</li>
+<li>MSRA</li>
+</ul>
+</li>
+<li>基于层叠HMM的角色标注框架</li>
+<li>基于序列标注的命名实体识别 BMES</li>
+<li>特征提取<ul>
+<li>转移特征 yt-1</li>
+<li>词特征 wt-1,wt-1,w,wt+1,wt+2</li>
+<li>词性特征 tag_t-1, tag_t, tag_t+1</li>
+</ul>
+</li>
+<li>评测指标：P、R、F1</li>
+</ul>
+<h1 id="9">第9章 信息抽取</h1>
+<ul>
+<li>新词抽取，可以简单理解为OOV，领域词典</li>
+<li>非监督新词发现：交互信息熵，即得知x带来对预测y的不确定性的降低量。显然，这个不确定性减少量越高，代表这两个词越可能是新词<br />
+$$<br />
+I(x;y) = \log \frac{p(x, y)}{p(x) p(y)} = I(y) - I(y|x)<br />
+$$</li>
+<li>关键词提取<ul>
+<li>词频</li>
+<li>TF-IDF</li>
+<li>TextRank：将词看做节点，共现看做边，利用PageRank算法生成</li>
+</ul>
+</li>
+<li>短语提取：搜索引擎自动推荐、文档简介生成<ul>
+<li>多个词构成的词组</li>
+<li>互信息，提取二元语法短语（即2个词构成的短期），n元语法</li>
+</ul>
+</li>
+<li>关键句提取：将句子看做节点，相似看做边的权重，利用PageRank算法生成<ul>
+<li>BM25相似度，将其中一个句子中的词看做query，另一个句子看做文档，计算query跟文档的相似度（由TF和文档长度计算得出），然后将所有query按照IDF加权求和，得到相似度</li>
+</ul>
+</li>
+</ul>
+<h1 id="10">第10章 文本聚类</h1>
+<ul>
+<li>词袋模型</li>
+<li>特征：<ul>
+<li>布尔词频</li>
+<li>TF-IDF</li>
+<li>词向量，词向量求和得到文档向量。TF，SVD，LDA，word2vec etc</li>
+</ul>
+</li>
+<li>K-Means聚类</li>
+</ul>
+<h1 id="11">第11章 文本分类</h1>
+<ul>
+<li>分词，卡方特征选择</li>
+<li>朴素贝叶斯</li>
+<li>SVM</li>
+<li>情感分类</li>
+</ul>
+<h1 id="12">第12章 依存句法分析</h1>
+<ul>
+<li>短语结构树：即一棵语法树，上下文无关文法（见编译原理）</li>
+<li>树库（treebank）：宾州树库（英文），中文树库</li>
+<li>依存句法理论：词与词间存在主从关系，是二元不对等关系。生成依存句法树<ul>
+<li>有且只有一个词不依赖其他词语</li>
+<li>其他的所有词必须依存于其他词</li>
+<li>每个单词不能依存于多个单词</li>
+<li>如果A依存于B，那么AB之间的C只能依存于A、B或者AB之间的词</li>
 </ul>
 </li>
 </ul>
@@ -448,6 +521,14 @@ $$</li>
 <li>建模序列到序列的条件概率</li>
 <li>认为yt至于前面的y有关，而跟t后面的y无关，但是跟全部的x都有关</li>
 <li>在yt前面的y给定下，将预测yt变成一个多分类问题，用一个多分类逻辑来建模</li>
+</ul>
+</li>
+</ul>
+<h2 id="crf-vs-hmm">CRF vs HMM</h2>
+<ul>
+<li>HMM可以看做CRF的特例：<ul>
+<li>yt 只跟 xt 有关，即 P(yt|yt-1, [x1,x2,...,xn]) = P(yt|xt)</li>
+<li>xt 只跟 xt-1 有关，马尔科夫性，CRF没有这个假定 </li>
 </ul>
 </li>
 </ul>
