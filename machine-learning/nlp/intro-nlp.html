@@ -99,6 +99,7 @@
 <li><a href="#_11">感知机模型如何跟词典融合</a></li>
 <li><a href="#hmmcrf">HMM为什么不如结构化感知机和CRF</a></li>
 <li><a href="#crfcrf">结构化感知机和CRF的区别是什么？为什么CRF效果更好？</a></li>
+<li><a href="#crf">如何理解CRF的本质</a></li>
 </ul>
 </li>
 </ul>
@@ -434,6 +435,22 @@ $$</li>
 <li>CRF直接建模标签的前后关联，字的前后关联，字根标签的发射关系</li>
 </ul>
 <h2 id="crfcrf">结构化感知机和CRF的区别是什么？为什么CRF效果更好？</h2>
+<h2 id="crf">如何理解CRF的本质</h2>
+<ul>
+<li>CRF的本质是在建模 P([y1,y2,...,yn]|[x1,x2,...,xn])</li>
+<li>它对上述条件概率做了一定的简化</li>
+<li>P([y1,y2,...,yt]|[x1,x2,...,xt]) = P([y1,y2,...,yt-1]|[x1,x2,...,xt-1]) P(yt|yt-1, [x1,x2,...,xn])</li>
+<li>其中条件概率 P(yt|yt-1, [x1,x2,...,xn]) 通过一个线性函数来拟合(其实就是多分类逻辑回归)<br />
+$$<br />
+P(y_t|y_{t-1}, [x_1,x_2,...,x_n]) = \frac{1}{Z(X)} \Pi \exp(\sum_k w_k f_k(y_{t-1}, y_t, X_t))<br />
+$$</li>
+<li>总结起来，CRF有这些特点<ul>
+<li>建模序列到序列的条件概率</li>
+<li>认为yt至于前面的y有关，而跟t后面的y无关，但是跟全部的x都有关</li>
+<li>在yt前面的y给定下，将预测yt变成一个多分类问题，用一个多分类逻辑来建模</li>
+</ul>
+</li>
+</ul>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
