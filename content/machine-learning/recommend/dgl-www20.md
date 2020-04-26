@@ -33,7 +33,26 @@ $$
     - 节点分类，hv做输入，交叉熵损失
     - 链接预测，负采样近似损失函数
     - 图分类，将多个节点的向量，readout成一个向量(聚合一类的操作)，然后分类损失
-- 
+- 训练技巧
+    - min-batch，邻接表表示图
+    - 邻居采样，不算全部邻居
+
+## DGL
+- <https:www.dgl.ai>
+- 核心抽象
+    - DGLGraph
+    - `g.ndata['h']`
+- message passing APIs
+    - send
+    - recv
+    - 可扩展的函数：
+        - message function：对边和顶点做变换
+        - reduce function：将邻居聚合的函数
+        - update function：利用上一步隐向量和邻居聚合结果更新隐向量
+    - 异构图支持
+- transformer是gat，在一个完全图上
+- NLP中的图：知识图谱
+
 
 
 ## REF
