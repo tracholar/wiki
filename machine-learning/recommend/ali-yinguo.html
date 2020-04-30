@@ -1,0 +1,169 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>因果推断在阿里大文娱用户增长的应用 - Tracholar的个人wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="google-search" style="width:200px; float:right; margin: 20px 0;">
+                <form action="//cse.google.com/cse" method="get" id="search-form">
+                    <input type="hidden" name="cx" value="015970462532790426975:gqlen38ywus"/>
+                    <input type="text" name="q"  style="line-height:20px; padding:4px;" placeholder="站内搜索"/>
+                    <svg width="13" height="13" viewBox="0 0 13 13" style="position:relative; left: -20px;" onclick="document.getElementById('search-form').submit()">
+                        <title>搜索</title>
+                        <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z">
+                        </path>
+                    </svg>
+                </form>
+
+            </div>
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#-recommend">recommend</a>&nbsp;»&nbsp;因果推断在阿里大文娱用户增长的应用</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">因果推断在阿里大文娱用户增长的应用</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">摘要</a></li>
+<li><a href="#ref">REF</a></li>
+</ul>
+</div>
+<h2 id="_1">摘要</h2>
+<ul>
+<li>经典的 AARRR 模式会逐步转向 RARRA 模式，提升产品留存、拉活、分享传播等方式是构建增长的主要战场</li>
+<li>内容领域的增长模式<ul>
+<li>头条快手模式，内容闭环，推荐系统</li>
+<li>趣头条模式，游戏化引导</li>
+<li>爱奇艺，腾讯视频模式，头部内容</li>
+</ul>
+</li>
+<li>用户增长问题需要从内容供给、内容分发、权益设计、产品设计等多环节进行联合优化，从算法的角度，其目标可以拆解为两大部分<ol>
+<li>用户状态建模，深度建模用户状态和行为，从大数据集中找到使用户从低阶状态到高阶状态转化的干预因子。</li>
+<li>个性化分发升级，将用户行为建模后，在多个场景将这些干预动作落地为个性化推荐算法和营销算法，满足用户的视频内容消费需求</li>
+</ol>
+</li>
+<li>用户增长体系：消息推送 ( push )、站外引导 ( dsp ) 以及新用户承接推荐</li>
+<li>状态表示<ul>
+<li>用户画像与状态表示法，状态转移图<ol>
+<li>用户从非会员到购买会员并逐步进入高阶会员的阶段，本质属于一种强规则定义的状态。</li>
+<li>将难度较大的"促留存"问题拆分为"目标达成"问题，产品通过策略不断使得用户完成高阶里程碑，是业内目前已证明成功的用户增长方法</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>基于因果推断的无偏 user-cf 设计，不太懂，将用户从不活跃拉到活跃</li>
+</ul>
+<h2 id="ref">REF</h2>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/oZTU7TAEf-gYzlSXdt0_BA">因果推断在阿里大文娱用户增长的应用</a></li>
+<li><a href="http://mp.weixin.qq.com/s?__biz=MzU1NTMyOTI4Mw==&amp;mid=2247498041&amp;idx=1&amp;sn=5c8b880a2be4075ee48388b27ce1a6e0&amp;chksm=fbd74b55cca0c24382f3f10e6f2a8423e228c390339dc086d5f1fec034350e0574302587834a&amp;scene=21#wechat_redirect">基于双 pid 的动态报价算法</a></li>
+<li><a href="http://mp.weixin.qq.com/s?__biz=MzU1NTMyOTI4Mw==&amp;mid=2247498630&amp;idx=1&amp;sn=b36515e54c2dbc20186942102497c390&amp;chksm=fbd749eacca0c0fc9e285ffc7d06e336115f387394362a4707c71377f02832f8c42bcc71cc7a&amp;scene=21#wechat_redirect">基于 uplift model 的营销增益模型</a></li>
+</ul>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2020-04-23 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: '因果推断在阿里大文娱用户增长的应用',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2020 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>

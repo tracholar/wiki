@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>《公司理财》 - Tracholar的个人wiki</title>
+        <title>《分布式机器学习：算法、理论与实践》读书笔记 - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,152 +64,111 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#economics">economics</a>&nbsp;»&nbsp;《公司理财》</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;《分布式机器学习：算法、理论与实践》读书笔记</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">《公司理财》</div>
+<div id="title">《分布式机器学习：算法、理论与实践》读书笔记</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">关于</a></li>
-<li><a href="#_2">概论</a><ul>
-<li><a href="#1">第1章 导论</a></li>
-<li><a href="#2">第2章 会计报表与现金流量</a></li>
-<li><a href="#3">第3章 财务报表分析与长期计划</a></li>
+<li><a href="#1">第1章 绪论</a></li>
+<li><a href="#2">第2章 机器学习基础</a></li>
+<li><a href="#3">第3章 分布式机器学习框架</a></li>
+<li><a href="#4">第4章 单机优化之确定性算法</a><ul>
+<li><a href="#_2">一阶确定性算法</a></li>
+<li><a href="#_3">二阶确定性算法</a></li>
+<li><a href="#_4">对偶方法</a></li>
 </ul>
 </li>
+<li><a href="#5">第5章 单机优化之随机性算法</a></li>
+<li><a href="#6">第6章 数据与模型并行</a></li>
+<li><a href="#7">第7章 通信机制</a></li>
+<li><a href="#8">第8章 数据与模型聚合</a></li>
+<li><a href="#9">第9章 分布式机器学习算法</a></li>
+<li><a href="#10">第10章 分布式机器学习理论</a></li>
+<li><a href="#11">第11章 分布式机器学习系统</a></li>
+<li><a href="#12">第12章 结语</a></li>
 <li><a href="#faq">FAQ</a><ul>
-<li><a href="#_3">公司理财讲得是什么？</a></li>
-<li><a href="#_4">现金流量的管理目标是什么？</a></li>
-<li><a href="#_5">为什么要区分短期和长期资产和负债？</a></li>
-<li><a href="#55">如果选取最重要的5个财务指标来评估一家公司，应该是哪5个？</a></li>
+<li><a href="#_5">分布式机器学习系统与其他分布式系统的区别是啥</a></li>
+<li><a href="#vs">投影次梯度法 vs 近端梯度下降的收敛速度上有什么区别</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <h1 id="_1">关于</h1>
-<p>罗斯的《公司理财》是商学院的经典教材,这里记录了个人认为是重点,且之前不知道的新知识。部分知识在《财务会计教材》、《货币金融学》、《投资学》中已经记录了的,不再重复。</p>
-<h1 id="_2">概论</h1>
-<h2 id="1">第1章 导论</h2>
 <ul>
-<li>公司资产负债表<ul>
-<li>资产<ul>
-<li>固定资产<ul>
-<li>有形资产：设备、厂房etc</li>
-<li>无形资产：商誉、商标、专利</li>
+<li>刘铁岩写的书</li>
+</ul>
+<h1 id="1">第1章 绪论</h1>
+<ul>
+<li>分布式机器学习系统与传统分布式系统的区别<ul>
+<li>天生具有一定的鲁棒性和容错性，比如丢失一些数据和执行顺序不一定要跟单机版严格一致</li>
+<li>除了加速计算外，模型精度是一个重要的追求目标，不能为了加速计算而降低模型的精度</li>
 </ul>
 </li>
-<li>流动资产：现金、存活等</li>
+</ul>
+<h1 id="2">第2章 机器学习基础</h1>
+<ul>
+<li>大部分内容略，只记录几个点</li>
+<li>boosting方法扛过拟合：及时训练集的精度不在提升，继续boost还是可以提升在测试集上的效果，因为继续boost提升了置信度（间隔理论）。影像中周志华在科大那次讲座刚好讲到过这个事情，还提出了一个理论解释</li>
+</ul>
+<h1 id="3">第3章 分布式机器学习框架</h1>
+<ul>
+<li>略，见后面具体章节，本章节是个综述性质</li>
+</ul>
+<h1 id="4">第4章 单机优化之确定性算法</h1>
+<ul>
+<li>凸函数：二阶导大于0</li>
+<li>强凸：二阶导有下界</li>
+<li>lipschitz连续：一阶导有上界，不能跳变太多，梯度不能太大</li>
+<li>beta光滑：二阶导有上界，梯度不能变化太快了</li>
+</ul>
+<h2 id="_2">一阶确定性算法</h2>
+<ul>
+<li>梯度下降：<ul>
+<li>beta光滑，则次线性收敛O(1/T)</li>
+<li>alpha强凸，则一阶收敛</li>
 </ul>
 </li>
-<li>负债<ul>
-<li>流动负债</li>
-<li>长期负债</li>
-</ul>
-</li>
-<li>股东权益</li>
-</ul>
-</li>
-<li>三个研究问题：<ol>
-<li>公司应该投资于什么样的长期资产？资本预算</li>
-<li>公司如何筹集所需的资本支出？资本结构：短期、长期负债与股东权益的比例</li>
-<li>公司应该如何管理短期经营活动产生的现金流。流入流出的时间不匹配，数量和时间的不确定性</li>
+<li>投影次梯度下降：解决非光滑，有约束<ol>
+<li>先按次梯度下降，次梯度任选一个就行</li>
+<li>投影到可行域</li>
 </ol>
 </li>
-<li>公司制企业<ul>
-<li>个人独资企业：费用低，不支付公司所得税而按照个人所得税；无限责任；</li>
-<li>合伙制企业：<ul>
-<li>普通合伙：无限责任</li>
-<li>有限合伙制：有限责任；费用低；但筹资难</li>
+<li>近端梯度下降，参见近似梯度法/投影梯度法，投影算子</li>
+<li>Frank-Wolfe算法：相比投影次梯度法是在最后再投影会可行域，该算法在下降方向选取的时候就考虑了约束区域。好处是在投影计算较为困难时，比投影次梯度方便<ol>
+<li>计算梯度</li>
+<li>在可行域内搜索到与负梯度方向夹角最小的下降方向</li>
+<li>使用动量策略更新下降方向</li>
+</ol>
+</li>
+<li>Nesterov（尼斯特洛夫，看起来是个俄国人）加速：很多地方都有用到<ul>
+<li>对更新量外推</li>
 </ul>
 </li>
-<li>公司：有限责任；公司所得税</li>
+<li>坐标下降：每次梯度下降一个变量</li>
 </ul>
-</li>
-<li>会计利润按照责权发生制记录，但是公司理财更关注现金流量</li>
-<li>财务管理目标：最大化现有股票的每股价值。既能考虑短期利润，也能考虑长期利润</li>
-<li>财务管理目标（考虑未上市的）：最大化现有股东权益的市场价值</li>
-<li>公司理财定义为研究企业决策、现金流和企业股票价值的关系。</li>
-<li>代理问题和公司控制：股东跟高管目标和利益不一致</li>
-</ul>
-<h2 id="2">第2章 会计报表与现金流量</h2>
+<h2 id="_3">二阶确定性算法</h2>
 <ul>
-<li>账面价值与市场价值不一致</li>
-<li>息税前利润：在扣除借款利息和所得税之前的利润，反应经营活动产生的利润</li>
-<li>
-<p>平均税率与边际税率</p>
-</li>
-<li>
-<p>杜邦恒等式: </p>
-</li>
-<li>内部增长率,没有任何外部融资的情况下,公司可能实现的最大增长率</li>
-<li>可持续增长率,可以用来分析公司未来的融资决策。是公司没有外部股权融资且保持负债-权益比不变的情况下可能实现的最高增长率</li>
-<li>如何评估公司的价值<ul>
-<li>用公司未来的净现金流折现得到的现值,折现率可以用《投资学》里的风险分析的预期收益率?</li>
+<li>牛顿法</li>
+<li>拟牛顿法：用迭代的方式更新海森矩阵，避免牛顿法直接求海森矩阵的困难</li>
 </ul>
-</li>
-</ul>
-<h2 id="3">第3章 财务报表分析与长期计划</h2>
-<ul>
-<li>财务报表标准化：将金额转化为百分比，共同比报表。<ul>
-<li>共同比资产负债表：将总资产定为100%</li>
-<li>共同比利润表：将销售额定为100%</li>
-</ul>
-</li>
-<li>短期偿债能力与流动性指标<ul>
-<li>流动比 = 流动资产/流动负债</li>
-<li>速冻比：将流动比中的流动资产中的存货去掉</li>
-<li>现金比率</li>
-</ul>
-</li>
-<li>长期偿债能力<ul>
-<li>总负债率：总负债/总资产</li>
-<li>权益乘数：总资产/总权益，即杠杆率</li>
-<li>利息倍数：利息保障率，EBIT/利息</li>
-</ul>
-</li>
-<li>资产管理周转指标<ul>
-<li>存货周转率 = 销售成本/存货；感觉更像是销售量是存货的比率</li>
-<li>存货周转天数 = 365/存货周转率</li>
-<li>应收账款周转率 = 销售额/应收账款</li>
-<li>总资产周转率 = 销售额/总资产</li>
-</ul>
-</li>
-<li>盈利性指标<ul>
-<li>销售利润率 = 净利润/销售额</li>
-<li>EBDIT利润率 = EBDIT/销售额</li>
-<li>资产收益率(ROA) = 近利润/总资产</li>
-<li>权益收益率(ROE) = 净利润/总权益，也叫净资产收益率</li>
-</ul>
-</li>
-<li>市场价值度量<ul>
-<li>市盈率：PE = 每股价格/每股收益</li>
-<li>市净率：PB = 每股价格/每股净资产</li>
-<li>股票市值</li>
-<li>企业价值：EV = 股票市值 + 付息债务市场价值 - 现金。评估收购需要花多少现金</li>
-<li>企业价值乘数：EV/EBITDA</li>
-</ul>
-</li>
-<li>杜邦恒等式：杜邦分析<ul>
-<li>ROE = ROA * 权益乘数；银行业权益乘数远高于其他行业，但是ROA却较低</li>
-<li>ROE = 销售利润率 * 总资产周转率 * 权益乘数。<a href="https://mp.weixin.qq.com/s/2h_ELssVYmMiBMlQIhUw5Q">巴菲特最看重的选股指标：净资产收益率</a><ul>
-<li>经营效率：利润率</li>
-<li>资产使用效率：总资产周转率</li>
-<li>财务杠杆：权益乘数</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>财务报表分析的根本问题在于没有潜在的理论指导我们该去看哪些数字已经如何建立比较基准</li>
-</ul>
+<h2 id="_4">对偶方法</h2>
+<h1 id="5">第5章 单机优化之随机性算法</h1>
+<h1 id="6">第6章 数据与模型并行</h1>
+<h1 id="7">第7章 通信机制</h1>
+<h1 id="8">第8章 数据与模型聚合</h1>
+<h1 id="9">第9章 分布式机器学习算法</h1>
+<h1 id="10">第10章 分布式机器学习理论</h1>
+<h1 id="11">第11章 分布式机器学习系统</h1>
+<h1 id="12">第12章 结语</h1>
 <h1 id="faq">FAQ</h1>
-<h2 id="_3">公司理财讲得是什么？</h2>
+<h2 id="_5">分布式机器学习系统与其他分布式系统的区别是啥</h2>
 <ul>
-<li>如书名所讲，就是对公司来说，该如何理财，以保证公司的所有者权益的市场价值最大化。</li>
-<li>具体而言，有这些主题：现金流的管理；投资资产的估值；风险和定价；公司资本结构的管理</li>
+<li>天生具有一定的鲁棒性和容错性，比如丢失一些数据和执行顺序不一定要跟单机版严格一致</li>
+<li>除了加速计算外，模型精度是一个重要的追求目标，不能为了加速计算而降低模型的精度</li>
 </ul>
-<h2 id="_4">现金流量的管理目标是什么？</h2>
-<h2 id="_5">为什么要区分短期和长期资产和负债？</h2>
-<h2 id="55">如果选取最重要的5个财务指标来评估一家公司，应该是哪5个？</h2>
+<h2 id="vs">投影次梯度法 vs 近端梯度下降的收敛速度上有什么区别</h2>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -221,7 +180,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2019-03-29 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2020-03-28 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -229,7 +188,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: '《公司理财》',
+  title: '《分布式机器学习：算法、理论与实践》读书笔记',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
