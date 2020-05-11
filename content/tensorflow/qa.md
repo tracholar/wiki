@@ -23,3 +23,16 @@ a,b=tf.nn.top_k([1], 1)
 print a.name # => 'TopKV2:0'
 print b.name # => 'TopKV2:1'
 ```
+
+## keras的layer相关注记
+- call中的所有操作会自动置于 self.name 的name_scope下面，不用手动指定；但是创建的变量还是需要手动指定variable_scope
+- 手动执行build方法时，还需要将模块的`built`属性设置为True
+```python
+dnn.build(input_shape[0])
+dnn.built = True
+```
+
+## name_scope 与 variable_scope 的区别
+- name_scope 只会加到op上，而 variable_scope 会加到op和variable上
+- 只用 name_scope 时，创建了新变量，会导致变量在顶层scope中，不利于计算图可视化
+
