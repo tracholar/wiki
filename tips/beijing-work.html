@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>pkgutil使用 - Tracholar的个人wiki</title>
+        <title>北京工作居住证申请系统 - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,24 +64,73 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#python">python</a>&nbsp;»&nbsp;pkgutil使用</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tips">tips</a>&nbsp;»&nbsp;北京工作居住证申请系统</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">pkgutil使用</div>
+<div id="title">北京工作居住证申请系统</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">动态包加载</a></li>
-<li><a href="#python">python 单模块多路径问题</a></li>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">准备工具</a></li>
+<li><a href="#_3">分步骤</a><ul>
+<li><a href="#_4">登陆系统</a></li>
+<li><a href="#_5">进入居住证填报系统</a></li>
+<li><a href="#_6">填报系统按钮点击无反应</a></li>
+</ul>
+</li>
 </ul>
 </div>
-<h2 id="_1">动态包加载</h2>
-<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">pkgutil</span>
-<span class="n">__path__</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">extend_path</span><span class="p">(</span><span class="n">__path__</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
+<h1 id="_1">关于</h1>
+<ul>
+<li>在MAC下申请北京工作居住证，在填报系统的时候发现各种坑，政府网站就是这样，BUG太多。按照本教程可以成功填报。</li>
+</ul>
+<h1 id="_2">准备工具</h1>
+<ul>
+<li>chrome浏览器</li>
+<li>安装插件 <a href="http://www.tampermonkey.net/">tampermonkey</a> ，用于注入js脚本</li>
+</ul>
+<h1 id="_3">分步骤</h1>
+<h2 id="_4">登陆系统</h2>
+<ul>
+<li>进入系统正常登陆，没有什么问题 <a href="http://219.232.200.39/uamsso/">http://219.232.200.39/uamsso/</a></li>
+</ul>
+<h2 id="_5">进入居住证填报系统</h2>
+<ul>
+<li>点击后会出现乱码，空白页</li>
+<li>解决方法是进入空白页后，点击链接 <a href="http://219.232.200.39/uamsso/SSOSecService?LinkType=online&amp;LinkID=666">http://219.232.200.39/uamsso/SSOSecService?LinkType=online&amp;LinkID=666</a>  或者创建一个新标签页，地址栏输入上述地址也可以</li>
+</ul>
+<h2 id="_6">填报系统按钮点击无反应</h2>
+<ul>
+<li>利用插件 tampermonkey 创建如下脚本，然后即可正常填报了。</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="c1">// ==UserScript==</span>
+<span class="c1">// @name         工作居住证网站脚本</span>
+<span class="c1">// @namespace    http://tampermonkey.net/</span>
+<span class="c1">// @version      0.1</span>
+<span class="c1">// @description  try to take over the world!</span>
+<span class="c1">// @author       zuoyuan@tracholar.com</span>
+<span class="c1">// @match        http://219.232.200.42/yjrc/*</span>
+<span class="c1">// @grant        none</span>
+<span class="c1">// ==/UserScript==</span>
+
+<span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
+
+    <span class="kd">var</span> <span class="nx">scriptNodes</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">);</span>
+
+    <span class="kd">var</span> <span class="nx">n</span> <span class="o">=</span> <span class="nx">scriptNodes</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+        <span class="kd">var</span> <span class="nx">script</span> <span class="o">=</span> <span class="nx">scriptNodes</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">text</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s1">&#39;window.onload&#39;</span><span class="p">,</span> <span class="s1">&#39;window_onload&#39;</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">node</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">);</span>
+        <span class="nx">node</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span> <span class="nx">script</span><span class="p">;</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">head</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">node</span><span class="p">);</span>
+
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">script</span><span class="p">);</span>
+
+    <span class="p">}</span>
+
+<span class="p">})();</span>
 </pre></div>
-
-
-<p>上述代码的目的是将<code>__path__</code>加到模块<code>__name__</code>的搜索路径中。这样就可以在两个不同的目录中扩展同一个模块了</p>
-<h2 id="python">python 单模块多路径问题</h2>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -93,7 +142,7 @@
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2020-04-29 20:00 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2020-05-19 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -101,7 +150,7 @@
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: 'pkgutil使用',
+  title: '北京工作居住证申请系统',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {

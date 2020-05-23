@@ -1,0 +1,203 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>Tensorflow 相关问题和答案 - Tracholar的个人wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="google-search" style="width:200px; float:right; margin: 20px 0;">
+                <form action="//cse.google.com/cse" method="get" id="search-form">
+                    <input type="hidden" name="cx" value="015970462532790426975:gqlen38ywus"/>
+                    <input type="text" name="q"  style="line-height:20px; padding:4px;" placeholder="站内搜索"/>
+                    <svg width="13" height="13" viewBox="0 0 13 13" style="position:relative; left: -20px;" onclick="document.getElementById('search-form').submit()">
+                        <title>搜索</title>
+                        <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z">
+                        </path>
+                    </svg>
+                </form>
+
+            </div>
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#tensorflow">tensorflow</a>&nbsp;»&nbsp;Tensorflow 相关问题和答案</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">Tensorflow 相关问题和答案</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#metagraphdefgraphdefgraph">MetaGraphDef、GraphDef、Graph 三者之间的关系是什么</a></li>
+<li><a href="#opname0">opname中的:0是什么意思</a></li>
+<li><a href="#keraslayer">keras的layer相关注记</a></li>
+<li><a href="#name_scope-variable_scope">name_scope 与 variable_scope 的区别</a></li>
+<li><a href="#tfprint">tf.Print 打印日志的问题，可能展示不出来</a></li>
+<li><a href="#tftf_export">tf.tf_export 是什么意思，原理如何</a></li>
+</ul>
+</div>
+<h2 id="metagraphdefgraphdefgraph">MetaGraphDef、GraphDef、Graph 三者之间的关系是什么</h2>
+<ul>
+<li><code>Graph</code> 是由python构建的计算图数据结构，包含算子和张量，它序列化之后就是 <code>GraphDef</code></li>
+<li><code>GraphDef</code> 定义在 <a href="https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/framework/graph.proto">graph.proto</a></li>
+<li>但是，直接将 <code>GraphDef</code> 反序列化后是得不到 <code>Graph</code> 的，需要利用 <code>importer</code> 模块来将图导入到session中。<a href="https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/tools/import_pb_to_tensorboard.py">import_pb_to_tensorboard.py</a></li>
+<li>从 <code>GraphDef</code> 的定义来看，它只包含了<code>NodeDef</code>，而没有其他的信息，<a href="https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/protobuf/meta_graph.proto"><code>MetaGraphDef</code></a> 扩展了<code>GraphDef</code>，记录了更多信息，包括<code>SaverDef</code>, <code>MetaInfoDef</code>,<code>CollectionDef</code> 等重要信息</li>
+<li>参考<a href="https://zhuanlan.zhihu.com/p/31308381">https://zhuanlan.zhihu.com/p/31308381</a></li>
+</ul>
+<h2 id="opname0">opname中的:0是什么意思</h2>
+<ul>
+<li><code>&lt;op&gt;:0</code>, <code>&lt;op&gt;:1</code> 表示的是第几个输出，试一下以下代码</li>
+<li><a href="https://stackoverflow.com/questions/40925652/in-tensorflow-whats-the-meaning-of-0-in-a-variables-name">https://stackoverflow.com/questions/40925652/in-tensorflow-whats-the-meaning-of-0-in-a-variables-name</a></li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+<span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">top_k</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="c1"># =&gt; &#39;TopKV2:0&#39;</span>
+<span class="k">print</span> <span class="n">b</span><span class="o">.</span><span class="n">name</span> <span class="c1"># =&gt; &#39;TopKV2:1&#39;</span>
+</pre></div>
+
+
+<h2 id="keraslayer">keras的layer相关注记</h2>
+<ul>
+<li>call中的所有操作会自动置于 self.name 的name_scope下面，不用手动指定；但是创建的变量还是需要手动指定variable_scope</li>
+<li>手动执行build方法时，还需要将模块的<code>built</code>属性设置为True</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="n">dnn</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">input_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">dnn</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="bp">True</span>
+</pre></div>
+
+
+<h2 id="name_scope-variable_scope">name_scope 与 variable_scope 的区别</h2>
+<ul>
+<li>name_scope 只会加到op上，而 variable_scope 会加到op和variable上</li>
+<li>只用 name_scope 时，创建了新变量，会导致变量在顶层scope中，不利于计算图可视化</li>
+</ul>
+<h2 id="tfprint"><code>tf.Print</code> 打印日志的问题，可能展示不出来</h2>
+<ul>
+<li>不能写出 <code>tf.Print(op, [op], 'msg')</code>，会使的 <code>print</code> 变成计算图上的孤立点，会被优化掉。正确的使用方法是</li>
+<li><code>op = tf.Print(op, [op], 'msg')</code></li>
+</ul>
+<blockquote>
+<p>To make sure the operator runs, users need to pass the produced op to tf.compat.v1.Session's run method, or to use the op as a control dependency for executed ops by specifying with tf.compat.v1.control_dependencies([print_op]). @end_compatibility</p>
+</blockquote>
+<h2 id="tftf_export"><code>tf.tf_export</code> 是什么意思，原理如何</h2>
+<ul>
+<li>查看源代码可以看到,<code>tf_export</code>是一个函数</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="n">tf_export</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">api_export</span><span class="p">,</span> <span class="n">api_name</span><span class="o">=</span><span class="n">TENSORFLOW_API_NAME</span><span class="p">)</span>
+</pre></div>
+
+
+<ul>
+<li><code>functools.partial</code> 是python的高阶函数工具，是一个类，初始化签名是</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">keywords</span><span class="p">)</span>
+</pre></div>
+
+
+<ul>
+<li><code>api_export</code> 是一个构建装饰器的类，其<code>__call__</code>方法创建一个装饰器</li>
+</ul>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2020-05-09 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: 'Tensorflow 相关问题和答案',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2020 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>
