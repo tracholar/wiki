@@ -36,3 +36,21 @@ dnn.built = True
 - name_scope 只会加到op上，而 variable_scope 会加到op和variable上
 - 只用 name_scope 时，创建了新变量，会导致变量在顶层scope中，不利于计算图可视化
 
+
+## `tf.Print` 打印日志的问题，可能展示不出来
+- 不能写出 `tf.Print(op, [op], 'msg')`，会使的 `print` 变成计算图上的孤立点，会被优化掉。正确的使用方法是
+- `op = tf.Print(op, [op], 'msg')`
+
+>  To make sure the operator runs, users need to pass the produced op to tf.compat.v1.Session's run method, or to use the op as a control dependency for executed ops by specifying with tf.compat.v1.control_dependencies([print_op]). @end_compatibility
+
+
+## `tf.tf_export` 是什么意思，原理如何
+- 查看源代码可以看到,`tf_export`是一个函数
+```python
+tf_export = functools.partial(api_export, api_name=TENSORFLOW_API_NAME)
+```
+- `functools.partial` 是python的高阶函数工具，是一个类，初始化签名是
+```python
+def __init__(self, func, *args, **keywords)
+```
+- `api_export` 是一个构建装饰器的类，其`__call__`方法创建一个装饰器
