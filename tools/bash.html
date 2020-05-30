@@ -73,6 +73,11 @@
 <li><a href="#_1">例子</a></li>
 <li><a href="#_2">基本语法</a></li>
 <li><a href="#zip">zip命令</a></li>
+<li><a href="#_3">命令行参数相关</a></li>
+<li><a href="#sort">sort</a></li>
+<li><a href="#awk">awk</a></li>
+<li><a href="#for">for循环</a></li>
+<li><a href="#_4">参考</a></li>
 </ul>
 </div>
 <h2 id="_1">例子</h2>
@@ -135,6 +140,52 @@
 
 
 <h2 id="zip">zip命令</h2>
+<h2 id="_3">命令行参数相关</h2>
+<ul>
+<li>脚本内获取参数的格式为：<code>$n</code>。n 代表一个数字，1 为执行脚本的第一个参数，2 为执行脚本的第二个参数，以此类推……</li>
+</ul>
+<div class="hlcode"><pre><span></span>  <span class="err">$#</span>    <span class="err">传递到脚本的参数个数</span>
+  <span class="err">$</span><span class="o">*</span>    <span class="err">以一个单字符串显示所有向脚本传递的参数。</span>
+        <span class="err">如</span><span class="s">&quot;$*&quot;</span><span class="err">用「</span><span class="s">&quot;」括起来的情况、以&quot;</span><span class="err">$</span><span class="mi">1</span> <span class="err">$</span><span class="mi">2</span> <span class="err">…</span> <span class="err">$</span><span class="n">n</span><span class="s">&quot;的形式输出所有参数。</span>
+  <span class="err">$$</span>    <span class="err">脚本运行的当前进程</span><span class="n">ID</span><span class="err">号</span>
+  <span class="err">$</span><span class="o">!</span>    <span class="err">后台运行的最后一个进程的</span><span class="n">ID</span><span class="err">号</span>
+  <span class="err">$</span><span class="p">@</span>    <span class="err">与$</span><span class="o">*</span><span class="err">相同，但是使用时加引号，并在引号中返回每个参数。</span>
+        <span class="err">如</span><span class="s">&quot;$@&quot;</span><span class="err">用「</span><span class="s">&quot;」括起来的情况、以&quot;</span><span class="err">$</span><span class="mi">1</span><span class="s">&quot; &quot;</span><span class="err">$</span><span class="mi">2</span><span class="s">&quot; … &quot;</span><span class="err">$</span><span class="n">n</span><span class="s">&quot; 的形式输出所有参数。</span>
+  <span class="err">$</span><span class="o">-</span>    <span class="err">显示</span><span class="n">Shell</span><span class="err">使用的当前选项，与</span><span class="n">set</span><span class="err">命令功能相同。</span>
+  <span class="err">$</span><span class="o">?</span>    <span class="err">显示最后命令的退出状态。</span><span class="mi">0</span><span class="err">表示没有错误，其他任何值表明有错误。</span>
+</pre></div>
+
+
+<h2 id="sort">sort</h2>
+<ul>
+<li><code>sort -u</code> 去重</li>
+<li><code>sort -r</code> 降序排列</li>
+<li><code>sort -o</code> 对原文件排序后写入原文件，重定向无法实现这个功能</li>
+<li><code>sort -n</code> 数字 </li>
+<li><code>sort -t &lt;char&gt; -k &lt;field1&gt;[,field2]</code> 用 <char>做分隔符，按照第 <field1> 列排序，可以指定多列</li>
+<li><code>sort -V</code> 按照版本排序</li>
+</ul>
+<h2 id="awk">awk</h2>
+<ul>
+<li><code>-F &lt;fs&gt;</code> 定义分隔符为字符 <fs></li>
+</ul>
+<h2 id="for">for循环</h2>
+<ul>
+<li>批量杀任务</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="nv">pid</span><span class="o">=</span><span class="k">$(</span>cmd<span class="k">)</span>  <span class="c1"># 通过命令获取进程</span>
+<span class="k">for</span> p in <span class="nv">$pid</span>
+<span class="k">do</span>
+    <span class="nb">echo</span> <span class="nb">kill</span> <span class="nv">$p</span>
+    <span class="nb">kill</span> <span class="nv">$p</span>
+<span class="k">done</span>
+</pre></div>
+
+
+<h2 id="_4">参考</h2>
+<ul>
+<li><a href="https://www.runoob.com/linux/linux-shell.html">https://www.runoob.com/linux/linux-shell.html</a></li>
+</ul>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
