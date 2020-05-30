@@ -1,0 +1,242 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>推荐系统评论快报-20年05期 - Tracholar的个人wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="google-search" style="width:200px; float:right; margin: 20px 0;">
+                <form action="//cse.google.com/cse" method="get" id="search-form">
+                    <input type="hidden" name="cx" value="015970462532790426975:gqlen38ywus"/>
+                    <input type="text" name="q"  style="line-height:20px; padding:4px;" placeholder="站内搜索"/>
+                    <svg width="13" height="13" viewBox="0 0 13 13" style="position:relative; left: -20px;" onclick="document.getElementById('search-form').submit()">
+                        <title>搜索</title>
+                        <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z">
+                        </path>
+                    </svg>
+                </form>
+
+            </div>
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#machine-learning">machine-learning</a>&nbsp;»&nbsp;<a href="/wiki/#-recommend">recommend</a>&nbsp;»&nbsp;推荐系统评论快报-20年05期</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">推荐系统评论快报-20年05期</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">关于</a></li>
+<li><a href="#_2">召回相关</a><ul>
+<li><a href="#ncf-vs-mf">NCF vs MF</a><ul>
+<li><a href="#_3">主要观点</a></li>
+<li><a href="#_4">详细内容</a></li>
+<li><a href="#_5">评论</a></li>
+</ul>
+</li>
+<li><a href="#nn">NN学习多项式</a><ul>
+<li><a href="#_6">主要结论</a><ul>
+<li><a href="#representation-theorem">Representation Theorem</a></li>
+<li><a href="#_7">用梯度下降优化</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#lightgcn">LightGCN</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h1 id="_1">关于</h1>
+<ul>
+<li>收集一下近期推荐系统相关的一些热点文章，及其相关的论文。<br />
+  在此基础上，做简要阅读和评论，重点精读的文章单独写一篇笔记。</li>
+</ul>
+<h1 id="_2">召回相关</h1>
+<h2 id="ncf-vs-mf">NCF vs MF</h2>
+<ul>
+<li>论文：Neural Collaborative Filtering vs. Matrix Factorization Revisited</li>
+<li>作者 Steffen Rendle 是 FM 的发明人，绝对大佬</li>
+<li>知乎讨论<a href="https://www.zhihu.com/question/396722911">https://www.zhihu.com/question/396722911</a></li>
+</ul>
+<h3 id="_3">主要观点</h3>
+<ul>
+<li>比较了基于矩阵分解的方法和目前基于MLP的NCF方法，<br />
+  指出在合适的超参数选择下，矩阵分解的方法比NCF更好</li>
+<li>虽然MLP可以近似任意函数，但是作者证实他确很难学到点积！<br />
+  很难学到的意思是，需要很高的模型容量以及很多数据才能学到</li>
+<li>MLP太慢了，不如点积，因为点击可以用近似索引</li>
+<li>作者不是说MLP不好，而是希望不要被MLP能近似任意函数误导，<br />
+  MLP需要较大数据和较低emb维度，才能拟合得好相似函数</li>
+</ul>
+<h3 id="_4">详细内容</h3>
+<ul>
+<li>两种学习相似函数的模式，点积和MLP</li>
+</ul>
+<p><img alt="点积和MLP" src="/wiki/static/images/mf-ncf-01.png" /></p>
+<ul>
+<li>NCF原始论文(2017)用MLP和GMF两个分数来表示相似（模型结构见下图），GMF是用加权的内积<br />
+$$<br />
+\phi^{GMF}(p, q) = \sigma(w^T(p \bigodot q))<br />
+$$</li>
+</ul>
+<p><img alt="GMF-MLP" src="/wiki/static/images/ncf-001.png" /></p>
+<ul>
+<li>
+<p>NCF原始论文里面，GMF没有对权重w正则，是导致不稳定的因素。<br />
+  因为p和q有正则，会导致p和q倾向于减小，如果w同时增大对应的倍率，<br />
+  那么损失函数实际上不变。另外，w的信息实际上可以让p和q来学到，<br />
+  所以增加w这个参数实际上并没有增加模型容量。</p>
+</li>
+<li>
+<p>MLP难拟合内积，误差界是 $( O(d^4/\epsilon^2) )$</p>
+</li>
+<li>上述误差界来自于论文， Learning Polynomials with Neural Networks，<br />
+  这篇论文的主要结论见后文</li>
+<li>试验评估指标：hit rate（即召回率），NDCG</li>
+</ul>
+<h3 id="_5">评论</h3>
+<ul>
+<li>MLP难以学到点积这个点比较有意义，这是不是说明了在DNN时代，<br />
+  手动做一些交叉还是能拿到一些收益的？例如，W&amp;D中用wide来记忆<br />
+  用户历史行为跟item的交叉。在DeepFM中用FM来交叉emb向量，对于更上层的<br />
+  向量，实际上也可以发现对他们做交叉也能有一些收益。</li>
+<li>虽然GMF那种方式没有增加模型容量，但是如果将元素乘法的向量放到MLP里面，<br />
+  还是能增加模型容量的。并且多了显式交叉的信息。</li>
+<li>实际上目前工业界是拿点积做召回（如DSSM），MLP用来做精排，点积确实快，<br />
+  但是限制了模型容量</li>
+<li>召回的模型评估指标：hit rate，MRR，NDCG 都可以，hit rate侧重召回率，<br />
+  后两个侧重排序。</li>
+</ul>
+<h2 id="nn">NN学习多项式</h2>
+<ul>
+<li>Learning Polynomials with Neural Networks，2014</li>
+<li>本文是一篇偏理论的文章，主要是在上一篇论文中提到的一个结论，<br />
+  但是我认为这篇文章里面的一些结论，对设计网络的人来说，<br />
+  还有有一些启发价值的。</li>
+</ul>
+<h3 id="_6">主要结论</h3>
+<ul>
+<li>任何多项式都可以通过线性组合随机初始化的充分多个神经元，来任意逼近。<br />
+  也就是说，含有一层隐层的MLP可以拟合任何多项式。神经元的个数需要$(O(n^{2d}))，<br />
+  n是输入变量个数，即输入的维度。</li>
+</ul>
+<h4 id="representation-theorem">Representation Theorem</h4>
+<ul>
+<li>简单表述：在一个有限的范围内，可以用指数函数任意逼近d阶多项式。<br />
+  在逼近误差为$(\epsilon)$的时候，需要$(m = O(n^{2d}/\epsilon^2))$个神经元。</li>
+</ul>
+<h4 id="_7">用梯度下降优化</h4>
+<ul>
+<li>用隐层数目为$(m = O(n^{2d}/\epsilon^2))$</li>
+</ul>
+<h2 id="lightgcn">LightGCN</h2>
+<ul>
+<li>Xiangnan He, Kuan Deng ,Xiang Wang, Yan Li, Yongdong Zhang, Meng Wang(2020). LightGCN: Simplifying and Powering Graph Convolution Network for Recommendation</li>
+</ul>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2020-05-30 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: '推荐系统评论快报-20年05期',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2020 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>
