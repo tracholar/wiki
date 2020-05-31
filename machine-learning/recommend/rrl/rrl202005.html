@@ -71,7 +71,7 @@
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#_1">关于</a></li>
-<li><a href="#_2">召回相关</a><ul>
+<li><a href="#_2">论文</a><ul>
 <li><a href="#ncf-vs-mf">NCF vs MF</a><ul>
 <li><a href="#_3">主要观点</a></li>
 <li><a href="#_4">详细内容</a></li>
@@ -86,7 +86,20 @@
 </li>
 </ul>
 </li>
-<li><a href="#lightgcn">LightGCN</a></li>
+<li><a href="#lightgcn">LightGCN</a><ul>
+<li><a href="#_8">主要观点</a></li>
+<li><a href="#_9">评论</a></li>
+</ul>
+</li>
+<li><a href="#_10">多任务多物料推荐</a><ul>
+<li><a href="#_11">主要观点</a></li>
+</ul>
+</li>
+<li><a href="#embedding">Embedding压缩</a><ul>
+<li><a href="#_12">主要观点</a></li>
+<li><a href="#_13">评论</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -96,7 +109,7 @@
 <li>收集一下近期推荐系统相关的一些热点文章，及其相关的论文。<br />
   在此基础上，做简要阅读和评论，重点精读的文章单独写一篇笔记。</li>
 </ul>
-<h1 id="_2">召回相关</h1>
+<h1 id="_2">论文</h1>
 <h2 id="ncf-vs-mf">NCF vs MF</h2>
 <ul>
 <li>论文：Neural Collaborative Filtering vs. Matrix Factorization Revisited</li>
@@ -117,14 +130,14 @@
 <ul>
 <li>两种学习相似函数的模式，点积和MLP</li>
 </ul>
-<p><img alt="点积和MLP" src="/wiki/static/images/mf-ncf-01.png" /></p>
+<p><img src="/wiki/static/images/mf-ncf-01.png" style="max-width:400px" /></p>
 <ul>
 <li>NCF原始论文(2017)用MLP和GMF两个分数来表示相似（模型结构见下图），GMF是用加权的内积<br />
 $$<br />
 \phi^{GMF}(p, q) = \sigma(w^T(p \bigodot q))<br />
 $$</li>
 </ul>
-<p><img alt="GMF-MLP" src="/wiki/static/images/ncf-001.png" /></p>
+<p><img src="/wiki/static/images/ncf-001.png" style="max-width:500px" /></p>
 <ul>
 <li>
 <p>NCF原始论文里面，GMF没有对权重w正则，是导致不稳定的因素。<br />
@@ -151,6 +164,8 @@ $$</li>
   但是限制了模型容量</li>
 <li>召回的模型评估指标：hit rate，MRR，NDCG 都可以，hit rate侧重召回率，<br />
   后两个侧重排序。</li>
+<li>论文提到用MLP学习内积比较难，但是为什么要学习内积呢？逻辑上不是太通</li>
+<li>用MLP来拟合内积的代码，作者给的<a href="https://github.com/google-research/google-research/dot-vs-learned-similarity">链接</a>好像打不开。我实现了一个demo，用MLP来拟合内积，见 <a href="https://github.com/tracholar/ml-homework-cz/blob/master/mlp-dot/tracholar/mlp_dot.py">https://github.com/tracholar/ml-homework-cz/blob/master/mlp-dot/tracholar/mlp_dot.py</a></li>
 </ul>
 <h2 id="nn">NN学习多项式</h2>
 <ul>
@@ -172,11 +187,129 @@ $$</li>
 </ul>
 <h4 id="_7">用梯度下降优化</h4>
 <ul>
-<li>用隐层数目为$(m = O(n^{2d}/\epsilon^2))$的单隐层神经网络，</li>
+<li>用隐层数目为$(m = O(n^{2d}/\epsilon^2))$的单隐层神经网络，可以通过随机初始化权重<br />
+  的方式（权重的范数为$(1/\sqrt{n})$），学习率 $(\lambda &lt; 1/m)$，那么用梯度下降优化，<br />
+  将可以通过$( O(\frac{n^{2d}}{\lambda \epsilon^2 m}) )$步迭代，收敛到误差$(\epsilon)$以内。</li>
 </ul>
 <h2 id="lightgcn">LightGCN</h2>
 <ul>
-<li>Xiangnan He, Kuan Deng ,Xiang Wang, Yan Li, Yongdong Zhang, Meng Wang(2020). LightGCN: Simplifying and Powering Graph Convolution Network for Recommendation</li>
+<li>论文：Xiangnan He, Kuan Deng ,Xiang Wang, Yan Li, Yongdong Zhang, Meng Wang(2020). LightGCN: Simplifying and Powering Graph Convolution Network for Recommendation</li>
+<li>NCF作者 Xiangnan He 的新作</li>
+<li>GCN现在也很火</li>
+</ul>
+<h3 id="_8">主要观点</h3>
+<ul>
+<li>在user-item交互图上做GCN，只保留推荐有价值的邻居聚合，<br />
+  通过试验证实GCN的特征变换跟非线性激活函数对CF意义不大，<br />
+  可以去掉，所以叫做lightGCN</li>
+<li>聚合方式如下公式所述，邻居部分，用了邻居节点向量，<br />
+  还有跟中心节点的元素乘法交叉后的向量。看起来大家都喜欢用显式交叉。<br />
+<img src="/wiki/static/images/lightgcn01.png" style="max-width:300px"></li>
+<li>最终的用户向量跟item向量是多层GCN的向量的concat，类似于DENSE net</li>
+<li>作者认为上述操作中的激活函数，跟两个权重W可以去掉。但是前提是，<br />
+  原始输入是id embedding特征，但是如果是一些内容特征，这个变换还是有必要的。</li>
+<li>发现移除上述两个操作后，效果更好，见下图<br />
+<img src="/wiki/static/images/lightgcn-02.png" style="max-width:300px" /></li>
+<li>另外，最终的向量将多个GCN抽取的向量求和，而不是concat</li>
+<li>作者提出的模型（即lightGCN）：<ul>
+<li>聚合直接用邻居平均向量，权重取决于节点的度<br />
+<img src="/wiki/static/images/lightgcn03.png" style="max-width:200px"></li>
+<li>多个向量融合，不用concat，而直接用加权和<br />
+<img src="/wiki/static/images/lightgcn04.png" style="max-width:200px"></li>
+</ul>
+</li>
+</ul>
+<h3 id="_9">评论</h3>
+<ul>
+<li>这篇工作对落地挺有价值，告诉我们GCN中真正有价值的点其实是对邻居的加权聚合，<br />
+  其实这个比较好理解，没有GCN的时候，推荐模型中也会有特征变化等操作，但是没有<br />
+  图结构信息，这个信息正是邻居聚合操作所带来的新信息。</li>
+<li>邻居聚合中的跟邻居元素乘法的交叉项，在U-I图中是有业务意义的，<br />
+  它代表用户跟item的交互，推荐模型本质上就是为了学这些交叉，<br />
+  这里直接手动交叉了，省得用MLP去学了，毕竟前面论文也提到，<br />
+  MLP学内积还挺困难的。</li>
+<li>将每层GCN学到的向量concat，实际上类似于学到不同尺度的特征，<br />
+  都应用到最终的结果中。</li>
+<li>为什么id类特征不用再做变换，因为它本身的参数就是学出来的，<br />
+  所以再学一下变化，实际上有点多此一举了。但是，如果本身特征不是<br />
+  学出来的，而是item的标题等特征emb向量，那么还是有必要的。</li>
+<li>这篇文章的一个启示是，做推荐模型的时候，不必要的结构还是不要加进去，<br />
+  毕竟加容易，下线就难了，如果没多大用，还浪费资源。另外，如果有先验知识<br />
+  就不要让模型自己去学了，实际上最后将多层做concat然后放到MLP中，就是<br />
+  希望让模型自己学一些变换，而作者直接用加权和，这个当然得看数据量了，<br />
+  数据量不够的时候，这种方式更好些。</li>
+</ul>
+<h2 id="_10">多任务多物料推荐</h2>
+<ul>
+<li>论文：M2GRL: A Multi-task Multi-view Graph Representation Learning Framework for Web-scale Recommender Systems</li>
+<li>阿里的作品，有线上试验</li>
+</ul>
+<h3 id="_11">主要观点</h3>
+<h2 id="embedding">Embedding压缩</h2>
+<ul>
+<li>论文：Res-embedding for Deep Learning Based Click-Through Rate Prediction Modeling</li>
+<li>利用残差编码的方式，压缩emb</li>
+<li>阿里盖坤出品，里面的结论有较大借鉴价值</li>
+</ul>
+<h3 id="_12">主要观点</h3>
+<ul>
+<li>大家都在改非线性映射部分（MLP部分），很少人去搞emb部分</li>
+<li>在理论上证明了：神经网络 CTR 模型的泛化误差与 Item 在 Embedding <br />
+  空间的分布密切相关，如果用户兴趣相近的各 Item，在 Embedding 空间中的 <br />
+  envelope 半径越小，也就是说，相同兴趣 Item 之间在 embedding 空间中越紧致，<br />
+  形成的簇半径越小，则模型泛化误差越小，也就是模型的泛化能力越好。</li>
+<li>emb部分非常影响模型的泛化能力，不同的初始化将导致两个item的距离差异很大</li>
+<li>用户点击序列可以看做是从兴趣序列中采样而来，整个生成过程可以看做一个HMM<ul>
+<li>用户兴趣向量是z，兴趣序列 $( (z_1, z_2, ..., z_T) )$</li>
+<li>用户点击行为x是在z兴趣下的一个采样，采样分布是 P(x|z)，这个点的意义<br />
+  在于，同一个兴趣z下，x的分布应该是紧密的（x的分布比较集中）</li>
+</ul>
+</li>
+</ul>
+<p><img src="/wiki/static/images/emb-assem.png" width=400></p>
+<ul>
+<li>误差界，理论比较复杂，主要结论是，泛化误差跟emb向量的模长、<br />
+  emb向量的每个兴趣内的半径 正相关。控制模长会影响模型容量，<br />
+  但是改变emb向量的分布可以在不影响模型容量情况下提升效果。</li>
+</ul>
+<p><img src="/wiki/static/images/emb-assem-02.png" width=400></p>
+<ul>
+<li>
+<p>item向量分解为中心向量+残差向量，通过限制残差向量的模长，<br />
+  可以实现减少半径的效果。$(W \in R^{H\times I})$ 是兴趣投影矩阵。<br />
+  $( C \in R^{I\times d} )$ 是每个兴趣中心emb向量。$( R \in R^{H\times d} )$是残差向量。<br />
+$$<br />
+E = WC + R<br />
+$$  </p>
+</li>
+<li>
+<p>session图的构造方法是，在session内用滑动窗来构造，用总的共现次数作为权重，<br />
+  得到链接矩阵Z。W = g(Z)，g可以选择不同的函数，用来表示转移关系。g可以有以下选择，<br />
+  试验结果表明，GCN跟ATT做法差不多，但是GCN更简单，因为他就是用顶点的度加权，<br />
+  而且有明确的意义，一个item A跟很多item共现，那说明A对某个共现的item C的影响比较小，<br />
+  但是item B只跟C共现，那么B跟C是强相关的！</p>
+<ul>
+<li>用平均值，即item向量是共现的item的平均</li>
+<li>用GCN的做法，即用顶点的度做归一化<br />
+$$<br />
+g(Z) = D^{-1/2} Z D^{-1/2} <br />
+$$</li>
+<li>ATT做法</li>
+</ul>
+</li>
+</ul>
+<h3 id="_13">评论</h3>
+<ul>
+<li>本质上，是希望将相同兴趣的emb向量映射到相近的空间。在现有的推荐模型中，<br />
+  用户行为序列中的emb是没有一种方式来施加这种约束的。这种约束大约有几种<br />
+  施加的方式，一种是像本文一样，在emb向量中让相似的item共享一部分emb，<br />
+  也有把item向量分为品类+残差的方式。令一类是施加某种损失约束，让item相似。<br />
+  比如，是否可以将session内的item构造个负采样损失函数，加到目标函数中，<br />
+  作为辅助损失，这样不就可以实现本文的目的了吗。</li>
+<li>另外想到一个点，GCN层可以看做一种基于图结构的变换，那么对emb向量X有<br />
+  $( X_{t+1} = F_{GCN}(X_t) )$，如果高很多相同的层，那么X实际上<br />
+  是这个变换（假设参数相同）的不动点！如果变换还是线性的话，那么X还是<br />
+  这个线性变换的特征向量！</li>
 </ul>
 </div>
 <div id="income">
