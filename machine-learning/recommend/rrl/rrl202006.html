@@ -70,14 +70,14 @@
 <div id="title">推荐系统评论快报-20年06期</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#bayes">bayes方法的不确定性建模</a><ul>
-<li><a href="#_1">主要内容</a></li>
+<li><a href="#_1">不确定性建模</a><ul>
+<li><a href="#_2">主要内容</a></li>
 </ul>
 </li>
-<li><a href="#_2">用不确定性来加权多任务损失函数</a></li>
+<li><a href="#_3">用不确定性来加权多任务损失函数</a></li>
 </ul>
 </div>
-<h2 id="bayes">bayes方法的不确定性建模</h2>
+<h2 id="_1">不确定性建模</h2>
 <ul>
 <li>论文：What Uncertainties Do We Need in Bayesian Deep Learning<br />
   for Computer Vision，NIPS2017</li>
@@ -87,7 +87,7 @@
   同时估计这两种不确定性。虽然这篇文章是CV任务，但是这种不确定性建模方法原则<br />
   上可以应用到很多任务当中。</li>
 </ul>
-<h3 id="_1">主要内容</h3>
+<h3 id="_2">主要内容</h3>
 <ul>
 <li>对于回归问题，$(y = f_0(x) + \epsilon)$，f0是X能解释的部分，而$(\epsilon)$是<br />
   不能解释的固有随机性。这种固有的随机性带来的不确定性叫做 aleatoric 不确定性。<br />
@@ -108,12 +108,14 @@ $$</li>
 <li>epistemic不确定性的建模：由于它是由于训练数据不充分带来的误差，可以通过<br />
   贝叶斯方法来估计。将模型参数全部贝叶斯化，</li>
 </ul>
-<h2 id="_2">用不确定性来加权多任务损失函数</h2>
+<h2 id="_3">用不确定性来加权多任务损失函数</h2>
 <ul>
 <li>论文：Multi-task learning using uncertainty to weigh losses <br />
   for scene geometry and semantics，CVPR 2018</li>
 <li>推荐理由：多任务损失函数的权重是个超参数，本文提供一种简单的方法，并且有<br />
-  不错的理论逻辑。对其他做多任务场景，有一定借鉴意义。</li>
+  不错的理论逻辑。对其他做多任务场景，有一定借鉴意义。文章认为不同任务的损失<br />
+  函数的权重应该跟他的不确定性成反比。不确定性大的任务损失函数的权重要小一些。</li>
+<li><a href="https://github.com/yaringal/multi-task-learning-example/blob/master/multi-task-learning-example.ipynb">https://github.com/yaringal/multi-task-learning-example/blob/master/multi-task-learning-example.ipynb</a></li>
 </ul>
 </div>
 <div id="income">
