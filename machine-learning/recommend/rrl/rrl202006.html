@@ -74,7 +74,30 @@
 <li><a href="#_2">主要内容</a></li>
 </ul>
 </li>
-<li><a href="#_3">用不确定性来加权多任务损失函数</a></li>
+<li><a href="#_3">用不确定性来加权多任务损失函数</a><ul>
+<li><a href="#_4">主要内容</a></li>
+</ul>
+</li>
+<li><a href="#latent-cross">Latent Cross</a><ul>
+<li><a href="#_5">主要内容</a></li>
+<li><a href="#_6">评论</a></li>
+</ul>
+</li>
+<li><a href="#mmoe">MMOE</a><ul>
+<li><a href="#_7">主要内容</a></li>
+<li><a href="#_8">评论</a></li>
+</ul>
+</li>
+<li><a href="#moe">大规模稀疏MOE</a><ul>
+<li><a href="#_9">主要内容</a></li>
+<li><a href="#_10">评论</a></li>
+</ul>
+</li>
+<li><a href="#_11">向量召回优化</a><ul>
+<li><a href="#_12">主要内容</a></li>
+<li><a href="#_13">评论</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <h2 id="_1">不确定性建模</h2>
@@ -116,6 +139,281 @@ $$</li>
   不错的理论逻辑。对其他做多任务场景，有一定借鉴意义。文章认为不同任务的损失<br />
   函数的权重应该跟他的不确定性成反比。不确定性大的任务损失函数的权重要小一些。</li>
 <li><a href="https://github.com/yaringal/multi-task-learning-example/blob/master/multi-task-learning-example.ipynb">https://github.com/yaringal/multi-task-learning-example/blob/master/multi-task-learning-example.ipynb</a></li>
+</ul>
+<h3 id="_4">主要内容</h3>
+<ul>
+<li>多任务建模的时候，每个任务的loss会求个加权和得到总loss<br />
+$$<br />
+L_{total} = \sum_i w_i L_i<br />
+$$</li>
+<li>上述权重对效果影响较大，但是调整这种超参数太费时间了，因为跑一轮CNN，<br />
+  可能就要几天。</li>
+<li>多任务联合似然函数，<br />
+$$<br />
+P(y_1, y_2|f^W(x)) =   P(y_1|f^W(x)) P(y_2|f^W(x))<br />
+$$</li>
+<li>对于回归任务，假设分布服从高斯分布<br />
+$$<br />
+P(y_i|f^W(x)) = N(f^W(x), \sigma^2)<br />
+$$</li>
+<li>对数损失为<br />
+$$<br />
+log P(y_i|f^W(x)) \propto -\frac{1}{2\sigma^2}||y_i - f^W(x)||^2 - log \sigma <br />
+$$</li>
+<li>所以，两个任务的联合损失见下式，可以看到，权重跟$(\sigma^2)$成反比<br />
+$$<br />
+L_{total} = \frac{1}{2\sigma_1^2}L_1 + \frac{1}{2\sigma_2^2}L_2 + log \sigma_1\sigma_2<br />
+$$</li>
+<li>对分类问题，用scaled版本softmax<br />
+$$<br />
+P(y|f^W(x), \sigma) = softmax(\frac{1}{\sigma^2} f^W)<br />
+$$</li>
+</ul>
+<h2 id="latent-cross">Latent Cross</h2>
+<ul>
+<li>论文：Latent Cross: Making Use of Context in Recurrent Recommender Systems,<br />
+  WSDM 2018, Youtube</li>
+<li>YouTube出品</li>
+</ul>
+<h3 id="_5">主要内容</h3>
+<ul>
+<li>场景向量的利用：传统的方法是直接作为特征加到MLP里面，本文采用了</li>
+<li>隐式交叉：将场景向量跟DNN的隐层做元素乘法</li>
+<li>场景向量构建：时间、设备类型、页数</li>
+</ul>
+<p><img src="/wiki/static/images/latent-cross-01.png" style="max-width:500px" /></p>
+<ul>
+<li>
+<p>一阶DNN用ReLU学习交叉比较低效，所以要手动引入交叉</p>
+</li>
+<li>
+<p>上下文向量：</p>
+<ul>
+<li>时间间隔，即用户相邻两次行为的时间间隔<br />
+$$<br />
+\Delta t^{\tau} = log (t^{\tau +1} - t^{\tau})<br />
+$$</li>
+<li>终端类型</li>
+<li>页码</li>
+</ul>
+</li>
+<li>latent cross: 因为MLP学习输入两个向量的内积比较困难，所以需要<br />
+  显式地增加内积。以时间特征为例，$(w_t)$是时间对应的权重<br />
+$$<br />
+h_0^{\tau} = (1 + w_t) * h_0^{\tau}<br />
+$$</li>
+<li>YouTube推荐模型用的是RNN，所以是用场景特征对隐态h来做加权。这种加权<br />
+  可以看做一种Attention作用。</li>
+<li>对于多个特征，比如在上述基础上，再增加设备类型。在增加一个加性项来实现。<br />
+  不用乘法是因为：加法更容易训练，乘法会增加函数的非凸性。<br />
+$$<br />
+h_0^{\tau} = (1 + w_t + w_d) * h_0^{\tau}<br />
+$$</li>
+</ul>
+<h3 id="_6">评论</h3>
+<ul>
+<li>这篇文章提到的latent cross比较有意思，他的出发点在于，MLP学习输入的两个<br />
+  向量的内积比较困难。实际上有不少的文章提到过这个点，我们在实际工作中也发现了。<br />
+  显式地利用元素乘法来增加交叉有一定的作用。跟本文的做法比较类似。</li>
+<li>另外，本文主要是将场景向量跟RNN的隐态来做交叉，实际上在其他地方也具有一定的<br />
+  适用性。</li>
+</ul>
+<h2 id="mmoe">MMOE</h2>
+<ul>
+<li>论文：Recommending What Video to Watch Next: A Multitask Ranking System</li>
+<li>YouTube出品，用MMOE做多任务学习</li>
+</ul>
+<h3 id="_7">主要内容</h3>
+<ul>
+<li>解决的主要问题：<ol>
+<li>多目标建模问题，MMOE。点击率，时长等</li>
+<li>隐式选择偏差，W&amp;D。用户点击并不是因为喜欢它，而是因为它展示在前面。<br />
+   可以通过一个shallow塔来移除这种选择偏差。</li>
+</ol>
+</li>
+<li>模型结构</li>
+</ul>
+<p><img alt="模型结构" src="/wiki/static/images/mmoe-google-01.png" /></p>
+<ul>
+<li>将多目标分为两组<ol>
+<li>engagement objectives：click，degree of engagement</li>
+<li>satisfaction objec- tives：user liking a video，rating a video</li>
+</ol>
+</li>
+<li>shallow塔设计<ul>
+<li>输入跟选择偏差有关的特征，如展示的rank，输出是一个标量logit</li>
+</ul>
+</li>
+<li>两组bias：position bias，presentation bias<ul>
+<li>当前通用的做法是，将position作为特征去训练，而在预测的时候设置为固定的值，<br />
+  如1或者missing value</li>
+<li>归一化或正则方法：inverse propensity score（IPS）</li>
+</ul>
+</li>
+<li>其他问题：<ul>
+<li>多模态特征：video内容（视频），audio（音频），标题和描述（文本），用户画像</li>
+</ul>
+</li>
+<li>特征<ul>
+<li>video meta-data，video content signal</li>
+<li>user demographic，device，time，location</li>
+</ul>
+</li>
+<li>目标<ul>
+<li>二分类：点击，喜欢</li>
+<li>回归：时长，打分</li>
+</ul>
+</li>
+<li>多目标融合：手动调权</li>
+</ul>
+<p><img alt="MMOE" src="/wiki/static/images/mmoe-google-02.png" /></p>
+<ul>
+<li>shared bottom结构的问题：如果两个任务相关性较低，会产生负迁移问题。<br />
+  MMOE可以解决这个问题。</li>
+<li>MMOE结构：<ul>
+<li>MMOE 相比 MOE的改进点在于引入gate，这样一来可以用少量的子网络<br />
+  实现更多的目标预测！并且训练和预测的计算量也少了很多。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/wiki/static/images/mmoe-google-03.png" style="max-width:200px" /><br />
+<img src="/wiki/static/images/mmoe-google-04.png" style="max-width:200px" /></p>
+<ul>
+<li>position bias的移除<ul>
+<li>训练的时候，所有曝光的位置都被使用，并且采用10%的dropout概率，防止模型<br />
+  过度依赖于位置特征</li>
+<li>预测时，位置特征设置为missing value</li>
+<li>位置特征跟设备交叉，因为不同设备其实位置差异比较大</li>
+</ul>
+</li>
+</ul>
+<p><img src="/wiki/static/images/mmoe-google-05.png" style="max-width:400px" /></p>
+<ul>
+<li>
+<p>产品形态<br />
+<img src="/wiki/static/images/mmoe-google-06.png" style="max-width:400px" /></p>
+</li>
+<li>
+<p>训练细节</p>
+<ul>
+<li>流式训练，数据按照时间顺序</li>
+</ul>
+</li>
+<li>效果数据</li>
+</ul>
+<p><img src="/wiki/static/images/mmoe-google-07.png" style="max-width:400px" /></p>
+<ul>
+<li>gate 的分布图</li>
+<li>gate线上试验发现，是否有一层shard层没有什么差异</li>
+</ul>
+<p><img src="/wiki/static/images/mmoe-google-08.png" style="max-width:400px" /></p>
+<ul>
+<li>gate网络的扩展性<ul>
+<li>gate网络存在不平衡问题，导致倾向于特定专家。试验中也发现了20%的几率<br />
+  会出现这个问题。这种极化现象会造成不利影响，可以通过dropout的方法解决。<br />
+  具体做法是，以10%的概率设置一些专家的权重为0，并重新归一化softmax的<br />
+  输出权重。</li>
+</ul>
+</li>
+<li>位置偏差的对比组<ul>
+<li>直接加特征，然后删除。负向！没有加载wide部分？？？</li>
+<li>对抗学习，没太搞懂，线上也没啥效果</li>
+</ul>
+</li>
+</ul>
+<p><img src="/wiki/static/images/mmoe-google-09.png" style="max-width:400px" /></p>
+<ul>
+<li>还有很多其他bias，暂时难以处理</li>
+<li>线上线下不一致问题，选择简单一些的模型会更好的泛化到线上</li>
+</ul>
+<h3 id="_8">评论</h3>
+<ul>
+<li>位置偏差消除这个点，基本是目前主流做法。值得提的几个点是，训练时使用了dropout，<br />
+  防止模型过度依赖与位置特征。另一个是将位置特征跟设备交叉，实际上，在别的业务中，<br />
+  不同的展示流量也可能对这个有影响，比如某些流量展示双栏，而另外一些展示单栏。所以<br />
+  在实际问题中，应该根据实际情况来决定应该使用哪些position bias特征。</li>
+<li>MMOE中的gate如何降低极化问题的技巧也是个不错的想法。通过随机让一些权重为0，让<br />
+  模型不要过于依赖某一个专家。</li>
+<li>MOE可能是未来增强模型容量的一个重要的方法，尤其是在推荐场景中！</li>
+</ul>
+<h2 id="moe">大规模稀疏MOE</h2>
+<ul>
+<li>论文：Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz, Andy Davis, Quoc Le, Geofrey Hinton, and Jef Dean. 2017. Outrageously large neural networks: The sparsely-gated mixture-of-experts layer. arXiv preprint arXiv:1701.06538 (2017).</li>
+<li>回答能不能大规模扩充MOE专家数目</li>
+<li>
+<p>专家数目多了，如何控制计算复杂度？利用稀疏性+条件计算！</p>
+</li>
+<li>
+<p>TensorFlow的实现：<a href="https://github.com/tensorflow/tensor2tensor/blob/master/tensor2tensor/utils/expert_utils.py">https://github.com/tensorflow/tensor2tensor/blob/master/tensor2tensor/utils/expert_utils.py</a></p>
+</li>
+</ul>
+<h3 id="_9">主要内容</h3>
+<p><img src="/wiki/static/images/sgmoe-01.png" style="max-width:400px" /></p>
+<ul>
+<li>现代的计算元件如GPU，更适合计算而不是分支条件</li>
+<li>embedding layer 就是条件计算的一个典型案例</li>
+<li>Noisy Top-K Gating：关键是gate的设计，利用noise + 取 TOPK</li>
+</ul>
+<p><img src="/wiki/static/images/sgmoe-02.png" style="max-width:400px" /></p>
+<ul>
+<li>
+<p>TOPK操作是否可导？是的，可以类比于思考max-pooling操作也是可导的。<br />
+  BP的时候，误差只通过TOPK神经元反向传递。</p>
+</li>
+<li>
+<p>训练batch缩小的问题？因为每个batch的样本被分散到多个子网络中，所以<br />
+  每个子网络的batch数目远小于原来的batch size（如果专家网络很多）。<br />
+  解决的方法是，增加原始输入样batch的大小。</p>
+</li>
+<li>极化问题：模型倾向于总是选择一小部分专家。通过添加用于均衡的损失，强行<br />
+  让模型选得更加均匀。</li>
+</ul>
+<h3 id="_10">评论</h3>
+<ul>
+<li>从诸多文献看来，未来是大力出奇迹的时候。扩充模型容量+数据是提升效果的最<br />
+  有效的途径。本文的方法实际上是在通过大量子网络提升容量的时候，尽可能地保持<br />
+  计算性能。关键是稀疏化 + 条件计算！</li>
+<li>令一个要解决的问题是极化现象，在上一篇文章也提到，结合上一篇文章来看，目前<br />
+  解决的方法有两套，一套是本文的加辅助损失，强行让模型选择更均匀，另一套是利用<br />
+  dropout的方法，避免过度依赖特定的一些子网络！</li>
+</ul>
+<h2 id="_11">向量召回优化</h2>
+<ul>
+<li>论文：Efficient Training on Very Large Corpora via Gramian Estimation</li>
+<li>Google出品</li>
+<li>解决大规模语料DSSM训练的问题，通常的做法是对未见过的pair做采样当做负样本。<br />
+  本文的方法可以不用对未见过的pair采样，提升计算性能！</li>
+</ul>
+<h3 id="_12">主要内容</h3>
+<ul>
+<li>在学习相似关系的时候，如果只使用观测样本（即正样本）只会将相似的item学到距离接近。<br />
+  而无法将不像似的item距离学到很远！从而导致实际效果较差！</li>
+<li>相似建模的问题的损失函数如下，第1部分是两个模型学到的emb向量跟相似度的损失<br />
+  （观测数据部分）。第2部分是先验，每个pair对的先验相似度为Pij，在推荐场景中<br />
+  基本上可以认为接近于0，即不相似。</li>
+<li>第二项需要遍历所有的pair，传统方法是通过采样来实现 ！即负采样！</li>
+</ul>
+<p><img src="/wiki/static/images/ge-01.png" style="max-width:400px" /><br />
+<img src="/wiki/static/images/ge-02.png" style="max-width:400px" /></p>
+<ul>
+<li>第二项，可以通过合理的数学技巧，变换为两个k阶Gram矩阵的内积！！k是emb的维度！<br />
+  这大大减少了第二项计算复杂度！剩下的问题就是Gram矩阵的问题了。因为计算它还是<br />
+  费时间，而Gram矩阵依赖模型参数，导致每次迭代都要重新计算！<br />
+<img src="/wiki/static/images/ge-03.png" style="max-width:300px" /><br />
+<img src="/wiki/static/images/ge-04.png" style="max-width:400px" /><br />
+<img src="/wiki/static/images/ge-05.png" style="max-width:200px" /></li>
+<li>Gram计算的问题解决：通过维护两个PSD矩阵Gu和Gv来估计它两！那么原问题就可以<br />
+  通过梯度下降遍历所有观测数据来优化了！而不用采样非观测数据</li>
+<li>Gram矩阵如何估计？见算法流程，略，有点复杂，以后用到的时候再来看，没太搞明白。<br />
+  文章提出两种方法，随机平均，在线学习两种算法，见下列两个图<br />
+<img src="/wiki/static/images/ge-06.png" style="max-width:600px" /><br />
+<img src="/wiki/static/images/ge-07.png" style="max-width:600px" /></li>
+</ul>
+<h3 id="_13">评论</h3>
+<ul>
+<li>方法上挺有意思的，并且给出了负采样方法的理论依据是对第二项的近似。<br />
+  不知道在推荐上是否会比基于采样的方法更好，基于采样的方法貌似落地<br />
+  要容易一些，并且在采样上可以根据业务来一些定制化！</li>
 </ul>
 </div>
 <div id="income">
