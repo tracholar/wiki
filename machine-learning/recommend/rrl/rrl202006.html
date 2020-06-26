@@ -98,6 +98,24 @@
 <li><a href="#_13">评论</a></li>
 </ul>
 </li>
+<li><a href="#_14">基于检索的兴趣模型</a><ul>
+<li><a href="#_15">主要内容</a></li>
+<li><a href="#_16">评论</a></li>
+</ul>
+</li>
+<li><a href="#sgbm">SGBM</a><ul>
+<li><a href="#_17">主要内容</a></li>
+</ul>
+</li>
+<li><a href="#_18">百度品牌广告</a><ul>
+<li><a href="#_19">主要内容</a></li>
+</ul>
+</li>
+<li><a href="#din">DIN</a><ul>
+<li><a href="#_20">主要内容</a></li>
+<li><a href="#_21">评论</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <h2 id="_1">不确定性建模</h2>
@@ -414,6 +432,144 @@ $$</li>
 <li>方法上挺有意思的，并且给出了负采样方法的理论依据是对第二项的近似。<br />
   不知道在推荐上是否会比基于采样的方法更好，基于采样的方法貌似落地<br />
   要容易一些，并且在采样上可以根据业务来一些定制化！</li>
+</ul>
+<h2 id="_14">基于检索的兴趣模型</h2>
+<ul>
+<li>论文：Search-based Interest Model</li>
+<li>基本思想：用检索的方法从用户行为历史中检索出比较重要的TOP-K行为</li>
+<li>相比UIC：可以拿到原始行为表达，让用户兴趣跟当前的因素（item，场景etc）相关</li>
+<li>我们对电商场景兴趣建模的理解愈发清晰：<ol>
+<li>通过预估目标item的信息对用户过去的行为做search提取和item相关的信息是一个很核心有效的技术；</li>
+<li>更长的用户行为序列信息对CTR建模是非常有效且珍贵的。</li>
+</ol>
+</li>
+<li>解读：<a href="https://mp.weixin.qq.com/s/vANO8z-UXBE2w9eUG90T-Q">https://mp.weixin.qq.com/s/vANO8z-UXBE2w9eUG90T-Q</a></li>
+</ul>
+<h3 id="_15">主要内容</h3>
+<p><img alt="SIM" src="/wiki/static/images/sim-03.png" /></p>
+<ul>
+<li>SIM的核心模块是用户行为历史检索，分为两阶段，General Search Unit (GSU)，<br />
+  Exact Search Unit (ESU)。两阶段是端到端训练的。</li>
+<li>GSU，将行为序列缩短到百量级</li>
+<li>ESU，类似于DIN和DIEN的方法</li>
+<li>GSU的实现,a代表target item，i代表第i个行为<ul>
+<li>hard search，根据品类检索</li>
+<li>soft search，向量检索，最大内积搜索（MIPS）</li>
+</ul>
+</li>
+</ul>
+<p><img src="/wiki/static/images/sim-01.png" style="max-width:300px" /></p>
+<ul>
+<li>
+<p>soft search的emb向量没有直接用短期兴趣学出来的emb，作者认为短期兴趣分布<br />
+  跟长期兴趣差异比较大，所以单独搞了个辅助CTR任务来学。该任务只用用户的长期<br />
+  兴趣表示向量和target item向量concat后，进过一个MLP来预测。长期兴趣的表达<br />
+$$<br />
+U_r = \sum_{i=1}^T r_i e_i<br />
+$$</p>
+</li>
+<li>
+<p>ESU：将item跟时间间隔emb向量拼接到一起，然后进过多头Attention，这里的Attention<br />
+  不是self-attention，而是DIN那样的Attention。下标b和a分别表示用户第b个行为和target<br />
+  item a。最终用户长期兴趣的表示是q个head concat后的向量。最终跟其他特征concat后，<br />
+  放到MLP中做CTR预估。<br />
+$$<br />
+att_{score}^i = softmax(W_{bi}z_b \cdot W_{ai} e_a) \\<br />
+head_i = att_{score}^i z_b<br />
+$$</p>
+</li>
+<li>
+<p>线上效果，首页猜你喜欢，CTR +7.1%，RPM +4.4%</p>
+</li>
+<li>MIMN可以处理1000个用户行为序列，而SIM可以到54000.但是，SIM比MIMN只增加5ms时延。</li>
+<li>Days till Last Same Category Behavior：最后一次产生相同品类行为的天数</li>
+<li>从下图中可以看到，SIM推荐了跟多的长期行为相关的item，而且在长期行为品类上，<br />
+  SMI比MIMN的提升要大得多！<br />
+<img src="/wiki/static/images/sim-02.png" style="max-width:400px" /></li>
+</ul>
+<h3 id="_16">评论</h3>
+<ul>
+<li>一直认为，在推荐系统中，最重要的特征就是用户的历史行为。这篇文章的价值是，<br />
+  将所有的用户历史行为都拿过来做推荐，同时解决了用户行为历史太长，导致系统<br />
+  性能搞不定的问题。文章的解决方法是，检索TOPK。而检索可以很快！</li>
+<li>文章的假设是，用户历史行为中跟当前预估的item有关的那些行为很重要，但实际上<br />
+  不同业务这个假设可能不太一样。有些业务可能是用户在当前场景下相同的行为更重要。</li>
+<li>另外，作者在<a href="https://mp.weixin.qq.com/s/vANO8z-UXBE2w9eUG90T-Q">Life-long兴趣建模视角CTR预估模型：Search-based Interest Model</a><br />
+  中提到，想给每个用户搞一个模型，这个想法实际上跟SGMOE比较像，SGMOE可以看做<br />
+  所有用户只共享emb参数，模型参数都是不同的，几乎就是每个用户一个模型了。</li>
+</ul>
+<h2 id="sgbm">SGBM</h2>
+<ul>
+<li>论文：Soft Gradient Boosting Machine</li>
+<li>解读：<a href="https://mp.weixin.qq.com/s/lnNeExbA9cJFxxeyTg0EVg">https://mp.weixin.qq.com/s/lnNeExbA9cJFxxeyTg0EVg</a></li>
+<li>推荐理由：周志华死磕GBM</li>
+</ul>
+<h3 id="_17">主要内容</h3>
+<ul>
+<li>GBM的主要问题：不能在线学习</li>
+</ul>
+<h2 id="_18">百度品牌广告</h2>
+<ul>
+<li>论文：MOBIUS: Towards the Next Generation of Query-Ad Matching in Baidu’s Sponsored Search</li>
+<li>query-ad匹配框架</li>
+<li><a href="https://mp.weixin.qq.com/s/Hgl_NtsAclk9PelbA-wEVQ">https://mp.weixin.qq.com/s/Hgl_NtsAclk9PelbA-wEVQ</a></li>
+</ul>
+<h3 id="_19">主要内容</h3>
+<h2 id="din">DIN</h2>
+<ul>
+<li>论文：Deep Interest Network for Click-Through Rate Prediction，2017</li>
+<li>推荐理由：推荐系统处理用户行为特征的一个经典模型，是后续很多模型的基础</li>
+<li>出发点是，用户行为历史里面只有部分行为对当前推荐是有价值的</li>
+</ul>
+<h3 id="_20">主要内容</h3>
+<ul>
+<li>GAUC，按照用户维度聚合的AUC<br />
+$$<br />
+GAUC = \frac{\sum_i impression_i * AUC_i}{\sum_i impression_i }<br />
+$$</li>
+<li>
+<p>DIN结构，关键是对用户历史行为用了Attention Pooling，Attention权重取决于<br />
+  行为中的item跟target item的score<br />
+<img alt="DIN" src="/wiki/static/images/din-01.png" /></p>
+</li>
+<li>
+<p>DICE：在PRELU上做的改进，根据数据分布选择y和ay的比例，当y&gt;0，p=1，y&lt;0，p=0<br />
+  的时候，就是PRELU。</p>
+</li>
+<li>
+<p>实现：<a href="https://github.com/mouna99/dien/blob/master/script/Dice.py">https://github.com/mouna99/dien/blob/master/script/Dice.py</a><br />
+$$<br />
+Dice(y) = a(1-p)y + y  \\<br />
+p = \frac{1}{1+e^{-\frac{y - Ey}{\sqrt{var[y] + \epsilon}}}}<br />
+$$</p>
+</li>
+<li>
+<p>自适应正则，如果特征出现次数很低，其对应的正则项就比较大，否则就很小。相当于<br />
+  让低频特征的权重更小！</p>
+</li>
+</ul>
+<p><img src="/wiki/static/images/din-03.png" style="max-width:300px" /><br />
+<img src="/wiki/static/images/din-02.png" style="max-width:300px" /></p>
+<ul>
+<li>
+<p>XDL，模型并行，关键是分布式emb层。利用XDL，训练速度加速10倍！<br />
+<img src="/wiki/static/images/din-04.png" style="max-width:500px" /></p>
+</li>
+<li>
+<p>模型可视化<br />
+<img src="/wiki/static/images/din-05.png" style="max-width:500px" /><br />
+<img src="/wiki/static/images/din-06.png" style="max-width:500px" /></p>
+</li>
+<li>
+<p>实验结果：GAUC最多提升了1.24%，作者认为GAUC更有知道意义。<br />
+<img src="/wiki/static/images/din-07.png" style="max-width:500px" /></p>
+</li>
+</ul>
+<h3 id="_21">评论</h3>
+<ul>
+<li>DIN的想法非常直接，有业务内在意义。Dice确实能加速收敛，在我们的试验当中<br />
+  也发现是有效的。</li>
+<li>隐层的emb向量是如何搞出来的？直接分析模型文件么？</li>
 </ul>
 </div>
 <div id="income">
