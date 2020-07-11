@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>log4j冲突问题排查 - Tracholar的个人wiki</title>
+        <title>谈股论今2007期 - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,70 +64,127 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#java">java</a>&nbsp;»&nbsp;log4j冲突问题排查</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#economics">economics</a>&nbsp;»&nbsp;<a href="/wiki/#-company">company</a>&nbsp;»&nbsp;谈股论今2007期</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">log4j冲突问题排查</div>
+<div id="title">谈股论今2007期</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">问题</a></li>
-<li><a href="#_2">原因</a><ul>
-<li><a href="#slf4j-log4j">slf4j 与 log4j 的关系</a></li>
-<li><a href="#_3">报错的具体原因</a></li>
-</ul>
-</li>
-<li><a href="#_4">解法</a></li>
+<li><a href="#_1">本期关注</a></li>
+<li><a href="#_2">茅台与五粮液</a></li>
+<li><a href="#_3">美的与格力</a></li>
+<li><a href="#_4">海天味业与伊利</a></li>
+<li><a href="#_5">晨光文具</a></li>
+<li><a href="#_6">中国国旅</a></li>
+<li><a href="#_7">价值股列表</a></li>
 </ul>
 </div>
-<h2 id="_1">问题</h2>
-<div class="hlcode"><pre><span></span>SLF4J: Class path contains multiple SLF4J bindings.
-SLF4J: Found binding in <span class="o">[</span>jar:file:/Users/zuoyuan/.m2/repository/org/slf4j/slf4j-log4j12/1.7.16/slf4j-log4j12-1.7.16.jar!/org/slf4j/impl/StaticLoggerBinder.class<span class="o">]</span>
-SLF4J: Found binding in <span class="o">[</span>jar:file:/Users/zuoyuan/.m2/repository/org/apache/logging/log4j/log4j-slf4j-impl/2.3/log4j-slf4j-impl-2.3.jar!/org/slf4j/impl/StaticLoggerBinder.class<span class="o">]</span>
-SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings <span class="k">for</span> an explanation.
-SLF4J: Detected both log4j-over-slf4j.jar AND bound slf4j-log4j12.jar on the class path, preempting StackOverflowError. 
-
-SLF4J: See also http://www.slf4j.org/codes.html#log4jDelegationLoop <span class="k">for</span> more details.
-</pre></div>
-
-
-<h2 id="_2">原因</h2>
-<h3 id="slf4j-log4j">slf4j 与 log4j 的关系</h3>
+<h1 id="_1">本期关注</h1>
 <ul>
-<li>log4j 是一个日志框架，是实际执行落日志的角色；而sl4j是一种适配接口，用于支持不同的底层日志框架。</li>
-<li>slf4j 的实现者有： <ul>
-<li>slf4j-simple</li>
-<li>logback</li>
-<li>slf4j-log4j12：使用<code>log4j</code>库作为底层日志实现，需要引入的库</li>
+<li>本期关注消费类公司股票，主要关注一下几个<ul>
+<li>茅台</li>
+<li>五粮液</li>
+<li>美的</li>
+<li>格力</li>
+<li>海天味业</li>
+<li>伊利</li>
 </ul>
 </li>
-<li>
-<p>参考 <a href="https://www.cnblogs.com/xrq730/p/8619156.html">Java日志框架：slf4j作用及其实现原理</a></p>
+<li>关注的理由是，这几家公司都是ROE持续超过20的好公司，增长稳定</li>
+</ul>
+<h1 id="_2">茅台与五粮液</h1>
+<ul>
+<li>市盈率TTM：茅台45倍，五粮液39倍</li>
+<li>股价：茅台1541，五粮液188.买一手都挺贵的</li>
+<li>市值：茅台1.9万亿，五粮液0.73万亿</li>
+<li>ROE：<ul>
+<li>茅台近3年都在32%-35%之间，近5年都在24%以上。<br />
+  销售净利润51%，周转率0.13，权益乘数1.16.可见茅台<br />
+  的杠杆跟周转都比较低，主要靠的是高利润，而高利润来自于<br />
+  品牌价值，和议价能力。</li>
+<li>五粮液近3年在19%-25%之间，近5年都在14%以上。比茅台要弱。<br />
+  销售净利润38%，周转率0.19，权益乘数1.25.可见五粮液在利润<br />
+  上远低于五粮液，但是周转跟杠杆都比五粮液稍高。</li>
+</ul>
 </li>
-<li>
-<p>log4j-over-slf4j 是一个桥接器，是为了使用log4j实现的老代码，在不需要修改一行代码的情况下迁移到slf4j。实现原理是通过将文件<code>log4j.jar</code>替换为 <code>log4j-over-slf4j.jar</code> 来实现的。参考<a href="http://www.slf4j.org/legacy.html">log4j-over-slf4j</a></p>
+<li>主要基金权重：<ul>
+<li>招商中证白酒：茅台14.9%，五粮液13.8%</li>
+<li>中证主要消费：茅台13.7%，五粮液12.6%</li>
+<li>消费龙头：茅台14.7%，五粮液12.1%</li>
+<li>中证食品饮料：茅台8.9%，五粮液8.17%</li>
+</ul>
 </li>
+<li>结论：这两家都值得长期持有，但更适合用中证主要消费指数基金间接持有。<br />
+  因为股价太高，便宜的五粮液一手也得快2万，定投降低成本比较困难。中证<br />
+  主要消费的权重都比较高，而且手续费比中证白酒便宜，所以更加合适。</li>
 </ul>
-<h3 id="_3">报错的具体原因</h3>
+<h1 id="_3">美的与格力</h1>
 <ul>
-<li>log4j-over-slf4j 与 slf4j 互相调用，陷入了死循环，导致StackOverflow。</li>
+<li>市盈率TTM：美的19.1倍，格力17.08倍</li>
+<li>股价：美的62，格力58</li>
+<li>市值：美的4371亿，格力3515亿</li>
+<li>ROE：<ul>
+<li>美的近3年都在25%-26%之间，近5年都在25%以上。<br />
+  销售净利润8.24%，周转率0.19，权益乘数2.70.</li>
+<li>格力近3年在25%-17%之间，近5年都在25%以上，并且有下降趋势。<br />
+  销售净利润7.45%，周转率0.07，权益乘数2.38。<br />
+  从财务指标上来看，格力经营有下降趋势，并且在净利润<br />
+  和杠杆率上略低于美的，但是总资产周转率更是远低于美的。<br />
+  表明格力的经营出现了一些问题。</li>
 </ul>
-<h2 id="_4">解法</h2>
+</li>
+<li>主要基金权重：<ul>
+<li>消费龙头：格力12%，美的11%</li>
+<li>深证100：格力5.8%，美的5.8%</li>
+</ul>
+</li>
+<li>结论：这两家都值得长期持有，基金可以借道消费龙头持有，顺便还可以把茅台和五粮液<br />
+  也加到组合里面。个股方面可以部分持有美的的股票。美的的多元化比格力更好，未来如果<br />
+  格力没有及时转型，会有增长乏力的风险。</li>
+</ul>
+<h1 id="_4">海天味业与伊利</h1>
 <ul>
-<li>找到 log4j-over-slf4j 是哪个依赖引入的，然后排除掉即可。</li>
-<li>找到依赖</li>
+<li>市盈率TTM：海天73，伊利</li>
+<li>股价：美的62，格力58</li>
+<li>市值：美的4371亿，格力3515亿</li>
+<li>ROE：<ul>
+<li>美的近3年都在25%-26%之间，近5年都在25%以上。<br />
+  销售净利润8.24%，周转率0.19，权益乘数2.70.</li>
+<li>格力近3年在25%-17%之间，近5年都在25%以上，并且有下降趋势。<br />
+  销售净利润7.45%，周转率0.07，权益乘数2.38。<br />
+  从财务指标上来看，格力经营有下降趋势，并且在净利润<br />
+  和杠杆率上略低于美的，但是总资产周转率更是远低于美的。<br />
+  表明格力的经营出现了一些问题。</li>
 </ul>
-<div class="hlcode"><pre><span></span>mvn dependency:tree
-</pre></div>
-
-
+</li>
+<li>主要基金权重：<ul>
+<li>消费龙头：格力12%，美的11%</li>
+<li>深证100：格力5.8%，美的5.8%</li>
+</ul>
+</li>
+<li>结论：这两家都值得长期持有，基金可以借道消费龙头持有，顺便还可以把茅台和五粮液<br />
+  也加到组合里面。个股方面可以部分持有美的的股票。美的的多元化比格力更好，未来如果<br />
+  格力没有及时转型，会有增长乏力的风险。</li>
+</ul>
+<h1 id="_5">晨光文具</h1>
 <ul>
-<li>排除</li>
+<li>市盈率TTM：53倍，近五年在30-60倍之间，算是估值很高的点。</li>
+<li>股价：59元</li>
+<li>市值：500亿。成长龙头</li>
+<li>ROE：<ul>
+<li>近3年在24%-28%之间，近5年在21%-28%之间。比较稳定，利润增长稳定，25%左右<br />
+  资产负债率在逐年上升，从15年的23%增长到19年的41%，是一个风险点。<br />
+  销售净利率9.52%，周转率1.68，权益乘数1.69.</li>
 </ul>
-<div class="hlcode"><pre><span></span><span class="nt">&lt;exclusion&gt;</span>
-    <span class="nt">&lt;groupId&gt;</span>org.slf4j<span class="nt">&lt;/groupId&gt;</span>
-    <span class="nt">&lt;artifactId&gt;</span>log4j-over-slf4j<span class="nt">&lt;/artifactId&gt;</span>
-<span class="nt">&lt;/exclusion&gt;</span>
-</pre></div>
+</li>
+<li>结论：该公司目前估值属于短期高点，但考虑到稳定的增长与高ROE，以及500亿的市值，<br />
+  值得买入并长期持有。</li>
+</ul>
+<h1 id="_6">中国国旅</h1>
+<h1 id="_7">价值股列表</h1>
+<ul>
+<li>来自 <a href="https://mp.weixin.qq.com/s/QER5p-_mwPDk3juM5rEybQ">https://mp.weixin.qq.com/s/QER5p-_mwPDk3juM5rEybQ</a></li>
+</ul>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -139,7 +196,7 @@ SLF4J: See also http://www.slf4j.org/codes.html#log4jDelegationLoop <span class=
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2020-05-14 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2020-07-05 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -147,7 +204,7 @@ SLF4J: See also http://www.slf4j.org/codes.html#log4jDelegationLoop <span class=
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: 'log4j冲突问题排查',
+  title: '谈股论今2007期',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {

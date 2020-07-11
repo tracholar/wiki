@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
         <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
-        <title>log4j冲突问题排查 - Tracholar的个人wiki</title>
+        <title>证券行业相关证书 - Tracholar的个人wiki</title>
         <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
         <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -64,70 +64,68 @@
             </div>
             
 <div id="header">
-  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#java">java</a>&nbsp;»&nbsp;log4j冲突问题排查</div>
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#economics">economics</a>&nbsp;»&nbsp;证券行业相关证书</div>
 </div>
 <div class="clearfix"></div>
-<div id="title">log4j冲突问题排查</div>
+<div id="title">证券行业相关证书</div>
 <div id="content">
   <div class="toc"><span class="toctitle">Table of Contents</span><ul>
-<li><a href="#_1">问题</a></li>
-<li><a href="#_2">原因</a><ul>
-<li><a href="#slf4j-log4j">slf4j 与 log4j 的关系</a></li>
-<li><a href="#_3">报错的具体原因</a></li>
+<li><a href="#_1">考试简介</a><ul>
+<li><a href="#_2">证券从业资格证</a></li>
 </ul>
 </li>
-<li><a href="#_4">解法</a></li>
+<li><a href="#_3">课程笔记</a><ul>
+<li><a href="#_4">股票</a></li>
+</ul>
+</li>
 </ul>
 </div>
-<h2 id="_1">问题</h2>
-<div class="hlcode"><pre><span></span>SLF4J: Class path contains multiple SLF4J bindings.
-SLF4J: Found binding in <span class="o">[</span>jar:file:/Users/zuoyuan/.m2/repository/org/slf4j/slf4j-log4j12/1.7.16/slf4j-log4j12-1.7.16.jar!/org/slf4j/impl/StaticLoggerBinder.class<span class="o">]</span>
-SLF4J: Found binding in <span class="o">[</span>jar:file:/Users/zuoyuan/.m2/repository/org/apache/logging/log4j/log4j-slf4j-impl/2.3/log4j-slf4j-impl-2.3.jar!/org/slf4j/impl/StaticLoggerBinder.class<span class="o">]</span>
-SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings <span class="k">for</span> an explanation.
-SLF4J: Detected both log4j-over-slf4j.jar AND bound slf4j-log4j12.jar on the class path, preempting StackOverflowError. 
-
-SLF4J: See also http://www.slf4j.org/codes.html#log4jDelegationLoop <span class="k">for</span> more details.
-</pre></div>
-
-
-<h2 id="_2">原因</h2>
-<h3 id="slf4j-log4j">slf4j 与 log4j 的关系</h3>
+<h1 id="_1">考试简介</h1>
+<h2 id="_2">证券从业资格证</h2>
 <ul>
-<li>log4j 是一个日志框架，是实际执行落日志的角色；而sl4j是一种适配接口，用于支持不同的底层日志框架。</li>
-<li>slf4j 的实现者有： <ul>
-<li>slf4j-simple</li>
-<li>logback</li>
-<li>slf4j-log4j12：使用<code>log4j</code>库作为底层日志实现，需要引入的库</li>
+<li>官网与报名<a href="https://www.sac.net.cn/cyry/kspt/ksbm/">https://www.sac.net.cn/cyry/kspt/ksbm/</a></li>
+<li>一般从业资格考试，科目<ul>
+<li>《证券市场基本法律法规》</li>
+<li>《金融市场基础知识》</li>
 </ul>
 </li>
-<li>
-<p>参考 <a href="https://www.cnblogs.com/xrq730/p/8619156.html">Java日志框架：slf4j作用及其实现原理</a></p>
+<li>一般从业资格考试的考试范围</li>
+<li>参考《证券业从业人员一般从业资格考试大纲（2019）》<br />
+ （详见<a href="http://www.sac.net.cn/pxzx/pxzdydg/201910/t20191009_140276.html">http://www.sac.net.cn/pxzx/pxzdydg/201910/t20191009_140276.html</a>）</li>
+<li>考试采取闭卷机考形式，题型均为单项选择题，考试题量均为100题，考试时间为120分钟，<br />
+  60分及以上视为合格成绩。</li>
+<li>考试大纲2019 <a href="https://www.sac.net.cn/pxzx/pxzdydg/201910/P020191009408875565288.docx">https://www.sac.net.cn/pxzx/pxzdydg/201910/P020191009408875565288.docx</a></li>
+</ul>
+<h1 id="_3">课程笔记</h1>
+<h2 id="_4">股票</h2>
+<ul>
+<li>境外上市外资股，指境内的股份有限公司向境外投资者募集并在境外上市的股份。<ul>
+<li>记名，境内只有公司向发起人、法人发行的股票会记名，记名股票交易过户比较麻烦</li>
+<li>红筹股，最初诞生于90年代初期的港股市场，是指在境外注册、在境外上市，<br />
+  但由境内股东实际控制，且主要业务和净利润来自境内的股票，比如说腾讯、<br />
+  美团点评、京东、拼多多、百度等。由于我国在国际市场上有时会被称为红色中国，<br />
+  红筹股因此得名。</li>
+<li>H股，中国境内（不包括港、澳、台地区）注册的中国股份公司，直接向香港联合交易<br />
+  所申请发行境外上市外资股股票并在香港联交所上市交易的境外上市模式。</li>
+<li>红筹股跟H股的最大区别是注册地。红筹股上市时一般需要做股权改造，最为著名的<br />
+  就是新浪开始的VIE架构。即在境外英属维京群岛、开曼群岛设立离岸公司，然后<br />
+  这家公司在在境内建立外资独资企业，然后通过协议控制境内公司权益，最终上市<br />
+  的是这家离岸公司。美国交易所专门为此创设了"VIE会计准则"，即可变利益实体准则，<br />
+  允许该架构下将国内被控制的企业报表与境外上市企业的报表进行合并，解决了境外上<br />
+  市的报表问题。</li>
+<li>所有的面值和红利都是以人民币计价和标价，但是以外币实际支付。H股是外资股，但<br />
+  红筹股不是，因为红筹股注册在境外！</li>
+</ul>
 </li>
-<li>
-<p>log4j-over-slf4j 是一个桥接器，是为了使用log4j实现的老代码，在不需要修改一行代码的情况下迁移到slf4j。实现原理是通过将文件<code>log4j.jar</code>替换为 <code>log4j-over-slf4j.jar</code> 来实现的。参考<a href="http://www.slf4j.org/legacy.html">log4j-over-slf4j</a></p>
+<li>证券发行与承销<ul>
+<li>战略投资者不参与网下询价，且应当承诺获得本次配售的股票持有期限不少于12个月</li>
+</ul>
 </li>
+<li>沪/深股通：境外投资者委托香港经纪商，通过联交所设立的证券交易服务公司（SPV），<br />
+  向上/深交所进行申报，买卖规定范围内的上/深交所上市股票。</li>
+<li>港股通，略</li>
+<li>印花税，千分之一，由卖方承担，成交后再交。</li>
 </ul>
-<h3 id="_3">报错的具体原因</h3>
-<ul>
-<li>log4j-over-slf4j 与 slf4j 互相调用，陷入了死循环，导致StackOverflow。</li>
-</ul>
-<h2 id="_4">解法</h2>
-<ul>
-<li>找到 log4j-over-slf4j 是哪个依赖引入的，然后排除掉即可。</li>
-<li>找到依赖</li>
-</ul>
-<div class="hlcode"><pre><span></span>mvn dependency:tree
-</pre></div>
-
-
-<ul>
-<li>排除</li>
-</ul>
-<div class="hlcode"><pre><span></span><span class="nt">&lt;exclusion&gt;</span>
-    <span class="nt">&lt;groupId&gt;</span>org.slf4j<span class="nt">&lt;/groupId&gt;</span>
-    <span class="nt">&lt;artifactId&gt;</span>log4j-over-slf4j<span class="nt">&lt;/artifactId&gt;</span>
-<span class="nt">&lt;/exclusion&gt;</span>
-</pre></div>
 </div>
 <div id="income">
     <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
@@ -139,7 +137,7 @@ SLF4J: See also http://www.slf4j.org/codes.html#log4jDelegationLoop <span class=
      data-ad-client="ca-pub-6300557868920774"
      data-ad-slot="6882414849"></ins>
 </div>
-<div id="content-footer">created in <span class="create-date date"> 2020-05-14 </span></div>
+<div id="content-footer">created in <span class="create-date date"> 2020-07-03 </span></div>
 
 <div id="comments"></div>
 <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
@@ -147,7 +145,7 @@ SLF4J: See also http://www.slf4j.org/codes.html#log4jDelegationLoop <span class=
 <script type="text/javascript">
 const gitment = new Gitment({
   id: location.pathname,
-  title: 'log4j冲突问题排查',
+  title: '证券行业相关证书',
   owner: 'tracholar',
   repo: 'wiki',
   oauth: {
