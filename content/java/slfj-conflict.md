@@ -29,9 +29,21 @@ SLF4J: See also http://www.slf4j.org/codes.html#log4jDelegationLoop for more det
 - log4j-over-slf4j 是一个桥接器，是为了使用log4j实现的老代码，在不需要修改一行代码的情况下迁移到slf4j。实现原理是通过将文件`log4j.jar`替换为 `log4j-over-slf4j.jar` 来实现的。参考[log4j-over-slf4j](http://www.slf4j.org/legacy.html)
 
 ### 报错的具体原因
-- 
+- log4j-over-slf4j 与 slf4j 互相调用，陷入了死循环，导致StackOverflow。
 
 
 ## 解法
+- 找到 log4j-over-slf4j 是哪个依赖引入的，然后排除掉即可。
+- 找到依赖
+```bash
+mvn dependency:tree
+```
+- 排除
+```xml
+<exclusion>
+    <groupId>org.slf4j</groupId>
+    <artifactId>log4j-over-slf4j</artifactId>
+</exclusion>
+```
 
  
