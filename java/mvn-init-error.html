@@ -1,0 +1,397 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/css/tango.css">
+        <link rel="Stylesheet" type="text/css" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/normalize.css">
+        <link rel="stylesheet" href="/wiki/static/plugin/tipuesearch/css/tipuesearch.css">
+        <link rel="shortcut icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/wiki/favicon.ico" type="image/x-icon">
+        <title>Maven打包时异常ExceptionInInitializerError - Tracholar的个人wiki</title>
+        <meta name="keywords" content="technology, machine learning, data mining, economics, accounting"/>
+        <meta name="description" content="A wiki website of tracholar when I learned new knowledgy and technics."/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width" />
+
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$(',')$'], ['\\(','\\)'], ['$', '$']]}
+        });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+        <!-- Google Adsense -->
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-78529611-1', 'auto');
+          ga('send', 'pageview');
+
+
+            // Google Adsense Auto AD
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            /*
+             (adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6300557868920774",
+                  enable_page_level_ads: true
+             });
+             */
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="google-search" style="width:200px; float:right; margin: 20px 0;">
+                <form action="//cse.google.com/cse" method="get" id="search-form">
+                    <input type="hidden" name="cx" value="015970462532790426975:gqlen38ywus"/>
+                    <input type="text" name="q"  style="line-height:20px; padding:4px;" placeholder="站内搜索"/>
+                    <svg width="13" height="13" viewBox="0 0 13 13" style="position:relative; left: -20px;" onclick="document.getElementById('search-form').submit()">
+                        <title>搜索</title>
+                        <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z">
+                        </path>
+                    </svg>
+                </form>
+
+            </div>
+            
+<div id="header">
+  <div id="post-nav"><a href="/wiki/">Home</a>&nbsp;»&nbsp;<a href="/wiki/#java">java</a>&nbsp;»&nbsp;Maven打包时异常ExceptionInInitializerError</div>
+</div>
+<div class="clearfix"></div>
+<div id="title">Maven打包时异常ExceptionInInitializerError</div>
+<div id="content">
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">问题</a></li>
+<li><a href="#_2">问题排查</a></li>
+</ul>
+</div>
+<h2 id="_1">问题</h2>
+<ul>
+<li>用maven打包，出现了异常如下</li>
+</ul>
+<div class="hlcode"><pre><span></span>WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by lombok.javac.apt.LombokProcessor to field com.sun.tools.javac.processing.JavacProcessingEnvironment.processorClassLoader
+WARNING: Please consider reporting this to the maintainers of lombok.javac.apt.LombokProcessor
+WARNING: Use --illegal-access<span class="o">=</span>warn to <span class="nb">enable</span> warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+<span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
+<span class="o">[</span>INFO<span class="o">]</span> BUILD FAILURE
+<span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
+<span class="o">[</span>INFO<span class="o">]</span> Total time: <span class="m">5</span>.255 s
+<span class="o">[</span>INFO<span class="o">]</span> Finished at: <span class="m">2020</span>-07-14T10:32:41+08:00
+<span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
+<span class="o">[</span>ERROR<span class="o">]</span> Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.1:compile <span class="o">(</span>default-compile<span class="o">)</span> on project recommend-service: Fatal error compiling: java.lang.ExceptionInInitializerError: com.sun.tools.javac.code.TypeTags -&gt; <span class="o">[</span>Help <span class="m">1</span><span class="o">]</span>
+<span class="o">[</span>ERROR<span class="o">]</span>
+<span class="o">[</span>ERROR<span class="o">]</span> To see the full stack trace of the errors, re-run Maven with the -e switch.
+<span class="o">[</span>ERROR<span class="o">]</span> Re-run Maven using the -X switch to <span class="nb">enable</span> full debug logging.
+<span class="o">[</span>ERROR<span class="o">]</span>
+<span class="o">[</span>ERROR<span class="o">]</span> For more information about the errors and possible solutions, please <span class="nb">read</span> the following articles:
+<span class="o">[</span>ERROR<span class="o">]</span> <span class="o">[</span>Help <span class="m">1</span><span class="o">]</span> http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+</pre></div>
+
+
+<h2 id="_2">问题排查</h2>
+<ul>
+<li>通过 <code>-e</code> 开关，打开错误堆栈信息，查到 <a href="https://stackoverflow.com/questions/50782986/java-lang-exceptionininitializererror-is-produced-when-lombok-is-used-within-a-s/50792308">https://stackoverflow.com/questions/50782986/java-lang-exceptionininitializererror-is-produced-when-lombok-is-used-within-a-s/50792308</a><br />
+  有解释该错误在新版的 lombok 中已经修复。</li>
+</ul>
+<div class="hlcode"><pre><span></span><span class="o">[</span>ERROR<span class="o">]</span> Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.1:compile <span class="o">(</span>default-compile<span class="o">)</span> on project recommend-service: Fatal error compiling: java.lang.ExceptionInInitializerError: com.sun.tools.javac.code.TypeTags -&gt; <span class="o">[</span>Help <span class="m">1</span><span class="o">]</span>
+org.apache.maven.lifecycle.LifecycleExecutionException: Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.1:compile <span class="o">(</span>default-compile<span class="o">)</span> on project recommend-service: Fatal error compiling
+   at org.apache.maven.lifecycle.internal.MojoExecutor.execute <span class="o">(</span>MojoExecutor.java:213<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.MojoExecutor.execute <span class="o">(</span>MojoExecutor.java:154<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.MojoExecutor.execute <span class="o">(</span>MojoExecutor.java:146<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject <span class="o">(</span>LifecycleModuleBuilder.java:117<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject <span class="o">(</span>LifecycleModuleBuilder.java:81<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build <span class="o">(</span>SingleThreadedBuilder.java:56<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.LifecycleStarter.execute <span class="o">(</span>LifecycleStarter.java:128<span class="o">)</span>
+   at org.apache.maven.DefaultMaven.doExecute <span class="o">(</span>DefaultMaven.java:305<span class="o">)</span>
+   at org.apache.maven.DefaultMaven.doExecute <span class="o">(</span>DefaultMaven.java:192<span class="o">)</span>
+   at org.apache.maven.DefaultMaven.execute <span class="o">(</span>DefaultMaven.java:105<span class="o">)</span>
+   at org.apache.maven.cli.MavenCli.execute <span class="o">(</span>MavenCli.java:954<span class="o">)</span>
+   at org.apache.maven.cli.MavenCli.doMain <span class="o">(</span>MavenCli.java:288<span class="o">)</span>
+   at org.apache.maven.cli.MavenCli.main <span class="o">(</span>MavenCli.java:192<span class="o">)</span>
+   at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0 <span class="o">(</span>Native Method<span class="o">)</span>
+   at jdk.internal.reflect.NativeMethodAccessorImpl.invoke <span class="o">(</span>NativeMethodAccessorImpl.java:62<span class="o">)</span>
+   at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke <span class="o">(</span>DelegatingMethodAccessorImpl.java:43<span class="o">)</span>
+   at java.lang.reflect.Method.invoke <span class="o">(</span>Method.java:564<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced <span class="o">(</span>Launcher.java:289<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.launch <span class="o">(</span>Launcher.java:229<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode <span class="o">(</span>Launcher.java:415<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.main <span class="o">(</span>Launcher.java:356<span class="o">)</span>
+Caused by: org.apache.maven.plugin.MojoExecutionException: Fatal error compiling
+   at org.apache.maven.plugin.compiler.AbstractCompilerMojo.execute <span class="o">(</span>AbstractCompilerMojo.java:796<span class="o">)</span>
+   at org.apache.maven.plugin.compiler.CompilerMojo.execute <span class="o">(</span>CompilerMojo.java:129<span class="o">)</span>
+   at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo <span class="o">(</span>DefaultBuildPluginManager.java:137<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.MojoExecutor.execute <span class="o">(</span>MojoExecutor.java:208<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.MojoExecutor.execute <span class="o">(</span>MojoExecutor.java:154<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.MojoExecutor.execute <span class="o">(</span>MojoExecutor.java:146<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject <span class="o">(</span>LifecycleModuleBuilder.java:117<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject <span class="o">(</span>LifecycleModuleBuilder.java:81<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build <span class="o">(</span>SingleThreadedBuilder.java:56<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.LifecycleStarter.execute <span class="o">(</span>LifecycleStarter.java:128<span class="o">)</span>
+   at org.apache.maven.DefaultMaven.doExecute <span class="o">(</span>DefaultMaven.java:305<span class="o">)</span>
+   at org.apache.maven.DefaultMaven.doExecute <span class="o">(</span>DefaultMaven.java:192<span class="o">)</span>
+   at org.apache.maven.DefaultMaven.execute <span class="o">(</span>DefaultMaven.java:105<span class="o">)</span>
+   at org.apache.maven.cli.MavenCli.execute <span class="o">(</span>MavenCli.java:954<span class="o">)</span>
+   at org.apache.maven.cli.MavenCli.doMain <span class="o">(</span>MavenCli.java:288<span class="o">)</span>
+   at org.apache.maven.cli.MavenCli.main <span class="o">(</span>MavenCli.java:192<span class="o">)</span>
+   at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0 <span class="o">(</span>Native Method<span class="o">)</span>
+   at jdk.internal.reflect.NativeMethodAccessorImpl.invoke <span class="o">(</span>NativeMethodAccessorImpl.java:62<span class="o">)</span>
+   at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke <span class="o">(</span>DelegatingMethodAccessorImpl.java:43<span class="o">)</span>
+   at java.lang.reflect.Method.invoke <span class="o">(</span>Method.java:564<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced <span class="o">(</span>Launcher.java:289<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.launch <span class="o">(</span>Launcher.java:229<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode <span class="o">(</span>Launcher.java:415<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.main <span class="o">(</span>Launcher.java:356<span class="o">)</span>
+Caused by: org.codehaus.plexus.compiler.CompilerException: java.lang.ExceptionInInitializerError
+   at org.codehaus.plexus.compiler.javac.JavaxToolsCompiler.compileInProcess <span class="o">(</span>JavaxToolsCompiler.java:191<span class="o">)</span>
+   at org.codehaus.plexus.compiler.javac.JavacCompiler.performCompile <span class="o">(</span>JavacCompiler.java:169<span class="o">)</span>
+   at org.apache.maven.plugin.compiler.AbstractCompilerMojo.execute <span class="o">(</span>AbstractCompilerMojo.java:785<span class="o">)</span>
+   at org.apache.maven.plugin.compiler.CompilerMojo.execute <span class="o">(</span>CompilerMojo.java:129<span class="o">)</span>
+   at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo <span class="o">(</span>DefaultBuildPluginManager.java:137<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.MojoExecutor.execute <span class="o">(</span>MojoExecutor.java:208<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.MojoExecutor.execute <span class="o">(</span>MojoExecutor.java:154<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.MojoExecutor.execute <span class="o">(</span>MojoExecutor.java:146<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject <span class="o">(</span>LifecycleModuleBuilder.java:117<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject <span class="o">(</span>LifecycleModuleBuilder.java:81<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build <span class="o">(</span>SingleThreadedBuilder.java:56<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.LifecycleStarter.execute <span class="o">(</span>LifecycleStarter.java:128<span class="o">)</span>
+   at org.apache.maven.DefaultMaven.doExecute <span class="o">(</span>DefaultMaven.java:305<span class="o">)</span>
+   at org.apache.maven.DefaultMaven.doExecute <span class="o">(</span>DefaultMaven.java:192<span class="o">)</span>
+   at org.apache.maven.DefaultMaven.execute <span class="o">(</span>DefaultMaven.java:105<span class="o">)</span>
+   at org.apache.maven.cli.MavenCli.execute <span class="o">(</span>MavenCli.java:954<span class="o">)</span>
+   at org.apache.maven.cli.MavenCli.doMain <span class="o">(</span>MavenCli.java:288<span class="o">)</span>
+   at org.apache.maven.cli.MavenCli.main <span class="o">(</span>MavenCli.java:192<span class="o">)</span>
+   at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0 <span class="o">(</span>Native Method<span class="o">)</span>
+   at jdk.internal.reflect.NativeMethodAccessorImpl.invoke <span class="o">(</span>NativeMethodAccessorImpl.java:62<span class="o">)</span>
+   at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke <span class="o">(</span>DelegatingMethodAccessorImpl.java:43<span class="o">)</span>
+   at java.lang.reflect.Method.invoke <span class="o">(</span>Method.java:564<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced <span class="o">(</span>Launcher.java:289<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.launch <span class="o">(</span>Launcher.java:229<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode <span class="o">(</span>Launcher.java:415<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.main <span class="o">(</span>Launcher.java:356<span class="o">)</span>
+Caused by: java.lang.RuntimeException: java.lang.ExceptionInInitializerError
+   at com.sun.tools.javac.api.JavacTaskImpl.handleExceptions <span class="o">(</span>JavacTaskImpl.java:163<span class="o">)</span>
+   at com.sun.tools.javac.api.JavacTaskImpl.doCall <span class="o">(</span>JavacTaskImpl.java:100<span class="o">)</span>
+   at com.sun.tools.javac.api.JavacTaskImpl.call <span class="o">(</span>JavacTaskImpl.java:94<span class="o">)</span>
+   at org.codehaus.plexus.compiler.javac.JavaxToolsCompiler.compileInProcess <span class="o">(</span>JavaxToolsCompiler.java:126<span class="o">)</span>
+   at org.codehaus.plexus.compiler.javac.JavacCompiler.performCompile <span class="o">(</span>JavacCompiler.java:169<span class="o">)</span>
+   at org.apache.maven.plugin.compiler.AbstractCompilerMojo.execute <span class="o">(</span>AbstractCompilerMojo.java:785<span class="o">)</span>
+   at org.apache.maven.plugin.compiler.CompilerMojo.execute <span class="o">(</span>CompilerMojo.java:129<span class="o">)</span>
+   at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo <span class="o">(</span>DefaultBuildPluginManager.java:137<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.MojoExecutor.execute <span class="o">(</span>MojoExecutor.java:208<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.MojoExecutor.execute <span class="o">(</span>MojoExecutor.java:154<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.MojoExecutor.execute <span class="o">(</span>MojoExecutor.java:146<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject <span class="o">(</span>LifecycleModuleBuilder.java:117<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject <span class="o">(</span>LifecycleModuleBuilder.java:81<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build <span class="o">(</span>SingleThreadedBuilder.java:56<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.LifecycleStarter.execute <span class="o">(</span>LifecycleStarter.java:128<span class="o">)</span>
+   at org.apache.maven.DefaultMaven.doExecute <span class="o">(</span>DefaultMaven.java:305<span class="o">)</span>
+   at org.apache.maven.DefaultMaven.doExecute <span class="o">(</span>DefaultMaven.java:192<span class="o">)</span>
+   at org.apache.maven.DefaultMaven.execute <span class="o">(</span>DefaultMaven.java:105<span class="o">)</span>
+   at org.apache.maven.cli.MavenCli.execute <span class="o">(</span>MavenCli.java:954<span class="o">)</span>
+   at org.apache.maven.cli.MavenCli.doMain <span class="o">(</span>MavenCli.java:288<span class="o">)</span>
+   at org.apache.maven.cli.MavenCli.main <span class="o">(</span>MavenCli.java:192<span class="o">)</span>
+   at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0 <span class="o">(</span>Native Method<span class="o">)</span>
+   at jdk.internal.reflect.NativeMethodAccessorImpl.invoke <span class="o">(</span>NativeMethodAccessorImpl.java:62<span class="o">)</span>
+   at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke <span class="o">(</span>DelegatingMethodAccessorImpl.java:43<span class="o">)</span>
+   at java.lang.reflect.Method.invoke <span class="o">(</span>Method.java:564<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced <span class="o">(</span>Launcher.java:289<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.launch <span class="o">(</span>Launcher.java:229<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode <span class="o">(</span>Launcher.java:415<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.main <span class="o">(</span>Launcher.java:356<span class="o">)</span>
+Caused by: java.lang.ExceptionInInitializerError
+   at lombok.javac.handlers.HandleGetter.&lt;clinit&gt; <span class="o">(</span>HandleGetter.java:298<span class="o">)</span>
+   at java.lang.Class.forName0 <span class="o">(</span>Native Method<span class="o">)</span>
+   at java.lang.Class.forName <span class="o">(</span>Class.java:427<span class="o">)</span>
+   at lombok.core.SpiLoadUtil<span class="nv">$1$1</span>.next <span class="o">(</span>SpiLoadUtil.java:111<span class="o">)</span>
+   at lombok.javac.HandlerLibrary.loadAnnotationHandlers <span class="o">(</span>HandlerLibrary.java:170<span class="o">)</span>
+   at lombok.javac.HandlerLibrary.load <span class="o">(</span>HandlerLibrary.java:155<span class="o">)</span>
+   at lombok.javac.JavacTransformer.&lt;init&gt; <span class="o">(</span>JavacTransformer.java:43<span class="o">)</span>
+   at lombok.javac.apt.LombokProcessor.init <span class="o">(</span>LombokProcessor.java:86<span class="o">)</span>
+   at lombok.core.AnnotationProcessor<span class="nv">$JavacDescriptor</span>.want <span class="o">(</span>AnnotationProcessor.java:87<span class="o">)</span>
+   at lombok.core.AnnotationProcessor.init <span class="o">(</span>AnnotationProcessor.java:141<span class="o">)</span>
+   at lombok.launch.AnnotationProcessorHider<span class="nv">$AnnotationProcessor</span>.init <span class="o">(</span>AnnotationProcessor.java:53<span class="o">)</span>
+   at com.sun.tools.javac.processing.JavacProcessingEnvironment<span class="nv">$ProcessorState</span>.&lt;init&gt; <span class="o">(</span>JavacProcessingEnvironment.java:702<span class="o">)</span>
+   at com.sun.tools.javac.processing.JavacProcessingEnvironment<span class="nv">$DiscoveredProcessors$ProcessorStateIterator</span>.next <span class="o">(</span>JavacProcessingEnvironment.java:830<span class="o">)</span>
+   at com.sun.tools.javac.processing.JavacProcessingEnvironment.discoverAndRunProcs <span class="o">(</span>JavacProcessingEnvironment.java:926<span class="o">)</span>
+   at com.sun.tools.javac.processing.JavacProcessingEnvironment<span class="nv">$Round</span>.run <span class="o">(</span>JavacProcessingEnvironment.java:1270<span class="o">)</span>
+   at com.sun.tools.javac.processing.JavacProcessingEnvironment.doProcessing <span class="o">(</span>JavacProcessingEnvironment.java:1384<span class="o">)</span>
+   at com.sun.tools.javac.main.JavaCompiler.processAnnotations <span class="o">(</span>JavaCompiler.java:1263<span class="o">)</span>
+   at com.sun.tools.javac.main.JavaCompiler.compile <span class="o">(</span>JavaCompiler.java:935<span class="o">)</span>
+   at com.sun.tools.javac.api.JavacTaskImpl.lambda<span class="nv">$doCall$0</span> <span class="o">(</span>JavacTaskImpl.java:104<span class="o">)</span>
+   at com.sun.tools.javac.api.JavacTaskImpl.handleExceptions <span class="o">(</span>JavacTaskImpl.java:147<span class="o">)</span>
+   at com.sun.tools.javac.api.JavacTaskImpl.doCall <span class="o">(</span>JavacTaskImpl.java:100<span class="o">)</span>
+   at com.sun.tools.javac.api.JavacTaskImpl.call <span class="o">(</span>JavacTaskImpl.java:94<span class="o">)</span>
+   at org.codehaus.plexus.compiler.javac.JavaxToolsCompiler.compileInProcess <span class="o">(</span>JavaxToolsCompiler.java:126<span class="o">)</span>
+   at org.codehaus.plexus.compiler.javac.JavacCompiler.performCompile <span class="o">(</span>JavacCompiler.java:169<span class="o">)</span>
+   at org.apache.maven.plugin.compiler.AbstractCompilerMojo.execute <span class="o">(</span>AbstractCompilerMojo.java:785<span class="o">)</span>
+   at org.apache.maven.plugin.compiler.CompilerMojo.execute <span class="o">(</span>CompilerMojo.java:129<span class="o">)</span>
+   at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo <span class="o">(</span>DefaultBuildPluginManager.java:137<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.MojoExecutor.execute <span class="o">(</span>MojoExecutor.java:208<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.MojoExecutor.execute <span class="o">(</span>MojoExecutor.java:154<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.MojoExecutor.execute <span class="o">(</span>MojoExecutor.java:146<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject <span class="o">(</span>LifecycleModuleBuilder.java:117<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject <span class="o">(</span>LifecycleModuleBuilder.java:81<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build <span class="o">(</span>SingleThreadedBuilder.java:56<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.LifecycleStarter.execute <span class="o">(</span>LifecycleStarter.java:128<span class="o">)</span>
+   at org.apache.maven.DefaultMaven.doExecute <span class="o">(</span>DefaultMaven.java:305<span class="o">)</span>
+   at org.apache.maven.DefaultMaven.doExecute <span class="o">(</span>DefaultMaven.java:192<span class="o">)</span>
+   at org.apache.maven.DefaultMaven.execute <span class="o">(</span>DefaultMaven.java:105<span class="o">)</span>
+   at org.apache.maven.cli.MavenCli.execute <span class="o">(</span>MavenCli.java:954<span class="o">)</span>
+   at org.apache.maven.cli.MavenCli.doMain <span class="o">(</span>MavenCli.java:288<span class="o">)</span>
+   at org.apache.maven.cli.MavenCli.main <span class="o">(</span>MavenCli.java:192<span class="o">)</span>
+   at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0 <span class="o">(</span>Native Method<span class="o">)</span>
+   at jdk.internal.reflect.NativeMethodAccessorImpl.invoke <span class="o">(</span>NativeMethodAccessorImpl.java:62<span class="o">)</span>
+   at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke <span class="o">(</span>DelegatingMethodAccessorImpl.java:43<span class="o">)</span>
+   at java.lang.reflect.Method.invoke <span class="o">(</span>Method.java:564<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced <span class="o">(</span>Launcher.java:289<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.launch <span class="o">(</span>Launcher.java:229<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode <span class="o">(</span>Launcher.java:415<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.main <span class="o">(</span>Launcher.java:356<span class="o">)</span>
+Caused by: java.lang.ClassNotFoundException: com.sun.tools.javac.code.TypeTags
+   at java.lang.ClassLoader.findClass <span class="o">(</span>ClassLoader.java:719<span class="o">)</span>
+   at java.lang.ClassLoader.loadClass <span class="o">(</span>ClassLoader.java:589<span class="o">)</span>
+   at lombok.launch.ShadowClassLoader.loadClass <span class="o">(</span>ShadowClassLoader.java:418<span class="o">)</span>
+   at java.lang.ClassLoader.loadClass <span class="o">(</span>ClassLoader.java:522<span class="o">)</span>
+   at java.lang.Class.forName0 <span class="o">(</span>Native Method<span class="o">)</span>
+   at java.lang.Class.forName <span class="o">(</span>Class.java:340<span class="o">)</span>
+   at lombok.javac.JavacTreeMaker<span class="nv">$SchroedingerType</span>.getFieldCached <span class="o">(</span>JavacTreeMaker.java:156<span class="o">)</span>
+   at lombok.javac.JavacTreeMaker<span class="nv">$TypeTag</span>.typeTag <span class="o">(</span>JavacTreeMaker.java:244<span class="o">)</span>
+   at lombok.javac.Javac.&lt;clinit&gt; <span class="o">(</span>Javac.java:154<span class="o">)</span>
+   at lombok.javac.handlers.HandleGetter.&lt;clinit&gt; <span class="o">(</span>HandleGetter.java:298<span class="o">)</span>
+   at java.lang.Class.forName0 <span class="o">(</span>Native Method<span class="o">)</span>
+   at java.lang.Class.forName <span class="o">(</span>Class.java:427<span class="o">)</span>
+   at lombok.core.SpiLoadUtil<span class="nv">$1$1</span>.next <span class="o">(</span>SpiLoadUtil.java:111<span class="o">)</span>
+   at lombok.javac.HandlerLibrary.loadAnnotationHandlers <span class="o">(</span>HandlerLibrary.java:170<span class="o">)</span>
+   at lombok.javac.HandlerLibrary.load <span class="o">(</span>HandlerLibrary.java:155<span class="o">)</span>
+   at lombok.javac.JavacTransformer.&lt;init&gt; <span class="o">(</span>JavacTransformer.java:43<span class="o">)</span>
+   at lombok.javac.apt.LombokProcessor.init <span class="o">(</span>LombokProcessor.java:86<span class="o">)</span>
+   at lombok.core.AnnotationProcessor<span class="nv">$JavacDescriptor</span>.want <span class="o">(</span>AnnotationProcessor.java:87<span class="o">)</span>
+   at lombok.core.AnnotationProcessor.init <span class="o">(</span>AnnotationProcessor.java:141<span class="o">)</span>
+   at lombok.launch.AnnotationProcessorHider<span class="nv">$AnnotationProcessor</span>.init <span class="o">(</span>AnnotationProcessor.java:53<span class="o">)</span>
+   at com.sun.tools.javac.processing.JavacProcessingEnvironment<span class="nv">$ProcessorState</span>.&lt;init&gt; <span class="o">(</span>JavacProcessingEnvironment.java:702<span class="o">)</span>
+   at com.sun.tools.javac.processing.JavacProcessingEnvironment<span class="nv">$DiscoveredProcessors$ProcessorStateIterator</span>.next <span class="o">(</span>JavacProcessingEnvironment.java:830<span class="o">)</span>
+   at com.sun.tools.javac.processing.JavacProcessingEnvironment.discoverAndRunProcs <span class="o">(</span>JavacProcessingEnvironment.java:926<span class="o">)</span>
+   at com.sun.tools.javac.processing.JavacProcessingEnvironment<span class="nv">$Round</span>.run <span class="o">(</span>JavacProcessingEnvironment.java:1270<span class="o">)</span>
+   at com.sun.tools.javac.processing.JavacProcessingEnvironment.doProcessing <span class="o">(</span>JavacProcessingEnvironment.java:1384<span class="o">)</span>
+   at com.sun.tools.javac.main.JavaCompiler.processAnnotations <span class="o">(</span>JavaCompiler.java:1263<span class="o">)</span>
+   at com.sun.tools.javac.main.JavaCompiler.compile <span class="o">(</span>JavaCompiler.java:935<span class="o">)</span>
+   at com.sun.tools.javac.api.JavacTaskImpl.lambda<span class="nv">$doCall$0</span> <span class="o">(</span>JavacTaskImpl.java:104<span class="o">)</span>
+   at com.sun.tools.javac.api.JavacTaskImpl.handleExceptions <span class="o">(</span>JavacTaskImpl.java:147<span class="o">)</span>
+   at com.sun.tools.javac.api.JavacTaskImpl.doCall <span class="o">(</span>JavacTaskImpl.java:100<span class="o">)</span>
+   at com.sun.tools.javac.api.JavacTaskImpl.call <span class="o">(</span>JavacTaskImpl.java:94<span class="o">)</span>
+   at org.codehaus.plexus.compiler.javac.JavaxToolsCompiler.compileInProcess <span class="o">(</span>JavaxToolsCompiler.java:126<span class="o">)</span>
+   at org.codehaus.plexus.compiler.javac.JavacCompiler.performCompile <span class="o">(</span>JavacCompiler.java:169<span class="o">)</span>
+   at org.apache.maven.plugin.compiler.AbstractCompilerMojo.execute <span class="o">(</span>AbstractCompilerMojo.java:785<span class="o">)</span>
+   at org.apache.maven.plugin.compiler.CompilerMojo.execute <span class="o">(</span>CompilerMojo.java:129<span class="o">)</span>
+   at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo <span class="o">(</span>DefaultBuildPluginManager.java:137<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.MojoExecutor.execute <span class="o">(</span>MojoExecutor.java:208<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.MojoExecutor.execute <span class="o">(</span>MojoExecutor.java:154<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.MojoExecutor.execute <span class="o">(</span>MojoExecutor.java:146<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject <span class="o">(</span>LifecycleModuleBuilder.java:117<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject <span class="o">(</span>LifecycleModuleBuilder.java:81<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build <span class="o">(</span>SingleThreadedBuilder.java:56<span class="o">)</span>
+   at org.apache.maven.lifecycle.internal.LifecycleStarter.execute <span class="o">(</span>LifecycleStarter.java:128<span class="o">)</span>
+   at org.apache.maven.DefaultMaven.doExecute <span class="o">(</span>DefaultMaven.java:305<span class="o">)</span>
+   at org.apache.maven.DefaultMaven.doExecute <span class="o">(</span>DefaultMaven.java:192<span class="o">)</span>
+   at org.apache.maven.DefaultMaven.execute <span class="o">(</span>DefaultMaven.java:105<span class="o">)</span>
+   at org.apache.maven.cli.MavenCli.execute <span class="o">(</span>MavenCli.java:954<span class="o">)</span>
+   at org.apache.maven.cli.MavenCli.doMain <span class="o">(</span>MavenCli.java:288<span class="o">)</span>
+   at org.apache.maven.cli.MavenCli.main <span class="o">(</span>MavenCli.java:192<span class="o">)</span>
+   at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0 <span class="o">(</span>Native Method<span class="o">)</span>
+   at jdk.internal.reflect.NativeMethodAccessorImpl.invoke <span class="o">(</span>NativeMethodAccessorImpl.java:62<span class="o">)</span>
+   at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke <span class="o">(</span>DelegatingMethodAccessorImpl.java:43<span class="o">)</span>
+   at java.lang.reflect.Method.invoke <span class="o">(</span>Method.java:564<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced <span class="o">(</span>Launcher.java:289<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.launch <span class="o">(</span>Launcher.java:229<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode <span class="o">(</span>Launcher.java:415<span class="o">)</span>
+   at org.codehaus.plexus.classworlds.launcher.Launcher.main <span class="o">(</span>Launcher.java:356<span class="o">)</span>
+<span class="o">[</span>ERROR<span class="o">]</span>
+<span class="o">[</span>ERROR<span class="o">]</span> Re-run Maven using the -X switch to <span class="nb">enable</span> full debug logging.
+<span class="o">[</span>ERROR<span class="o">]</span>
+<span class="o">[</span>ERROR<span class="o">]</span> For more information about the errors and possible solutions, please <span class="nb">read</span> the following articles:
+<span class="o">[</span>ERROR<span class="o">]</span> <span class="o">[</span>Help <span class="m">1</span><span class="o">]</span> http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+</pre></div>
+
+
+<ul>
+<li>升级 lombok 后，遇到新的错误，通过查询thrift官方文件<a href="https://github.com/apache/thrift/blob/master/lib/java/src/org/apache/thrift/EncodingUtils.java">EncodingUtils.java</a><br />
+  发现，<code>setBit</code>方法在最新版本中存在，但是在<code>0.8.x</code>不存在。因此，是新旧版本api的不匹配导致的异常。</li>
+<li>通过<code>mvn dependency:tree</code>查询java包依赖发现有一个<code>0.8.0</code>版本的thrift依赖，但是该包通过provide方式<br />
+  引入，所以经常诡异地触发该错误。</li>
+<li>解决方法：修改pom.xml配置文件，把低版本的thrift依赖去掉，解决了该问题！</li>
+</ul>
+<div class="hlcode"><pre><span></span>Error running child : java.lang.NoSuchMethodError: org.apache.thrift.EncodingUtils.setBit<span class="o">(</span>BIZ<span class="o">)</span>B
+</pre></div>
+</div>
+<div id="income">
+    <!--img src="/wiki/static/images/support-qrcode.png" alt="支持我" style="max-width:300px;" /-->
+
+    <ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6300557868920774"
+     data-ad-slot="6882414849"></ins>
+</div>
+<div id="content-footer">created in <span class="create-date date"> 2020-07-14 </span></div>
+
+<div id="comments"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script type="text/javascript">
+const gitment = new Gitment({
+  id: location.pathname,
+  title: 'Maven打包时异常ExceptionInInitializerError',
+  owner: 'tracholar',
+  repo: 'wiki',
+  oauth: {
+    client_id: '0cc0476e504b5e70ae7c',
+    client_secret: 'ab98e39ef79469040057eba9c6b2b543b84c72ee',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+// or
+// gitment.render(document.getElementById('comments'))
+// or
+// document.body.appendChild(gitment.render())
+</script>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2020 tracholar.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+        
+
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?df74779713027375e7b79302fb72d7b0";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+
+        <script src="/wiki/tipuesearch_content.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch_set.js"></script>
+        <script src="/wiki/static/plugin/tipuesearch/tipuesearch.min.js"></script>
+    </body>
+</html>
